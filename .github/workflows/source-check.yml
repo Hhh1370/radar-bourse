@@ -3,7 +3,7 @@ name: Check Iranian Market Data Sources
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 9 * * 6-3"
+    - cron: "30 9 * * 0,1,2,3,6"
 
 permissions:
   contents: read
