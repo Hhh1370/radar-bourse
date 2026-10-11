@@ -15,7 +15,7 @@ SOURCES = {
     ),
 }
 
-def check_source(name, url, attempts=3):
+def check_source(name, url, attempts=2):
     print(f"\n--- {name} ---")
 
     for attempt in range(1, attempts + 1):
@@ -31,7 +31,7 @@ def check_source(name, url, attempts=3):
         )
 
         try:
-            with urllib.request.urlopen(request, timeout=45) as response:
+            with urllib.request.urlopen(request, timeout=10) as response:
                 body = response.read()
 
                 print("HTTP status:", response.status)
