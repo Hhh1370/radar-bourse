@@ -1,4 +1,3 @@
-python
 import json
 import time
 import urllib.request
