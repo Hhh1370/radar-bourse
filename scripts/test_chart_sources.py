@@ -1,4 +1,3 @@
-
 import json
 import os
 from datetime import datetime, timezone
@@ -9,20 +8,22 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
 
-# صفحه‌ای که چارت نماد در آن باز می‌شود
 CHART_URL = "https://www.nahayatnegar.com/tv/IRO1KSHJ0001"
 
-# شناسه‌ای که از صفحهٔ چارت دریافت می‌شود
-INPUT_SYMBOL = "IRO1KSHJ0001"
+# هر دو شناسه را بررسی می‌کنیم؛ شناسهٔ دوم در درخواست قبلی چارت دیده شد.
+SYMBOL_CANDIDATES = [
+    "IRO1KSHJ00013",
+    "IRO1KSHJ0001",
+]
 
-# شروع تاریخچه برای آزمایش افق بلندمدت
-START_DATE = "2018-01-01"
-
-# بازه‌های زمانی مورد آزمایش
 RESOLUTIONS = ["1D", "W", "M"]
+LONG_TERM_START = "2018-01-01"
+COUNTBACK_LONG_TERM = 5000
 
-# حداکثر تعداد کندل درخواستی؛ تعداد واقعی در خروجی مشخص می‌شود
-COUNTBACK = 5000
+# پارامترهای درخواست تاریخچه‌ای که در اجرای قبلی موفق بود.
+KNOWN_FROM = 1755475200
+KNOWN_TO = 1791849600
+KNOWN_COUNTBACK = 301
 
 
 def make_driver():
@@ -53,47 +54,50 @@ def make_driver():
 
 
 def utc_timestamp(date_text):
-    date_value = datetime.strptime(date_text, "%Y-%m-%d")
-    date_value = date_value.replace(tzinfo=timezone.utc)
-    return int(date_value.timestamp())
+    value = datetime.strptime(date_text, "%Y-%m-%d")
+    value = value.replace(tzinfo=timezone.utc)
+    return int(value.timestamp())
 
 
-# این کد داخل مرورگر اجرا می‌شود تا درخواست‌ها از همان مبدأ
-# و با همان شرایط دسترسی صفحهٔ چارت ارسال شوند.
 BROWSER_TEST = r"""
-const inputSymbol = arguments[0];
+const candidates = arguments[0];
 const resolutions = arguments[1];
-const fromTime = arguments[2];
-const toTime = arguments[3];
-const countback = arguments[4];
+const longFrom = arguments[2];
+const longTo = arguments[3];
+const longCountback = arguments[4];
+const knownFrom = arguments[5];
+const knownTo = arguments[6];
+const knownCountback = arguments[7];
 const done = arguments[arguments.length - 1];
 
 (async function () {
-    const output = {
+    const result = {
         pageUrl: location.href,
         config: null,
-        symbol: null,
-        history: [],
+        symbolLookups: [],
+        selectedSymbol: null,
+        historyTests: [],
         errors: []
     };
 
-    async function readJson(url) {
-        const response = await fetch(url, {
+    async function requestJson(path) {
+        const response = await fetch(path, {
             method: "GET",
             credentials: "same-origin",
             headers: {"Accept": "application/json"}
         });
 
         const text = await response.text();
-
         let data;
+
         try {
             data = JSON.parse(text);
         } catch (error) {
-            throw new Error(
-                "پاسخ JSON معتبر نیست؛ HTTP " +
-                response.status + "؛ " + text.slice(0, 300)
-            );
+            return {
+                httpStatus: response.status,
+                parseError: String(error),
+                bodyPreview: text.slice(0, 500)
+            };
         }
 
         return {
@@ -102,147 +106,251 @@ const done = arguments[arguments.length - 1];
         };
     }
 
-    function getArrayLengths(data) {
-        const result = {};
+    function getSymbolObject(data) {
+        if (!data || typeof data !== "object") return null;
+
+        if (data.tvSymbol && typeof data.tvSymbol === "object") {
+            return data.tvSymbol;
+        }
+
+        if (data.symbol && typeof data.symbol === "object") {
+            return data.symbol;
+        }
+
+        if (data.id || data.ticker || data.full_name) {
+            return data;
+        }
+
+        return null;
+    }
+
+    function summarizeSymbol(data) {
+        const item = getSymbolObject(data);
+
+        if (!item) {
+            return {
+                id: null,
+                ticker: null,
+                name: null,
+                full_name: null,
+                type: null,
+                responseKeys:
+                    data && typeof data === "object"
+                    ? Object.keys(data)
+                    : [],
+                responsePreview: JSON.stringify(data).slice(0, 1000)
+            };
+        }
+
+        return {
+            id: item.id || null,
+            ticker: item.ticker || null,
+            name: item.name || item.symbol || null,
+            full_name: item.full_name || null,
+            type: item.type || null,
+            exchange: item.exchange || null,
+            hasIntraday: item.has_intraday,
+            hasWeeklyAndMonthly: item.has_weekly_and_monthly,
+            responseKeys: Object.keys(item)
+        };
+    }
+
+    function arrayLengths(data) {
+        const output = {};
 
         if (data && typeof data === "object") {
             for (const [key, value] of Object.entries(data)) {
                 if (Array.isArray(value)) {
-                    result[key] = value.length;
+                    output[key] = value.length;
                 }
             }
         }
 
-        return result;
+        return output;
     }
 
-    function firstArray(data, names) {
-        for (const name of names) {
-            if (data && Array.isArray(data[name])) {
-                return data[name];
+    function arr(data, keys) {
+        for (const key of keys) {
+            if (data && Array.isArray(data[key])) {
+                return data[key];
             }
         }
         return null;
     }
 
-    function makeSamples(data) {
-        const times = firstArray(data, ["t", "time", "timestamp"]);
-        const opens = firstArray(data, ["o", "open"]);
-        const highs = firstArray(data, ["h", "high"]);
-        const lows = firstArray(data, ["l", "low"]);
-        const closes = firstArray(data, ["c", "close"]);
-        const volumes = firstArray(data, ["v", "volume"]);
+    function sampleCandles(data) {
+        const t = arr(data, ["t", "time", "timestamp"]);
+        const o = arr(data, ["o", "open"]);
+        const h = arr(data, ["h", "high"]);
+        const l = arr(data, ["l", "low"]);
+        const c = arr(data, ["c", "close"]);
+        const v = arr(data, ["v", "volume"]);
 
-        const arrays = [
-            times, opens, highs, lows, closes, volumes
-        ].filter(Array.isArray);
+        if (!t && !o && !h && !l && !c && !v) return [];
 
-        const count = arrays.length
-            ? Math.max(...arrays.map(a => a.length))
-            : 0;
+        const count = Math.max(
+            0,
+            ...(t ? [t.length] : []),
+            ...(o ? [o.length] : []),
+            ...(h ? [h.length] : []),
+            ...(l ? [l.length] : []),
+            ...(c ? [c.length] : []),
+            ...(v ? [v.length] : [])
+        );
 
-        const indices = [...new Set([
+        const indexes = [...new Set([
             0,
             1,
-            Math.max(0, count - 5),
-            Math.max(0, count - 4),
             Math.max(0, count - 3),
             Math.max(0, count - 2),
             Math.max(0, count - 1)
         ])].filter(i => i < count);
 
-        return indices.map(i => {
-            function value(array) {
-                return Array.isArray(array) && i < array.length
-                    ? array[i]
-                    : null;
-            }
-
-            return {
-                index: i,
-                time: value(times),
-                open: value(opens),
-                high: value(highs),
-                low: value(lows),
-                close: value(closes),
-                volume: value(volumes)
-            };
-        });
+        return indexes.map(i => ({
+            index: i,
+            time: t && t[i] !== undefined ? t[i] : null,
+            open: o && o[i] !== undefined ? o[i] : null,
+            high: h && h[i] !== undefined ? h[i] : null,
+            low: l && l[i] !== undefined ? l[i] : null,
+            close: c && c[i] !== undefined ? c[i] : null,
+            volume: v && v[i] !== undefined ? v[i] : null
+        }));
     }
 
     try {
-        const configResult = await readJson("/tv/chart/config");
-        output.config = {
-            httpStatus: configResult.httpStatus,
+        const configResponse = await requestJson("/tv/chart/config");
+
+        result.config = {
+            httpStatus: configResponse.httpStatus,
             supportedResolutions:
-                configResult.data.supported_resolutions || [],
-            supportsSearch: configResult.data.supports_search,
-            supportsMarks: configResult.data.supports_marks
+                configResponse.data &&
+                configResponse.data.supported_resolutions || [],
+            rawKeys:
+                configResponse.data &&
+                Object.keys(configResponse.data) || [],
+            error: configResponse.parseError || null
         };
 
-        const symbolUrl = "/tv/chart/symbols?symbol=" +
-            encodeURIComponent(inputSymbol);
+        let selected = null;
 
-        const symbolResult = await readJson(symbolUrl);
-        const symbolData = symbolResult.data.tvSymbol ||
-            symbolResult.data;
-
-        output.symbol = {
-            httpStatus: symbolResult.httpStatus,
-            id: symbolData.id || null,
-            ticker: symbolData.ticker || null,
-            name: symbolData.name || null,
-            full_name: symbolData.full_name || null,
-            type: symbolData.type || null,
-            exchange: symbolData.exchange || null,
-            hasIntraday: symbolData.has_intraday,
-            hasWeeklyAndMonthly: symbolData.has_weekly_and_monthly
-        };
-
-        const canonicalSymbol =
-            symbolData.id || symbolData.ticker || inputSymbol;
-
-        for (const resolution of resolutions) {
-            const params = new URLSearchParams({
-                symbol: canonicalSymbol,
-                resolution: resolution,
-                from: String(fromTime),
-                to: String(toTime),
-                type: symbolData.type || "stock",
-                adjustmentType: "3",
-                countback: String(countback)
-            });
-
-            const historyUrl =
-                "/tv/chart/history?" + params.toString();
+        for (const candidate of candidates) {
+            const path = "/tv/chart/symbols?symbol=" +
+                encodeURIComponent(candidate);
 
             try {
-                const response = await readJson(historyUrl);
-                const body = response.data || {};
+                const response = await requestJson(path);
+                const raw = response.data;
+                const summary = summarizeSymbol(raw);
 
-                const samples = makeSamples(body);
-
-                output.history.push({
-                    resolution: resolution,
+                result.symbolLookups.push({
+                    requestedSymbol: candidate,
                     httpStatus: response.httpStatus,
-                    apiStatus: body.s || body.status || null,
-                    message: body.errmsg || body.error || null,
-                    arrayLengths: getArrayLengths(body),
-                    samples: samples,
-                    responseKeys: Object.keys(body)
+                    symbol: summary,
+                    rawResponse: raw || response.bodyPreview || null
+                });
+
+                const item = getSymbolObject(raw);
+
+                if (
+                    response.httpStatus === 200 &&
+                    item &&
+                    (item.id || item.ticker)
+                ) {
+                    selected = item;
+                    result.selectedSymbol = {
+                        requestedSymbol: candidate,
+                        id: item.id || null,
+                        ticker: item.ticker || null,
+                        name: item.name || item.symbol || null,
+                        full_name: item.full_name || null,
+                        type: item.type || "stock",
+                        exchange: item.exchange || null
+                    };
+                    break;
+                }
+            } catch (error) {
+                result.symbolLookups.push({
+                    requestedSymbol: candidate,
+                    error: String(error)
+                });
+            }
+        }
+
+        // فقط برای تشخیص خطا، اگر شناسایی نماد موفق نشد،
+        // درخواست تاریخچه با شناسهٔ مشاهده‌شدهٔ قبلی هم انجام می‌شود.
+        const historySymbol = selected
+            ? (selected.id || selected.ticker)
+            : "IRO1KSHJ00013";
+
+        const symbolType = selected && selected.type
+            ? selected.type
+            : "stock";
+
+        const tests = [{
+            label: "known_previous_request",
+            resolution: "1D",
+            from: knownFrom,
+            to: knownTo,
+            countback: knownCountback
+        }];
+
+        for (const resolution of resolutions) {
+            tests.push({
+                label: "long_term",
+                resolution: resolution,
+                from: longFrom,
+                to: longTo,
+                countback: longCountback
+            });
+        }
+
+        for (const test of tests) {
+            const params = new URLSearchParams({
+                symbol: historySymbol,
+                resolution: test.resolution,
+                from: String(test.from),
+                to: String(test.to),
+                type: symbolType,
+                adjustmentType: "3",
+                countback: String(test.countback)
+            });
+
+            const path = "/tv/chart/history?" + params.toString();
+
+            try {
+                const response = await requestJson(path);
+                const data = response.data || {};
+
+                result.historyTests.push({
+                    label: test.label,
+                    symbol: historySymbol,
+                    resolution: test.resolution,
+                    from: test.from,
+                    to: test.to,
+                    countback: test.countback,
+                    httpStatus: response.httpStatus,
+                    apiStatus: data.s || data.status || null,
+                    errorMessage: data.errmsg || data.error || null,
+                    responseKeys: Object.keys(data),
+                    arrayLengths: arrayLengths(data),
+                    samples: sampleCandles(data),
+                    rawResponsePreview:
+                        JSON.stringify(data).slice(0, 1000),
+                    parseError: response.parseError || null
                 });
             } catch (error) {
-                output.history.push({
-                    resolution: resolution,
+                result.historyTests.push({
+                    label: test.label,
+                    resolution: test.resolution,
                     error: String(error)
                 });
             }
         }
     } catch (error) {
-        output.errors.push(String(error));
+        result.errors.push(String(error));
     }
 
-    done(output);
+    done(result);
 })().catch(error => done({
     fatalError: String(error)
 }));
@@ -250,82 +358,89 @@ const done = arguments[arguments.length - 1];
 
 
 def main():
-    driver = None
+    now = int(datetime.now(timezone.utc).timestamp())
+    start = utc_timestamp(LONG_TERM_START)
 
-    start_timestamp = utc_timestamp(START_DATE)
-    end_timestamp = int(datetime.now(timezone.utc).timestamp()) + 86400
+    # کمی جلوتر از زمان فعلی برای پوشش آخرین کندل احتمالی
+    end = now + 86400
 
-    print("=" * 18 + " TEST SETTINGS " + "=" * 18)
+    print("=" * 20 + " TEST SETTINGS " + "=" * 20)
     print("Chart URL:", CHART_URL)
-    print("Input symbol:", INPUT_SYMBOL)
-    print("Start date UTC:", START_DATE)
-    print(
-        "End date UTC:",
-        datetime.fromtimestamp(
-            end_timestamp,
-            timezone.utc
-        ).strftime("%Y-%m-%d")
-    )
+    print("Symbol candidates:", ", ".join(SYMBOL_CANDIDATES))
+    print("Long-term start:", LONG_TERM_START)
     print("Resolutions:", ", ".join(RESOLUTIONS))
-    print("Countback:", COUNTBACK)
+
+    driver = None
 
     try:
         driver = make_driver()
-
-        print("\nOpening chart page...")
+        print("\nOpening chart...")
         driver.get(CHART_URL)
-
-        # اجازه می‌دهیم صفحه و ابزار چارت بارگذاری شوند.
-        driver.implicitly_wait(2)
 
         result = driver.execute_async_script(
             BROWSER_TEST,
-            INPUT_SYMBOL,
+            SYMBOL_CANDIDATES,
             RESOLUTIONS,
-            start_timestamp,
-            end_timestamp,
-            COUNTBACK
+            start,
+            end,
+            COUNTBACK_LONG_TERM,
+            KNOWN_FROM,
+            KNOWN_TO,
+            KNOWN_COUNTBACK
         )
 
-        print("\n" + "=" * 18 + " API RESULTS " + "=" * 18)
-        print(json.dumps(
-            result,
-            ensure_ascii=False,
-            indent=2
-        ))
+        print("\n" + "=" * 20 + " FULL API RESULTS " + "=" * 20)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
 
-        # نتیجهٔ خلاصه برای دیدن سریع موفقیت یا شکست
-        print("\n" + "=" * 18 + " QUICK SUMMARY " + "=" * 18)
+        print("\n" + "=" * 20 + " QUICK SUMMARY " + "=" * 20)
 
-        symbol = result.get("symbol") or {}
-        print("Symbol HTTP:", symbol.get("httpStatus"))
-        print("Resolved ID:", symbol.get("id"))
-        print("Resolved name:", symbol.get("name"))
+        selected = result.get("selectedSymbol")
+        print(
+            "Selected symbol:",
+            json.dumps(selected, ensure_ascii=False)
+        )
 
-        history = result.get("history", [])
-        for item in history:
+        for lookup in result.get("symbolLookups", []):
             print(
-                "Resolution:",
-                item.get("resolution"),
+                "Symbol lookup:",
+                lookup.get("requestedSymbol"),
                 "| HTTP:",
-                item.get("httpStatus"),
+                lookup.get("httpStatus"),
+                "| ID:",
+                (lookup.get("symbol") or {}).get("id"),
+                "| Name:",
+                (lookup.get("symbol") or {}).get("name"),
+                "| Error:",
+                lookup.get("error", "")
+            )
+
+        for test in result.get("historyTests", []):
+            print(
+                "Test:",
+                test.get("label"),
+                "| Resolution:",
+                test.get("resolution"),
+                "| HTTP:",
+                test.get("httpStatus"),
                 "| API status:",
-                item.get("apiStatus"),
-                "| Array lengths:",
+                test.get("apiStatus"),
+                "| Arrays:",
                 json.dumps(
-                    item.get("arrayLengths", {}),
+                    test.get("arrayLengths", {}),
                     ensure_ascii=False
                 ),
                 "| Error:",
-                item.get("error", "")
+                test.get("errorMessage") or test.get("error") or ""
             )
 
-        if result.get("errors") or result.get("fatalError"):
+        if result.get("errors"):
             print("Errors:", json.dumps(
-                result.get("errors", []),
+                result["errors"],
                 ensure_ascii=False
             ))
-            print("Fatal:", result.get("fatalError", ""))
+
+        if result.get("fatalError"):
+            print("Fatal:", result["fatalError"])
 
     except Exception as error:
         print("TEST FAILED:", repr(error))
