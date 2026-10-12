@@ -1,0 +1,709 @@
+{
+  "source": "Nahayatnegar public chart interface",
+  "captured_at_utc": "2026-10-12T12:49:30.348349+00:00",
+  "marketmap_captured_at_utc": "2026-10-12T08:40:40.387341+00:00",
+  "marketmap_completeness_verified": false,
+  "marketmap_count": 760,
+  "history_start_requested": "2018-01-01",
+  "countback_requested": 5000,
+  "resolutions_requested": [
+    "1D",
+    "W",
+    "M"
+  ],
+  "requested_symbols": 10,
+  "successful_symbols": 10,
+  "partial_symbols": 0,
+  "failed_symbols": 0,
+  "status": "success",
+  "results": [
+    {
+      "symbol": "فملی",
+      "company": "ملی صنایع مس ایران",
+      "marketmap_id": "451",
+      "marketmap_close_price": 33350,
+      "marketmap_change_pct": 3.0,
+      "status": "success",
+      "search": {
+        "exchange": "بورس",
+        "httpStatus": 200,
+        "query": "فملی",
+        "resultCount": 1,
+        "selected": {
+          "exchange": "بورس",
+          "full_name": "ملی‌ صنایع‌ مس‌ ایران‌‌",
+          "id": "IRO1MSMI0001",
+          "name": "فملی1",
+          "ticker": "IRO1MSMI0001",
+          "type": "stock"
+        }
+      },
+      "resolved_symbol": {
+        "canonicalId": "IRO1MSMI00013",
+        "full_name": "ملی‌ صنایع‌ مس‌ ایران‌‌",
+        "httpStatus": 200,
+        "id": "IRO1MSMI00013",
+        "name": "فملی1",
+        "rawSearchId": "IRO1MSMI0001",
+        "ticker": "IRO1MSMI00013",
+        "type": "stock"
+      },
+      "intervals": {
+        "1D": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 4301,
+          "first_date": "2007-02-04",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/fmeli_1D.jsonl",
+          "written": true
+        },
+        "W": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 982,
+          "first_date": "2007-02-07",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/fmeli_W.jsonl",
+          "written": true
+        },
+        "M": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 236,
+          "first_date": "2007-02-04",
+          "last_date": "2026-10-01",
+          "error": null,
+          "file": "data/history/fmeli_M.jsonl",
+          "written": true
+        }
+      },
+      "errors": []
+    },
+    {
+      "symbol": "کچاد",
+      "company": "معدنی وصنعتی چادرملو",
+      "marketmap_id": "382",
+      "marketmap_close_price": 3240,
+      "marketmap_change_pct": 2.86,
+      "status": "success",
+      "search": {
+        "exchange": "بورس",
+        "httpStatus": 200,
+        "query": "کچاد",
+        "resultCount": 1,
+        "selected": {
+          "exchange": "بورس",
+          "full_name": "معدنی‌وصنعتی‌چادرملو",
+          "id": "IRO1CHML0001",
+          "name": "کچاد1",
+          "ticker": "IRO1CHML0001",
+          "type": "stock"
+        }
+      },
+      "resolved_symbol": {
+        "canonicalId": "IRO1CHML00013",
+        "full_name": "معدنی‌وصنعتی‌چادرملو",
+        "httpStatus": 200,
+        "id": "IRO1CHML00013",
+        "name": "کچاد1",
+        "rawSearchId": "IRO1CHML0001",
+        "ticker": "IRO1CHML00013",
+        "type": "stock"
+      },
+      "intervals": {
+        "1D": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 4887,
+          "first_date": "2003-10-19",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/kchad_1D.jsonl",
+          "written": true
+        },
+        "W": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 1109,
+          "first_date": "2003-10-22",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/kchad_W.jsonl",
+          "written": true
+        },
+        "M": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 269,
+          "first_date": "2003-10-19",
+          "last_date": "2026-10-01",
+          "error": null,
+          "file": "data/history/kchad_M.jsonl",
+          "written": true
+        }
+      },
+      "errors": []
+    },
+    {
+      "symbol": "فولاد",
+      "company": "فولاد مبارکه اصفهان",
+      "marketmap_id": "453",
+      "marketmap_close_price": 4300,
+      "marketmap_change_pct": 2.87,
+      "status": "success",
+      "search": {
+        "exchange": "بورس",
+        "httpStatus": 200,
+        "query": "فولاد",
+        "resultCount": 12,
+        "selected": {
+          "exchange": "بورس",
+          "full_name": "فولاد مبارکه اصفهان",
+          "id": "IRO1FOLD0001",
+          "name": "فولاد1",
+          "ticker": "IRO1FOLD0001",
+          "type": "stock"
+        }
+      },
+      "resolved_symbol": {
+        "canonicalId": "IRO1FOLD00013",
+        "full_name": "فولاد مبارکه اصفهان",
+        "httpStatus": 200,
+        "id": "IRO1FOLD00013",
+        "name": "فولاد1",
+        "rawSearchId": "IRO1FOLD0001",
+        "ticker": "IRO1FOLD00013",
+        "type": "stock"
+      },
+      "intervals": {
+        "1D": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 4241,
+          "first_date": "2007-03-11",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/foolad_1D.jsonl",
+          "written": true
+        },
+        "W": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 960,
+          "first_date": "2007-03-14",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/foolad_W.jsonl",
+          "written": true
+        },
+        "M": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 229,
+          "first_date": "2007-03-11",
+          "last_date": "2026-10-01",
+          "error": null,
+          "file": "data/history/foolad_M.jsonl",
+          "written": true
+        }
+      },
+      "errors": []
+    },
+    {
+      "symbol": "حکشتی",
+      "company": "کشتیرانی جمهوری اسلامی ایران",
+      "marketmap_id": "481",
+      "marketmap_close_price": 8670,
+      "marketmap_change_pct": 2.97,
+      "status": "success",
+      "search": {
+        "exchange": "بورس",
+        "httpStatus": 200,
+        "query": "حکشتی",
+        "resultCount": 1,
+        "selected": {
+          "exchange": "بورس",
+          "full_name": "کشتیرانی جمهوری اسلامی ایران",
+          "id": "IRO1KSHJ0001",
+          "name": "حکشتی1",
+          "ticker": "IRO1KSHJ0001",
+          "type": "stock"
+        }
+      },
+      "resolved_symbol": {
+        "canonicalId": "IRO1KSHJ00013",
+        "full_name": "کشتیرانی جمهوری اسلامی ایران",
+        "httpStatus": 200,
+        "id": "IRO1KSHJ00013",
+        "name": "حکشتی1",
+        "rawSearchId": "IRO1KSHJ0001",
+        "ticker": "IRO1KSHJ00013",
+        "type": "stock"
+      },
+      "intervals": {
+        "1D": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 3843,
+          "first_date": "2008-05-18",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/hekshati_1D.jsonl",
+          "written": true
+        },
+        "W": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 885,
+          "first_date": "2008-05-21",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/hekshati_W.jsonl",
+          "written": true
+        },
+        "M": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 217,
+          "first_date": "2008-05-18",
+          "last_date": "2026-10-01",
+          "error": null,
+          "file": "data/history/hekshati_M.jsonl",
+          "written": true
+        }
+      },
+      "errors": []
+    },
+    {
+      "symbol": "شستا",
+      "company": "سرمایه گذاری تامین اجتماعی",
+      "marketmap_id": "7836",
+      "marketmap_close_price": 3980,
+      "marketmap_change_pct": 2.8400000000000003,
+      "status": "success",
+      "search": {
+        "exchange": "بورس",
+        "httpStatus": 200,
+        "query": "شستا",
+        "resultCount": 2,
+        "selected": {
+          "exchange": "بورس",
+          "full_name": "سرمایه گذاری تامین اجتماعی",
+          "id": "IRO1TAMN0001",
+          "name": "شستا1",
+          "ticker": "IRO1TAMN0001",
+          "type": "stock"
+        }
+      },
+      "resolved_symbol": {
+        "canonicalId": "IRO1TAMN00013",
+        "full_name": "سرمایه گذاری تامین اجتماعی",
+        "httpStatus": 200,
+        "id": "IRO1TAMN00013",
+        "name": "شستا1",
+        "rawSearchId": "IRO1TAMN0001",
+        "ticker": "IRO1TAMN00013",
+        "type": "stock"
+      },
+      "intervals": {
+        "1D": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 1357,
+          "first_date": "2020-04-15",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/shasta_1D.jsonl",
+          "written": true
+        },
+        "W": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 306,
+          "first_date": "2020-04-15",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/shasta_W.jsonl",
+          "written": true
+        },
+        "M": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 76,
+          "first_date": "2020-04-15",
+          "last_date": "2026-10-01",
+          "error": null,
+          "file": "data/history/shasta_M.jsonl",
+          "written": true
+        }
+      },
+      "errors": []
+    },
+    {
+      "symbol": "خودرو",
+      "company": "ایران خودرو",
+      "marketmap_id": "167",
+      "marketmap_close_price": 732,
+      "marketmap_change_pct": 0.13999999999999999,
+      "status": "success",
+      "search": {
+        "exchange": "بورس",
+        "httpStatus": 200,
+        "query": "خودرو",
+        "resultCount": 6,
+        "selected": {
+          "exchange": "بورس",
+          "full_name": "ایران‌ خودرو",
+          "id": "IRO1IKCO0001",
+          "name": "خودرو1",
+          "ticker": "IRO1IKCO0001",
+          "type": "stock"
+        }
+      },
+      "resolved_symbol": {
+        "canonicalId": "IRO1IKCO00013",
+        "full_name": "ایران‌ خودرو",
+        "httpStatus": 200,
+        "id": "IRO1IKCO00013",
+        "name": "خودرو1",
+        "rawSearchId": "IRO1IKCO0001",
+        "ticker": "IRO1IKCO00013",
+        "type": "stock"
+      },
+      "intervals": {
+        "1D": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 6735,
+          "first_date": "1993-08-01",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/khodro_1D.jsonl",
+          "written": true
+        },
+        "W": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 1561,
+          "first_date": "1993-08-01",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/khodro_W.jsonl",
+          "written": true
+        },
+        "M": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 389,
+          "first_date": "1993-08-01",
+          "last_date": "2026-10-01",
+          "error": null,
+          "file": "data/history/khodro_M.jsonl",
+          "written": true
+        }
+      },
+      "errors": []
+    },
+    {
+      "symbol": "خساپا",
+      "company": "سایپا",
+      "marketmap_id": "172",
+      "marketmap_close_price": 688,
+      "marketmap_change_pct": -0.58,
+      "status": "success",
+      "search": {
+        "exchange": "بورس",
+        "httpStatus": 200,
+        "query": "خساپا",
+        "resultCount": 1,
+        "selected": {
+          "exchange": "بورس",
+          "full_name": "سایپا",
+          "id": "IRO1SIPA0001",
+          "name": "خساپا1",
+          "ticker": "IRO1SIPA0001",
+          "type": "stock"
+        }
+      },
+      "resolved_symbol": {
+        "canonicalId": "IRO1SIPA00013",
+        "full_name": "سایپا",
+        "httpStatus": 200,
+        "id": "IRO1SIPA00013",
+        "name": "خساپا1",
+        "rawSearchId": "IRO1SIPA0001",
+        "ticker": "IRO1SIPA00013",
+        "type": "stock"
+      },
+      "intervals": {
+        "1D": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 5794,
+          "first_date": "1996-06-11",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/khsapa_1D.jsonl",
+          "written": true
+        },
+        "W": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 1342,
+          "first_date": "1996-06-11",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/khsapa_W.jsonl",
+          "written": true
+        },
+        "M": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 335,
+          "first_date": "1996-06-11",
+          "last_date": "2026-10-01",
+          "error": null,
+          "file": "data/history/khsapa_M.jsonl",
+          "written": true
+        }
+      },
+      "errors": []
+    },
+    {
+      "symbol": "کگل",
+      "company": "معدنی و صنعتی گل گهر",
+      "marketmap_id": "419",
+      "marketmap_close_price": 3390,
+      "marketmap_change_pct": 2.73,
+      "status": "success",
+      "search": {
+        "exchange": "بورس",
+        "httpStatus": 200,
+        "query": "کگل",
+        "resultCount": 1,
+        "selected": {
+          "exchange": "بورس",
+          "full_name": "معدنی و صنعتی گل گهر",
+          "id": "IRO1GOLG0001",
+          "name": "کگل1",
+          "ticker": "IRO1GOLG0001",
+          "type": "stock"
+        }
+      },
+      "resolved_symbol": {
+        "canonicalId": "IRO1GOLG00013",
+        "full_name": "معدنی و صنعتی گل گهر",
+        "httpStatus": 200,
+        "id": "IRO1GOLG00013",
+        "name": "کگل1",
+        "rawSearchId": "IRO1GOLG0001",
+        "ticker": "IRO1GOLG00013",
+        "type": "stock"
+      },
+      "intervals": {
+        "1D": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 4534,
+          "first_date": "2004-09-04",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/kgol_1D.jsonl",
+          "written": true
+        },
+        "W": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 1047,
+          "first_date": "2004-09-08",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/kgol_W.jsonl",
+          "written": true
+        },
+        "M": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 258,
+          "first_date": "2004-09-04",
+          "last_date": "2026-10-01",
+          "error": null,
+          "file": "data/history/kgol_M.jsonl",
+          "written": true
+        }
+      },
+      "errors": []
+    },
+    {
+      "symbol": "پارسان",
+      "company": "گسترش نفت و گاز پارسیان",
+      "marketmap_id": "647",
+      "marketmap_close_price": 39000,
+      "marketmap_change_pct": 2.98,
+      "status": "success",
+      "search": {
+        "exchange": "بورس",
+        "httpStatus": 200,
+        "query": "پارسان",
+        "resultCount": 1,
+        "selected": {
+          "exchange": "بورس",
+          "full_name": "گسترش نفت و گاز پارسیان",
+          "id": "IRO1PASN0001",
+          "name": "پارسان1",
+          "ticker": "IRO1PASN0001",
+          "type": "stock"
+        }
+      },
+      "resolved_symbol": {
+        "canonicalId": "IRO1PASN00013",
+        "full_name": "گسترش نفت و گاز پارسیان",
+        "httpStatus": 200,
+        "id": "IRO1PASN00013",
+        "name": "پارسان1",
+        "rawSearchId": "IRO1PASN0001",
+        "ticker": "IRO1PASN00013",
+        "type": "stock"
+      },
+      "intervals": {
+        "1D": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 3241,
+          "first_date": "2012-02-15",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/parsan_1D.jsonl",
+          "written": true
+        },
+        "W": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 727,
+          "first_date": "2012-02-15",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/parsan_W.jsonl",
+          "written": true
+        },
+        "M": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 174,
+          "first_date": "2012-02-15",
+          "last_date": "2026-10-01",
+          "error": null,
+          "file": "data/history/parsan_M.jsonl",
+          "written": true
+        }
+      },
+      "errors": []
+    },
+    {
+      "symbol": "کگهر",
+      "company": "سنگ آهن گهر زمین",
+      "marketmap_id": "5073",
+      "marketmap_close_price": 8660,
+      "marketmap_change_pct": 2.97,
+      "status": "success",
+      "search": {
+        "exchange": "",
+        "httpStatus": 200,
+        "query": "کگهر",
+        "resultCount": 4,
+        "selected": {
+          "exchange": "فرابورس",
+          "full_name": "معدنی و صنعتی گهرزمین",
+          "id": "IRO3GZIZ0001",
+          "name": "کگهر1",
+          "ticker": "IRO3GZIZ0001",
+          "type": "stock"
+        }
+      },
+      "resolved_symbol": {
+        "canonicalId": "IRO3GZIZ00013",
+        "full_name": "معدنی و صنعتی گهرزمین",
+        "httpStatus": 200,
+        "id": "IRO3GZIZ00013",
+        "name": "کگهر1",
+        "rawSearchId": "IRO3GZIZ0001",
+        "ticker": "IRO3GZIZ00013",
+        "type": "stock"
+      },
+      "intervals": {
+        "1D": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 1690,
+          "first_date": "2018-11-17",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/kgohar_1D.jsonl",
+          "written": true
+        },
+        "W": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 382,
+          "first_date": "2018-11-21",
+          "last_date": "2026-10-12",
+          "error": null,
+          "file": "data/history/kgohar_W.jsonl",
+          "written": true
+        },
+        "M": {
+          "status": "success",
+          "http_status": 200,
+          "api_status": "ok",
+          "count": 93,
+          "first_date": "2018-11-17",
+          "last_date": "2026-10-01",
+          "error": null,
+          "file": "data/history/kgohar_M.jsonl",
+          "written": true
+        }
+      },
+      "errors": []
+    }
+  ],
+  "collector_errors": [],
+  "fatal_error": null,
+  "notes": [
+    "Market-map coverage is not independently verified.",
+    "A successful HTTP response alone is not considered valid history; the API must return status=ok and non-empty candle arrays.",
+    "Chart timestamps are stored as UTC timestamps with UTC dates.",
+    "The source may revise or adjust historical candles."
+  ]
+}
