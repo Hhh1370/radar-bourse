@@ -1,0 +1,39 @@
+name: Build Technical Radar
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-technical-radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build technical radar
+        run: python scripts/build_technical_radar.py
+
+      - name: Commit technical results
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/technical_radar.json
+
+          if git diff --cached --quiet; then
+            echo "No technical radar changes."
+          else
+            git commit -m "Build weekly and monthly technical radar"
+            git push
+          fi
