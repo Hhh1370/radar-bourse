@@ -1,17 +1,18 @@
-import base64
 import json
 import os
 import time
 from datetime import datetime, timezone
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlencode
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 
-BASE_URL = "https://rahavard365.com/marketmap"
-ENDPOINT = "/api/v2/marketmap/data"
+
+BASE_URL = "https://rahavard365.com"
+PAGE_URL = f"{BASE_URL}/marketmap"
+API_PATH = "/api/v2/marketmap/data"
 
 EXCHANGES = {
     "1": "بورس",
@@ -50,15 +51,11 @@ def extract_stocks(node, categories=None, results=None):
 
         return results
 
-    if (
-        node_id is not None
-        and name
-        and fullname
-        and (
-            "real_close_price" in node
-            or "value" in node
-        )
-    ):
+    has_market_data = (
+        "real_close_price" in node or "value" in node
+    )
+
+    if node_id is not None and name and fullname and has_market_data:
         symbol = str(name).strip()
 
         if symbol:
@@ -80,6 +77,7 @@ def extract_stocks(node, categories=None, results=None):
 
         return results
 
+    # عبور از لایه‌های بیرونی مانند data و root
     for key, value in node.items():
         if key != "children":
             extract_stocks(value, categories, results)
@@ -88,84 +86,67 @@ def extract_stocks(node, categories=None, results=None):
 
 
 def fetch_exchange(driver, exchange_id, exchange_name):
-    url = (
-        f"{BASE_URL}?asset_id={exchange_id}"
-        "&coloring_type_id=1&size_type_id=1&category_id=1"
-    )
+    params = {
+        "asset_id": exchange_id,
+        "coloring_type_id": "1",
+        "size_type_id": "1",
+        "category_id": "1",
+    }
 
-    # پاک کردن گزارش درخواست‌های اجرای قبلی
-    driver.get_log("performance")
+    api_url = f"{BASE_URL}{API_PATH}?{urlencode(params)}"
 
-    print(f"\n--- دریافت {exchange_name} ---")
-    driver.get(url)
+    # درخواست مستقیم در مرورگر بازشدهٔ ره‌آورد
+    result = driver.execute_async_script("""
+        const url = arguments[0];
+        const done = arguments[arguments.length - 1];
 
-    WebDriverWait(driver, 30).until(
-        lambda d: d.execute_script(
-            "return document.readyState"
-        ) == "complete"
-    )
+        fetch(url, {
+            method: "GET",
+            credentials: "include",
+            headers: {"Accept": "application/json"}
+        })
+        .then(async response => {
+            const body = await response.text();
+            done({
+                status: response.status,
+                contentType: response.headers.get("content-type"),
+                body: body
+            });
+        })
+        .catch(error => {
+            done({error: String(error)});
+        });
+    """, api_url)
 
-    time.sleep(5)
-
-    logs = driver.get_log("performance")
-    matches = []
-
-    for entry in logs:
-        try:
-            message = json.loads(entry["message"])["message"]
-
-            if message.get("method") != "Network.responseReceived":
-                continue
-
-            params = message.get("params", {})
-            response = params.get("response", {})
-            response_url = response.get("url", "")
-
-            if (
-                ENDPOINT not in response_url
-                or response.get("status") != 200
-                or not params.get("requestId")
-            ):
-                continue
-
-            query = parse_qs(urlparse(response_url).query)
-            actual_exchange = query.get("asset_id", [""])[0]
-
-            if actual_exchange == exchange_id:
-                matches.append({
-                    "request_id": params["requestId"],
-                    "url": response_url,
-                })
-
-        except (KeyError, TypeError, ValueError):
-            continue
-
-    if not matches:
+    if result.get("error"):
         raise RuntimeError(
-            f"پاسخ معتبر API برای {exchange_name} پیدا نشد."
+            f"خطای درخواست {exchange_name}: {result['error']}"
         )
 
-    response_info = matches[-1]
+    status = result.get("status")
 
-    result = driver.execute_cdp_cmd(
-        "Network.getResponseBody",
-        {"requestId": response_info["request_id"]},
-    )
+    print(f"\n--- {exchange_name} ---")
+    print("Requested API:", api_url)
+    print("HTTP status:", status)
 
-    body = result["body"]
-
-    if result.get("base64Encoded"):
-        body = base64.b64decode(body).decode(
-            "utf-8",
-            errors="replace",
+    if status != 200:
+        raise RuntimeError(
+            f"API برای {exchange_name} پاسخ HTTP {status} داد."
         )
 
-    data = json.loads(body)
+    try:
+        data = json.loads(result["body"])
+    except (KeyError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            f"پاسخ {exchange_name} JSON معتبر نیست."
+        ) from exc
+
     stocks = extract_stocks(data)
 
     if not stocks:
+        print("Top-level keys:", list(data.keys()) if isinstance(data, dict) else type(data).__name__)
         raise RuntimeError(
-            f"از پاسخ {exchange_name} هیچ نمادی استخراج نشد."
+            f"هیچ نمادی از پاسخ {exchange_name} استخراج نشد."
         )
 
     records = list(stocks.values())
@@ -174,15 +155,14 @@ def fetch_exchange(driver, exchange_id, exchange_name):
         record["exchange_id"] = exchange_id
         record["exchange"] = exchange_name
 
-    print("API URL:", response_info["url"])
-    print("تعداد شناسه‌های یکتا:", len(records))
+    print("Extracted unique IDs:", len(records))
     print(
-        "دارای قیمت:",
-        sum(x["close_price"] is not None for x in records),
+        "Records with price:",
+        sum(item["close_price"] is not None for item in records),
     )
     print(
-        "دارای درصد تغییر:",
-        sum(x["change_pct"] is not None for x in records),
+        "Records with change percentage:",
+        sum(item["change_pct"] is not None for item in records),
     )
 
     return records
@@ -205,23 +185,29 @@ def main():
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--lang=fa-IR")
 
-    options.set_capability(
-        "goog:loggingPrefs",
-        {"performance": "ALL"},
-    )
-    options.add_experimental_option(
-        "perfLoggingPrefs",
-        {"enableNetwork": True, "enablePage": False},
-    )
-
     driver = webdriver.Chrome(
         service=Service(driver_path),
         options=options,
     )
 
     try:
-        driver.execute_cdp_cmd("Network.enable", {})
+        driver.set_page_load_timeout(45)
+        driver.set_script_timeout(35)
 
+        print("Opening Rahavard market map...")
+        driver.get(PAGE_URL)
+
+        WebDriverWait(driver, 30).until(
+            lambda browser: browser.execute_script(
+                "return document.readyState"
+            ) == "complete"
+        )
+
+        time.sleep(3)
+        print("Page title:", driver.title)
+
+        # هر دو درخواست باید موفق شوند؛ در غیر این صورت فایل
+        # خروجی جدید ساخته نمی‌شود تا اطلاعات ناقص جایگزین نشود.
         all_records = {}
 
         for exchange_id, exchange_name in EXCHANGES.items():
@@ -232,26 +218,32 @@ def main():
             )
 
             for record in records:
-                # اگر شناسه تکراری باشد، فقط یک رکورد نگه می‌داریم.
-                all_records[record["id"]] = record
+                stock_id = record["id"]
+
+                if stock_id in all_records:
+                    all_records[stock_id]["exchanges_seen"].append(
+                        exchange_name
+                    )
+                else:
+                    record["exchanges_seen"] = [exchange_name]
+                    all_records[stock_id] = record
 
         stocks = sorted(
             all_records.values(),
-            key=lambda x: x["symbol"],
+            key=lambda item: item["symbol"],
         )
 
         payload = {
-            "source": "Rahavard365 market map",
+            "source": "Rahavard365 market-map API",
             "captured_at_utc": datetime.now(
                 timezone.utc
             ).isoformat(),
             "exchange_counts": {
-                "بورس": sum(
-                    x["exchange_id"] == "1" for x in stocks
-                ),
-                "فرابورس": sum(
-                    x["exchange_id"] == "2" for x in stocks
-                ),
+                name: sum(
+                    name in item["exchanges_seen"]
+                    for item in stocks
+                )
+                for name in EXCHANGES.values()
             },
             "count": len(stocks),
             "items": stocks,
@@ -271,13 +263,13 @@ def main():
                 indent=2,
             )
 
-        print("\n--- نتیجهٔ نهایی ---")
-        print("تعداد بورس:", payload["exchange_counts"]["بورس"])
-        print("تعداد فرابورس:", payload["exchange_counts"]["فرابورس"])
-        print("تعداد کل پس از حذف تکراری‌ها:", len(stocks))
-        print("ذخیره شد: data/marketmap.json")
+        print("\n--- FINAL RESULT ---")
+        print("بورس:", payload["exchange_counts"]["بورس"])
+        print("فرابورس:", payload["exchange_counts"]["فرابورس"])
+        print("مجموع شناسه‌های یکتا:", len(stocks))
+        print("Saved: data/marketmap.json")
 
-        print("\nنمونه:")
+        print("\nSample records:")
         print(json.dumps(
             stocks[:5],
             ensure_ascii=False,
