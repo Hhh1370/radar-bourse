@@ -6,7 +6,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
+
 
 URL = "https://rahavard365.com/marketmap"
 
@@ -30,89 +32,79 @@ def main():
         driver.get(URL)
 
         WebDriverWait(driver, 30).until(
-            lambda d: len(
-                d.find_elements(By.CLASS_NAME, "leaf")
-            ) > 0
+            lambda d: len(d.find_elements(By.CLASS_NAME, "leaf")) > 0
         )
-        time.sleep(5)
+        time.sleep(4)
 
         leaves = driver.find_elements(By.CLASS_NAME, "leaf")
+        empty_indexes = [
+            i for i, el in enumerate(leaves)
+            if not el.text.strip()
+        ]
 
-        labeled = []
-        blank_samples = []
-        blank_count = 0
-        text_content_count = 0
-        child_label_count = 0
+        print("Total tiles:", len(leaves))
+        print("Tiles without visible text:", len(empty_indexes))
+        print("\n--- HOVER TEST ---")
 
-        for element in leaves:
-            text = element.text.strip()
-
-            text_content = driver.execute_script(
-                "return arguments[0].textContent || '';",
-                element,
-            ).strip()
-
-            label_elements = element.find_elements(
-                By.CSS_SELECTOR, ".text"
+        for index in empty_indexes[:20]:
+            # پیدا کردن دوبارهٔ عنصر، برای جلوگیری از خطای DOM قدیمی
+            current_leaves = driver.find_elements(
+                By.CLASS_NAME, "leaf"
             )
+            if index >= len(current_leaves):
+                continue
 
-            child_texts = []
-            for label in label_elements:
-                child_text = driver.execute_script(
-                    "return arguments[0].textContent || '';",
-                    label,
-                ).strip()
-                if child_text:
-                    child_texts.append(child_text)
+            element = current_leaves[index]
 
-            if text_content:
-                text_content_count += 1
+            details = {
+                "index": index,
+                "before_text": element.text.strip(),
+                "title": element.get_attribute("title"),
+                "aria_label": element.get_attribute("aria-label"),
+                "data_name": element.get_attribute("data-name"),
+                "html_before": (
+                    element.get_attribute("outerHTML") or ""
+                )[:300],
+            }
 
-            if child_texts:
-                child_label_count += 1
+            try:
+                ActionChains(driver).move_to_element(
+                    element
+                ).pause(0.5).perform()
+                time.sleep(0.3)
 
-            if text:
-                labeled.append(text)
+                details["after_text"] = element.text.strip()
+                details["title_after"] = element.get_attribute("title")
 
-            if not text_content:
-                blank_count += 1
+                # جست‌وجوی پیام‌های راهنما یا پنجره‌های شناور
+                tooltip_nodes = driver.find_elements(
+                    By.CSS_SELECTOR,
+                    "[role='tooltip'], "
+                    "[class*='tooltip'], "
+                    "[class*='Tooltip'], "
+                    "[class*='popover'], "
+                    "[class*='Popover']"
+                )
 
-                if len(blank_samples) < 12:
-                    size = driver.execute_script("""
-                        const r = arguments[0].getBoundingClientRect();
-                        return {
-                            width: Math.round(r.width),
-                            height: Math.round(r.height)
-                        };
-                    """, element)
+                tooltips = []
+                for node in tooltip_nodes:
+                    if node.is_displayed():
+                        text = node.text.strip()
+                        if text:
+                            tooltips.append({
+                                "text": text[:200],
+                                "class": node.get_attribute("class"),
+                            })
 
-                    blank_samples.append({
-                        "size": size,
-                        "class": element.get_attribute("class"),
-                        "style": element.get_attribute("style"),
-                        "innerHTML": (
-                            element.get_attribute("innerHTML") or ""
-                        )[:500],
-                        "child_labels": child_texts,
-                    })
+                details["tooltips"] = tooltips[:5]
 
-        print("Page title:", driver.title)
-        print("Total leaf elements:", len(leaves))
-        print("Elements with visible text:", len(labeled))
-        print("Elements with textContent:", text_content_count)
-        print("Elements with .text child labels:", child_label_count)
-        print("Elements with empty textContent:", blank_count)
+            except Exception as exc:
+                details["hover_error"] = repr(exc)
 
-        print("\n--- FIRST 12 EMPTY ELEMENTS ---")
-        print(json.dumps(
-            blank_samples,
-            ensure_ascii=False,
-            indent=2,
-        ))
-
-        print("\n--- FIRST 15 LABELED ELEMENTS ---")
-        for text in labeled[:15]:
-            print(repr(text))
+            print(json.dumps(
+                details,
+                ensure_ascii=False,
+            ))
 
     finally:
         driver.quit()
