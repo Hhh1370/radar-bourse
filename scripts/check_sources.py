@@ -1,52 +1,60 @@
-import os
 import json
+import os
 import time
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 
 
 URL = "https://rahavard365.com/marketmap"
 
+KEYWORDS = (
+    "api", "graphql", "marketmap", "market", "asset",
+    "stock", "symbol", "ticker", "price", "quote",
+    "instrument", "security", "trade", "ohlc", "rank"
+)
 
-def dismiss_tour(driver):
-    print("\n--- DISMISSING RAHAVARD GUIDE ---")
+SENSITIVE_KEYS = {
+    "token", "access_token", "refresh_token",
+    "authorization", "api_key", "apikey", "secret"
+}
 
-    for step in range(15):
-        tips = [
-            tip for tip in driver.find_elements(
-                By.CSS_SELECTOR, ".react-joyride__tooltip"
-            )
-            if tip.is_displayed()
-        ]
 
-        if not tips:
-            print("Guide closed.")
-            return
+def safe_url(url):
+    """Keep useful URL parameters while hiding possible secrets."""
+    try:
+        parts = urlparse(url)
+        query = []
+        for key, value in parse_qsl(parts.query, keep_blank_values=True):
+            if key.lower() in SENSITIVE_KEYS:
+                value = "[REDACTED]"
+            query.append((key, value))
 
-        buttons = tips[0].find_elements(
-            By.CSS_SELECTOR, "button, [role='button']"
-        )
+        return urlunparse((
+            parts.scheme,
+            parts.netloc,
+            parts.path,
+            parts.params,
+            urlencode(query),
+            ""
+        ))
+    except Exception:
+        return url[:300]
 
-        if not buttons:
-            print("Guide has no clickable button.")
-            return
 
-        button = buttons[0]
+def relevant(url, resource_type):
+    lower = url.lower()
 
-        try:
-            print("Guide button:", button.text.strip())
-            button.click()
-        except Exception:
-            driver.execute_script("arguments[0].click();", button)
+    if resource_type in ("XHR", "Fetch"):
+        return True
 
-        time.sleep(0.7)
-
-    print("Guide dismissal limit reached.")
+    return any(word in lower for word in KEYWORDS) and not lower.endswith(
+        (".png", ".jpg", ".jpeg", ".gif", ".svg", ".woff", ".woff2")
+    )
 
 
 def main():
@@ -58,6 +66,16 @@ def main():
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--lang=fa-IR")
 
+    # Enable Chrome's network performance log.
+    options.set_capability(
+        "goog:loggingPrefs",
+        {"performance": "ALL"}
+    )
+    options.add_experimental_option(
+        "perfLoggingPrefs",
+        {"enableNetwork": True, "enablePage": False}
+    )
+
     driver = webdriver.Chrome(
         service=Service(os.environ["CHROMEDRIVER"]),
         options=options,
@@ -65,6 +83,7 @@ def main():
 
     try:
         driver.set_page_load_timeout(45)
+        print("Opening Rahavard market map...")
         driver.get(URL)
 
         WebDriverWait(driver, 30).until(
@@ -73,82 +92,88 @@ def main():
             ) > 0
         )
 
-        time.sleep(3)
-        dismiss_tour(driver)
-        time.sleep(2)
+        # Allow delayed data requests to complete.
+        time.sleep(8)
 
-        leaves = driver.find_elements(By.CLASS_NAME, "leaf")
-        candidates = []
+        print("Page title:", driver.title)
+        print("Final URL:", driver.current_url)
+        print("Visible market tiles:",
+              len(driver.find_elements(By.CLASS_NAME, "leaf")))
 
-        for element in leaves:
-            if element.text.strip():
+        logs = driver.get_log("performance")
+        requests = {}
+        responses = {}
+
+        for entry in logs:
+            try:
+                message = json.loads(entry["message"])["message"]
+                method = message.get("method")
+                params = message.get("params", {})
+                request_id = params.get("requestId")
+
+                if method == "Network.requestWillBeSent":
+                    request = params.get("request", {})
+                    requests[request_id] = {
+                        "url": request.get("url", ""),
+                        "method": request.get("method", "GET"),
+                        "type": params.get("type", ""),
+                    }
+
+                elif method == "Network.responseReceived":
+                    response = params.get("response", {})
+                    responses[request_id] = {
+                        "status": response.get("status"),
+                        "mime": response.get("mimeType", ""),
+                        "url": response.get("url", ""),
+                        "type": params.get("type", ""),
+                    }
+            except Exception:
                 continue
 
-            size = driver.execute_script("""
-                const r = arguments[0].getBoundingClientRect();
-                return {
-                    width: Math.round(r.width),
-                    height: Math.round(r.height),
-                    area: r.width * r.height
-                };
-            """, element)
+        print("\n--- RELEVANT NETWORK REQUESTS ---")
+        printed = set()
+        count = 0
 
-            candidates.append((size["area"], size, element))
+        for request_id, req in requests.items():
+            resp = responses.get(request_id, {})
+            url = req["url"] or resp.get("url", "")
 
-        # ابتدا خانه‌های خالی بزرگ‌تر آزمایش می‌شوند.
-        candidates.sort(key=lambda x: x[0], reverse=True)
+            if not url or not relevant(url, req["type"] or resp.get("type", "")):
+                continue
 
-        print("\n--- HOVER TEST AFTER GUIDE DISMISSAL ---")
-        print("Total tiles:", len(leaves))
-        print("Empty tiles:", len(candidates))
-        print("Testing largest 15 empty tiles.")
+            display = (
+                req["method"],
+                safe_url(url),
+                resp.get("status"),
+                resp.get("mime", "")
+            )
 
-        for index, (_, size, element) in enumerate(candidates[:15]):
-            result = {
-                "sample": index + 1,
-                "size": size,
-                "before_html": (
-                    element.get_attribute("outerHTML") or ""
-                )[:350],
-            }
+            if display in printed:
+                continue
 
-            try:
-                ActionChains(driver).move_to_element(
-                    element
-                ).pause(1).perform()
+            printed.add(display)
+            count += 1
 
-                time.sleep(0.4)
+            print(json.dumps({
+                "method": display[0],
+                "url": display[1],
+                "status": display[2],
+                "content_type": display[3],
+                "resource_type": req["type"] or resp.get("type", ""),
+            }, ensure_ascii=False))
 
-                result["after_text"] = element.text.strip()
-                result["after_html"] = (
-                    element.get_attribute("outerHTML") or ""
-                )[:500]
+            if count >= 100:
+                print("Output limit reached.")
+                break
 
-                result["title"] = element.get_attribute("title")
-                result["aria_label"] = element.get_attribute("aria-label")
+        print("\nRelevant request count:", count)
+        print("Total performance log entries:", len(logs))
 
-                tooltip_texts = []
-                selectors = [
-                    "[role='tooltip']",
-                    "[class*='tooltip']:not(.react-joyride__tooltip)",
-                    "[class*='popover']",
-                ]
-
-                for selector in selectors:
-                    for node in driver.find_elements(
-                        By.CSS_SELECTOR, selector
-                    ):
-                        if node.is_displayed():
-                            text = node.text.strip()
-                            if text and text not in tooltip_texts:
-                                tooltip_texts.append(text[:250])
-
-                result["tooltips"] = tooltip_texts[:5]
-
-            except Exception as exc:
-                result["error"] = repr(exc)
-
-            print(json.dumps(result, ensure_ascii=False))
+        if count == 0:
+            print(
+                "No matching requests captured. "
+                "The site may use another loading mechanism."
+            )
 
     finally:
         driver.quit()
