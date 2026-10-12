@@ -6,6 +6,8 @@ SOURCES = {
     "TradersArena": "https://tradersarena.ir/",
     "BourseTrader_Codal": (
         "https://bourse-trader.ir/index.php?task=codal-reports"
+        "Rahavard_Home": "https://rahavard365.com/",
+        "Rahavard_MarketMap": "https://rahavard365.com/marketmap",
     ),
 }
 
