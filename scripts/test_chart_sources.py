@@ -1,217 +1,256 @@
-import re
-import html
-import urllib.request
-import urllib.parse
-import urllib.error
+import os
+import json
+import time
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+
 
 PAGE_URL = "https://www.nahayatnegar.com/tv/"
 
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/130.0.0.0 Safari/537.36"
-    ),
-    "Accept": "text/html,application/json,*/*",
+SENSITIVE_KEYS = {
+    "token", "access_token", "refresh_token",
+    "authorization", "api_key", "apikey", "secret",
+    "password", "session",
 }
 
-
-def fetch(url, limit=700_000, timeout=12):
-    request = urllib.request.Request(
-        url,
-        headers=HEADERS,
-    )
-
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        body = response.read(limit)
-        return response.status, response.headers, body
+INTERESTING_WORDS = (
+    "chart", "history", "historical", "ohlc", "candle",
+    "symbol", "market", "quote", "price", "resolution",
+    "feed", "bar", "trade", "stock", "websocket",
+    "socket.io", "graphql", "/api/",
+)
 
 
-def normalize_url(raw_url, base_url):
-    raw_url = html.unescape(raw_url.strip())
-    raw_url = raw_url.replace("\\/", "/")
-
-    # اصلاح آدرس‌های نسبی و ریشه‌ای بعد از decode کردن HTML entityها
-    return urllib.parse.urljoin(base_url, raw_url)
-
-
-def extract_script_urls(source):
-    matches = re.findall(
-        r'<script\b[^>]*\bsrc\s*=\s*["\']([^"\']+)["\']',
-        source,
-        re.IGNORECASE,
-    )
-
-    urls = []
-    for src in matches:
-        url = normalize_url(src, PAGE_URL)
-        if url not in urls:
-            urls.append(url)
-
-    return urls
-
-
-def extract_iframes(source):
-    matches = re.findall(
-        r'<iframe\b[^>]*\bsrc\s*=\s*["\']([^"\']+)["\']',
-        source,
-        re.IGNORECASE,
-    )
-
-    return [
-        normalize_url(src, PAGE_URL)
-        for src in matches
-    ]
-
-
-def inspect_js(script_url):
-    print("\nSCRIPT:", script_url)
-
+def safe_url(url):
+    """Hide likely credentials in query parameters."""
     try:
-        status, headers, body = fetch(
-            script_url,
-            limit=700_000,
-            timeout=12,
-        )
+        parts = urlparse(url)
+        safe_query = []
 
-        source = body.decode("utf-8", errors="replace")
-        print("HTTP status:", status)
-        print("Content-Type:", headers.get("Content-Type"))
-        print("Bytes:", len(body))
+        for key, value in parse_qsl(
+            parts.query, keep_blank_values=True
+        ):
+            if key.lower() in SENSITIVE_KEYS:
+                value = "[REDACTED]"
+            safe_query.append((key, value))
 
-    except Exception as exc:
-        print("SCRIPT FAILED:", repr(exc))
-        return set()
-
-    keywords = re.compile(
-        r"api|graphql|websocket|socket\.io|pusher|"
-        r"ohlc|candlestick|historical|history|"
-        r"resolution|tradingview|chart|marketdata|"
-        r"subscribe|symbol|quote|price|kline",
-        re.IGNORECASE,
-    )
-
-    candidates = set()
-
-    # بررسی URLهای کامل
-    full_url_pattern = (
-        r"""["'`]((?:https?:)?//[^"'`\s<>]{1,300})["'`]"""
-    )
-
-    # بررسی مسیرهای نسبی یا API
-    path_pattern = (
-        r"""["'`]((?:/|\./)[^"'`\s<>]{1,220})["'`]"""
-    )
-
-    for pattern in (full_url_pattern, path_pattern):
-        for match in re.findall(pattern, source):
-            decoded = html.unescape(match).replace("\\/", "/")
-
-            if keywords.search(decoded):
-                candidates.add(
-                    normalize_url(decoded, script_url)
-                )
-
-    # پیدا کردن نشانه‌های ارتباط بلادرنگ در خود کد
-    for term in (
-        "WebSocket",
-        "socket.io",
-        "pusher",
-        "subscribe",
-        "resolution",
-        "historical",
-    ):
-        positions = [
-            m.start()
-            for m in re.finditer(
-                re.escape(term),
-                source,
-                re.IGNORECASE,
-            )
-        ]
-
-        if positions:
-            print(f"Found {term}: {len(positions)} occurrence(s)")
-
-            for pos in positions[:2]:
-                excerpt = source[max(0, pos - 120):pos + 220]
-                print("  CONTEXT:", excerpt[:350])
-
-    for candidate in sorted(candidates)[:40]:
-        print("CANDIDATE:", candidate)
-
-    return candidates
+        return urlunparse((
+            parts.scheme,
+            parts.netloc,
+            parts.path,
+            parts.params,
+            urlencode(safe_query),
+            "",
+        ))
+    except Exception:
+        return url[:300]
 
 
 def main():
-    print("--- NAHAYATNEGAR CHART PAGE ---")
-    print("URL:", PAGE_URL)
+    chrome_path = os.environ.get("CHROME_BIN")
+    driver_path = os.environ.get("CHROMEDRIVER")
+
+    if not chrome_path or not driver_path:
+        raise RuntimeError(
+            "CHROME_BIN or CHROMEDRIVER is not configured."
+        )
+
+    options = Options()
+    options.binary_location = chrome_path
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1365,900")
+    options.add_argument("--lang=fa-IR")
+
+    options.set_capability(
+        "goog:loggingPrefs",
+        {"performance": "ALL"},
+    )
+
+    driver = webdriver.Chrome(
+        service=Service(driver_path),
+        options=options,
+    )
 
     try:
-        status, headers, body = fetch(PAGE_URL, timeout=20)
-    except Exception as exc:
-        print("PAGE FAILED:", repr(exc))
-        return
+        driver.execute_cdp_cmd("Network.enable", {})
+        driver.set_page_load_timeout(45)
 
-    page = body.decode("utf-8", errors="replace")
+        print("--- OPENING NAHAYATNEGAR IN CHROME ---")
+        driver.get(PAGE_URL)
 
-    title = re.search(
-        r"<title[^>]*>(.*?)</title>",
-        page,
-        re.IGNORECASE | re.DOTALL,
-    )
-
-    print("HTTP status:", status)
-    print("Content-Type:", headers.get("Content-Type"))
-    print("Bytes received:", len(body))
-    print(
-        "Page title:",
-        re.sub(r"\s+", " ", title.group(1)).strip()
-        if title else "Not found",
-    )
-
-    print("\n--- IFRAMES ---")
-    iframes = extract_iframes(page)
-
-    if iframes:
-        for url in iframes[:20]:
-            print(url)
-    else:
-        print("No iframe URLs found in initial HTML.")
-
-    print("\n--- JAVASCRIPT FILES ---")
-    scripts = extract_script_urls(page)
-    print("Script count:", len(scripts))
-
-    for url in scripts:
-        print(url)
-
-    print("\n--- JAVASCRIPT INSPECTION ---")
-    all_candidates = set()
-
-    # ابتدا فایل‌های اصلی اختصاصی نمودار بررسی می‌شوند.
-    priority = [
-        url for url in scripts
-        if any(
-            term in urllib.parse.urlparse(url).path.lower()
-            for term in ("base-", "feed-", "chart", "tv")
+        WebDriverWait(driver, 30).until(
+            lambda d: d.execute_script(
+                "return document.readyState"
+            ) == "complete"
         )
-    ]
 
-    remaining = [url for url in scripts if url not in priority]
-    ordered_scripts = (priority + remaining)[:10]
+        # Give the page's own JavaScript time to start requests.
+        time.sleep(12)
 
-    for url in ordered_scripts:
-        all_candidates.update(inspect_js(url))
+        print("Page title:", driver.title)
+        print("Final URL:", driver.current_url)
 
-    print("\n--- ALL CANDIDATES ---")
-    if all_candidates:
-        for candidate in sorted(all_candidates)[:100]:
-            print(candidate)
-    else:
-        print("No likely chart-data routes found in inspected scripts.")
+        print("\n--- VISIBLE PAGE TEXT ---")
+        try:
+            print(
+                driver.find_element("tag name", "body")
+                .text[:2500]
+            )
+        except Exception as exc:
+            print("Could not read page text:", repr(exc))
 
-    print("\nInspection completed.")
+        print("\n--- FORM CONTROLS ---")
+
+        for element in driver.find_elements(
+            "css selector", "input, select, button"
+        )[:60]:
+            info = {
+                "tag": element.tag_name,
+                "type": element.get_attribute("type"),
+                "id": element.get_attribute("id"),
+                "name": element.get_attribute("name"),
+                "placeholder": element.get_attribute("placeholder"),
+                "text": element.text.strip()[:100],
+            }
+
+            if element.tag_name == "select":
+                info["options"] = [
+                    option.text.strip()
+                    for option in element.find_elements(
+                        "tag name", "option"
+                    )[:20]
+                ]
+
+            print(json.dumps(info, ensure_ascii=False))
+
+        logs = driver.get_log("performance")
+        requests = {}
+        responses = {}
+        websockets = set()
+
+        for entry in logs:
+            try:
+                message = json.loads(
+                    entry["message"]
+                )["message"]
+
+                method = message.get("method")
+                params = message.get("params", {})
+                request_id = params.get("requestId")
+
+                if method == "Network.requestWillBeSent":
+                    request = params.get("request", {})
+
+                    requests[request_id] = {
+                        "url": request.get("url", ""),
+                        "method": request.get("method", "GET"),
+                        "type": params.get("type", ""),
+                    }
+
+                elif method == "Network.responseReceived":
+                    response = params.get("response", {})
+
+                    responses[request_id] = {
+                        "url": response.get("url", ""),
+                        "status": response.get("status"),
+                        "mime": response.get("mimeType", ""),
+                        "type": params.get("type", ""),
+                    }
+
+                elif method == "Network.webSocketCreated":
+                    url = params.get("url", "")
+                    if url:
+                        websockets.add(url)
+
+            except Exception:
+                continue
+
+        print("\n--- XHR / FETCH RESPONSES ---")
+
+        xhr_count = 0
+
+        for request_id, request in requests.items():
+            response = responses.get(request_id, {})
+            resource_type = (
+                request.get("type")
+                or response.get("type")
+                or ""
+            )
+
+            if resource_type not in ("XHR", "Fetch"):
+                continue
+
+            url = request.get("url") or response.get("url", "")
+            if not url:
+                continue
+
+            print(json.dumps({
+                "method": request.get("method"),
+                "url": safe_url(url),
+                "status": response.get("status"),
+                "content_type": response.get("mime"),
+            }, ensure_ascii=False))
+
+            xhr_count += 1
+
+            if xhr_count >= 100:
+                print("XHR/FETCH output limit reached.")
+                break
+
+        print("\nXHR/FETCH response count:", xhr_count)
+
+        print("\n--- WEBSOCKET CONNECTIONS ---")
+
+        if websockets:
+            for url in sorted(websockets):
+                print(safe_url(url))
+        else:
+            print("No WebSocket creation event captured.")
+
+        print("\n--- CHART-RELATED REQUEST SUMMARY ---")
+
+        count = 0
+
+        for request_id, request in requests.items():
+            response = responses.get(request_id, {})
+            url = request.get("url") or response.get("url", "")
+
+            if not url:
+                continue
+
+            if any(
+                word in url.lower()
+                for word in INTERESTING_WORDS
+            ):
+                print(json.dumps({
+                    "method": request.get("method"),
+                    "url": safe_url(url),
+                    "status": response.get("status"),
+                    "content_type": response.get("mime"),
+                    "resource_type": (
+                        request.get("type")
+                        or response.get("type")
+                    ),
+                }, ensure_ascii=False))
+
+                count += 1
+
+                if count >= 100:
+                    print("Chart-related output limit reached.")
+                    break
+
+        print("\nChart-related request count:", count)
+        print("Network log entries:", len(logs))
+        print("\nInspection completed.")
+
+    finally:
+        driver.quit()
 
 
 if __name__ == "__main__":
