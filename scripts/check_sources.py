@@ -1,7 +1,6 @@
 import json
 import os
 import time
-from datetime import datetime, timezone
 from urllib.parse import urlencode
 
 from selenium import webdriver
@@ -14,168 +13,54 @@ BASE_URL = "https://rahavard365.com"
 PAGE_URL = f"{BASE_URL}/marketmap"
 API_PATH = "/api/v2/marketmap/data"
 
-EXCHANGES = {
-    "1": "بورس",
-    "2": "فرابورس",
-}
 
-
-def extract_stocks(node, categories=None, results=None):
-    if categories is None:
-        categories = []
-
+def collect_stock_nodes(node, results=None):
     if results is None:
         results = {}
 
     if isinstance(node, list):
-        for child in node:
-            extract_stocks(child, categories, results)
+        for item in node:
+            collect_stock_nodes(item, results)
         return results
 
     if not isinstance(node, dict):
         return results
 
     children = node.get("children")
-    name = node.get("name")
-    fullname = node.get("fullname")
-    node_id = node.get("id")
 
-    if isinstance(children, list) and children:
-        next_categories = list(categories)
-
-        if name:
-            next_categories.append(str(name).strip())
-
+    if isinstance(children, list):
         for child in children:
-            extract_stocks(child, next_categories, results)
-
+            collect_stock_nodes(child, results)
         return results
 
-    has_market_data = (
-        "real_close_price" in node or "value" in node
-    )
+    if (
+        node.get("id") is not None
+        and node.get("name")
+        and node.get("fullname")
+        and (
+            "real_close_price" in node
+            or "value" in node
+        )
+    ):
+        results[str(node["id"])] = {
+            "id": str(node["id"]),
+            "symbol": str(node["name"]).strip(),
+            "company": str(node["fullname"]).strip(),
+            "close_price": node.get("real_close_price"),
+            "value": node.get("value"),
+        }
 
-    if node_id is not None and name and fullname and has_market_data:
-        symbol = str(name).strip()
-
-        if symbol:
-            raw_change = node.get("value")
-            change_pct = None
-
-            if isinstance(raw_change, (int, float)):
-                change_pct = float(raw_change) * 100
-
-            results[str(node_id)] = {
-                "id": str(node_id),
-                "symbol": symbol,
-                "company": str(fullname).strip(),
-                "close_price": node.get("real_close_price"),
-                "change_pct": change_pct,
-                "area_raw": node.get("area"),
-                "categories": categories,
-            }
-
-        return results
-
-    # عبور از لایه‌های بیرونی مانند data و root
+    # پشتیبانی از لایه‌های بیرونی مثل data و root
     for key, value in node.items():
         if key != "children":
-            extract_stocks(value, categories, results)
+            collect_stock_nodes(value, results)
 
     return results
 
 
-def fetch_exchange(driver, exchange_id, exchange_name):
-    params = {
-        "asset_id": exchange_id,
-        "coloring_type_id": "1",
-        "size_type_id": "1",
-        "category_id": "1",
-    }
-
-    api_url = f"{BASE_URL}{API_PATH}?{urlencode(params)}"
-
-    # درخواست مستقیم در مرورگر بازشدهٔ ره‌آورد
-    result = driver.execute_async_script("""
-        const url = arguments[0];
-        const done = arguments[arguments.length - 1];
-
-        fetch(url, {
-            method: "GET",
-            credentials: "include",
-            headers: {"Accept": "application/json"}
-        })
-        .then(async response => {
-            const body = await response.text();
-            done({
-                status: response.status,
-                contentType: response.headers.get("content-type"),
-                body: body
-            });
-        })
-        .catch(error => {
-            done({error: String(error)});
-        });
-    """, api_url)
-
-    if result.get("error"):
-        raise RuntimeError(
-            f"خطای درخواست {exchange_name}: {result['error']}"
-        )
-
-    status = result.get("status")
-
-    print(f"\n--- {exchange_name} ---")
-    print("Requested API:", api_url)
-    print("HTTP status:", status)
-
-    if status != 200:
-        raise RuntimeError(
-            f"API برای {exchange_name} پاسخ HTTP {status} داد."
-        )
-
-    try:
-        data = json.loads(result["body"])
-    except (KeyError, json.JSONDecodeError) as exc:
-        raise RuntimeError(
-            f"پاسخ {exchange_name} JSON معتبر نیست."
-        ) from exc
-
-    stocks = extract_stocks(data)
-
-    if not stocks:
-        print("Top-level keys:", list(data.keys()) if isinstance(data, dict) else type(data).__name__)
-        raise RuntimeError(
-            f"هیچ نمادی از پاسخ {exchange_name} استخراج نشد."
-        )
-
-    records = list(stocks.values())
-
-    for record in records:
-        record["exchange_id"] = exchange_id
-        record["exchange"] = exchange_name
-
-    print("Extracted unique IDs:", len(records))
-    print(
-        "Records with price:",
-        sum(item["close_price"] is not None for item in records),
-    )
-    print(
-        "Records with change percentage:",
-        sum(item["change_pct"] is not None for item in records),
-    )
-
-    return records
-
-
 def main():
-    chrome_path = os.environ.get("CHROME_BIN")
-    driver_path = os.environ.get("CHROMEDRIVER")
-
-    if not chrome_path or not driver_path:
-        raise RuntimeError(
-            "مسیر Chrome یا ChromeDriver تنظیم نشده است."
-        )
+    chrome_path = os.environ["CHROME_BIN"]
+    driver_path = os.environ["CHROMEDRIVER"]
 
     options = Options()
     options.binary_location = chrome_path
@@ -192,89 +77,168 @@ def main():
 
     try:
         driver.set_page_load_timeout(45)
-        driver.set_script_timeout(35)
+        driver.set_script_timeout(40)
 
-        print("Opening Rahavard market map...")
+        print("Opening Rahavard...")
         driver.get(PAGE_URL)
 
         WebDriverWait(driver, 30).until(
-            lambda browser: browser.execute_script(
+            lambda d: d.execute_script(
                 "return document.readyState"
             ) == "complete"
         )
-
         time.sleep(3)
-        print("Page title:", driver.title)
 
-        # هر دو درخواست باید موفق شوند؛ در غیر این صورت فایل
-        # خروجی جدید ساخته نمی‌شود تا اطلاعات ناقص جایگزین نشود.
-        all_records = {}
+        variants = [
+            (
+                "asset_id=1",
+                {
+                    "asset_id": "1",
+                    "coloring_type_id": "1",
+                    "size_type_id": "1",
+                    "category_id": "1",
+                },
+            ),
+            (
+                "asset_id=2",
+                {
+                    "asset_id": "2",
+                    "coloring_type_id": "1",
+                    "size_type_id": "1",
+                    "category_id": "1",
+                },
+            ),
+            (
+                "asset_id omitted",
+                {
+                    "coloring_type_id": "1",
+                    "size_type_id": "1",
+                    "category_id": "1",
+                },
+            ),
+            (
+                "exchange_id=1",
+                {
+                    "asset_id": "1",
+                    "exchange_id": "1",
+                    "coloring_type_id": "1",
+                    "size_type_id": "1",
+                    "category_id": "1",
+                },
+            ),
+            (
+                "exchange_id=2",
+                {
+                    "asset_id": "1",
+                    "exchange_id": "2",
+                    "coloring_type_id": "1",
+                    "size_type_id": "1",
+                    "category_id": "1",
+                },
+            ),
+        ]
 
-        for exchange_id, exchange_name in EXCHANGES.items():
-            records = fetch_exchange(
-                driver,
-                exchange_id,
-                exchange_name,
+        results = driver.execute_async_script("""
+            const variants = arguments[0];
+            const base = arguments[1];
+            const done = arguments[arguments.length - 1];
+
+            (async () => {
+                const output = [];
+
+                for (const variant of variants) {
+                    const params = new URLSearchParams(variant.params);
+                    const url = base + "?" + params.toString();
+
+                    try {
+                        const response = await fetch(url, {
+                            method: "GET",
+                            credentials: "include",
+                            cache: "no-store",
+                            headers: {"Accept": "application/json"}
+                        });
+
+                        const body = await response.text();
+                        let data = null;
+                        let parseError = null;
+
+                        try {
+                            data = JSON.parse(body);
+                        } catch (error) {
+                            parseError = String(error);
+                        }
+
+                        output.push({
+                            label: variant.label,
+                            url: url,
+                            status: response.status,
+                            bytes: new TextEncoder().encode(body).length,
+                            data: data,
+                            parseError: parseError
+                        });
+                    } catch (error) {
+                        output.push({
+                            label: variant.label,
+                            url: url,
+                            error: String(error)
+                        });
+                    }
+                }
+
+                done(output);
+            })();
+        """, [
+            {"label": label, "params": params}
+            for label, params in variants
+        ], API_PATH)
+
+        print("\n--- API COMPARISON ---")
+
+        signatures = {}
+
+        for result in results:
+            print("\nRequest:", result["label"])
+            print("HTTP status:", result.get("status"))
+            print("Response bytes:", result.get("bytes"))
+
+            data = result.get("data")
+            if not isinstance(data, (dict, list)):
+                print("Response error:", result.get("error") or result.get("parseError"))
+                continue
+
+            stocks = collect_stock_nodes(data)
+            stock_list = sorted(
+                stocks.values(),
+                key=lambda item: item["symbol"],
             )
 
-            for record in records:
-                stock_id = record["id"]
+            signature = tuple(
+                (item["id"], item["symbol"])
+                for item in stock_list
+            )
+            signatures[result["label"]] = signature
 
-                if stock_id in all_records:
-                    all_records[stock_id]["exchanges_seen"].append(
-                        exchange_name
-                    )
-                else:
-                    record["exchanges_seen"] = [exchange_name]
-                    all_records[stock_id] = record
+            print("Unique stock IDs:", len(stock_list))
+            print("First 10 symbols:", [
+                item["symbol"] for item in stock_list[:10]
+            ])
+            print("Last 5 symbols:", [
+                item["symbol"] for item in stock_list[-5:]
+            ])
 
-        stocks = sorted(
-            all_records.values(),
-            key=lambda item: item["symbol"],
-        )
+        print("\n--- COMPARISON SUMMARY ---")
+        labels = list(signatures)
 
-        payload = {
-            "source": "Rahavard365 market-map API",
-            "captured_at_utc": datetime.now(
-                timezone.utc
-            ).isoformat(),
-            "exchange_counts": {
-                name: sum(
-                    name in item["exchanges_seen"]
-                    for item in stocks
+        for i in range(len(labels)):
+            for j in range(i + 1, len(labels)):
+                a = labels[i]
+                b = labels[j]
+                print(
+                    f"{a} == {b}:",
+                    signatures[a] == signatures[b],
                 )
-                for name in EXCHANGES.values()
-            },
-            "count": len(stocks),
-            "items": stocks,
-        }
 
-        os.makedirs("data", exist_ok=True)
-
-        with open(
-            "data/marketmap.json",
-            "w",
-            encoding="utf-8",
-        ) as file:
-            json.dump(
-                payload,
-                file,
-                ensure_ascii=False,
-                indent=2,
-            )
-
-        print("\n--- FINAL RESULT ---")
-        print("بورس:", payload["exchange_counts"]["بورس"])
-        print("فرابورس:", payload["exchange_counts"]["فرابورس"])
-        print("مجموع شناسه‌های یکتا:", len(stocks))
-        print("Saved: data/marketmap.json")
-
-        print("\nSample records:")
-        print(json.dumps(
-            stocks[:5],
-            ensure_ascii=False,
-            indent=2,
-        ))
+        print("\nDiagnostic completed.")
 
     finally:
         driver.quit()
