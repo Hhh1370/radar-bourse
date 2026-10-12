@@ -1,8 +1,8 @@
 {
   "source": "Rahavard365 market map",
   "source_url": "https://rahavard365.com/marketmap?asset_id=1&coloring_type_id=1&size_type_id=1&category_id=1",
-  "captured_at_utc": "2026-10-12T07:45:08.297975+00:00",
-  "count": 125,
+  "captured_at_utc": "2026-10-12T07:48:33.858107+00:00",
+  "count": 126,
   "items": [
     {
       "symbol": "اروند",
@@ -12,33 +12,33 @@
     },
     {
       "symbol": "تابان",
-      "change_pct": -0.42,
-      "display_change": "-0.42%",
-      "raw_text": "تابان\n-۰٫۴۲٪"
+      "change_pct": -0.27,
+      "display_change": "-0.27%",
+      "raw_text": "تابان\n-۰٫۲۷٪"
     },
     {
       "symbol": "تاپیکو",
-      "change_pct": -0.54,
-      "display_change": "-0.54%",
-      "raw_text": "تاپیکو\n-۰٫۵۴٪"
+      "change_pct": -0.52,
+      "display_change": "-0.52%",
+      "raw_text": "تاپیکو\n-۰٫۵۲٪"
     },
     {
       "symbol": "نوری",
-      "change_pct": -1.21,
-      "display_change": "-1.21%",
-      "raw_text": "نوری\n-۱٫۲۱٪"
+      "change_pct": -1.19,
+      "display_change": "-1.19%",
+      "raw_text": "نوری\n-۱٫۱۹٪"
     },
     {
       "symbol": "فارس",
-      "change_pct": 1.42,
-      "display_change": "+1.42%",
-      "raw_text": "فارس\n+۱٫۴۲٪"
+      "change_pct": 2.33,
+      "display_change": "+2.33%",
+      "raw_text": "فارس\n+۲٫۳۳٪"
     },
     {
       "symbol": "شپدیس",
-      "change_pct": 1.43,
-      "display_change": "+1.43%",
-      "raw_text": "شپدیس\n+۱٫۴۳٪"
+      "change_pct": 1.77,
+      "display_change": "+1.77%",
+      "raw_text": "شپدیس\n+۱٫۷۷٪"
     },
     {
       "symbol": "پارس",
@@ -53,16 +53,16 @@
       "raw_text": "شگویا\n-۲٫۹۷٪"
     },
     {
+      "symbol": "شکام",
+      "change_pct": -2.03,
+      "display_change": "-2.03%",
+      "raw_text": "شکام\n-۲٫۰۳٪"
+    },
+    {
       "symbol": "شفن",
       "change_pct": 2.9,
       "display_change": "+2.90%",
       "raw_text": "شفن\n+۲٫۹۰٪"
-    },
-    {
-      "symbol": "شکام",
-      "change_pct": -1.72,
-      "display_change": "-1.72%",
-      "raw_text": "شکام\n-۱٫۷۲٪"
     },
     {
       "symbol": "پترول",
@@ -78,9 +78,21 @@
     },
     {
       "symbol": "پارسان",
-      "change_pct": -1.16,
-      "display_change": "-1.16%",
-      "raw_text": "پارسان\n-۱٫۱۶٪"
+      "change_pct": -0.98,
+      "display_change": "-0.98%",
+      "raw_text": "پارسان\n-۰٫۹۸٪"
+    },
+    {
+      "symbol": "آریا",
+      "change_pct": -0.4,
+      "display_change": "-0.40%",
+      "raw_text": "آریا\n-۰٫۴۰٪"
+    },
+    {
+      "symbol": "کرماشا",
+      "change_pct": -0.07,
+      "display_change": "-0.07%",
+      "raw_text": "کرماشا\n-۰٫۰۷٪"
     },
     {
       "symbol": "شکیمیا",
@@ -95,34 +107,22 @@
       "raw_text": "شلرد\n-۲٫۸۵٪"
     },
     {
-      "symbol": "آریا",
-      "change_pct": -0.4,
-      "display_change": "-0.40%",
-      "raw_text": "آریا\n-۰٫۴۰٪"
-    },
-    {
-      "symbol": "کرماشا",
-      "change_pct": -0.14,
-      "display_change": "-0.14%",
-      "raw_text": "کرماشا\n-۰٫۱۴٪"
-    },
-    {
       "symbol": "بوعلی",
-      "change_pct": -1.98,
-      "display_change": "-1.98%",
-      "raw_text": "بوعلی\n-۱٫۹۸٪"
+      "change_pct": -1.7,
+      "display_change": "-1.70%",
+      "raw_text": "بوعلی\n-۱٫۷۰٪"
     },
     {
       "symbol": "جم پیلن",
-      "change_pct": 2.28,
-      "display_change": "+2.28%",
-      "raw_text": "جم پیلن\n+۲٫۲۸٪"
+      "change_pct": 2.31,
+      "display_change": "+2.31%",
+      "raw_text": "جم پیلن\n+۲٫۳۱٪"
     },
     {
       "symbol": "شکلر",
-      "change_pct": -2.04,
-      "display_change": "-2.04%",
-      "raw_text": "شکلر\n-۲٫۰۴٪"
+      "change_pct": -2.97,
+      "display_change": "-2.97%",
+      "raw_text": "شکلر\n-۲٫۹۷٪"
     },
     {
       "symbol": "زاگرس",
@@ -132,39 +132,39 @@
     },
     {
       "symbol": "مارون",
-      "change_pct": 0.14,
-      "display_change": "+0.14%",
-      "raw_text": "مارون\n+۰٫۱۴٪"
+      "change_pct": 0.17,
+      "display_change": "+0.17%",
+      "raw_text": "مارون\n+۰٫۱۷٪"
     },
     {
       "symbol": "وپترو",
-      "change_pct": -2.92,
-      "display_change": "-2.92%",
-      "raw_text": "وپترو\n-۲٫۹۲٪"
+      "change_pct": -1.73,
+      "display_change": "-1.73%",
+      "raw_text": "وپترو\n-۱٫۷۳٪"
     },
     {
       "symbol": "شتوکا",
-      "change_pct": 2.94,
-      "display_change": "+2.94%",
-      "raw_text": "شتوکا\n+۲٫۹۴٪"
+      "change_pct": 1.9,
+      "display_change": "+1.90%",
+      "raw_text": "شتوکا\n+۱٫۹۰٪"
     },
     {
       "symbol": "شپاکسا",
-      "change_pct": 1.03,
-      "display_change": "+1.03%",
-      "raw_text": "شپاکسا\n+۱٫۰۳٪"
+      "change_pct": 0.96,
+      "display_change": "+0.96%",
+      "raw_text": "شپاکسا\n+۰٫۹۶٪"
+    },
+    {
+      "symbol": "شیران",
+      "change_pct": 1.58,
+      "display_change": "+1.58%",
+      "raw_text": "شیران\n+۱٫۵۸٪"
     },
     {
       "symbol": "شصدف",
       "change_pct": 2.94,
       "display_change": "+2.94%",
       "raw_text": "شصدف\n+۲٫۹۴٪"
-    },
-    {
-      "symbol": "شیران",
-      "change_pct": 1.33,
-      "display_change": "+1.33%",
-      "raw_text": "شیران\n+۱٫۳۳٪"
     },
     {
       "symbol": "فولاد",
@@ -198,15 +198,27 @@
     },
     {
       "symbol": "کچاد",
-      "change_pct": 2.54,
-      "display_change": "+2.54%",
-      "raw_text": "کچاد\n+۲٫۵۴٪"
+      "change_pct": 2.22,
+      "display_change": "+2.22%",
+      "raw_text": "کچاد\n+۲٫۲۲٪"
     },
     {
       "symbol": "کگهر",
       "change_pct": 2.97,
       "display_change": "+2.97%",
       "raw_text": "کگهر\n+۲٫۹۷٪"
+    },
+    {
+      "symbol": "کروی",
+      "change_pct": 1.94,
+      "display_change": "+1.94%",
+      "raw_text": "کروی\n+۱٫۹۴٪"
+    },
+    {
+      "symbol": "وامیر",
+      "change_pct": 2.97,
+      "display_change": "+2.97%",
+      "raw_text": "وامیر\n+۲٫۹۷٪"
     },
     {
       "symbol": "تجلی",
@@ -222,9 +234,9 @@
     },
     {
       "symbol": "دامین",
-      "change_pct": -2.54,
-      "display_change": "-2.54%",
-      "raw_text": "دامین\n-۲٫۵۴٪"
+      "change_pct": -2.75,
+      "display_change": "-2.75%",
+      "raw_text": "دامین\n-۲٫۷۵٪"
     },
     {
       "symbol": "دعبید",
@@ -234,9 +246,15 @@
     },
     {
       "symbol": "دتوزیع",
-      "change_pct": 2.73,
-      "display_change": "+2.73%",
-      "raw_text": "دتوزیع\n+۲٫۷۳٪"
+      "change_pct": 2.85,
+      "display_change": "+2.85%",
+      "raw_text": "دتوزیع\n+۲٫۸۵٪"
+    },
+    {
+      "symbol": "داترا",
+      "change_pct": 0.98,
+      "display_change": "+0.98%",
+      "raw_text": "داترا\n+۰٫۹۸٪"
     },
     {
       "symbol": "دسبحان",
@@ -245,16 +263,10 @@
       "raw_text": "دسبحان\n+۲٫۹۹٪"
     },
     {
-      "symbol": "داترا",
-      "change_pct": 0.86,
-      "display_change": "+0.86%",
-      "raw_text": "داترا\n+۰٫۸۶٪"
-    },
-    {
       "symbol": "دفارا",
-      "change_pct": -0.99,
-      "display_change": "-0.99%",
-      "raw_text": "دفارا\n-۰٫۹۹٪"
+      "change_pct": -0.82,
+      "display_change": "-0.82%",
+      "raw_text": "دفارا\n-۰٫۸۲٪"
     },
     {
       "symbol": "کی بی سی",
@@ -270,15 +282,15 @@
     },
     {
       "symbol": "دارو",
-      "change_pct": -1.0,
-      "display_change": "-1%",
-      "raw_text": "دارو\n-۱٪"
+      "change_pct": -1.09,
+      "display_change": "-1.09%",
+      "raw_text": "دارو\n-۱٫۰۹٪"
     },
     {
       "symbol": "دجابر",
-      "change_pct": -0.78,
-      "display_change": "-0.78%",
-      "raw_text": "دجابر\n-۰٫۷۸٪"
+      "change_pct": -0.93,
+      "display_change": "-0.93%",
+      "raw_text": "دجابر\n-۰٫۹۳٪"
     },
     {
       "symbol": "دلقما",
@@ -287,16 +299,22 @@
       "raw_text": "دلقما\n+۱٫۳۸٪"
     },
     {
+      "symbol": "دکوثر",
+      "change_pct": -1.34,
+      "display_change": "-1.34%",
+      "raw_text": "دکوثر\n-۱٫۳۴٪"
+    },
+    {
       "symbol": "داروند",
       "change_pct": 2.9,
       "display_change": "+2.90%",
       "raw_text": "داروند\n+۲٫۹۰٪"
     },
     {
-      "symbol": "دکوثر",
-      "change_pct": -2.57,
-      "display_change": "-2.57%",
-      "raw_text": "دکوثر\n-۲٫۵۷٪"
+      "symbol": "پخش",
+      "change_pct": -0.07,
+      "display_change": "-0.07%",
+      "raw_text": "پخش\n-۰٫۰۷٪"
     },
     {
       "symbol": "دقاضی",
@@ -306,21 +324,21 @@
     },
     {
       "symbol": "کاسپین",
-      "change_pct": -1.58,
-      "display_change": "-1.58%",
-      "raw_text": "کاسپین\n-۱٫۵۸٪"
+      "change_pct": -1.61,
+      "display_change": "-1.61%",
+      "raw_text": "کاسپین\n-۱٫۶۱٪"
     },
     {
       "symbol": "برکت",
-      "change_pct": 0.41,
-      "display_change": "+0.41%",
-      "raw_text": "برکت\n+۰٫۴۱٪"
+      "change_pct": 0.81,
+      "display_change": "+0.81%",
+      "raw_text": "برکت\n+۰٫۸۱٪"
     },
     {
       "symbol": "والبر",
-      "change_pct": -1.03,
-      "display_change": "-1.03%",
-      "raw_text": "والبر\n-۱٫۰۳٪"
+      "change_pct": -1.29,
+      "display_change": "-1.29%",
+      "raw_text": "والبر\n-۱٫۲۹٪"
     },
     {
       "symbol": "دیران",
@@ -330,9 +348,9 @@
     },
     {
       "symbol": "وپخش",
-      "change_pct": -0.55,
-      "display_change": "-0.55%",
-      "raw_text": "وپخش\n-۰٫۵۵٪"
+      "change_pct": -0.53,
+      "display_change": "-0.53%",
+      "raw_text": "وپخش\n-۰٫۵۳٪"
     },
     {
       "symbol": "ددانا",
@@ -366,9 +384,9 @@
     },
     {
       "symbol": "دروز",
-      "change_pct": 0.71,
-      "display_change": "+0.71%",
-      "raw_text": "دروز\n+۰٫۷۱٪"
+      "change_pct": -1.07,
+      "display_change": "-1.07%",
+      "raw_text": "دروز\n-۱٫۰۷٪"
     },
     {
       "symbol": "درازک",
@@ -377,16 +395,10 @@
       "raw_text": "درازک\n+۲٫۹۸٪"
     },
     {
-      "symbol": "دابور",
-      "change_pct": -0.31,
-      "display_change": "-0.31%",
-      "raw_text": "دابور\n-۰٫۳۱٪"
-    },
-    {
       "symbol": "خودرو",
-      "change_pct": -1.1,
-      "display_change": "-1.10%",
-      "raw_text": "خودرو\n-۱٫۱۰٪"
+      "change_pct": -1.51,
+      "display_change": "-1.51%",
+      "raw_text": "خودرو\n-۱٫۵۱٪"
     },
     {
       "symbol": "خگستر",
@@ -414,15 +426,9 @@
     },
     {
       "symbol": "خبهمن",
-      "change_pct": -0.36,
-      "display_change": "-0.36%",
-      "raw_text": "خبهمن\n-۰٫۳۶٪"
-    },
-    {
-      "symbol": "خکاوه",
-      "change_pct": -2.91,
-      "display_change": "-2.91%",
-      "raw_text": "خکاوه\n-۲٫۹۱٪"
+      "change_pct": -0.2,
+      "display_change": "-0.20%",
+      "raw_text": "خبهمن\n-۰٫۲۰٪"
     },
     {
       "symbol": "خاور",
@@ -431,10 +437,16 @@
       "raw_text": "خاور\n-۱٫۹۲٪"
     },
     {
+      "symbol": "خکاوه",
+      "change_pct": -2.91,
+      "display_change": "-2.91%",
+      "raw_text": "خکاوه\n-۲٫۹۱٪"
+    },
+    {
       "symbol": "ورنا",
-      "change_pct": -2.49,
-      "display_change": "-2.49%",
-      "raw_text": "ورنا\n-۲٫۴۹٪"
+      "change_pct": -2.62,
+      "display_change": "-2.62%",
+      "raw_text": "ورنا\n-۲٫۶۲٪"
     },
     {
       "symbol": "خپویش",
@@ -473,16 +485,16 @@
       "raw_text": "غویتا\n-۲٫۹۹٪"
     },
     {
-      "symbol": "وبشهر",
-      "change_pct": -2.92,
-      "display_change": "-2.92%",
-      "raw_text": "وبشهر\n-۲٫۹۲٪"
-    },
-    {
       "symbol": "غپینو",
       "change_pct": 2.95,
       "display_change": "+2.95%",
       "raw_text": "غپینو\n+۲٫۹۵٪"
+    },
+    {
+      "symbol": "وبشهر",
+      "change_pct": -2.39,
+      "display_change": "-2.39%",
+      "raw_text": "وبشهر\n-۲٫۳۹٪"
     },
     {
       "symbol": "غزر",
@@ -492,9 +504,9 @@
     },
     {
       "symbol": "غبشهر",
-      "change_pct": -2.1,
-      "display_change": "-2.10%",
-      "raw_text": "غبشهر\n-۲٫۱۰٪"
+      "change_pct": -1.89,
+      "display_change": "-1.89%",
+      "raw_text": "غبشهر\n-۱٫۸۹٪"
     },
     {
       "symbol": "غاذر",
@@ -504,9 +516,9 @@
     },
     {
       "symbol": "غنوش",
-      "change_pct": -0.48,
-      "display_change": "-0.48%",
-      "raw_text": "غنوش\n-۰٫۴۸٪"
+      "change_pct": -1.63,
+      "display_change": "-1.63%",
+      "raw_text": "غنوش\n-۱٫۶۳٪"
     },
     {
       "symbol": "غشان",
@@ -516,9 +528,9 @@
     },
     {
       "symbol": "ذرت",
-      "change_pct": 1.06,
-      "display_change": "+1.06%",
-      "raw_text": "ذرت\n+۱٫۰۶٪"
+      "change_pct": 0.95,
+      "display_change": "+0.95%",
+      "raw_text": "ذرت\n+۰٫۹۵٪"
     },
     {
       "symbol": "غصینو",
@@ -528,9 +540,9 @@
     },
     {
       "symbol": "غمینو",
-      "change_pct": -1.19,
-      "display_change": "-1.19%",
-      "raw_text": "غمینو\n-۱٫۱۹٪"
+      "change_pct": -1.3,
+      "display_change": "-1.30%",
+      "raw_text": "غمینو\n-۱٫۳۰٪"
     },
     {
       "symbol": "کوچین",
@@ -540,39 +552,39 @@
     },
     {
       "symbol": "غشصفا",
-      "change_pct": -0.19,
-      "display_change": "-0.19%",
-      "raw_text": "غشصفا\n-۰٫۱۹٪"
+      "change_pct": -1.22,
+      "display_change": "-1.22%",
+      "raw_text": "غشصفا\n-۱٫۲۲٪"
     },
     {
       "symbol": "شیفته",
-      "change_pct": -0.77,
-      "display_change": "-0.77%",
-      "raw_text": "شیفته\n-۰٫۷۷٪"
+      "change_pct": -0.71,
+      "display_change": "-0.71%",
+      "raw_text": "شیفته\n-۰٫۷۱٪"
     },
     {
       "symbol": "غفارس",
-      "change_pct": 1.53,
-      "display_change": "+1.53%",
-      "raw_text": "غفارس\n+۱٫۵۳٪"
+      "change_pct": 0.17,
+      "display_change": "+0.17%",
+      "raw_text": "غفارس\n+۰٫۱۷٪"
     },
     {
       "symbol": "خودکفا",
-      "change_pct": 0.0,
-      "display_change": "0%",
-      "raw_text": "خودکفا\n۰٪"
+      "change_pct": 0.88,
+      "display_change": "+0.88%",
+      "raw_text": "خودکفا\n+۰٫۸۸٪"
     },
     {
       "symbol": "عالیس",
-      "change_pct": -0.34,
-      "display_change": "-0.34%",
-      "raw_text": "عالیس\n-۰٫۳۴٪"
+      "change_pct": -0.17,
+      "display_change": "-0.17%",
+      "raw_text": "عالیس\n-۰٫۱۷٪"
     },
     {
       "symbol": "غدانه",
-      "change_pct": 2.59,
-      "display_change": "+2.59%",
-      "raw_text": "غدانه\n+۲٫۵۹٪"
+      "change_pct": 2.54,
+      "display_change": "+2.54%",
+      "raw_text": "غدانه\n+۲٫۵۴٪"
     },
     {
       "symbol": "غپونه",
@@ -618,9 +630,9 @@
     },
     {
       "symbol": "منجیل",
-      "change_pct": -1.54,
-      "display_change": "-1.54%",
-      "raw_text": "منجیل\n-۱٫۵۴٪"
+      "change_pct": -1.61,
+      "display_change": "-1.61%",
+      "raw_text": "منجیل\n-۱٫۶۱٪"
     },
     {
       "symbol": "شستا",
@@ -630,9 +642,9 @@
     },
     {
       "symbol": "وغدیر",
-      "change_pct": 1.81,
-      "display_change": "+1.81%",
-      "raw_text": "وغدیر\n+۱٫۸۱٪"
+      "change_pct": 2.34,
+      "display_change": "+2.34%",
+      "raw_text": "وغدیر\n+۲٫۳۴٪"
     },
     {
       "symbol": "وبانک",
@@ -648,15 +660,15 @@
     },
     {
       "symbol": "وامید",
-      "change_pct": 0.34,
-      "display_change": "+0.34%",
-      "raw_text": "وامید\n+۰٫۳۴٪"
+      "change_pct": 0.0,
+      "display_change": "0%",
+      "raw_text": "وامید\n۰٪"
     },
     {
       "symbol": "وساپا",
-      "change_pct": -1.41,
-      "display_change": "-1.41%",
-      "raw_text": "وساپا\n-۱٫۴۱٪"
+      "change_pct": -1.62,
+      "display_change": "-1.62%",
+      "raw_text": "وساپا\n-۱٫۶۲٪"
     },
     {
       "symbol": "صبا",
@@ -690,9 +702,9 @@
     },
     {
       "symbol": "واتی",
-      "change_pct": -1.66,
-      "display_change": "-1.66%",
-      "raw_text": "واتی\n-۱٫۶۶٪"
+      "change_pct": -1.11,
+      "display_change": "-1.11%",
+      "raw_text": "واتی\n-۱٫۱۱٪"
     },
     {
       "symbol": "وکبهمن",
@@ -702,15 +714,9 @@
     },
     {
       "symbol": "کالا",
-      "change_pct": 2.32,
-      "display_change": "+2.32%",
-      "raw_text": "کالا\n+۲٫۳۲٪"
-    },
-    {
-      "symbol": "فرابورس",
-      "change_pct": -1.03,
-      "display_change": "-1.03%",
-      "raw_text": "فرابورس\n-۱٫۰۳٪"
+      "change_pct": 2.67,
+      "display_change": "+2.67%",
+      "raw_text": "کالا\n+۲٫۶۷٪"
     },
     {
       "symbol": "سپید",
@@ -720,9 +726,9 @@
     },
     {
       "symbol": "حسیر",
-      "change_pct": -2.93,
-      "display_change": "-2.93%",
-      "raw_text": "حسیر\n-۲٫۹۳٪"
+      "change_pct": -2.82,
+      "display_change": "-2.82%",
+      "raw_text": "حسیر\n-۲٫۸۲٪"
     },
     {
       "symbol": "حآفرین",
