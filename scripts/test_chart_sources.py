@@ -1,6 +1,5 @@
 import json
 import os
-from datetime import datetime, timezone
 from pathlib import Path
 
 from selenium import webdriver
@@ -10,10 +9,13 @@ from selenium.webdriver.chrome.service import Service
 
 CHART_URL = "https://www.nahayatnegar.com/tv/IRO1KSHJ0001"
 
-TEST_SYMBOLS = ["فملی", "کچاد", "فولاد", "حکشتی"]
-RESOLUTIONS = ["1D", "W", "M"]
-START_DATE = "2018-01-01"
-COUNTBACK = 5000
+# فقط دو نماد: حکشتی برای کنترل و فملی برای آزمایش
+TEST_SYMBOLS = ["حکشتی", "فملی"]
+
+# همان بازهٔ زمانی درخواست تاریخچه‌ای که قبلاً برای حکشتی موفق بود
+FROM_TIME = 1755475200
+TO_TIME = 1791849600
+COUNTBACK = 301
 
 
 def make_driver():
@@ -38,31 +40,24 @@ def make_driver():
         driver = webdriver.Chrome(options=options)
 
     driver.set_page_load_timeout(60)
-    driver.set_script_timeout(240)
+    driver.set_script_timeout(180)
     return driver
 
 
-def utc_timestamp(date_text):
-    value = datetime.strptime(date_text, "%Y-%m-%d")
-    return int(value.replace(tzinfo=timezone.utc).timestamp())
-
-
 BROWSER_TEST = r"""
-const requestedSymbols = arguments[0];
-const resolutions = arguments[1];
-const fromTime = arguments[2];
-const toTime = arguments[3];
-const countback = arguments[4];
+const names = arguments[0];
+const fromTime = arguments[1];
+const toTime = arguments[2];
+const countback = arguments[3];
 const done = arguments[arguments.length - 1];
 
 (async function () {
-    const output = {
-        config: null,
+    const result = {
         symbols: [],
         errors: []
     };
 
-    async function requestJson(path) {
+    async function getJson(path) {
         const response = await fetch(path, {
             method: "GET",
             credentials: "same-origin",
@@ -83,399 +78,250 @@ const done = arguments[arguments.length - 1];
             httpStatus: response.status,
             data: data,
             parseError: parseError,
-            bodyPreview: text.slice(0, 500)
+            bodyPreview: text.slice(0, 700)
         };
     }
 
-    function normalize(value) {
-        return String(value || "")
-            .replace(/ي/g, "ی")
-            .replace(/ك/g, "ک")
-            .replace(/\u200c/g, "")
-            .replace(/\s+/g, "")
-            .trim()
-            .toLowerCase();
-    }
-
-    function getSymbolObject(data) {
-        if (!data || typeof data !== "object") return null;
-
-        if (data.tvSymbol && typeof data.tvSymbol === "object") {
-            return data.tvSymbol;
-        }
-
-        if (data.id || data.ticker || data.full_name) {
-            return data;
-        }
-
-        return null;
-    }
-
-    function getArrayLengths(data) {
-        const output = {};
-
-        if (data && typeof data === "object") {
-            for (const [key, value] of Object.entries(data)) {
-                if (Array.isArray(value)) {
-                    output[key] = value.length;
-                }
-            }
-        }
-
-        return output;
-    }
-
-    function sampleCandles(data) {
-        const t = data.t || [];
-        const o = data.o || [];
-        const h = data.h || [];
-        const l = data.l || [];
-        const c = data.c || [];
-        const v = data.v || [];
-
-        const count = Math.max(
-            t.length, o.length, h.length,
-            l.length, c.length, v.length
-        );
-
-        function candle(i) {
-            return {
-                time: t[i] ?? null,
-                open: o[i] ?? null,
-                high: h[i] ?? null,
-                low: l[i] ?? null,
-                close: c[i] ?? null,
-                volume: v[i] ?? null
-            };
-        }
-
-        if (!count) {
-            return {count: 0, first: null, last: null};
-        }
-
-        return {
-            count: count,
-            first: candle(0),
-            last: candle(count - 1)
-        };
-    }
-
-    try {
-        const configResponse =
-            await requestJson("/tv/chart/config");
-
-        output.config = {
-            httpStatus: configResponse.httpStatus,
-            supportsSearch:
-                configResponse.data?.supports_search ?? null,
-            supportedResolutions:
-                configResponse.data?.supported_resolutions || []
+    for (const name of names) {
+        const item = {
+            requestedName: name,
+            search: null,
+            idTests: []
         };
 
-        for (const requestedName of requestedSymbols) {
-            const item = {
-                requestedName: requestedName,
-                searchHttpStatus: null,
-                searchResults: [],
-                chosenSearchResult: null,
-                symbolResolutionAttempts: [],
-                resolvedSymbol: null,
-                history: [],
-                errors: []
-            };
+        try {
+            const searchParams = new URLSearchParams({
+                query: name,
+                exchange: "بورس",
+                type: "stock",
+                limit: "50"
+            });
 
-            try {
-                // 1. جست‌وجوی نماد در بازار بورس
-                const searchParams = new URLSearchParams({
-                    query: requestedName,
-                    exchange: "بورس",
-                    type: "stock",
-                    limit: "50"
-                });
+            const search = await getJson(
+                "/tv/chart/search?" + searchParams.toString()
+            );
 
-                const searchResponse = await requestJson(
-                    "/tv/chart/search?" + searchParams.toString()
+            const matches = Array.isArray(search.data?.tvSymbols)
+                ? search.data.tvSymbols
+                : [];
+
+            const normalizedName = String(name)
+                .replace(/ي/g, "ی")
+                .replace(/ك/g, "ک")
+                .replace(/\u200c/g, "")
+                .replace(/\s+/g, "")
+                .trim();
+
+            const expectedName = normalizedName + "1";
+
+            const chosen = matches.find(s => {
+                if (!s) return false;
+
+                const symbolName = String(s.name || s.symbol || "")
+                    .replace(/ي/g, "ی")
+                    .replace(/ك/g, "ک")
+                    .replace(/\u200c/g, "")
+                    .replace(/\s+/g, "")
+                    .trim();
+
+                return (
+                    symbolName === expectedName &&
+                    (!s.type || s.type === "stock")
                 );
+            }) || null;
 
-                item.searchHttpStatus = searchResponse.httpStatus;
-
-                const results = Array.isArray(
-                    searchResponse.data?.tvSymbols
-                ) ? searchResponse.data.tvSymbols : [];
-
-                item.searchResults = results.slice(0, 15).map(s => ({
-                    id: s.id || null,
-                    ticker: s.ticker || null,
-                    name: s.name || s.symbol || null,
-                    full_name: s.full_name || s.description || null,
-                    type: s.type || null,
-                    exchange: s.exchange || null
-                }));
-
-                // تطبیق دقیق: مثلاً فولاد1، نه فولاد تربت1
-                const wanted = normalize(requestedName);
-                const expectedName = normalize(requestedName + "1");
-
-                const stockResults = results.filter(s =>
-                    s &&
-                    (s.type === "stock" || !s.type) &&
-                    (
-                        !s.exchange ||
-                        s.exchange === "بورس"
-                    )
-                );
-
-                const chosen =
-                    stockResults.find(s =>
-                        normalize(s.name) === expectedName ||
-                        normalize(s.symbol) === expectedName
-                    ) ||
-                    stockResults.find(s =>
-                        normalize(s.name) === wanted ||
-                        normalize(s.symbol) === wanted
-                    ) ||
-                    null;
-
-                if (!chosen) {
-                    item.errors.push(
-                        "Exact symbol match not found; history was not requested."
-                    );
-                    output.symbols.push(item);
-                    continue;
-                }
-
-                item.chosenSearchResult = {
+            item.search = {
+                httpStatus: search.httpStatus,
+                count: matches.length,
+                chosen: chosen ? {
                     id: chosen.id || null,
                     ticker: chosen.ticker || null,
                     name: chosen.name || chosen.symbol || null,
-                    full_name: chosen.full_name ||
-                        chosen.description || null,
-                    type: chosen.type || "stock",
-                    exchange: chosen.exchange || null
-                };
+                    full_name:
+                        chosen.full_name || chosen.description || null,
+                    type: chosen.type || null
+                } : null,
+                candidates: matches.slice(0, 8).map(s => ({
+                    id: s.id || null,
+                    name: s.name || s.symbol || null,
+                    type: s.type || null
+                })),
+                bodyPreview: search.bodyPreview
+            };
 
-                // 2. شناسهٔ جست‌وجو را از endpoint نماد عبور می‌دهیم.
-                const candidates = [
-                    chosen.ticker,
-                    chosen.id,
-                    chosen.name,
-                    chosen.symbol
-                ].filter(Boolean);
+            if (!chosen || !chosen.id) {
+                item.error = "Exact stock symbol not found.";
+                result.symbols.push(item);
+                continue;
+            }
 
-                const uniqueCandidates = [...new Set(candidates)];
-                let resolved = null;
+            const rawId = chosen.id;
 
-                for (const candidate of uniqueCandidates) {
+            // آزمایش شناسهٔ جست‌وجو و حالت دارای پسوند 3
+            const idsToTest = [...new Set([
+                rawId,
+                rawId.endsWith("3") ? rawId : rawId + "3"
+            ])];
+
+            for (const testId of idsToTest) {
+                let symbolLookup = null;
+
+                try {
                     const symbolParams = new URLSearchParams({
-                        symbol: candidate
+                        symbol: testId
                     });
 
-                    const symbolResponse = await requestJson(
+                    symbolLookup = await getJson(
                         "/tv/chart/symbols?" +
                         symbolParams.toString()
                     );
+                } catch (error) {
+                    symbolLookup = {error: String(error)};
+                }
 
-                    const symbolObject =
-                        getSymbolObject(symbolResponse.data);
+                const historyParams = new URLSearchParams({
+                    symbol: testId,
+                    resolution: "1D",
+                    from: String(fromTime),
+                    to: String(toTime),
+                    type: "stock",
+                    adjustmentType: "3",
+                    countback: String(countback)
+                });
 
-                    const attempt = {
-                        requestedValue: candidate,
-                        httpStatus: symbolResponse.httpStatus,
-                        resolvedId: symbolObject?.id || null,
-                        resolvedTicker: symbolObject?.ticker || null,
-                        resolvedName:
-                            symbolObject?.name ||
-                            symbolObject?.symbol || null,
-                        full_name: symbolObject?.full_name || null,
-                        type: symbolObject?.type || null,
-                        responseKeys:
-                            symbolResponse.data &&
-                            typeof symbolResponse.data === "object"
-                                ? Object.keys(symbolResponse.data)
-                                : [],
-                        bodyPreview: symbolObject ? null :
-                            symbolResponse.bodyPreview
-                    };
+                const history = await getJson(
+                    "/tv/chart/history?" +
+                    historyParams.toString()
+                );
 
-                    item.symbolResolutionAttempts.push(attempt);
+                const data = history.data || {};
+                const lengths = {};
 
-                    if (
-                        symbolResponse.httpStatus === 200 &&
-                        symbolObject &&
-                        (symbolObject.id || symbolObject.ticker)
-                    ) {
-                        resolved = symbolObject;
-                        break;
+                for (const [key, value] of Object.entries(data)) {
+                    if (Array.isArray(value)) {
+                        lengths[key] = value.length;
                     }
                 }
 
-                if (!resolved) {
-                    item.errors.push(
-                        "Could not resolve a canonical chart symbol ID."
-                    );
-                    output.symbols.push(item);
-                    continue;
-                }
+                const candleCount = Math.max(
+                    0,
+                    ...Object.values(lengths)
+                );
 
-                const canonicalId = resolved.id || resolved.ticker;
+                const symbolData = symbolLookup?.data?.tvSymbol ||
+                    symbolLookup?.data || null;
 
-                item.resolvedSymbol = {
-                    id: resolved.id || null,
-                    ticker: resolved.ticker || null,
-                    name: resolved.name || resolved.symbol || null,
-                    full_name: resolved.full_name || null,
-                    type: resolved.type || "stock",
-                    exchange: resolved.exchange || null
-                };
-
-                // 3. تاریخچه فقط با شناسهٔ تأییدشده درخواست می‌شود.
-                for (const resolution of resolutions) {
-                    const historyParams = new URLSearchParams({
-                        symbol: canonicalId,
-                        resolution: resolution,
-                        from: String(fromTime),
-                        to: String(toTime),
-                        type: resolved.type || chosen.type || "stock",
-                        adjustmentType: "3",
-                        countback: String(countback)
-                    });
-
-                    const historyResponse = await requestJson(
-                        "/tv/chart/history?" +
-                        historyParams.toString()
-                    );
-
-                    const data = historyResponse.data || {};
-                    const samples = sampleCandles(data);
-
-                    item.history.push({
-                        resolution: resolution,
-                        requestedId: canonicalId,
-                        httpStatus: historyResponse.httpStatus,
+                item.idTests.push({
+                    testId: testId,
+                    isRawId: testId === rawId,
+                    symbolLookup: {
+                        httpStatus: symbolLookup?.httpStatus ?? null,
+                        responseKeys:
+                            symbolData &&
+                            typeof symbolData === "object"
+                                ? Object.keys(symbolData)
+                                : [],
+                        id: symbolData?.id || null,
+                        ticker: symbolData?.ticker || null,
+                        name:
+                            symbolData?.name ||
+                            symbolData?.symbol || null,
+                        bodyPreview:
+                            symbolLookup?.bodyPreview || null,
+                        error: symbolLookup?.error || null
+                    },
+                    history: {
+                        httpStatus: history.httpStatus,
                         apiStatus: data.s || data.status || null,
-                        errorMessage: data.errmsg || data.error || null,
-                        arrayLengths: getArrayLengths(data),
-                        samples: samples,
-                        responseKeys: Object.keys(data),
-                        bodyPreview: samples.count ? null :
-                            historyResponse.bodyPreview
-                    });
-                }
-            } catch (error) {
-                item.errors.push(String(error));
+                        errorMessage:
+                            data.errmsg || data.error || null,
+                        arrayLengths: lengths,
+                        candleCount: candleCount,
+                        firstTime:
+                            Array.isArray(data.t) && data.t.length
+                                ? data.t[0]
+                                : null,
+                        lastTime:
+                            Array.isArray(data.t) && data.t.length
+                                ? data.t[data.t.length - 1]
+                                : null,
+                        lastClose:
+                            Array.isArray(data.c) && data.c.length
+                                ? data.c[data.c.length - 1]
+                                : null,
+                        bodyPreview:
+                            candleCount ? null : history.bodyPreview
+                    }
+                });
             }
-
-            output.symbols.push(item);
+        } catch (error) {
+            item.error = String(error);
         }
-    } catch (error) {
-        output.errors.push(String(error));
+
+        result.symbols.push(item);
     }
 
-    done(output);
+    done(result);
 })().catch(error => done({
     fatalError: String(error)
 }));
 """
 
 
-def format_date(timestamp):
-    if timestamp is None:
-        return "-"
-
-    try:
-        return datetime.fromtimestamp(
-            int(timestamp), timezone.utc
-        ).strftime("%Y-%m-%d")
-    except (ValueError, TypeError, OverflowError, OSError):
-        return str(timestamp)
-
-
 def main():
-    start_time = utc_timestamp(START_DATE)
-    end_time = int(datetime.now(timezone.utc).timestamp()) + 86400
-
-    print("=" * 20 + " TEST SETTINGS " + "=" * 20)
-    print("Chart URL:", CHART_URL)
-    print("Symbols:", ", ".join(TEST_SYMBOLS))
-    print("Start date:", START_DATE)
-    print("Resolutions:", ", ".join(RESOLUTIONS))
-
     driver = None
 
-    try:
-        options_ready = False
-        driver = make_driver()
-        options_ready = True
+    print("=" * 18 + " SYMBOL ID DIAGNOSTIC " + "=" * 18)
+    print("Chart URL:", CHART_URL)
+    print("Symbols:", ", ".join(TEST_SYMBOLS))
+    print("Testing raw ID against ID + 3")
 
+    try:
+        driver = make_driver()
         driver.get(CHART_URL)
 
         result = driver.execute_async_script(
             BROWSER_TEST,
             TEST_SYMBOLS,
-            RESOLUTIONS,
-            start_time,
-            end_time,
+            FROM_TIME,
+            TO_TIME,
             COUNTBACK
         )
 
-        print("\n" + "=" * 20 + " QUICK SUMMARY " + "=" * 20)
+        print("\n" + "=" * 18 + " QUICK SUMMARY " + "=" * 18)
 
-        config = result.get("config") or {}
-        print("Config HTTP:", config.get("httpStatus"))
-        print("Search supported:", config.get("supportsSearch"))
-
-        for item in result.get("symbols", []):
-            chosen = item.get("chosenSearchResult") or {}
-            resolved = item.get("resolvedSymbol") or {}
+        for symbol in result.get("symbols", []):
+            search = symbol.get("search") or {}
+            chosen = search.get("chosen") or {}
 
             print(
-                "\nSymbol:", item.get("requestedName"),
-                "| Search HTTP:", item.get("searchHttpStatus"),
-                "| Chosen:", chosen.get("name") or "-",
-                "| Search ID:", chosen.get("id") or "-",
-                "| Canonical ID:", resolved.get("id") or "-",
-                "| Resolved name:", resolved.get("name") or "-"
+                "\nSymbol:", symbol.get("requestedName"),
+                "| Search HTTP:", search.get("httpStatus"),
+                "| Search matches:", search.get("count"),
+                "| Selected:", chosen.get("name") or "-",
+                "| Raw ID:", chosen.get("id") or "-"
             )
 
-            for history in item.get("history", []):
-                samples = history.get("samples") or {}
-                first = samples.get("first") or {}
-                last = samples.get("last") or {}
+            for test in symbol.get("idTests", []):
+                history = test.get("history") or {}
+                lookup = test.get("symbolLookup") or {}
 
                 print(
-                    "  Resolution:", history.get("resolution"),
-                    "| HTTP:", history.get("httpStatus"),
+                    "  ID:", test.get("testId"),
+                    "| Raw ID:", test.get("isRawId"),
+                    "| Symbol endpoint:", lookup.get("httpStatus"),
+                    "| Resolved ID:", lookup.get("id") or "-",
+                    "| History HTTP:", history.get("httpStatus"),
                     "| API:", history.get("apiStatus"),
-                    "| Candles:", samples.get("count", 0),
-                    "| First:", format_date(first.get("time")),
-                    "| Last:", format_date(last.get("time")),
-                    "| Latest close:", last.get("close", "-"),
-                    "| Error:",
-                    history.get("errorMessage") or ""
+                    "| Candles:", history.get("candleCount", 0),
+                    "| Last close:", history.get("lastClose", "-")
                 )
 
-            for attempt in item.get("symbolResolutionAttempts", []):
-                print(
-                    "  Symbol lookup:",
-                    attempt.get("requestedValue"),
-                    "| HTTP:", attempt.get("httpStatus"),
-                    "| ID:", attempt.get("resolvedId") or "-",
-                    "| Name:", attempt.get("resolvedName") or "-"
-                )
+            if symbol.get("error"):
+                print("  Error:", symbol["error"])
 
-            for error in item.get("errors", []):
-                print("  Error:", error)
-
-        print("\n" + "=" * 20 + " FULL RESULTS " + "=" * 20)
+        print("\n" + "=" * 18 + " FULL RESULTS " + "=" * 18)
         print(json.dumps(result, ensure_ascii=False, indent=2))
-
-        if result.get("errors"):
-            print("General errors:", json.dumps(
-                result["errors"], ensure_ascii=False
-            ))
-
-        if result.get("fatalError"):
-            print("Fatal error:", result["fatalError"])
 
     except Exception as error:
         print("TEST FAILED:", repr(error))
