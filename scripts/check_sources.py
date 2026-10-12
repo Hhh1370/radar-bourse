@@ -1,8 +1,6 @@
-import json
 import os
-import re
 import time
-from datetime import datetime, timezone
+from collections import Counter
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -10,42 +8,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
-
 URL = "https://rahavard365.com/marketmap"
-
-DIGIT_MAP = str.maketrans(
-    "۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩",
-    "01234567890123456789"
-)
-
-PERCENT_PATTERN = re.compile(
-    r"([+-]?\s*\d+(?:[.,]\d+)?\s*[%٪])"
-)
-
-
-def normalize_text(text):
-    return (
-        text.translate(DIGIT_MAP)
-        .replace("٫", ".")
-        .replace("−", "-")
-        .replace("٪", "%")
-    )
-
-
-def parse_change(text):
-    normalized = normalize_text(text)
-    match = PERCENT_PATTERN.search(normalized)
-
-    if not match:
-        return None, None
-
-    display = re.sub(r"\s+", "", match.group(1))
-    number = display.replace("%", "").replace(",", ".")
-
-    try:
-        return float(number), display
-    except ValueError:
-        return None, display
 
 
 def main():
@@ -62,100 +25,91 @@ def main():
 
     try:
         driver.set_page_load_timeout(45)
-        print("Opening Rahavard market map...")
         driver.get(URL)
 
         WebDriverWait(driver, 30).until(
-            lambda browser: len(
-                browser.find_elements(By.CLASS_NAME, "leaf")
+            lambda d: len(
+                d.find_elements(By.CLASS_NAME, "leaf")
             ) > 0
         )
+        time.sleep(5)
 
-        time.sleep(3)
+        leaves = driver.find_elements(By.CLASS_NAME, "leaf")
 
-        print("Page title:", driver.title)
-        print("Final URL:", driver.current_url)
+        visible = []
+        hidden = []
 
-        elements = driver.find_elements(By.CLASS_NAME, "leaf")
-        print("Leaf elements found:", len(elements))
-
-        items = {}
-
-        for element in elements:
+        for element in leaves:
             text = element.text.strip()
+            record = {
+                "text": text,
+                "html": element.get_attribute("outerHTML")[:500],
+            }
+
             if not text:
                 continue
 
+            if element.is_displayed():
+                visible.append(record)
+            else:
+                hidden.append(record)
+
+        def symbol_from(record):
             lines = [
                 line.strip()
-                for line in text.splitlines()
+                for line in record["text"].splitlines()
                 if line.strip()
             ]
+            return lines[0] if lines else ""
 
-            if not lines:
-                continue
-
-            symbol = lines[0]
-
-            # ردکردن متن‌های خالی یا غیرمرتبط
-            if len(symbol) > 30:
-                continue
-
-            if not any(char.isalpha() for char in symbol):
-                continue
-
-            change, display_change = parse_change(text)
-
-            if symbol not in items or (
-                items[symbol]["change_pct"] is None
-                and change is not None
-            ):
-                items[symbol] = {
-                    "symbol": symbol,
-                    "change_pct": change,
-                    "display_change": display_change,
-                    "raw_text": text,
-                }
-
-        if not items:
-            raise RuntimeError(
-                "No stock items could be extracted from the market map."
-            )
-
-        os.makedirs("data", exist_ok=True)
-
-        payload = {
-            "source": "Rahavard365 market map",
-            "source_url": driver.current_url,
-            "captured_at_utc": datetime.now(
-                timezone.utc
-            ).isoformat(),
-            "count": len(items),
-            "items": list(items.values()),
+        visible_symbols = {
+            symbol_from(x) for x in visible if symbol_from(x)
+        }
+        all_symbols = {
+            symbol_from(x)
+            for x in visible + hidden
+            if symbol_from(x)
         }
 
-        output_path = "data/marketmap.json"
+        print("Page title:", driver.title)
+        print("Page URL:", driver.current_url)
+        print("All leaf elements:", len(leaves))
+        print("Visible non-empty leaves:", len(visible))
+        print("Hidden non-empty leaves:", len(hidden))
+        print("Unique visible labels:", len(visible_symbols))
+        print("Unique all labels:", len(all_symbols))
 
-        with open(output_path, "w", encoding="utf-8") as file:
-            json.dump(
-                payload,
-                file,
-                ensure_ascii=False,
-                indent=2,
-            )
+        print("\n--- SELECT FILTERS ---")
+        for select in driver.find_elements(By.TAG_NAME, "select"):
+            options_text = [
+                option.text.strip()
+                for option in select.find_elements(
+                    By.TAG_NAME, "option"
+                )
+                if option.text.strip()
+            ]
+            print({
+                "id": select.get_attribute("id"),
+                "name": select.get_attribute("name"),
+                "options": options_text[:40],
+            })
 
-        print("Extracted unique items:", len(items))
-        print("Items with change percentage:", sum(
-            item["change_pct"] is not None
-            for item in items.values()
-        ))
-        print("JSON saved to:", output_path)
-        print("Sample:")
-        print(json.dumps(
-            list(items.values())[:10],
-            ensure_ascii=False,
-            indent=2,
-        ))
+        print("\n--- BUTTONS ---")
+        buttons = []
+        for element in driver.find_elements(
+            By.CSS_SELECTOR, "button, [role='button']"
+        ):
+            text = element.text.strip()
+            if text and text not in buttons:
+                buttons.append(text)
+
+        for text in buttons[:60]:
+            print(text)
+
+        print("\n--- SAMPLE VISIBLE ITEMS ---")
+        for record in visible[:8]:
+            print("TEXT:", repr(record["text"]))
+            print("HTML:", record["html"])
 
     finally:
         driver.quit()
