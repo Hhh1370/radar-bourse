@@ -2,49 +2,74 @@ import base64
 import json
 import os
 import time
+from datetime import datetime, timezone
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
-
 URL = "https://rahavard365.com/marketmap"
-ENDPOINT_PART = "/api/v2/marketmap/data"
+ENDPOINT = "/api/v2/marketmap/data"
 
 
-def collect_lists(obj, path="$", output=None, depth=0):
-    if output is None:
-        output = []
+def extract_stocks(node, categories=None, results=None):
+    if categories is None:
+        categories = []
 
-    if depth > 8:
-        return output
+    if results is None:
+        results = {}
 
-    if isinstance(obj, dict):
-        for key, value in obj.items():
-            collect_lists(
-                value, f"{path}.{key}", output, depth + 1
-            )
+    if isinstance(node, list):
+        for child in node:
+            extract_stocks(child, categories, results)
+        return results
 
-    elif isinstance(obj, list):
-        output.append({
-            "path": path,
-            "count": len(obj),
-            "first": obj[0] if obj else None,
-        })
+    if not isinstance(node, dict):
+        return results
 
-        # بررسی چند مورد اول برای پیدا کردن آرایه‌های تو در تو
-        for index, value in enumerate(obj[:3]):
-            if isinstance(value, (dict, list)):
-                collect_lists(
-                    value,
-                    f"{path}[{index}]",
-                    output,
-                    depth + 1,
-                )
+    children = node.get("children")
+    name = node.get("name")
+    fullname = node.get("fullname")
+    node_id = node.get("id")
 
-    return output
+    # گروه‌های دارای زیرمجموعه را به‌صورت بازگشتی بررسی می‌کنیم.
+    if isinstance(children, list) and children:
+        next_categories = categories[:]
+
+        if name:
+            next_categories.append(str(name))
+
+        for child in children:
+            extract_stocks(child, next_categories, results)
+
+        return results
+
+    # فقط گره‌های انتهایی دارای شناسه و اطلاعات شرکت را ثبت می‌کنیم.
+    if (
+        node_id is not None
+        and name
+        and fullname
+        and "real_close_price" in node
+    ):
+        symbol = str(name).strip()
+
+        if symbol:
+            results[str(node_id)] = {
+                "id": str(node_id),
+                "symbol": symbol,
+                "company": str(fullname).strip(),
+                "close_price": node.get("real_close_price"),
+                "change_pct": (
+                    float(node["value"]) * 100
+                    if isinstance(node.get("value"), (int, float))
+                    else None
+                ),
+                "area_raw": node.get("area"),
+                "categories": categories,
+            }
+
+    return results
 
 
 def main():
@@ -74,18 +99,19 @@ def main():
         driver.execute_cdp_cmd("Network.enable", {})
         driver.set_page_load_timeout(45)
 
-        print("Opening market map...")
+        print("Opening Rahavard market map...")
         driver.get(URL)
 
         WebDriverWait(driver, 30).until(
-            lambda d: len(
-                d.find_elements(By.CLASS_NAME, "leaf")
-            ) > 0
+            lambda d: d.execute_script(
+                "return document.readyState"
+            ) == "complete"
         )
+
         time.sleep(5)
 
         logs = driver.get_log("performance")
-        matching = []
+        matches = []
 
         for entry in logs:
             try:
@@ -98,35 +124,25 @@ def main():
                 response = params.get("response", {})
                 response_url = response.get("url", "")
 
-                if ENDPOINT_PART in response_url:
-                    matching.append({
-                        "request_id": params.get("requestId"),
+                if (
+                    ENDPOINT in response_url
+                    and response.get("status") == 200
+                    and params.get("requestId")
+                ):
+                    matches.append({
+                        "request_id": params["requestId"],
                         "url": response_url,
-                        "status": response.get("status"),
-                        "mime": response.get("mimeType"),
                     })
 
             except Exception:
                 continue
 
-        print("Matching API responses:", len(matching))
+        if not matches:
+            raise RuntimeError(
+                "No successful market-map API response was captured."
+            )
 
-        successful = [
-            item for item in matching
-            if item["status"] == 200 and item["request_id"]
-        ]
-
-        if not successful:
-            print("No successful market-data response was captured.")
-            for item in matching:
-                print(json.dumps(item, ensure_ascii=False))
-            raise RuntimeError("Market-map API response not captured.")
-
-        response_info = successful[-1]
-
-        print("HTTP status:", response_info["status"])
-        print("Content type:", response_info["mime"])
-        print("API URL:", response_info["url"])
+        response_info = matches[-1]
 
         body_result = driver.execute_cdp_cmd(
             "Network.getResponseBody",
@@ -140,62 +156,60 @@ def main():
                 "utf-8", errors="replace"
             )
 
-        data = json.loads(body)
+        source_data = json.loads(body)
 
+        print("API URL:", response_info["url"])
         print("Response bytes:", len(body.encode("utf-8")))
-        print("JSON root type:", type(data).__name__)
 
-        if isinstance(data, dict):
-            print("Root keys:", list(data.keys())[:50])
+        extracted = extract_stocks(source_data)
+        stocks = sorted(
+            extracted.values(),
+            key=lambda item: item["symbol"],
+        )
 
-        elif isinstance(data, list):
-            print("Root list length:", len(data))
-
-        print("\n--- DATA ARRAYS ---")
-        arrays = collect_lists(data)
-
-        for item in sorted(
-            arrays,
-            key=lambda entry: entry["count"],
-            reverse=True,
-        )[:20]:
-            print(json.dumps({
-                "path": item["path"],
-                "count": item["count"],
-                "first_item_type": (
-                    type(item["first"]).__name__
-                    if item["first"] is not None
-                    else None
-                ),
-            }, ensure_ascii=False))
-
-        record_arrays = [
-            item for item in arrays
-            if isinstance(item["first"], dict)
-        ]
-
-        if record_arrays:
-            largest = max(
-                record_arrays,
-                key=lambda item: item["count"],
+        if not stocks:
+            raise RuntimeError(
+                "API returned data, but no stock records were identified."
             )
 
-            print("\n--- LARGEST RECORD ARRAY ---")
-            print("Path:", largest["path"])
-            print("Count:", largest["count"])
-            print("Sample records:")
+        payload = {
+            "source": "Rahavard365 market map",
+            "source_url": response_info["url"],
+            "captured_at_utc": datetime.now(
+                timezone.utc
+            ).isoformat(),
+            "count": len(stocks),
+            "items": stocks,
+        }
 
-            print(json.dumps(
-                # فقط سه رکورد برای جلوگیری از خروجی بسیار طولانی
-                largest["first"],
+        os.makedirs("data", exist_ok=True)
+
+        output_file = "data/marketmap.json"
+
+        with open(output_file, "w", encoding="utf-8") as file:
+            json.dump(
+                payload,
+                file,
                 ensure_ascii=False,
                 indent=2,
-            )[:6000])
+            )
 
-        else:
-            print("\nNo list of record objects identified.")
-
-        print("\nInspection completed.")
+        print("Extracted unique IDs:", len(stocks))
+        print(
+            "Records with price:",
+            sum(s["close_price"] is not None for s in stocks),
+        )
+        print(
+            "Records with change percentage:",
+            sum(s["change_pct"] is not None for s in stocks),
+        )
+        print("Saved:", output_file)
+        print("Sample records:")
+        print(json.dumps(
+            stocks[:10],
+            ensure_ascii=False,
+            indent=2,
+        ))
 
     finally:
         driver.quit()
