@@ -6,7 +6,7 @@ on:
     - cron: "30 9 * * 0,1,2,3,6"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   source-check:
@@ -37,5 +37,18 @@ jobs:
           echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
           echo "CHROMEDRIVER=${{ steps.setup-chrome.outputs.chromedriver-path }}" >> "$GITHUB_ENV"
 
-      - name: Run Rahavard market-map check
+      - name: Collect Rahavard market data
         run: python scripts/check_sources.py
+
+      - name: Commit updated JSON
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/marketmap.json
+
+          if git diff --cached --quiet; then
+            echo "Market data has no changes."
+          else
+            git commit -m "Update market map data"
+            git push
+          fi
