@@ -1,81 +1,94 @@
-import re
-import urllib.request
+import json
+import os
+import time
 
-TARGETS = {
-    "Rahavard_MarketMap": (
-        "https://rahavard365.com/_next/static/chunks/"
-        "pages/marketmap-69b3a67ddee0569b.js"
-    ),
-    "Rahavard_Shared": (
-        "https://rahavard365.com/_next/static/chunks/"
-        "7079-45905514788180e4.js"
-    ),
-    "Rahavard_Home": (
-        "https://rahavard365.com/_next/static/chunks/"
-        "pages/index-7523a1e566132b2c.js"
-    ),
-    "TradersArena_Product": (
-        "https://tradersarena.ir/js/product/index.5.0.7.min.js"
-    ),
-    "TradersArena_Search": (
-        "https://tradersarena.ir/js/product/search.1.0.3.min.js"
-    ),
-    "TradersArena_Watch": (
-        "https://tradersarena.ir/js/watch-export.js"
-    ),
-    "BourseTrader": (
-        "https://bourse-trader.ir/js/script.js?ver=11"
-    ),
-}
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 
-KEYWORDS = re.compile(
-    r"api|graphql|ajax|marketmap|market|stock|symbol|"
-    r"ticker|price|trade|codal|instrument|quote|"
-    r"watchlist|history|ohlc|security|financial",
-    re.IGNORECASE,
-)
 
-STRING_URL = re.compile(
-    r"""["'`]((?:https?://|//|/)[^"'`\s]{1,220})["'`]"""
-)
+URL = "https://rahavard365.com/marketmap"
 
-def inspect(name, url):
-    print(f"\n--- {name} ---")
 
-    request = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": "Mozilla/5.0",
-            "Accept": "*/*",
-        },
-    )
+def main():
+    options = Options()
+    options.binary_location = os.environ["CHROME_BIN"]
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--lang=fa-IR")
+
+    service = Service(os.environ["CHROMEDRIVER"])
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
-        with urllib.request.urlopen(request, timeout=12) as response:
-            source = response.read(800000).decode(
-                "utf-8", errors="replace"
-            )
+        driver.set_page_load_timeout(45)
+        print("Opening Rahavard market map...")
+        driver.get(URL)
 
-        source = source.replace("\\/", "/")
-        print("HTTP status: 200")
-        print("Bytes read:", len(source))
+        time.sleep(10)
 
-        matches = {
-            item for item in STRING_URL.findall(source)
-            if KEYWORDS.search(item)
-        }
+        print("Page title:", driver.title)
+        print("Final URL:", driver.current_url)
+        print("Page source length:", len(driver.page_source))
 
-        if matches:
-            for item in sorted(matches)[:30]:
-                print("CANDIDATE:", item)
-        else:
-            print("No matching endpoint strings found.")
+        selectors = [
+            ".leaf",
+            "[data-name]",
+            "[data-display-color]",
+            "table tbody tr",
+            "[class*='symbol']",
+            "[class*='market']",
+        ]
 
-    except Exception as exc:
-        print("FETCH FAILED:", repr(exc))
+        print("\n--- ELEMENT COUNTS ---")
+        for selector in selectors:
+            try:
+                count = len(driver.find_elements(By.CSS_SELECTOR, selector))
+                print(f"{selector}: {count}")
+            except Exception as exc:
+                print(f"{selector}: ERROR - {exc}")
+
+        elements = driver.find_elements(
+            By.CSS_SELECTOR,
+            ".leaf, [data-name]"
+        )
+
+        rows = []
+        seen = set()
+
+        for element in elements:
+            name = element.get_attribute("data-name")
+            value = element.get_attribute("data-display-color")
+            text = element.text.strip()
+
+            if not name:
+                name = text
+
+            if name:
+                name = name.strip()
+                if name and name not in seen:
+                    seen.add(name)
+                    rows.append({
+                        "name": name,
+                        "display_value": value,
+                        "text": text[:150],
+                    })
+
+        print("\nExtracted items:", len(rows))
+        print("Sample data:")
+        print(json.dumps(rows[:15], ensure_ascii=False, indent=2))
+
+        if not rows:
+            print("\nNo stock items found with the current selectors.")
+            print("Visible page text:")
+            print(driver.find_element(By.TAG_NAME, "body").text[:2500])
+
+    finally:
+        driver.quit()
+
 
 if __name__ == "__main__":
-    for name, url in TARGETS.items():
-        inspect(name, url)
-
-    print("\nInspection completed.")
+    main()
