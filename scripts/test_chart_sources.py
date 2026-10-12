@@ -1,117 +1,162 @@
-import json
+import re
 import urllib.request
 import urllib.parse
 import urllib.error
 
+URL = "https://www.nahayatnegar.com/tv/"
+
 HEADERS = {
-    "User-Agent": "Mozilla/5.0",
-    "Accept": "application/json,text/plain,*/*",
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/130.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/json,*/*",
 }
 
 
-def test_url(name, url, parse_json=False):
-    print(f"\n--- {name} ---")
+def fetch(url, limit=700_000, timeout=8):
+    request = urllib.request.Request(url, headers=HEADERS)
 
-    request = urllib.request.Request(
-        url,
-        headers=HEADERS,
-    )
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        body = response.read(limit)
+        return (
+            response.status,
+            response.headers,
+            body,
+        )
+
+
+def inspect_page():
+    print("--- NAHAYATNEGAR CHART PAGE ---")
+    print("URL:", URL)
 
     try:
-        with urllib.request.urlopen(request, timeout=20) as response:
-            body = response.read()
+        status, headers, body = fetch(URL, timeout=15)
+    except Exception as exc:
+        print("PAGE FAILED:", repr(exc))
+        return
 
-            print("HTTP status:", response.status)
-            print("Content-Type:", response.headers.get("Content-Type"))
-            print("Bytes received:", len(body))
+    html = body.decode("utf-8", errors="replace")
 
-            if parse_json:
-                data = json.loads(body.decode("utf-8-sig"))
+    print("HTTP status:", status)
+    print("Content-Type:", headers.get("Content-Type"))
+    print("Bytes received:", len(body))
 
-                if isinstance(data, dict):
-                    print("JSON keys:", list(data.keys()))
-                    for key, value in data.items():
-                        if isinstance(value, list):
-                            print("List:", key, "Count:", len(value))
-                elif isinstance(data, list):
-                    print("JSON list length:", len(data))
+    title = re.search(
+        r"<title[^>]*>(.*?)</title>",
+        html,
+        re.IGNORECASE | re.DOTALL,
+    )
 
-                return data
+    if title:
+        page_title = re.sub(r"\s+", " ", title.group(1)).strip()
+        print("Page title:", page_title)
+    else:
+        print("Page title: Not found")
 
-            print(
-                "Preview:",
-                body[:250].decode("utf-8", errors="replace")
+    iframe_sources = re.findall(
+        r'<iframe\b[^>]*\bsrc\s*=\s*["\']([^"\']+)["\']',
+        html,
+        re.IGNORECASE,
+    )
+
+    script_sources = re.findall(
+        r'<script\b[^>]*\bsrc\s*=\s*["\']([^"\']+)["\']',
+        html,
+        re.IGNORECASE,
+    )
+
+    print("\n--- IFRAMES ---")
+    if iframe_sources:
+        for src in iframe_sources[:20]:
+            print(urllib.parse.urljoin(URL, src))
+    else:
+        print("No iframe URLs found in initial HTML.")
+
+    absolute_scripts = [
+        urllib.parse.urljoin(URL, src)
+        for src in script_sources
+    ]
+
+    print("\n--- JAVASCRIPT FILES ---")
+    print("Script count:", len(absolute_scripts))
+
+    for src in absolute_scripts[:30]:
+        print(src)
+
+    keywords = re.compile(
+        r"tradingview|websocket|graphql|/api/|"
+        r"chart|candlestick|ohlc|history|resolution|"
+        r"getbars|subscribe|symbol|marketdata|"
+        r"lightweight.?charts|kline",
+        re.IGNORECASE,
+    )
+
+    patterns = [
+        r"""["'`]((?:https?:)?//[^"'`\s]{1,220})["'`]""",
+        r"""["'`]((?:/|\./)[^"'`\s]{1,180})["'`]""",
+    ]
+
+    print("\n--- POSSIBLE DATA ROUTES ---")
+
+    # بررسی HTML اصلی
+    candidates = set()
+
+    for pattern in patterns:
+        for match in re.findall(pattern, html):
+            if keywords.search(match):
+                candidates.add(urllib.parse.urljoin(URL, match))
+
+    # بررسی حداکثر ۱۰ فایل JavaScript
+    examined = 0
+
+    for script_url in absolute_scripts:
+        if examined >= 10:
+            break
+
+        clean_path = urllib.parse.urlparse(script_url).path.lower()
+
+        if not clean_path.endswith(".js"):
+            continue
+
+        try:
+            js_status, js_headers, js_body = fetch(
+                script_url,
+                limit=500_000,
+                timeout=8,
             )
 
-    except Exception as exc:
-        print("FAILED:", repr(exc))
+            examined += 1
+            js = js_body.decode("utf-8", errors="replace")
 
-    return None
+            print(
+                f"JS {examined}: HTTP {js_status}; "
+                f"{len(js_body)} bytes"
+            )
 
+            for pattern in patterns:
+                for match in re.findall(pattern, js):
+                    if keywords.search(match):
+                        candidates.add(
+                            urllib.parse.urljoin(script_url, match)
+                        )
 
-def main():
-    search_url = (
-        "https://cdn.tsetmc.com/api/Instrument/GetInstrumentSearch/"
-        + urllib.parse.quote("فولاد", safe="")
-    )
+        except Exception as exc:
+            print(
+                "JS FAILED:",
+                script_url,
+                repr(exc),
+            )
 
-    search_data = test_url(
-        "TSETMC instrument search",
-        search_url,
-        parse_json=True,
-    )
+    if candidates:
+        for candidate in sorted(candidates)[:80]:
+            print("CANDIDATE:", candidate)
+    else:
+        print("No likely chart-data URLs found in inspected files.")
 
-    ins_code = "46348559193224090"
-
-    if isinstance(search_data, dict):
-        matches = search_data.get("instrumentSearch", [])
-
-        if isinstance(matches, list):
-            for item in matches:
-                if item.get("lVal18AFC") == "فولاد":
-                    ins_code = str(item.get("insCode", ins_code))
-                    break
-
-    print("\nInstrument code used:", ins_code)
-
-    history_url = (
-        "https://cdn.tsetmc.com/api/ClosingPrice/"
-        f"GetClosingPriceDailyList/{ins_code}/0"
-    )
-
-    history_data = test_url(
-        "TSETMC daily history",
-        history_url,
-        parse_json=True,
-    )
-
-    if isinstance(history_data, dict):
-        rows = history_data.get("closingPriceDaily", [])
-
-        if isinstance(rows, list):
-            print("Historical candles:", len(rows))
-
-            if rows:
-                print("First record:")
-                print(json.dumps(
-                    rows[0],
-                    ensure_ascii=False,
-                    indent=2,
-                ))
-
-    old_url = (
-        "http://old.tsetmc.com/tsev2/data/"
-        f"InstTradeHistory.aspx?i={ins_code}&Top=100&A=0"
-    )
-
-    test_url(
-        "TSETMC legacy history",
-        old_url,
-        parse_json=False,
-    )
-
-    print("\nChart source tests completed.")
+    print("\nInspection completed.")
 
 
 if __name__ == "__main__":
-    main()
+    inspect_page()
