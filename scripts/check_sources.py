@@ -13,6 +13,42 @@ from selenium.webdriver.support.ui import WebDriverWait
 URL = "https://rahavard365.com/marketmap"
 
 
+def dismiss_tour(driver):
+    print("\n--- DISMISSING RAHAVARD GUIDE ---")
+
+    for step in range(15):
+        tips = [
+            tip for tip in driver.find_elements(
+                By.CSS_SELECTOR, ".react-joyride__tooltip"
+            )
+            if tip.is_displayed()
+        ]
+
+        if not tips:
+            print("Guide closed.")
+            return
+
+        buttons = tips[0].find_elements(
+            By.CSS_SELECTOR, "button, [role='button']"
+        )
+
+        if not buttons:
+            print("Guide has no clickable button.")
+            return
+
+        button = buttons[0]
+
+        try:
+            print("Guide button:", button.text.strip())
+            button.click()
+        except Exception:
+            driver.execute_script("arguments[0].click();", button)
+
+        time.sleep(0.7)
+
+    print("Guide dismissal limit reached.")
+
+
 def main():
     options = Options()
     options.binary_location = os.environ["CHROME_BIN"]
@@ -32,79 +68,87 @@ def main():
         driver.get(URL)
 
         WebDriverWait(driver, 30).until(
-            lambda d: len(d.find_elements(By.CLASS_NAME, "leaf")) > 0
+            lambda d: len(
+                d.find_elements(By.CLASS_NAME, "leaf")
+            ) > 0
         )
-        time.sleep(4)
+
+        time.sleep(3)
+        dismiss_tour(driver)
+        time.sleep(2)
 
         leaves = driver.find_elements(By.CLASS_NAME, "leaf")
-        empty_indexes = [
-            i for i, el in enumerate(leaves)
-            if not el.text.strip()
-        ]
+        candidates = []
 
-        print("Total tiles:", len(leaves))
-        print("Tiles without visible text:", len(empty_indexes))
-        print("\n--- HOVER TEST ---")
-
-        for index in empty_indexes[:20]:
-            # پیدا کردن دوبارهٔ عنصر، برای جلوگیری از خطای DOM قدیمی
-            current_leaves = driver.find_elements(
-                By.CLASS_NAME, "leaf"
-            )
-            if index >= len(current_leaves):
+        for element in leaves:
+            if element.text.strip():
                 continue
 
-            element = current_leaves[index]
+            size = driver.execute_script("""
+                const r = arguments[0].getBoundingClientRect();
+                return {
+                    width: Math.round(r.width),
+                    height: Math.round(r.height),
+                    area: r.width * r.height
+                };
+            """, element)
 
-            details = {
-                "index": index,
-                "before_text": element.text.strip(),
-                "title": element.get_attribute("title"),
-                "aria_label": element.get_attribute("aria-label"),
-                "data_name": element.get_attribute("data-name"),
-                "html_before": (
+            candidates.append((size["area"], size, element))
+
+        # ابتدا خانه‌های خالی بزرگ‌تر آزمایش می‌شوند.
+        candidates.sort(key=lambda x: x[0], reverse=True)
+
+        print("\n--- HOVER TEST AFTER GUIDE DISMISSAL ---")
+        print("Total tiles:", len(leaves))
+        print("Empty tiles:", len(candidates))
+        print("Testing largest 15 empty tiles.")
+
+        for index, (_, size, element) in enumerate(candidates[:15]):
+            result = {
+                "sample": index + 1,
+                "size": size,
+                "before_html": (
                     element.get_attribute("outerHTML") or ""
-                )[:300],
+                )[:350],
             }
 
             try:
                 ActionChains(driver).move_to_element(
                     element
-                ).pause(0.5).perform()
-                time.sleep(0.3)
+                ).pause(1).perform()
 
-                details["after_text"] = element.text.strip()
-                details["title_after"] = element.get_attribute("title")
+                time.sleep(0.4)
 
-                # جست‌وجوی پیام‌های راهنما یا پنجره‌های شناور
-                tooltip_nodes = driver.find_elements(
-                    By.CSS_SELECTOR,
-                    "[role='tooltip'], "
-                    "[class*='tooltip'], "
-                    "[class*='Tooltip'], "
-                    "[class*='popover'], "
-                    "[class*='Popover']"
-                )
+                result["after_text"] = element.text.strip()
+                result["after_html"] = (
+                    element.get_attribute("outerHTML") or ""
+                )[:500]
 
-                tooltips = []
-                for node in tooltip_nodes:
-                    if node.is_displayed():
-                        text = node.text.strip()
-                        if text:
-                            tooltips.append({
-                                "text": text[:200],
-                                "class": node.get_attribute("class"),
-                            })
+                result["title"] = element.get_attribute("title")
+                result["aria_label"] = element.get_attribute("aria-label")
 
-                details["tooltips"] = tooltips[:5]
+                tooltip_texts = []
+                selectors = [
+                    "[role='tooltip']",
+                    "[class*='tooltip']:not(.react-joyride__tooltip)",
+                    "[class*='popover']",
+                ]
+
+                for selector in selectors:
+                    for node in driver.find_elements(
+                        By.CSS_SELECTOR, selector
+                    ):
+                        if node.is_displayed():
+                            text = node.text.strip()
+                            if text and text not in tooltip_texts:
+                                tooltip_texts.append(text[:250])
+
+                result["tooltips"] = tooltip_texts[:5]
 
             except Exception as exc:
-                details["hover_error"] = repr(exc)
+                result["error"] = repr(exc)
 
-            print(json.dumps(
-                details,
-                ensure_ascii=False,
-            ))
+            print(json.dumps(result, ensure_ascii=False))
 
     finally:
         driver.quit()
