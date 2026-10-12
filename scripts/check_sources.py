@@ -1,62 +1,81 @@
 import re
 import urllib.request
-import urllib.parse
 
-SOURCES = {
-    "TradersArena": "https://tradersarena.ir/",
-    "BourseTrader_Codal": (
-        "https://bourse-trader.ir/index.php?task=codal-reports"
+TARGETS = {
+    "Rahavard_MarketMap": (
+        "https://rahavard365.com/_next/static/chunks/"
+        "pages/marketmap-69b3a67ddee0569b.js"
     ),
-    "Rahavard_Home": "https://rahavard365.com/",
-    "Rahavard_MarketMap": "https://rahavard365.com/marketmap",
+    "Rahavard_Shared": (
+        "https://rahavard365.com/_next/static/chunks/"
+        "7079-45905514788180e4.js"
+    ),
+    "Rahavard_Home": (
+        "https://rahavard365.com/_next/static/chunks/"
+        "pages/index-7523a1e566132b2c.js"
+    ),
+    "TradersArena_Product": (
+        "https://tradersarena.ir/js/product/index.5.0.7.min.js"
+    ),
+    "TradersArena_Search": (
+        "https://tradersarena.ir/js/product/search.1.0.3.min.js"
+    ),
+    "TradersArena_Watch": (
+        "https://tradersarena.ir/js/watch-export.js"
+    ),
+    "BourseTrader": (
+        "https://bourse-trader.ir/js/script.js?ver=11"
+    ),
 }
 
-LIBRARIES = (
-    "jquery", "bootstrap", "apexcharts", "chart",
-    "sortable", "draggable", "tweenmax", "popper",
-    "sweetalert", "lightweight-charts", "farsiinput",
+KEYWORDS = re.compile(
+    r"api|graphql|ajax|marketmap|market|stock|symbol|"
+    r"ticker|price|trade|codal|instrument|quote|"
+    r"watchlist|history|ohlc|security|financial",
+    re.IGNORECASE,
 )
 
-def inspect(name, page_url):
+STRING_URL = re.compile(
+    r"""["'`]((?:https?://|//|/)[^"'`\s]{1,220})["'`]"""
+)
+
+def inspect(name, url):
     print(f"\n--- {name} ---")
 
     request = urllib.request.Request(
-        page_url,
-        headers={"User-Agent": "Mozilla/5.0"},
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "*/*",
+        },
     )
 
     try:
-        with urllib.request.urlopen(request, timeout=15) as response:
-            html = response.read(500000).decode(
+        with urllib.request.urlopen(request, timeout=12) as response:
+            source = response.read(800000).decode(
                 "utf-8", errors="replace"
             )
 
-        scripts = re.findall(
-            r'<script\b[^>]*\bsrc\s*=\s*["\']([^"\']+)["\']',
-            html,
-            re.IGNORECASE,
-        )
+        source = source.replace("\\/", "/")
+        print("HTTP status: 200")
+        print("Bytes read:", len(source))
 
-        print("Scripts found:", len(scripts))
+        matches = {
+            item for item in STRING_URL.findall(source)
+            if KEYWORDS.search(item)
+        }
 
-        for i, src in enumerate(scripts, 1):
-            url = urllib.parse.urljoin(page_url, src)
-            path = urllib.parse.urlparse(url).path.lower()
-
-            if any(word in path for word in LIBRARIES):
-                kind = "LIBRARY"
-            else:
-                kind = "CHECK THIS"
-
-            print(f"{i}. [{kind}] {url}")
-
-        print("Page received: YES")
+        if matches:
+            for item in sorted(matches)[:30]:
+                print("CANDIDATE:", item)
+        else:
+            print("No matching endpoint strings found.")
 
     except Exception as exc:
-        print("FAILED:", repr(exc))
+        print("FETCH FAILED:", repr(exc))
 
 if __name__ == "__main__":
-    for name, url in SOURCES.items():
+    for name, url in TARGETS.items():
         inspect(name, url)
 
     print("\nInspection completed.")
