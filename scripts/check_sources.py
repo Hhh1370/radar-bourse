@@ -1,115 +1,120 @@
-import json
+import re
 import urllib.request
 import urllib.parse
-import urllib.error
 
+URL = "https://www.nahayatnegar.com/tv/"
 HEADERS = {
-    "User-Agent": "Mozilla/5.0",
-    "Accept": "application/json,text/plain,*/*",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                  "AppleWebKit/537.36 Chrome/130 Safari/537.36",
+    "Accept": "text/html,application/json,*/*",
 }
 
-def test_url(name, url, parse_json=False):
-    print(f"\n--- {name} ---")
 
-    request = urllib.request.Request(
-        url,
-        headers=HEADERS,
-    )
-
-    try:
-        with urllib.request.urlopen(request, timeout=20) as response:
-            body = response.read()
-
-            print("HTTP status:", response.status)
-            print("Content-Type:", response.headers.get("Content-Type"))
-            print("Bytes received:", len(body))
-
-            if parse_json:
-                data = json.loads(body.decode("utf-8-sig"))
-                print("JSON keys:", list(data.keys())
-                      if isinstance(data, dict) else type(data).__name__)
-
-                if isinstance(data, dict):
-                    for key, value in data.items():
-                        if isinstance(value, list):
-                            print("List:", key, "Count:", len(value))
-
-                    return data
-
-            else:
-                print(
-                    "Preview:",
-                    body[:250].decode("utf-8", errors="replace")
-                )
-
-    except Exception as exc:
-        print("FAILED:", repr(exc))
-
-    return None
+def fetch(url, limit=1_000_000):
+    req = urllib.request.Request(url, headers=HEADERS)
+    with urllib.request.urlopen(req, timeout=20) as response:
+        body = response.read(limit)
+        return response.status, response.headers, body
 
 
 def main():
-    # آزمون اول: پیدا کردن شناسه TSETMC نماد فولاد
-    search_url = (
-        "https://cdn.tsetmc.com/api/Instrument/GetInstrumentSearch/"
-        + urllib.parse.quote("فولاد", safe="")
+    print("--- NAHAYATNEGAR CHART PAGE ---")
+
+    try:
+        status, headers, body = fetch(URL)
+    except Exception as exc:
+        print("PAGE FAILED:", repr(exc))
+        return
+
+    html = body.decode("utf-8", errors="replace")
+    print("HTTP status:", status)
+    print("Content-Type:", headers.get("Content-Type"))
+    print("Bytes received:", len(body))
+
+    title = re.search(
+        r"<title[^>]*>(.*?)</title>",
+        html,
+        re.IGNORECASE | re.DOTALL,
+    )
+    print(
+        "Page title:",
+        re.sub(r"\s+", " ", title.group(1)).strip()
+        if title else "Not found",
     )
 
-    search_data = test_url(
-        "TSETMC instrument search",
-        search_url,
-        parse_json=True,
+    scripts = re.findall(
+        r'<script\b[^>]*\bsrc=["\']([^"\']+)["\']',
+        html,
+        re.IGNORECASE,
+    )
+    iframes = re.findall(
+        r'<iframe\b[^>]*\bsrc=["\']([^"\']+)["\']',
+        html,
+        re.IGNORECASE,
     )
 
-    ins_code = "46348559193224090"
+    print("\n--- IFRAMES ---")
+    for src in iframes[:20]:
+        print(urllib.parse.urljoin(URL, src))
 
-    if isinstance(search_data, dict):
-        matches = search_data.get("instrumentSearch", [])
+    print("\n--- JAVASCRIPT FILES ---")
+    absolute_scripts = [
+        urllib.parse.urljoin(URL, src) for src in scripts
+    ]
+    print("Script count:", len(absolute_scripts))
 
-        for item in matches:
-            if item.get("lVal18AFC") == "فولاد":
-                ins_code = str(item.get("insCode", ins_code))
-                break
+    for src in absolute_scripts[:25]:
+        print(src)
 
-    print("\nInstrument code used:", ins_code)
-
-    # آزمون دوم: تاریخچه کامل قیمت روزانه
-    history_url = (
-        "https://cdn.tsetmc.com/api/ClosingPrice/"
-        f"GetClosingPriceDailyList/{ins_code}/0"
+    keywords = re.compile(
+        r"tradingview|websocket|graphql|/api/|"
+        r"chart|candlestick|ohlc|history|resolution|"
+        r"getbars|subscribe|symbol|marketdata",
+        re.IGNORECASE,
     )
 
-    history_data = test_url(
-        "TSETMC daily history",
-        history_url,
-        parse_json=True,
-    )
+    print("\n--- POSSIBLE DATA ROUTES ---")
+    examined = 0
+    found = set()
 
-    if isinstance(history_data, dict):
-        rows = history_data.get("closingPriceDaily", [])
-        print("Historical candles:", len(rows))
+    for src in absolute_scripts:
+        if examined >= 15:
+            break
 
-        if rows:
-            print("First record:")
-            print(json.dumps(
-                rows[0],
-                ensure_ascii=False,
-                indent=2,
-            ))
+        parsed = urllib.parse.urlparse(src)
+        if not src.lower().split("?")[0].endswith(".js"):
+            continue
 
-    # آزمون سوم: مسیر قدیمی تاریخچه
-    old_url = (
-        "http://old.tsetmc.com/tsev2/data/"
-        f"InstTradeHistory.aspx?i={ins_code}&Top=100&A=0"
-    )
+        try:
+            js_status, js_headers, js_body = fetch(src, 700_000)
+            examined += 1
 
-    test_url(
-        "TSETMC legacy history",
-        old_url,
-        parse_json=False,
-    )
+            text = js_body.decode("utf-8", errors="replace")
+            print(
+                f"JS {examined}: HTTP {js_status}, "
+                f"{len(js_body)} bytes, {parsed.netloc}"
+            )
 
-    print("\nChart source tests completed.")
+            # Find literal URLs and API-like paths in the JavaScript.
+            patterns = [
+                r"""["'`]((?:https?:)?//[^"'`\s]{1,220})["'`]""",
+                r"""["'`]((?:/|\./)[^"'`\s]{1,180})["'`]""",
+            ]
+
+            for pattern in patterns:
+                for match in re.findall(pattern, text):
+                    if keywords.search(match):
+                        found.add(
+                            urllib.parse.urljoin(src, match)
+                        )
+
+        except Exception as exc:
+            print("JS FAILED:", src, repr(exc))
+
+    for route in sorted(found)[:80]:
+        print("CANDIDATE:", route)
+
+    print("\nInspection completed.")
 
 
 if __name__ == "__main__":
