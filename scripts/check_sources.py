@@ -1,248 +1,84 @@
+import re
 import json
-import os
-import time
-from urllib.parse import urlencode
+import urllib.request
+import urllib.parse
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.ui import WebDriverWait
+BASE = "https://rahavard365.com"
+HEADERS = {"User-Agent": "Mozilla/5.0"}
 
+def fetch(url):
+    request = urllib.request.Request(url, headers=HEADERS)
+    with urllib.request.urlopen(request, timeout=20) as response:
+        return response.read().decode("utf-8", errors="replace")
 
-BASE_URL = "https://rahavard365.com"
-PAGE_URL = f"{BASE_URL}/marketmap"
-API_PATH = "/api/v2/marketmap/data"
+def show_context(source, term, limit=8, radius=350):
+    positions = []
+    start = 0
 
+    while True:
+        pos = source.lower().find(term.lower(), start)
+        if pos < 0:
+            break
+        positions.append(pos)
+        start = pos + len(term)
 
-def collect_stock_nodes(node, results=None):
-    if results is None:
-        results = {}
+    print(f"\nTERM: {term} | occurrences: {len(positions)}")
 
-    if isinstance(node, list):
-        for item in node:
-            collect_stock_nodes(item, results)
-        return results
-
-    if not isinstance(node, dict):
-        return results
-
-    children = node.get("children")
-
-    if isinstance(children, list):
-        for child in children:
-            collect_stock_nodes(child, results)
-        return results
-
-    if (
-        node.get("id") is not None
-        and node.get("name")
-        and node.get("fullname")
-        and (
-            "real_close_price" in node
-            or "value" in node
-        )
-    ):
-        results[str(node["id"])] = {
-            "id": str(node["id"]),
-            "symbol": str(node["name"]).strip(),
-            "company": str(node["fullname"]).strip(),
-            "close_price": node.get("real_close_price"),
-            "value": node.get("value"),
-        }
-
-    # پشتیبانی از لایه‌های بیرونی مثل data و root
-    for key, value in node.items():
-        if key != "children":
-            collect_stock_nodes(value, results)
-
-    return results
-
+    for pos in positions[:limit]:
+        snippet = source[max(0, pos-radius):pos+radius]
+        print("---")
+        print(snippet)
 
 def main():
-    chrome_path = os.environ["CHROME_BIN"]
-    driver_path = os.environ["CHROMEDRIVER"]
+    print("Fetching Rahavard page...")
+    html = fetch(BASE + "/marketmap")
 
-    options = Options()
-    options.binary_location = chrome_path
-    options.add_argument("--headless=new")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--window-size=1920,1080")
-    options.add_argument("--lang=fa-IR")
-
-    driver = webdriver.Chrome(
-        service=Service(driver_path),
-        options=options,
+    scripts = re.findall(
+        r'<script\b[^>]*\bsrc=["\']([^"\']+)["\']',
+        html,
+        re.IGNORECASE,
     )
 
-    try:
-        driver.set_page_load_timeout(45)
-        driver.set_script_timeout(40)
+    chunks = [
+        urllib.parse.urljoin(BASE, src)
+        for src in scripts
+        if "pages/marketmap-" in src
+    ]
 
-        print("Opening Rahavard...")
-        driver.get(PAGE_URL)
+    if not chunks:
+        raise RuntimeError("Market-map JavaScript chunk not found.")
 
-        WebDriverWait(driver, 30).until(
-            lambda d: d.execute_script(
-                "return document.readyState"
-            ) == "complete"
-        )
-        time.sleep(3)
+    js_url = chunks[0]
+    js = fetch(js_url)
 
-        variants = [
-            (
-                "asset_id=1",
-                {
-                    "asset_id": "1",
-                    "coloring_type_id": "1",
-                    "size_type_id": "1",
-                    "category_id": "1",
-                },
-            ),
-            (
-                "asset_id=2",
-                {
-                    "asset_id": "2",
-                    "coloring_type_id": "1",
-                    "size_type_id": "1",
-                    "category_id": "1",
-                },
-            ),
-            (
-                "asset_id omitted",
-                {
-                    "coloring_type_id": "1",
-                    "size_type_id": "1",
-                    "category_id": "1",
-                },
-            ),
-            (
-                "exchange_id=1",
-                {
-                    "asset_id": "1",
-                    "exchange_id": "1",
-                    "coloring_type_id": "1",
-                    "size_type_id": "1",
-                    "category_id": "1",
-                },
-            ),
-            (
-                "exchange_id=2",
-                {
-                    "asset_id": "1",
-                    "exchange_id": "2",
-                    "coloring_type_id": "1",
-                    "size_type_id": "1",
-                    "category_id": "1",
-                },
-            ),
-        ]
+    print("Chunk URL:", js_url)
+    print("JavaScript bytes:", len(js.encode("utf-8")))
 
-        results = driver.execute_async_script("""
-            const variants = arguments[0];
-            const base = arguments[1];
-            const done = arguments[arguments.length - 1];
+    terms = [
+        "/api/v2/marketmap/data",
+        "/api/v2/marketmap/filters",
+        "asset_id",
+        "exchange_id",
+        "exchangeId",
+        "exchanges",
+        "category_id",
+        "industry_id",
+        "market_id",
+        "marketmap/data",
+    ]
 
-            (async () => {
-                const output = [];
+    for term in terms:
+        show_context(js, term)
 
-                for (const variant of variants) {
-                    const params = new URLSearchParams(variant.params);
-                    const url = base + "?" + params.toString();
+    print("\n--- FILTER OPTIONS ---")
+    filters = json.loads(fetch(BASE + "/api/v2/marketmap/filters"))
+    print(json.dumps(
+        filters.get("data", {}),
+        ensure_ascii=False,
+        indent=2,
+    )[:12000])
 
-                    try {
-                        const response = await fetch(url, {
-                            method: "GET",
-                            credentials: "include",
-                            cache: "no-store",
-                            headers: {"Accept": "application/json"}
-                        });
-
-                        const body = await response.text();
-                        let data = null;
-                        let parseError = null;
-
-                        try {
-                            data = JSON.parse(body);
-                        } catch (error) {
-                            parseError = String(error);
-                        }
-
-                        output.push({
-                            label: variant.label,
-                            url: url,
-                            status: response.status,
-                            bytes: new TextEncoder().encode(body).length,
-                            data: data,
-                            parseError: parseError
-                        });
-                    } catch (error) {
-                        output.push({
-                            label: variant.label,
-                            url: url,
-                            error: String(error)
-                        });
-                    }
-                }
-
-                done(output);
-            })();
-        """, [
-            {"label": label, "params": params}
-            for label, params in variants
-        ], API_PATH)
-
-        print("\n--- API COMPARISON ---")
-
-        signatures = {}
-
-        for result in results:
-            print("\nRequest:", result["label"])
-            print("HTTP status:", result.get("status"))
-            print("Response bytes:", result.get("bytes"))
-
-            data = result.get("data")
-            if not isinstance(data, (dict, list)):
-                print("Response error:", result.get("error") or result.get("parseError"))
-                continue
-
-            stocks = collect_stock_nodes(data)
-            stock_list = sorted(
-                stocks.values(),
-                key=lambda item: item["symbol"],
-            )
-
-            signature = tuple(
-                (item["id"], item["symbol"])
-                for item in stock_list
-            )
-            signatures[result["label"]] = signature
-
-            print("Unique stock IDs:", len(stock_list))
-            print("First 10 symbols:", [
-                item["symbol"] for item in stock_list[:10]
-            ])
-            print("Last 5 symbols:", [
-                item["symbol"] for item in stock_list[-5:]
-            ])
-
-        print("\n--- COMPARISON SUMMARY ---")
-        labels = list(signatures)
-
-        for i in range(len(labels)):
-            for j in range(i + 1, len(labels)):
-                a = labels[i]
-                b = labels[j]
-                print(
-                    f"{a} == {b}:",
-                    signatures[a] == signatures[b],
-                )
-
-        print("\nDiagnostic completed.")
-
-    finally:
-        driver.quit()
-
+    print("\nInspection completed.")
 
 if __name__ == "__main__":
     main()
