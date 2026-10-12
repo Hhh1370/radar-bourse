@@ -1,7 +1,7 @@
+import base64
 import json
 import os
 import time
-from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -11,50 +11,40 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 URL = "https://rahavard365.com/marketmap"
-
-KEYWORDS = (
-    "api", "graphql", "marketmap", "market", "asset",
-    "stock", "symbol", "ticker", "price", "quote",
-    "instrument", "security", "trade", "ohlc", "rank"
-)
-
-SENSITIVE_KEYS = {
-    "token", "access_token", "refresh_token",
-    "authorization", "api_key", "apikey", "secret"
-}
+ENDPOINT_PART = "/api/v2/marketmap/data"
 
 
-def safe_url(url):
-    """Keep useful URL parameters while hiding possible secrets."""
-    try:
-        parts = urlparse(url)
-        query = []
-        for key, value in parse_qsl(parts.query, keep_blank_values=True):
-            if key.lower() in SENSITIVE_KEYS:
-                value = "[REDACTED]"
-            query.append((key, value))
+def collect_lists(obj, path="$", output=None, depth=0):
+    if output is None:
+        output = []
 
-        return urlunparse((
-            parts.scheme,
-            parts.netloc,
-            parts.path,
-            parts.params,
-            urlencode(query),
-            ""
-        ))
-    except Exception:
-        return url[:300]
+    if depth > 8:
+        return output
 
+    if isinstance(obj, dict):
+        for key, value in obj.items():
+            collect_lists(
+                value, f"{path}.{key}", output, depth + 1
+            )
 
-def relevant(url, resource_type):
-    lower = url.lower()
+    elif isinstance(obj, list):
+        output.append({
+            "path": path,
+            "count": len(obj),
+            "first": obj[0] if obj else None,
+        })
 
-    if resource_type in ("XHR", "Fetch"):
-        return True
+        # بررسی چند مورد اول برای پیدا کردن آرایه‌های تو در تو
+        for index, value in enumerate(obj[:3]):
+            if isinstance(value, (dict, list)):
+                collect_lists(
+                    value,
+                    f"{path}[{index}]",
+                    output,
+                    depth + 1,
+                )
 
-    return any(word in lower for word in KEYWORDS) and not lower.endswith(
-        (".png", ".jpg", ".jpeg", ".gif", ".svg", ".woff", ".woff2")
-    )
+    return output
 
 
 def main():
@@ -66,14 +56,13 @@ def main():
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--lang=fa-IR")
 
-    # Enable Chrome's network performance log.
     options.set_capability(
         "goog:loggingPrefs",
-        {"performance": "ALL"}
+        {"performance": "ALL"},
     )
     options.add_experimental_option(
         "perfLoggingPrefs",
-        {"enableNetwork": True, "enablePage": False}
+        {"enableNetwork": True, "enablePage": False},
     )
 
     driver = webdriver.Chrome(
@@ -82,8 +71,10 @@ def main():
     )
 
     try:
+        driver.execute_cdp_cmd("Network.enable", {})
         driver.set_page_load_timeout(45)
-        print("Opening Rahavard market map...")
+
+        print("Opening market map...")
         driver.get(URL)
 
         WebDriverWait(driver, 30).until(
@@ -91,89 +82,120 @@ def main():
                 d.find_elements(By.CLASS_NAME, "leaf")
             ) > 0
         )
-
-        # Allow delayed data requests to complete.
-        time.sleep(8)
-
-        print("Page title:", driver.title)
-        print("Final URL:", driver.current_url)
-        print("Visible market tiles:",
-              len(driver.find_elements(By.CLASS_NAME, "leaf")))
+        time.sleep(5)
 
         logs = driver.get_log("performance")
-        requests = {}
-        responses = {}
+        matching = []
 
         for entry in logs:
             try:
                 message = json.loads(entry["message"])["message"]
-                method = message.get("method")
+
+                if message.get("method") != "Network.responseReceived":
+                    continue
+
                 params = message.get("params", {})
-                request_id = params.get("requestId")
+                response = params.get("response", {})
+                response_url = response.get("url", "")
 
-                if method == "Network.requestWillBeSent":
-                    request = params.get("request", {})
-                    requests[request_id] = {
-                        "url": request.get("url", ""),
-                        "method": request.get("method", "GET"),
-                        "type": params.get("type", ""),
-                    }
-
-                elif method == "Network.responseReceived":
-                    response = params.get("response", {})
-                    responses[request_id] = {
+                if ENDPOINT_PART in response_url:
+                    matching.append({
+                        "request_id": params.get("requestId"),
+                        "url": response_url,
                         "status": response.get("status"),
-                        "mime": response.get("mimeType", ""),
-                        "url": response.get("url", ""),
-                        "type": params.get("type", ""),
-                    }
+                        "mime": response.get("mimeType"),
+                    })
+
             except Exception:
                 continue
 
-        print("\n--- RELEVANT NETWORK REQUESTS ---")
-        printed = set()
-        count = 0
+        print("Matching API responses:", len(matching))
 
-        for request_id, req in requests.items():
-            resp = responses.get(request_id, {})
-            url = req["url"] or resp.get("url", "")
+        successful = [
+            item for item in matching
+            if item["status"] == 200 and item["request_id"]
+        ]
 
-            if not url or not relevant(url, req["type"] or resp.get("type", "")):
-                continue
+        if not successful:
+            print("No successful market-data response was captured.")
+            for item in matching:
+                print(json.dumps(item, ensure_ascii=False))
+            raise RuntimeError("Market-map API response not captured.")
 
-            display = (
-                req["method"],
-                safe_url(url),
-                resp.get("status"),
-                resp.get("mime", "")
+        response_info = successful[-1]
+
+        print("HTTP status:", response_info["status"])
+        print("Content type:", response_info["mime"])
+        print("API URL:", response_info["url"])
+
+        body_result = driver.execute_cdp_cmd(
+            "Network.getResponseBody",
+            {"requestId": response_info["request_id"]},
+        )
+
+        body = body_result["body"]
+
+        if body_result.get("base64Encoded"):
+            body = base64.b64decode(body).decode(
+                "utf-8", errors="replace"
             )
 
-            if display in printed:
-                continue
+        data = json.loads(body)
 
-            printed.add(display)
-            count += 1
+        print("Response bytes:", len(body.encode("utf-8")))
+        print("JSON root type:", type(data).__name__)
 
+        if isinstance(data, dict):
+            print("Root keys:", list(data.keys())[:50])
+
+        elif isinstance(data, list):
+            print("Root list length:", len(data))
+
+        print("\n--- DATA ARRAYS ---")
+        arrays = collect_lists(data)
+
+        for item in sorted(
+            arrays,
+            key=lambda entry: entry["count"],
+            reverse=True,
+        )[:20]:
             print(json.dumps({
-                "method": display[0],
-                "url": display[1],
-                "status": display[2],
-                "content_type": display[3],
-                "resource_type": req["type"] or resp.get("type", ""),
+                "path": item["path"],
+                "count": item["count"],
+                "first_item_type": (
+                    type(item["first"]).__name__
+                    if item["first"] is not None
+                    else None
+                ),
             }, ensure_ascii=False))
 
-            if count >= 100:
-                print("Output limit reached.")
-                break
+        record_arrays = [
+            item for item in arrays
+            if isinstance(item["first"], dict)
+        ]
 
-        print("\nRelevant request count:", count)
-        print("Total performance log entries:", len(logs))
-
-        if count == 0:
-            print(
-                "No matching requests captured. "
-                "The site may use another loading mechanism."
+        if record_arrays:
+            largest = max(
+                record_arrays,
+                key=lambda item: item["count"],
             )
+
+            print("\n--- LARGEST RECORD ARRAY ---")
+            print("Path:", largest["path"])
+            print("Count:", largest["count"])
+            print("Sample records:")
+
+            print(json.dumps(
+                # فقط سه رکورد برای جلوگیری از خروجی بسیار طولانی
+                largest["first"],
+                ensure_ascii=False,
+                indent=2,
+            )[:6000])
+
+        else:
+            print("\nNo list of record objects identified.")
+
+        print("\nInspection completed.")
 
     finally:
         driver.quit()
