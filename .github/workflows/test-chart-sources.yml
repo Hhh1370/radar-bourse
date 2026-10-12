@@ -9,7 +9,7 @@ permissions:
 jobs:
   test-chart-sources:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -20,5 +20,20 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Test historical chart endpoints
+      - name: Set up Chrome and ChromeDriver
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          install-chromedriver: true
+
+      - name: Install Selenium
+        run: python -m pip install selenium
+
+      - name: Export browser paths
+        shell: bash
+        run: |
+          echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
+          echo "CHROMEDRIVER=${{ steps.setup-chrome.outputs.chromedriver-path }}" >> "$GITHUB_ENV"
+
+      - name: Inspect Nahayatnegar chart requests
         run: python scripts/test_chart_sources.py
