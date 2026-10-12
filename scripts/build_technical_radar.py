@@ -193,4 +193,13 @@ def assess_heat(
             and daily_20 >= 20
         )
     ):
-        entry_timing = "انتظار برای اصلاح
+        entry_timing = "انتظار برای اصلاح یا تثبیت"
+    elif (
+        (rsi_value is not None and rsi_value >= 70)
+        or penalty >= 10
+    ):
+        entry_timing = "فقط پس از تأیید مجدد"
+    else:
+        entry_timing = "قابل بررسی پس از تحلیل بنیادی"
+
+    return penalty, flags, heat_label, entry_timing
