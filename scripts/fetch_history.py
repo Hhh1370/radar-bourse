@@ -19,8 +19,8 @@ MANIFEST_FILE = ROOT / "data" / "history_manifest.json"
 CHART_URL = "https://www.nahayatnegar.com/tv/IRO1KSHJ00013"
 START_DATE = "2018-01-01"
 
-# مرحلهٔ بعد از آزمایش موفق ۵۰ نماد
-MAX_SYMBOLS = 150
+# None یعنی تمام نمادهای موجود در marketmap.json
+MAX_SYMBOLS = None
 BATCH_SIZE = 5
 MAX_BATCH_RETRIES = 1
 COUNTBACK = 5000
@@ -68,8 +68,9 @@ def normalize(value):
 
 
 def safe_slug(symbol, marketmap_id):
-    if symbol in SLUGS:
-        return SLUGS[symbol]
+    known = SLUGS.get(symbol)
+    if known:
+        return known
 
     cleaned = re.sub(
         r"[^A-Za-z0-9_-]+",
@@ -93,17 +94,33 @@ def load_marketmap():
     if not isinstance(items, list) or not items:
         raise ValueError("No usable items in marketmap.json")
 
-    return payload, items
+    # حذف ردیف‌های تکراری بر اساس نام نرمال‌شده
+    unique = []
+    seen = set()
+
+    for item in items:
+        symbol = item.get("symbol")
+        key = normalize(symbol)
+
+        if not key or key in seen:
+            continue
+
+        seen.add(key)
+        unique.append(item)
+
+    return payload, unique
 
 
 def select_symbols(items):
+    """همهٔ نمادها را انتخاب می‌کند؛ نمادهای مهم در ابتدای صف‌اند."""
     by_symbol = {
         normalize(item.get("symbol")): item
         for item in items
         if item.get("symbol")
     }
 
-    chosen, seen = [], set()
+    chosen = []
+    seen = set()
 
     for name in PRIORITY_SYMBOLS:
         item = by_symbol.get(normalize(name))
@@ -128,13 +145,14 @@ def select_symbols(items):
         key = normalize(item.get("symbol"))
         if not key or key in seen:
             continue
+
         chosen.append(item)
         seen.add(key)
 
-        if len(chosen) >= MAX_SYMBOLS:
-            break
+    if MAX_SYMBOLS is not None:
+        return chosen[:MAX_SYMBOLS]
 
-    return chosen[:MAX_SYMBOLS]
+    return chosen
 
 
 def make_driver():
@@ -155,6 +173,7 @@ def make_driver():
         options.add_argument(argument)
 
     driver_path = os.environ.get("CHROMEDRIVER")
+
     if driver_path and Path(driver_path).is_file():
         driver = webdriver.Chrome(
             service=Service(executable_path=driver_path),
@@ -177,31 +196,71 @@ const countback = arguments[4];
 const done = arguments[arguments.length - 1];
 
 (async function () {
-    const output = {symbols: [], errors: []};
+    const output = {
+        capturedAtUtc: new Date().toISOString(),
+        symbols: [],
+        errors: []
+    };
 
     const delay = ms =>
         new Promise(resolve => setTimeout(resolve, ms));
 
     async function getJson(path) {
-        await delay(120);
+        let lastResult = null;
 
-        const response = await fetch(path, {
-            method: "GET",
-            credentials: "same-origin",
-            headers: {"Accept": "application/json"}
-        });
+        // Retry فقط برای خطاهای موقت سرور یا محدودیت درخواست.
+        for (let attempt = 0; attempt < 3; attempt++) {
+            if (attempt > 0) {
+                await delay(attempt * 900);
+            } else {
+                await delay(120);
+            }
 
-        const text = await response.text();
-        let data = null;
+            try {
+                const response = await fetch(path, {
+                    method: "GET",
+                    credentials: "same-origin",
+                    headers: {"Accept": "application/json"}
+                });
 
-        try {
-            data = JSON.parse(text);
-        } catch (_) {}
+                const text = await response.text();
+                let data = null;
 
-        return {
-            httpStatus: response.status,
-            data: data,
-            bodyPreview: text.slice(0, 400)
+                try {
+                    data = JSON.parse(text);
+                } catch (_) {}
+
+                lastResult = {
+                    httpStatus: response.status,
+                    data: data,
+                    bodyPreview: text.slice(0, 500)
+                };
+
+                const transient = [429, 500, 502, 503, 504]
+                    .includes(response.status);
+
+                if (transient && attempt < 2) {
+                    continue;
+                }
+
+                return lastResult;
+            } catch (error) {
+                lastResult = {
+                    httpStatus: 0,
+                    data: null,
+                    bodyPreview: String(error)
+                };
+
+                if (attempt < 2) {
+                    continue;
+                }
+            }
+        }
+
+        return lastResult || {
+            httpStatus: 0,
+            data: null,
+            bodyPreview: "No response"
         };
     }
 
@@ -218,10 +277,15 @@ const done = arguments[arguments.length - 1];
 
     function getSymbolObject(data) {
         if (!data || typeof data !== "object") return null;
+
         if (data.tvSymbol && typeof data.tvSymbol === "object") {
             return data.tvSymbol;
         }
-        if (data.id || data.ticker || data.full_name) return data;
+
+        if (data.id || data.ticker || data.full_name) {
+            return data;
+        }
+
         return null;
     }
 
@@ -237,10 +301,10 @@ const done = arguments[arguments.length - 1];
 
         try {
             let selected = null;
-            let candidates = [];
+            let lastSearch = null;
 
             for (const exchange of ["بورس", ""]) {
-                const searchParams = new URLSearchParams({
+                const params = new URLSearchParams({
                     query: requested.symbol,
                     exchange: exchange,
                     type: "stock",
@@ -248,53 +312,71 @@ const done = arguments[arguments.length - 1];
                 });
 
                 const response = await getJson(
-                    "/tv/chart/search?" + searchParams.toString()
+                    "/tv/chart/search?" + params.toString()
                 );
 
-                candidates = Array.isArray(response.data?.tvSymbols)
-                    ? response.data.tvSymbols
-                    : [];
+                const results = Array.isArray(
+                    response.data?.tvSymbols
+                ) ? response.data.tvSymbols : [];
 
-                const expected = norm(requested.symbol + "1");
-
-                selected = candidates.find(symbol =>
-                    symbol &&
-                    symbol.id &&
-                    norm(symbol.name || symbol.symbol) === expected &&
-                    (!symbol.type || symbol.type === "stock") &&
-                    (
-                        !exchange ||
-                        !symbol.exchange ||
-                        symbol.exchange === exchange
-                    )
-                ) || null;
-
-                item.search = {
+                lastSearch = {
                     httpStatus: response.httpStatus,
                     exchange: exchange,
-                    resultCount: candidates.length,
-                    selected: selected ? {
-                        id: selected.id,
-                        name: selected.name || selected.symbol || null,
-                        full_name: selected.full_name ||
-                            selected.description || null,
-                        type: selected.type || "stock",
-                        exchange: selected.exchange || null
-                    } : null
+                    query: requested.symbol,
+                    resultCount: results.length
                 };
 
-                if (selected) break;
+                const expectedName = norm(requested.symbol + "1");
+
+                selected = results.find(symbol => {
+                    if (!symbol || !symbol.id) return false;
+
+                    const name = norm(
+                        symbol.name || symbol.symbol
+                    );
+
+                    return (
+                        name === expectedName &&
+                        (
+                            !symbol.type ||
+                            symbol.type === "stock"
+                        ) &&
+                        (
+                            !exchange ||
+                            !symbol.exchange ||
+                            symbol.exchange === exchange
+                        )
+                    );
+                }) || null;
+
+                if (selected) {
+                    item.search = {
+                        ...lastSearch,
+                        selected: {
+                            id: selected.id,
+                            name: selected.name ||
+                                selected.symbol || null,
+                            full_name: selected.full_name ||
+                                selected.description || null,
+                            type: selected.type || "stock",
+                            exchange: selected.exchange || null
+                        }
+                    };
+                    break;
+                }
             }
 
             if (!selected) {
+                item.search = lastSearch;
                 item.errors.push(
-                    "Exact ordinary-stock symbol not found."
+                    "Exact ordinary-stock ticker not found."
                 );
                 output.symbols.push(item);
                 await delay(200);
                 continue;
             }
 
+            // شناسهٔ خام جست‌وجو به شناسهٔ تاریخچه تبدیل می‌شود.
             const rawId = String(selected.id);
             const canonicalId = rawId.endsWith("3")
                 ? rawId
@@ -316,7 +398,8 @@ const done = arguments[arguments.length - 1];
                 httpStatus: symbolResponse.httpStatus,
                 id: resolved?.id || null,
                 ticker: resolved?.ticker || null,
-                name: resolved?.name || resolved?.symbol || null,
+                name: resolved?.name ||
+                    resolved?.symbol || null,
                 full_name: resolved?.full_name || null,
                 type: resolved?.type || null
             };
@@ -327,7 +410,7 @@ const done = arguments[arguments.length - 1];
                 String(resolved.id || resolved.ticker) !== canonicalId
             ) {
                 item.errors.push(
-                    "Canonical chart symbol ID was not confirmed."
+                    "Canonical chart symbol ID not confirmed."
                 );
                 output.symbols.push(item);
                 await delay(200);
@@ -345,80 +428,87 @@ const done = arguments[arguments.length - 1];
                     countback: String(countback)
                 });
 
-                try {
-                    const response = await getJson(
-                        "/tv/chart/history?" + params.toString()
-                    );
+                const response = await getJson(
+                    "/tv/chart/history?" + params.toString()
+                );
 
-                    const data = response.data || {};
-                    const arrays = {
-                        time: data.t,
-                        open: data.o,
-                        high: data.h,
-                        low: data.l,
-                        close: data.c,
-                        volume: data.v
-                    };
+                const data = response.data || {};
 
-                    const lengths = {};
-                    for (const [key, value] of Object.entries(arrays)) {
-                        lengths[key] = Array.isArray(value)
-                            ? value.length : 0;
-                    }
+                const arrays = {
+                    time: data.t,
+                    open: data.o,
+                    high: data.h,
+                    low: data.l,
+                    close: data.c,
+                    volume: data.v
+                };
 
-                    const required = [
-                        "time", "open", "high", "low", "close"
-                    ];
-
-                    const count = required.every(
-                        key => Array.isArray(arrays[key])
-                    )
-                        ? Math.min(...required.map(key => lengths[key]))
+                const lengths = {};
+                for (const [key, value] of Object.entries(arrays)) {
+                    lengths[key] = Array.isArray(value)
+                        ? value.length
                         : 0;
-
-                    const apiStatus = data.s || data.status || null;
-                    const success =
-                        response.httpStatus === 200 &&
-                        apiStatus === "ok" &&
-                        count > 0;
-
-                    item.histories[resolution] = {
-                        status: success ? "success" : "failed",
-                        httpStatus: response.httpStatus,
-                        apiStatus: apiStatus,
-                        errorMessage: data.errmsg || data.error || null,
-                        arrayLengths: lengths,
-                        count: count,
-                        firstTime: count ? arrays.time[0] : null,
-                        lastTime: count ? arrays.time[count - 1] : null,
-                        series: success ? {
-                            time: arrays.time.slice(0, count),
-                            open: arrays.open.slice(0, count),
-                            high: arrays.high.slice(0, count),
-                            low: arrays.low.slice(0, count),
-                            close: arrays.close.slice(0, count),
-                            volume: Array.isArray(arrays.volume)
-                                ? arrays.volume.slice(0, count) : []
-                        } : null,
-                        bodyPreview: success ? null : response.bodyPreview
-                    };
-                } catch (error) {
-                    item.histories[resolution] = {
-                        status: "failed",
-                        error: String(error)
-                    };
                 }
+
+                const required = [
+                    "time", "open", "high", "low", "close"
+                ];
+
+                const hasRequired = required.every(
+                    key => Array.isArray(arrays[key])
+                );
+
+                const count = hasRequired
+                    ? Math.min(...required.map(key => lengths[key]))
+                    : 0;
+
+                const apiStatus = data.s || data.status || null;
+                const success =
+                    response.httpStatus === 200 &&
+                    apiStatus === "ok" &&
+                    count > 0;
+
+                item.histories[resolution] = {
+                    status: success ? "success" : "failed",
+                    httpStatus: response.httpStatus,
+                    apiStatus: apiStatus,
+                    errorMessage: data.errmsg || data.error || null,
+                    arrayLengths: lengths,
+                    count: count,
+                    firstTime: count ? arrays.time[0] : null,
+                    lastTime: count
+                        ? arrays.time[count - 1]
+                        : null,
+                    series: success ? {
+                        time: arrays.time.slice(0, count),
+                        open: arrays.open.slice(0, count),
+                        high: arrays.high.slice(0, count),
+                        low: arrays.low.slice(0, count),
+                        close: arrays.close.slice(0, count),
+                        volume: Array.isArray(arrays.volume)
+                            ? arrays.volume.slice(0, count)
+                            : []
+                    } : null,
+                    bodyPreview: success
+                        ? null
+                        : response.bodyPreview
+                };
             }
 
             const successes = Object.values(item.histories)
-                .filter(history => history.status === "success").length;
+                .filter(history => history.status === "success")
+                .length;
 
             item.status = successes === resolutions.length
                 ? "success"
-                : successes > 0 ? "partial" : "failed";
+                : successes > 0
+                    ? "partial"
+                    : "failed";
 
             if (successes === 0) {
-                item.errors.push("No usable history interval returned.");
+                item.errors.push(
+                    "No usable history intervals returned."
+                );
             }
         } catch (error) {
             item.errors.push(String(error));
@@ -429,7 +519,9 @@ const done = arguments[arguments.length - 1];
     }
 
     done(output);
-})().catch(error => done({fatalError: String(error)}));
+})().catch(error => done({
+    fatalError: String(error)
+}));
 """
 
 
@@ -476,8 +568,11 @@ def write_jsonl(path, series, count):
             "close": series["close"][index],
             "volume": volume[index] if index < len(volume) else None,
         }
+
         lines.append(json.dumps(
-            candle, ensure_ascii=False, separators=(",", ":")
+            candle,
+            ensure_ascii=False,
+            separators=(",", ":"),
         ))
 
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -485,6 +580,77 @@ def write_jsonl(path, series, count):
         "\n".join(lines) + ("\n" if lines else ""),
         encoding="utf-8",
     )
+
+
+def load_previous_manifest():
+    if not MANIFEST_FILE.exists():
+        return {}
+
+    try:
+        return json.loads(
+            MANIFEST_FILE.read_text(encoding="utf-8")
+        )
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def reusable_successes(items, previous_manifest):
+    """
+    فقط نمادهای موفق قبلی را رد می‌کند که هر سه فایل تاریخچه
+    واقعاً موجود و غیرخالی باشند.
+    """
+    old_results = {
+        normalize(record.get("symbol")): record
+        for record in previous_manifest.get("results", [])
+        if record.get("symbol")
+    }
+
+    reusable = {}
+
+    for source_item in items:
+        key = normalize(source_item.get("symbol"))
+        old = old_results.get(key)
+
+        if not old or old.get("status") != "success":
+            continue
+
+        intervals = old.get("intervals") or {}
+        all_valid = True
+
+        for resolution in RESOLUTIONS:
+            interval = intervals.get(resolution) or {}
+            relative_file = interval.get("file")
+
+            if (
+                interval.get("status") != "success" or
+                not relative_file
+            ):
+                all_valid = False
+                break
+
+            file_path = ROOT / relative_file
+
+            if (
+                not file_path.is_file() or
+                file_path.stat().st_size == 0
+            ):
+                all_valid = False
+                break
+
+        if not all_valid:
+            continue
+
+        # Keep existing price files and refresh market-map metadata.
+        updated = dict(old)
+        updated["company"] = source_item.get("company", "")
+        updated["marketmap_id"] = source_item.get("id")
+        updated["marketmap_close_price"] = source_item.get("close_price")
+        updated["marketmap_change_pct"] = source_item.get("change_pct")
+        updated["reused_existing_data"] = True
+
+        reusable[key] = updated
+
+    return reusable
 
 
 def interval_filename(slug, resolution):
@@ -504,6 +670,7 @@ def summarize_symbol(result, source_item):
         "status": result.get("status", "failed"),
         "search": result.get("search"),
         "resolved_symbol": result.get("resolvedSymbol"),
+        "reused_existing_data": False,
         "intervals": {},
         "errors": result.get("errors", []),
     }
@@ -512,6 +679,7 @@ def summarize_symbol(result, source_item):
 
     for resolution in RESOLUTIONS:
         history = histories.get(resolution) or {}
+
         interval = {
             "status": history.get("status", "failed"),
             "http_status": history.get("httpStatus"),
@@ -545,8 +713,12 @@ def summarize_symbol(result, source_item):
         summary["intervals"][resolution] = interval
 
     written = sum(
-        1 for item in summary["intervals"].values()
-        if item.get("written")
+        1 for interval in summary["intervals"].values()
+        if interval.get("written") or (
+            interval.get("status") == "success" and
+            interval.get("file") and
+            (ROOT / interval["file"]).is_file()
+        )
     )
 
     summary["status"] = (
@@ -558,21 +730,35 @@ def summarize_symbol(result, source_item):
     return summary
 
 
-def build_manifest(payload, selected_items, summaries, started_at, fatal_error=None):
+def save_manifest(
+    payload,
+    selected_items,
+    summaries,
+    started_at,
+    reused_count,
+    fatal_error=None,
+):
     successful = sum(
-        1 for item in summaries if item["status"] == "success"
+        1 for item in summaries
+        if item.get("status") == "success"
     )
     partial = sum(
-        1 for item in summaries if item["status"] == "partial"
+        1 for item in summaries
+        if item.get("status") == "partial"
     )
     failed = sum(
-        1 for item in summaries if item["status"] == "failed"
+        1 for item in summaries
+        if item.get("status") == "failed"
     )
-    files_written = sum(
-        1
-        for item in summaries
+
+    files_ready = sum(
+        1 for item in summaries
         for interval in item.get("intervals", {}).values()
-        if interval.get("written")
+        if (
+            interval.get("file") and
+            (ROOT / interval["file"]).is_file() and
+            (ROOT / interval["file"]).stat().st_size > 0
+        )
     )
 
     complete = (
@@ -581,7 +767,7 @@ def build_manifest(payload, selected_items, summaries, started_at, fatal_error=N
         successful == len(selected_items)
     )
 
-    return {
+    manifest = {
         "source": "Nahayatnegar public chart interface",
         "started_at_utc": started_at,
         "updated_at_utc": utc_now(),
@@ -596,10 +782,11 @@ def build_manifest(payload, selected_items, summaries, started_at, fatal_error=N
         "batch_retries": MAX_BATCH_RETRIES,
         "requested_symbols": len(selected_items),
         "processed_symbols": len(summaries),
+        "reused_successful_symbols": reused_count,
         "successful_symbols": successful,
         "partial_symbols": partial,
         "failed_symbols": failed,
-        "successful_interval_files": files_written,
+        "successful_interval_files": files_ready,
         "status": (
             "error" if fatal_error
             else "success" if complete
@@ -608,19 +795,15 @@ def build_manifest(payload, selected_items, summaries, started_at, fatal_error=N
         "results": summaries,
         "fatal_error": fatal_error,
         "notes": [
-            "150-symbol scaling test; not a full-market scan.",
+            "All unique symbols in current marketmap.json are targeted.",
             "Market-map coverage is not independently verified.",
-            "Only status=ok with non-empty candle arrays counts as successful.",
+            "Previously successful symbols are reused only when all three history files exist.",
+            "Failed and partial symbols remain eligible for the next run.",
+            "A successful interval requires API status=ok and non-empty candle arrays.",
             "Candle dates are derived from UTC timestamps.",
-            "The source may revise historical candles.",
         ],
     }
 
-
-def save_manifest(payload, selected_items, summaries, started_at, fatal_error=None):
-    manifest = build_manifest(
-        payload, selected_items, summaries, started_at, fatal_error
-    )
     write_json(MANIFEST_FILE, manifest)
     return manifest
 
@@ -682,35 +865,61 @@ def main():
     summaries_by_symbol = {}
     fatal_error = None
     driver = None
+    previous_manifest = load_previous_manifest()
 
     try:
         payload, market_items = load_marketmap()
         selected_items = select_symbols(market_items)
 
-        print("Market map records:", len(market_items))
-        print("Selected for this batch:", len(selected_items))
-        print("Batch size:", BATCH_SIZE)
-        print("Symbols:", ", ".join(
-            item.get("symbol", "") for item in selected_items
-        ))
+        reused = reusable_successes(
+            selected_items,
+            previous_manifest,
+        )
+        summaries_by_symbol.update(reused)
 
-        if not selected_items:
-            raise ValueError("No symbols selected from marketmap.json")
+        pending_items = [
+            item for item in selected_items
+            if normalize(item.get("symbol")) not in reused
+        ]
+
+        print("Unique market map symbols:", len(selected_items))
+        print("Previously successful and reusable:", len(reused))
+        print("Need collection now:", len(pending_items))
+        print("Batch size:", BATCH_SIZE)
+        print(
+            "Symbols in queue:",
+            ", ".join(item.get("symbol", "") for item in pending_items)
+        )
+
+        # Save existing successful progress immediately.
+        ordered = [
+            summaries_by_symbol[normalize(item.get("symbol"))]
+            for item in selected_items
+            if normalize(item.get("symbol")) in summaries_by_symbol
+        ]
+        save_manifest(
+            payload, selected_items, ordered, started_at, len(reused)
+        )
 
         start_time = timestamp(START_DATE)
         end_time = int(datetime.now(timezone.utc).timestamp()) + 86400
+
         total_batches = (
-            len(selected_items) + BATCH_SIZE - 1
+            len(pending_items) + BATCH_SIZE - 1
         ) // BATCH_SIZE
 
         for batch_index, start_index in enumerate(
-            range(0, len(selected_items), BATCH_SIZE),
+            range(0, len(pending_items), BATCH_SIZE),
             start=1,
         ):
-            batch = selected_items[start_index:start_index + BATCH_SIZE]
-            names = ", ".join(item.get("symbol", "") for item in batch)
+            batch = pending_items[
+                start_index:start_index + BATCH_SIZE
+            ]
 
-            print(f"\nBatch {batch_index}/{total_batches}: {names}")
+            print(
+                f"\nBatch {batch_index}/{total_batches}:",
+                ", ".join(item.get("symbol", "") for item in batch)
+            )
 
             batch_result = None
             last_error = None
@@ -721,7 +930,10 @@ def main():
                         driver = open_chart()
 
                     batch_result = collect_batch(
-                        driver, batch, start_time, end_time
+                        driver,
+                        batch,
+                        start_time,
+                        end_time,
                     )
                     last_error = None
                     break
@@ -751,7 +963,8 @@ def main():
                         f"Batch execution failed: {last_error}",
                     )
                     summaries_by_symbol[key] = summarize_symbol(
-                        failed, source_item
+                        failed,
+                        source_item,
                     )
             else:
                 result_map = {
@@ -772,35 +985,36 @@ def main():
                             "No result returned by collector for symbol.",
                         )
 
-                    summary = summarize_symbol(entry, source_item)
-                    summaries_by_symbol[key] = summary
+                    summaries_by_symbol[key] = summarize_symbol(
+                        entry,
+                        source_item,
+                    )
 
+                    current = summaries_by_symbol[key]
                     print(
                         "  ", symbol,
-                        "|", summary["status"],
+                        "|", current["status"],
                         "| ID:",
-                        (summary.get("resolved_symbol") or {}).get(
+                        (current.get("resolved_symbol") or {}).get(
                             "canonicalId", "-"
                         ),
                     )
 
-                    for resolution in RESOLUTIONS:
-                        interval = summary["intervals"][resolution]
-                        print(
-                            "    ", resolution,
-                            "|", interval["status"],
-                            "| candles:", interval.get("count", 0),
-                            "| file:", interval.get("file", "-"),
-                        )
-
-            # پس از هر دسته ذخیره می‌کنیم؛ شکست دستهٔ بعدی
-            # خروجی دسته‌های قبلی را از بین نمی‌برد.
+            # بعد از هر دسته وضعیت ذخیره می‌شود؛ دسته‌های بعدی
+            # لازم نیست موفق باشند تا پیشرفت قبلی حفظ شود.
             ordered = [
                 summaries_by_symbol[normalize(item.get("symbol"))]
                 for item in selected_items
                 if normalize(item.get("symbol")) in summaries_by_symbol
             ]
-            save_manifest(payload, selected_items, ordered, started_at)
+
+            save_manifest(
+                payload,
+                selected_items,
+                ordered,
+                started_at,
+                len(reused),
+            )
 
         if driver is not None:
             try:
@@ -820,6 +1034,19 @@ def main():
             except Exception:
                 pass
 
+        # هر نمادی که به علت خطای کلی هنوز پردازش نشده گزارش می‌شود.
+        for source_item in selected_items:
+            key = normalize(source_item.get("symbol"))
+            if key not in summaries_by_symbol:
+                failed = failed_result(
+                    source_item,
+                    "Not processed because the run stopped early.",
+                )
+                summaries_by_symbol[key] = summarize_symbol(
+                    failed,
+                    source_item,
+                )
+
         ordered = [
             summaries_by_symbol[normalize(item.get("symbol"))]
             for item in selected_items
@@ -831,12 +1058,14 @@ def main():
             selected_items,
             ordered,
             started_at,
+            len(reusable_successes(selected_items, previous_manifest)),
             fatal_error=fatal_error,
         )
 
         print("\n" + "=" * 18 + " FINAL SUMMARY " + "=" * 18)
         print("Requested:", manifest["requested_symbols"])
         print("Processed:", manifest["processed_symbols"])
+        print("Reused existing success:", manifest["reused_successful_symbols"])
         print("Successful:", manifest["successful_symbols"])
         print("Partial:", manifest["partial_symbols"])
         print("Failed:", manifest["failed_symbols"])
@@ -844,6 +1073,7 @@ def main():
         print("Manifest:", MANIFEST_FILE.relative_to(ROOT))
         print("Run status:", manifest["status"])
 
+    # اگر حداقل یک فایل تاریخچه داشته باشیم، اجرای ناقص هم نگه داشته می‌شود.
     if manifest["successful_interval_files"] == 0:
         sys.exit(1)
 
