@@ -1,6 +1,6 @@
 import os
+import json
 import time
-from collections import Counter
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -20,8 +20,10 @@ def main():
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--lang=fa-IR")
 
-    service = Service(os.environ["CHROMEDRIVER"])
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Chrome(
+        service=Service(os.environ["CHROMEDRIVER"]),
+        options=options,
+    )
 
     try:
         driver.set_page_load_timeout(45)
@@ -36,80 +38,81 @@ def main():
 
         leaves = driver.find_elements(By.CLASS_NAME, "leaf")
 
-        visible = []
-        hidden = []
+        labeled = []
+        blank_samples = []
+        blank_count = 0
+        text_content_count = 0
+        child_label_count = 0
 
         for element in leaves:
             text = element.text.strip()
-            record = {
-                "text": text,
-                "html": element.get_attribute("outerHTML")[:500],
-            }
 
-            if not text:
-                continue
+            text_content = driver.execute_script(
+                "return arguments[0].textContent || '';",
+                element,
+            ).strip()
 
-            if element.is_displayed():
-                visible.append(record)
-            else:
-                hidden.append(record)
+            label_elements = element.find_elements(
+                By.CSS_SELECTOR, ".text"
+            )
 
-        def symbol_from(record):
-            lines = [
-                line.strip()
-                for line in record["text"].splitlines()
-                if line.strip()
-            ]
-            return lines[0] if lines else ""
+            child_texts = []
+            for label in label_elements:
+                child_text = driver.execute_script(
+                    "return arguments[0].textContent || '';",
+                    label,
+                ).strip()
+                if child_text:
+                    child_texts.append(child_text)
 
-        visible_symbols = {
-            symbol_from(x) for x in visible if symbol_from(x)
-        }
-        all_symbols = {
-            symbol_from(x)
-            for x in visible + hidden
-            if symbol_from(x)
-        }
+            if text_content:
+                text_content_count += 1
+
+            if child_texts:
+                child_label_count += 1
+
+            if text:
+                labeled.append(text)
+
+            if not text_content:
+                blank_count += 1
+
+                if len(blank_samples) < 12:
+                    size = driver.execute_script("""
+                        const r = arguments[0].getBoundingClientRect();
+                        return {
+                            width: Math.round(r.width),
+                            height: Math.round(r.height)
+                        };
+                    """, element)
+
+                    blank_samples.append({
+                        "size": size,
+                        "class": element.get_attribute("class"),
+                        "style": element.get_attribute("style"),
+                        "innerHTML": (
+                            element.get_attribute("innerHTML") or ""
+                        )[:500],
+                        "child_labels": child_texts,
+                    })
 
         print("Page title:", driver.title)
-        print("Page URL:", driver.current_url)
-        print("All leaf elements:", len(leaves))
-        print("Visible non-empty leaves:", len(visible))
-        print("Hidden non-empty leaves:", len(hidden))
-        print("Unique visible labels:", len(visible_symbols))
-        print("Unique all labels:", len(all_symbols))
+        print("Total leaf elements:", len(leaves))
+        print("Elements with visible text:", len(labeled))
+        print("Elements with textContent:", text_content_count)
+        print("Elements with .text child labels:", child_label_count)
+        print("Elements with empty textContent:", blank_count)
 
-        print("\n--- SELECT FILTERS ---")
-        for select in driver.find_elements(By.TAG_NAME, "select"):
-            options_text = [
-                option.text.strip()
-                for option in select.find_elements(
-                    By.TAG_NAME, "option"
-                )
-                if option.text.strip()
-            ]
-            print({
-                "id": select.get_attribute("id"),
-                "name": select.get_attribute("name"),
-                "options": options_text[:40],
-            })
+        print("\n--- FIRST 12 EMPTY ELEMENTS ---")
+        print(json.dumps(
+            blank_samples,
+            ensure_ascii=False,
+            indent=2,
+        ))
 
-        print("\n--- BUTTONS ---")
-        buttons = []
-        for element in driver.find_elements(
-            By.CSS_SELECTOR, "button, [role='button']"
-        ):
-            text = element.text.strip()
-            if text and text not in buttons:
-                buttons.append(text)
-
-        for text in buttons[:60]:
-            print(text)
-
-        print("\n--- SAMPLE VISIBLE ITEMS ---")
-        for record in visible[:8]:
-            print("TEXT:", repr(record["text"]))
-            print("HTML:", record["html"])
+        print("\n--- FIRST 15 LABELED ELEMENTS ---")
+        for text in labeled[:15]:
+            print(repr(text))
 
     finally:
         driver.quit()
