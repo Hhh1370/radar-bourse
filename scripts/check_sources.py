@@ -1,55 +1,76 @@
 import re
 import urllib.request
-import urllib.error
+import urllib.parse
 
 SOURCES = {
     "TradersArena": "https://tradersarena.ir/",
     "BourseTrader_Codal": (
         "https://bourse-trader.ir/index.php?task=codal-reports"
     ),
-    "BourseTrader_Alternative": "https://fast.bourse-trader.ir/",
 }
 
-def check_source(name, url):
-    print(f"\n--- {name} ---")
-
+def fetch(url):
     request = urllib.request.Request(
         url,
-        headers={
-            "User-Agent": "Mozilla/5.0",
-            "Accept": "text/html,application/json,*/*",
-        },
+        headers={"User-Agent": "Mozilla/5.0"},
     )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        return response.read(500000).decode("utf-8", errors="replace")
+
+def inspect(name, page_url):
+    print(f"\n--- {name} ---")
 
     try:
-        with urllib.request.urlopen(request, timeout=12) as response:
-            body = response.read(120000)
-            html = body.decode("utf-8", errors="replace")
+        html = fetch(page_url)
+        scripts = re.findall(
+            r'<script\b[^>]*\bsrc\s*=\s*["\']([^"\']+)["\']',
+            html,
+            re.IGNORECASE,
+        )
 
-            print("HTTP status:", response.status)
-            print("Content-Type:", response.headers.get("Content-Type"))
-            print("Bytes checked:", len(body))
+        print("Page received: YES")
+        print("Script files found:", len(scripts))
 
-            title = re.search(
-                r"<title[^>]*>(.*?)</title>",
-                html,
-                re.IGNORECASE | re.DOTALL,
-            )
-            if title:
-                print("Page title:", re.sub(r"\s+", " ", title.group(1)).strip())
+        base_host = urllib.parse.urlparse(page_url).netloc
+        checked = 0
 
-            for word in ("ورود", "اشتراک", "کدال", "خطا"):
-                print(f"Contains {word}:", word in html)
+        for src in scripts:
+            js_url = urllib.parse.urljoin(page_url, src)
+            parsed = urllib.parse.urlparse(js_url)
 
-            print("RESULT: PAGE RECEIVED")
+            # فقط فایل‌های همان سایت بررسی می‌شوند.
+            if parsed.netloc != base_host:
+                continue
 
-    except urllib.error.HTTPError as exc:
-        print("HTTP ERROR:", exc.code, exc.reason)
+            try:
+                js = fetch(js_url)
+                checked += 1
+                print("\nSCRIPT:", js_url)
+
+                patterns = [
+                    r"""["'`]([^"'`\s]{1,160}(?:/api/|api/|\.json|ajax|codal)[^"'`\s]{0,100})["'`]""",
+                    r"""(?:fetch|axios|ajax)\s*\(\s*["'`]([^"'`]{1,200})["'`]""",
+                ]
+
+                found = set()
+                for pattern in patterns:
+                    found.update(re.findall(pattern, js, re.IGNORECASE))
+
+                for item in sorted(found)[:12]:
+                    print("  CANDIDATE:", item)
+
+                if checked >= 10:
+                    print("\nReached the 10-script inspection limit.")
+                    break
+
+            except Exception as exc:
+                print("SCRIPT FAILED:", type(exc).__name__)
+
     except Exception as exc:
-        print("CONNECTION ERROR:", repr(exc))
+        print("PAGE FAILED:", repr(exc))
 
 if __name__ == "__main__":
     for name, url in SOURCES.items():
-        check_source(name, url)
+        inspect(name, url)
 
-print("\nDiagnostic completed.")
+    print("\nInspection completed.")
