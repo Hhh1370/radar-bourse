@@ -9,6 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 
+
 URL = "https://rahavard365.com/marketmap"
 ENDPOINT = "/api/v2/marketmap/data"
 
@@ -20,6 +21,7 @@ def extract_stocks(node, categories=None, results=None):
     if results is None:
         results = {}
 
+    # پیمایش فهرست‌ها
     if isinstance(node, list):
         for child in node:
             extract_stocks(child, categories, results)
@@ -33,41 +35,56 @@ def extract_stocks(node, categories=None, results=None):
     fullname = node.get("fullname")
     node_id = node.get("id")
 
-    # گروه‌های دارای زیرمجموعه را به‌صورت بازگشتی بررسی می‌کنیم.
+    # گروه صنعت یا گروهی که نمادهای زیرمجموعه دارد
     if isinstance(children, list) and children:
-        next_categories = categories[:]
+        next_categories = list(categories)
 
         if name:
-            next_categories.append(str(name))
+            next_categories.append(str(name).strip())
 
         for child in children:
             extract_stocks(child, next_categories, results)
 
         return results
 
-    # فقط گره‌های انتهایی دارای شناسه و اطلاعات شرکت را ثبت می‌کنیم.
-    if (
+    # شناسایی رکورد انتهایی نماد
+    is_stock = (
         node_id is not None
         and name
         and fullname
-        and "real_close_price" in node
-    ):
+        and (
+            "real_close_price" in node
+            or "value" in node
+        )
+    )
+
+    if is_stock:
         symbol = str(name).strip()
 
         if symbol:
+            raw_change = node.get("value")
+
+            change_pct = None
+            if isinstance(raw_change, (int, float)):
+                change_pct = float(raw_change) * 100
+
             results[str(node_id)] = {
                 "id": str(node_id),
                 "symbol": symbol,
                 "company": str(fullname).strip(),
                 "close_price": node.get("real_close_price"),
-                "change_pct": (
-                    float(node["value"]) * 100
-                    if isinstance(node.get("value"), (int, float))
-                    else None
-                ),
+                "change_pct": change_pct,
                 "area_raw": node.get("area"),
                 "categories": categories,
             }
+
+        return results
+
+    # نکتهٔ اصلاح‌شده:
+    # از لایه‌های بیرونی مثل data و root نیز عبور می‌کنیم.
+    for key, value in node.items():
+        if key != "children":
+            extract_stocks(value, categories, results)
 
     return results
 
@@ -108,112 +125,32 @@ def main():
             ) == "complete"
         )
 
+        WebDriverWait(driver, 30).until(
+            lambda d: len(
+                d.find_elements(
+                    "class name", "leaf"
+                )
+            ) > 0
+        )
+
         time.sleep(5)
 
         logs = driver.get_log("performance")
-        matches = []
+        matching = []
 
         for entry in logs:
             try:
-                message = json.loads(entry["message"])["message"]
+                message = json.loads(
+                    entry["message"]
+                )["message"]
 
                 if message.get("method") != "Network.responseReceived":
                     continue
 
                 params = message.get("params", {})
                 response = params.get("response", {})
-                response_url = response.get("url", "")
 
                 if (
-                    ENDPOINT in response_url
+                    ENDPOINT in response.get("url", "")
                     and response.get("status") == 200
                     and params.get("requestId")
-                ):
-                    matches.append({
-                        "request_id": params["requestId"],
-                        "url": response_url,
-                    })
-
-            except Exception:
-                continue
-
-        if not matches:
-            raise RuntimeError(
-                "No successful market-map API response was captured."
-            )
-
-        response_info = matches[-1]
-
-        body_result = driver.execute_cdp_cmd(
-            "Network.getResponseBody",
-            {"requestId": response_info["request_id"]},
-        )
-
-        body = body_result["body"]
-
-        if body_result.get("base64Encoded"):
-            body = base64.b64decode(body).decode(
-                "utf-8", errors="replace"
-            )
-
-        source_data = json.loads(body)
-
-        print("API URL:", response_info["url"])
-        print("Response bytes:", len(body.encode("utf-8")))
-
-        extracted = extract_stocks(source_data)
-        stocks = sorted(
-            extracted.values(),
-            key=lambda item: item["symbol"],
-        )
-
-        if not stocks:
-            raise RuntimeError(
-                "API returned data, but no stock records were identified."
-            )
-
-        payload = {
-            "source": "Rahavard365 market map",
-            "source_url": response_info["url"],
-            "captured_at_utc": datetime.now(
-                timezone.utc
-            ).isoformat(),
-            "count": len(stocks),
-            "items": stocks,
-        }
-
-        os.makedirs("data", exist_ok=True)
-
-        output_file = "data/marketmap.json"
-
-        with open(output_file, "w", encoding="utf-8") as file:
-            json.dump(
-                payload,
-                file,
-                ensure_ascii=False,
-                indent=2,
-            )
-
-        print("Extracted unique IDs:", len(stocks))
-        print(
-            "Records with price:",
-            sum(s["close_price"] is not None for s in stocks),
-        )
-        print(
-            "Records with change percentage:",
-            sum(s["change_pct"] is not None for s in stocks),
-        )
-        print("Saved:", output_file)
-        print("Sample records:")
-        print(json.dumps(
-            stocks[:10],
-            ensure_ascii=False,
-            indent=2,
-        ))
-
-    finally:
-        driver.quit()
-
-
-if __name__ == "__main__":
-    main()
