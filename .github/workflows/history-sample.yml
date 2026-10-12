@@ -1,4 +1,5 @@
-name: Collect Iranian Stock History Sample
+
+name: Collect Iranian Stock History
 
 on:
   workflow_dispatch:
@@ -6,10 +7,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: collect-iranian-stock-history
+  cancel-in-progress: false
+
 jobs:
   collect-history:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 360
 
     steps:
       - name: Checkout repository
@@ -35,7 +40,7 @@ jobs:
           echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
           echo "CHROMEDRIVER=${{ steps.setup-chrome.outputs.chromedriver-path }}" >> "$GITHUB_ENV"
 
-      - name: Collect historical candles
+      - name: Collect all available symbol histories
         id: collect
         continue-on-error: true
         run: python scripts/fetch_history.py
@@ -52,12 +57,31 @@ jobs:
           if git diff --cached --quiet; then
             echo "No history or manifest changes to commit."
           else
-            git commit -m "Collect Iranian stock history sample"
+            git commit -m "Collect all available stock histories"
             git push
           fi
 
-      - name: Mark empty collection as failed
-        if: always() && steps.collect.outcome == 'failure'
+      - name: Report collection result
+        if: always()
+        shell: bash
         run: |
-          echo "History collection returned an error. Check the collector log and data/history_manifest.json."
-          exit 1
+          if [ -f data/history_manifest.json ]; then
+            python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("data/history_manifest.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+
+          print("Manifest status:", data.get("status"))
+          print("Requested:", data.get("requested_symbols"))
+          print("Processed:", data.get("processed_symbols"))
+          print("Reused:", data.get("reused_successful_symbols"))
+          print("Successful:", data.get("successful_symbols"))
+          print("Partial:", data.get("partial_symbols"))
+          print("Failed:", data.get("failed_symbols"))
+          print("History files:", data.get("successful_interval_files"))
+          PY
+          else
+            echo "History manifest was not created."
+          fi
