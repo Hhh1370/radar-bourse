@@ -2,9 +2,18 @@ name: Build Technical Radar
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/build_technical_radar.py"
+      - ".github/workflows/build-technical-radar.yml"
 
 permissions:
   contents: write
+
+concurrency:
+  group: technical-radar-build
+  cancel-in-progress: false
 
 jobs:
   build-technical-radar:
@@ -20,17 +29,42 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Validate Python syntax
+        run: python -m py_compile scripts/build_technical_radar.py
+
       - name: Build technical radar
-        run: python scripts/build_technical_radar.py
+        run: python -u scripts/build_technical_radar.py
+
+      - name: Verify ranking output
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path("data/technical_radar.json").read_text(encoding="utf-8"))
+          rows = p.get("top_50_for_review", [])
+          assert p.get("analysis_errors", 0) == 0, f"analysis errors: {p.get('analysis_errors')}"
+          assert rows, "No eligible technical candidates were produced"
+          assert all("relative_momentum_score" in row for row in rows), "Tie-breaker score missing"
+          assert all(isinstance(row["risk_adjusted_score"], (int, float)) for row in rows), "Risk-adjusted score missing"
+          keys = [
+              (-row["risk_adjusted_score"], -(row["relative_momentum_score"] or 0),
+               row["symbol"])
+              for row in rows
+          ]
+          assert keys == sorted(keys), "Technical candidates are not sorted by the declared ranking fields"
+          print(f"TECHNICAL_OUTPUT_VALID: {len(rows)} candidates; eligible={p.get('eligible_for_long_term_ranking')}; errors={p.get('analysis_errors')}")
+          print("TOP_10_TECHNICAL_TIEBREAK:")
+          for row in rows[:10]:
+              print(f"{row['symbol']}\tbase={row['risk_adjusted_score']}\trelative={row['relative_momentum_score']}")
+          PY
 
       - name: Commit technical results
         shell: bash
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git add data/technical_radar.json
-
           if git diff --cached --quiet; then
             echo "No technical radar changes."
           else
