@@ -127,16 +127,18 @@ def is_codal_host(url: str) -> bool:
 
 
 def is_codal_reference(url: str) -> bool:
+    """Return true only for a report page or symbol report list, not PDF/attachment URLs."""
     if not is_codal_host(url):
         return False
     parsed = urllib.parse.urlsplit(url)
-    path = parsed.path.lower()
+    path = parsed.path.lower().rstrip("/")
     query = parsed.query.lower()
-    return (
-        "reportlist.aspx" in path or "decision.aspx" in path or
-        "/reports/" in path or "letterserial=" in query or
-        "symbol=" in query
-    )
+    if path.endswith("/reportlist.aspx") or path.endswith("reportlist.aspx"):
+        return True
+    if path.endswith("/reports/decision.aspx") or path.endswith("decision.aspx"):
+        return "letterserial=" in query
+    # URLs such as /Reports/DownloadFile.aspx?LetterSerial=... are attachments,
+    # not separate disclosures. They must not inflate the report count.
 
 
 def is_report_list(url: str) -> bool:
@@ -618,7 +620,19 @@ def download_xlsx_attachments(candidates: list[dict], source_status: list[dict])
         url = canonical_url(candidate["url"])
         if url and is_attachment_candidate(url) and url not in unique:
             unique[url] = candidate
-    selected = list(unique.items())[:MAX_ATTACHMENT_TESTS]
+    # Probe attachments from each channel instead of accidentally testing only
+    # the first channel, whose posts appear first in the archive traversal.
+    candidates_by_source = {}
+    for url, candidate in unique.items():
+        source_name = candidate.get("source", "نامشخص")
+        candidates_by_source.setdefault(source_name, []).append((url, candidate))
+    selected = []
+    source_names = list(candidates_by_source)
+    while len(selected) < MAX_ATTACHMENT_TESTS and any(candidates_by_source.values()):
+        for source_name in source_names:
+            bucket = candidates_by_source[source_name]
+            if bucket and len(selected) < MAX_ATTACHMENT_TESTS:
+                selected.append(bucket.pop(0))
 
     for url, candidate in selected:
         result = request_attachment_with_curl(url)
