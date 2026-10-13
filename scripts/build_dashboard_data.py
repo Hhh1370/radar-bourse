@@ -585,6 +585,12 @@ def credit_assessment(
     technical_score = float(technical_score) if isinstance(technical_score, (int, float)) else None
     fundamental_score = fundamental.get("fundamental_score")
     fundamental_score = float(fundamental_score) if isinstance(fundamental_score, (int, float)) else None
+    fundamental_score_source = str(fundamental.get("fundamental_score_source") or "")
+    fundamental_ratio_quality = fundamental.get("fundamental_ratio_quality")
+    fundamental_ratio_quality = (
+        float(fundamental_ratio_quality)
+        if finite_number(fundamental_ratio_quality) else None
+    )
     earnings = calculate_earnings_quality(fundamental)
     earnings_score = earnings.get("score")
     flow_ok = valid_money_flow(fundamental)
@@ -632,6 +638,10 @@ def credit_assessment(
     fundamental_gate = fundamental_quality_gate(fundamental)
     fund_quality = (
         1.0 if fundamental_gate["ready"] else
+        min(0.65, 0.65 * fundamental_ratio_quality)
+        if fundamental_score is not None
+        and fundamental_score_source == "Fundai TTM ratios proxy"
+        and fundamental_ratio_quality is not None else
         0.5 if fundamental_score is not None and parsed_report else 0.0
     )
     earnings_quality = min(1.0, float(earnings.get("coverage") or 0)) if earnings_score is not None else 0.0
@@ -675,6 +685,11 @@ def credit_assessment(
         "nontechnical_components_available": nontechnical_components,
         "component_scores": components,
         "component_weights_pct": weights,
+        "fundamental_score_source": fundamental_score_source or (
+            "صورت مالی ساختاریافته" if fundamental_score is not None else "بدون امتیاز"
+        ),
+        "fundamental_ratio_quality": fundamental_ratio_quality,
+        "fundamental_score_is_proxy": fundamental_score_source == "Fundai TTM ratios proxy",
         "fundamental_quality_gate": fundamental_gate,
         "earnings_quality_status": earnings.get("status"),
         "earnings_quality_evidence": earnings.get("evidence", []),
@@ -702,6 +717,10 @@ def main() -> None:
     tech = read_json(TECH_FILE)
     fund = read_json(FUND_FILE)
     codal = read_json(CODAL_FILE)
+    ratio_snapshot = read_json(FUNDAI_RATIO_FILE) if FUNDAI_RATIO_FILE.is_file() else {
+        "generated_at_utc": "", "downloaded_row_count": 0, "rows": [],
+        "quality_notes": ["Snapshot file is missing."],
+    }
 
     tech_rows = tech.get("all_eligible_ranked")
     if not isinstance(tech_rows, list) or not tech_rows:
@@ -722,6 +741,18 @@ def main() -> None:
     # Final investment/credit grades remain withheld when material data layers are missing.
     ranked = tech_rows
     fund_map = index_by_symbol(fund_rows)
+    ratio_map = build_fundai_ratio_scores(ratio_snapshot)
+    technical_symbols = {norm(row.get("symbol")) for row in ranked if norm(row.get("symbol"))}
+    ratio_matched_count = sum(1 for key in technical_symbols if key in ratio_map)
+    ratio_scored_count = sum(
+        1 for key in technical_symbols
+        if key in ratio_map and finite_number(ratio_map[key].get("ratio_score"))
+    )
+    native_fundamental_score_count = sum(
+        1 for row in fund_rows
+        if row.get("instrument_kind") == "common_equity"
+        and finite_number(row.get("fundamental_score"))
+    )
     evidence_map: dict[str, list[dict[str, Any]]] = {}
     for item in evidence_rows:
         key = norm(item.get("symbol"))
@@ -735,12 +766,24 @@ def main() -> None:
         symbol = str(item.get("symbol") or "").strip()
         key = norm(symbol)
         fundamental = fund_map.get(key, {})
+        ratio = ratio_map.get(key, {})
+        scoring_fundamental = dict(fundamental)
+        native_score = scoring_fundamental.get("fundamental_score")
+        ratio_score = ratio.get("ratio_score")
+        if not finite_number(native_score) and finite_number(ratio_score):
+            scoring_fundamental["fundamental_score"] = float(ratio_score)
+            scoring_fundamental["fundamental_score_source"] = "Fundai TTM ratios proxy"
+            scoring_fundamental["fundamental_ratio_quality"] = ratio.get("ratio_score_quality")
+            scoring_fundamental["fundamental_status"] = (
+                "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها؛ "
+                "صورت‌های مالی سالانه/حسابرسی‌شده برای رتبهٔ نهایی هنوز تأیید نشده‌اند"
+            )
         technical_score = number(item.get("technical_score"), 1)
         adjusted_score = number(item.get("risk_adjusted_score"), 1)
         symbol_evidence = evidence_map.get(key, [])
         simplified_symbol_evidence = [simplify_evidence(row) for row in symbol_evidence]
         project_assessment = score_project_evidence(fundamental, simplified_symbol_evidence)
-        rating = credit_assessment(item, fundamental, simplified_symbol_evidence, project_assessment)
+        rating = credit_assessment(item, scoring_fundamental, simplified_symbol_evidence, project_assessment)
         base = {
             "rank": None,
             "bucket": "watch",
@@ -767,8 +810,20 @@ def main() -> None:
             "heat_risk": str(item.get("heat_risk") or "بررسی‌نشده"),
             "entry_timing": str(item.get("entry_timing") or "نیازمند بررسی"),
             "risk_flags": item.get("risk_flags", []) if isinstance(item.get("risk_flags"), list) else [],
-            "fundamental_score": number(fundamental.get("fundamental_score"), 2),
-            "fundamental_status": str(fundamental.get("fundamental_status") or "داده‌ای برای این نماد در منبع بنیادی موجود نیست"),
+            "fundamental_score": number(scoring_fundamental.get("fundamental_score"), 2),
+            "fundamental_score_source": str(scoring_fundamental.get("fundamental_score_source") or (
+                "صورت مالی ساختاریافته" if finite_number(fundamental.get("fundamental_score")) else "بدون امتیاز بنیادی"
+            )),
+            "fundamental_status": str(scoring_fundamental.get("fundamental_status") or "داده‌ای برای این نماد در منبع بنیادی موجود نیست"),
+            "fundamental_ratio_score": number(ratio.get("ratio_score"), 2),
+            "fundamental_ratio_quality": number(ratio.get("ratio_score_quality"), 3),
+            "fundamental_ratio_industry": str(ratio.get("industry") or ""),
+            "fundamental_ratio_report_date": str(ratio.get("report_date") or ""),
+            "fundamental_ratio_age_days": ratio.get("report_age_days"),
+            "fundamental_ratio_components": ratio.get("ratio_score_components", {}),
+            "fundamental_ratio_metric_count": ratio.get("ratio_score_metric_count"),
+            "fundamental_ratio_peer_count": ratio.get("peer_count_median"),
+            "fundai_ratios": ratio.get("raw_ratios", {}),
             "money_flow_score": number(fundamental.get("money_flow_score"), 2) if valid_money_flow(fundamental) else None,
             "money_flow_status": str(fundamental.get("money_flow_status") or "داده‌ای برای این نماد در منبع پول حقیقی موجود نیست"),
             "instrument_kind": str(fundamental.get("instrument_kind") or "unconfirmed"),
@@ -803,6 +858,9 @@ def main() -> None:
         base["data_quality"] = {
             "technical_available": technical_score is not None,
             "fundamental_scored": base["fundamental_score"] is not None,
+            "fundamental_score_is_proxy": base["fundamental_score_source"] == "Fundai TTM ratios proxy",
+            "fundamental_ratio_snapshot_matched": bool(ratio),
+            "fundamental_ratio_report_age_days": ratio.get("report_age_days"),
             "money_flow_scored": base["money_flow_score"] is not None,
             "money_flow_12m_verified": valid_money_flow(fundamental),
             "channel_evidence_count": len(symbol_evidence),
@@ -831,8 +889,11 @@ def main() -> None:
 
     final_grade_count = sum(1 for x in candidates if x.get("final_credit_grade") is not None)
     reliable_confidence_count = sum(1 for x in candidates if (x.get("credit_confidence_score") or 0) >= 75)
-    top_scores_count = sum(1 for x in fund_rows if number(x.get("fundamental_score")) is not None)
+    top_scores_count = sum(1 for x in candidates if finite_number(x.get("fundamental_score")))
     full_year_flow_count = sum(1 for x in fund_rows if valid_money_flow(x))
+    ratio_scores_in_ranked = sum(
+        1 for x in candidates if finite_number(x.get("fundamental_ratio_score"))
+    )
     project_candidates = [
         simplify_evidence(x) for x in evidence_rows
         if x.get("project_evidence")
@@ -843,7 +904,17 @@ def main() -> None:
     source_warnings = []
     counts = fund.get("counts", {}) if isinstance(fund.get("counts"), dict) else {}
     if top_scores_count == 0:
-        source_warnings.append("امتیاز بنیادی استانداردشده برای هیچ نمادی ساخته نشده است؛ دادهٔ ناقص به معنی بنیادی خنثی نیست.")
+        source_warnings.append("هیچ امتیاز نسبی بنیادی قابل‌استفاده برای نمادهای واجد شرایط موجود نیست؛ دادهٔ گمشده امتیاز صفر یا خنثی نیست.")
+    if native_fundamental_score_count == 0:
+        source_warnings.append(
+            f"برای صورت‌های مالی ساختاریافته امتیاز بنیادی مستقلی وجود ندارد؛ {ratio_scores_in_ranked} امتیاز فعلی از نسبت‌های TTM و رتبه‌بندی نسبی Fundai است، نه تحلیل کامل صورت‌های مالی."
+        )
+    if ratio_matched_count < max(100, len(ranked) * 0.5):
+        source_warnings.append(
+            f"پوشش نمادهای رادار در snapshot نسبت‌های Fundai محدود است: {ratio_matched_count} از {len(ranked)} نماد."
+        )
+    for note in ratio_snapshot.get("quality_notes", []) if isinstance(ratio_snapshot.get("quality_notes"), list) else []:
+        source_warnings.append("Fundai: " + str(note))
     if full_year_flow_count == 0:
         source_warnings.append("هیچ امتیاز پول حقیقی با پوشش ۱۲ماهه در خروجی بنیادی قابل تأیید نیست.")
     elif full_year_flow_count < max(50, len(tech_rows) * 0.5):
@@ -880,6 +951,10 @@ def main() -> None:
             "technical_watch_count": max(0, min(5, len(candidates) - 5)),
             "candidate_pool_ranked": len(candidates),
             "fundamental_scored_count": top_scores_count,
+            "fundamental_statement_scored_count": native_fundamental_score_count,
+            "fundai_ratio_rows_available": ratio_snapshot.get("downloaded_row_count", 0),
+            "fundai_ratio_matched_count": ratio_matched_count,
+            "fundai_ratio_scored_count": ratio_scores_in_ranked,
             "final_credit_grade_count": final_grade_count,
             "high_confidence_count": reliable_confidence_count,
             "money_flow_12m_scored_count": full_year_flow_count,
@@ -897,9 +972,21 @@ def main() -> None:
             },
             "fundamental": {
                 "generated_at_utc": latest_fundamental,
-                "label": "BrsApi / دادهٔ بنیادی موجود",
-                "status": "ناقص" if top_scores_count == 0 else "موجود",
+                "label": "BrsApi / صورت‌های مالی ساختاریافته",
+                "status": "ناقص" if native_fundamental_score_count == 0 else "موجود",
                 "note": str(fund.get("warning") or fund.get("codal_api_note") or ""),
+            },
+            "fundai_ratios": {
+                "generated_at_utc": str(ratio_snapshot.get("generated_at_utc") or ""),
+                "label": "Fundai · نسبت‌های مالی TTM",
+                "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
+                "note": (
+                    f"{ratio_snapshot.get('downloaded_row_count', 0)} ردیف دریافت شد؛ "
+                    f"{ratio_matched_count} نماد با جهان تکنیکال تطبیق دارند. "
+                    "امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. "
+                    + "؛ ".join(str(x) for x in ratio_snapshot.get("quality_notes", []) if x)
+                ),
+                "source_url": safe_link(ratio_snapshot.get("source_url")),
             },
             "codal_channels": {
                 "generated_at_utc": latest_codal,
@@ -912,9 +999,10 @@ def main() -> None:
         "methodology": {
             "main_and_watch": "نامزدها از کل جهان واجدشرایط تکنیکال رتبه‌بندی می‌شوند؛ ۵ مورد اول و ۵ مورد بعدی بر اساس امتیاز موقتِ اجزای معتبر موجود انتخاب می‌شوند، نه رتبهٔ نهایی بنیادی.",
             "technical_score": "امتیاز تکنیکال و جریمهٔ گرمای روند از فایل رادار تکنیکال خوانده می‌شود. امتیاز نسبی برای شکستن تساوی استفاده می‌شود و هنوز بک‌تست نشده است.",
-            "credit_model": "وزن‌های امتیاز تلفیقی: بنیادی ۳۰٪، کیفیت سود ۱۵٪، تکنیکال ۲۵٪، پول حقیقی ۲۰٪ و طرح توسعه ۱۰٪. فقط اجزای عددی معتبر در امتیاز موقت وارد می‌شوند؛ وزن پوشش موجود جداگانه اعلام می‌شود.",
+            "credit_model": "وزن هدف امتیاز موقت: بنیادی ۳۰٪، کیفیت سود ۱۵٪، تکنیکال ۲۵٪، پول حقیقی ۲۰٪ و طرح توسعه ۱۰٪. وقتی صورت مالی کامل امتیاز معتبر ندارد، مؤلفه بنیادی موقت از نسبت‌های TTM با مقایسهٔ نسبی در صنعت پر می‌شود؛ این جانشین تحلیل سالانه/حسابرسی‌شده نیست. فقط مؤلفه‌های عددی موجود وارد امتیاز موقت می‌شوند و وزن دادهٔ موجود جداگانه نمایش داده می‌شود.",
             "final_rating_gate": "رتبهٔ نهایی فقط در صورت موجود بودن امتیاز بنیادی، کیفیت سود ساختاریافته، تکنیکال، پول حقیقی ۱۲ماهه و امتیاز کمی اعتبارسنجی‌شده طرح‌ها و اطمینان پوشش حداقل ۷۵ صادر می‌شود. در غیر این صورت رتبه معلق می‌ماند.",
             "confidence": "امتیاز اطمینان، سنجهٔ پوشش و کیفیت داده است؛ احتمال سود یا احتمال درست بودن پیش‌بینی نیست.",
+            "fundai_ratio_proxy": "امتیاز ۰ تا ۱۰۰ از رتبهٔ نسبی ROE، ROA، حاشیه سود، بدهی و مضارب مثبت P/E، P/S و P/B داخل صنعت محاسبه می‌شود؛ در صنایعی با کمتر از ۸ همتا، رتبهٔ کل بازار جایگزین می‌شود. این امتیاز مقایسه‌ای از آخرین snapshot TTM است و نه کیفیت سود کامل، ارزش ذاتی یا اعتبار نهایی.",
             "earnings_quality": "فقط از اقلام عددی خوانده‌شده از صورت مالی ساختاریافته محاسبه می‌شود؛ کلیدواژه‌های کانال در امتیاز کیفیت سود وارد نمی‌شوند.",
             "money_flow": "فقط وقتی در امتیاز تلفیقی وارد می‌شود که نماد سهام عادی، تاریخچه حداقل ۲۰۰ جلسه، پرچم پوشش سالانه، تاریخ آخرین داده و امتیاز معتبر داشته باشد.",
             "channel_evidence": "خلاصه‌های متنی تلگرام، شواهد خام هستند و جایگزین تطبیق با صورت مالی/اطلاعیهٔ رسمی نیستند.",
@@ -940,8 +1028,8 @@ def main() -> None:
     assert sum(1 for x in check["candidates"] if x["bucket"] == "watch") == max(0, min(5, len(candidates) - 5))
     assert all("credit_confidence_score" in x for x in check["candidates"])
     assert all("final_credit_grade" in x for x in check["candidates"])
-    if check["summary"]["fundamental_scored_count"] == 0:
-        assert all(x["final_credit_grade"] is None for x in check["candidates"]), "Cannot issue final rating without fundamental scores"
+    if check["summary"]["fundamental_statement_scored_count"] == 0:
+        assert all(x["final_credit_grade"] is None for x in check["candidates"]), "Cannot issue final rating without structured audited statement scores"
     for row in check["candidates"]:
         component_scores = row.get("credit_assessment", {}).get("component_scores", {})
         nontechnical = [k for k in ("fundamental", "earnings_quality", "money_flow", "projects") if isinstance(component_scores.get(k), (int, float))]
@@ -954,6 +1042,9 @@ def main() -> None:
     print(f"TECHNICAL_WATCH:{check['summary']['technical_watch_count']}")
     print(f"CANDIDATE_POOL_RANKED:{check['summary']['candidate_pool_ranked']}")
     print(f"FUNDAMENTAL_SCORED:{check['summary']['fundamental_scored_count']}")
+    print(f"STRUCTURED_STATEMENT_SCORED:{check['summary']['fundamental_statement_scored_count']}")
+    print(f"FUNDAI_RATIO_MATCHED:{check['summary']['fundai_ratio_matched_count']}")
+    print(f"FUNDAI_RATIO_SCORED:{check['summary']['fundai_ratio_scored_count']}")
     print(f"MONEY_FLOW_12M_SCORED:{check['summary']['money_flow_12m_scored_count']}")
     print(f"FINAL_CREDIT_GRADES:{check['summary']['final_credit_grade_count']}")
     print(f"HIGH_CONFIDENCE_COUNT:{check['summary']['high_confidence_count']}")
