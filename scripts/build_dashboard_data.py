@@ -494,6 +494,7 @@ def main() -> None:
             "final_rating_status": rating.get("final_rating_status"),
             "earnings_quality_score": rating.get("component_scores", {}).get("earnings_quality"),
             "project_score": rating.get("project_score"),
+            "project_score_validated": rating.get("component_scores", {}).get("projects") is not None and rating.get("final_rating_eligible") is True,
             "money_flow_history_rows": fundamental.get("money_flow_history_rows"),
             "money_flow_full_year_coverage": fundamental.get("money_flow_full_year_coverage") is True,
             "money_flow_latest_date": str(fundamental.get("money_flow_latest_date") or ""),
