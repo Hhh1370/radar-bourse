@@ -45,7 +45,7 @@ PAGE_TIMEOUT = 18
 MAX_PAGE_BYTES = 8 * 1024 * 1024
 ATTACHMENT_TIMEOUT = 15
 MAX_ATTACHMENT_BYTES = 8 * 1024 * 1024
-MAX_ATTACHMENT_TESTS = 8
+MAX_ATTACHMENT_TESTS = 3
 MAX_ATTACHMENT_ROWS_PER_SHEET = 2500
 DEFAULT_TELEGRAM_PAGES = 8
 
@@ -426,6 +426,9 @@ def merge_records(records: list[dict]) -> list[dict]:
             merged[key]["source_pages"] = [row["source_page"]]
             continue
         existing = merged[key]
+        # Capture existing provenance before merging the incoming source.
+        existing_has_telegram = "تلگرام بورس‌تریدر" in existing["sources"]
+        row_is_telegram = row["source"] == "تلگرام بورس‌تریدر"
         if row["source"] not in existing["sources"]:
             existing["sources"].append(row["source"])
         if row["source_page"] and row["source_page"] not in existing["source_pages"]:
@@ -433,8 +436,6 @@ def merge_records(records: list[dict]) -> list[dict]:
         # A Telegram post normally contains the actual disclosure description;
         # do not let a larger navigation/sidebar fragment from a secondary page
         # replace a shorter, relevant post context.
-        existing_has_telegram = "تلگرام بورس‌تریدر" in existing["sources"]
-        row_is_telegram = row["source"] == "تلگرام بورس‌تریدر"
         if row_is_telegram and not existing_has_telegram:
             existing["source_context"] = row["source_context"]
         elif row_is_telegram == existing_has_telegram and len(row.get("source_context", "")) > len(existing.get("source_context", "")):
