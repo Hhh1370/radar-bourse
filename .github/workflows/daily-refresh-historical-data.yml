@@ -1,0 +1,122 @@
+name: Daily Refresh of Historical Stock Data
+
+on:
+  workflow_dispatch:
+  # Iranian market trading days: Saturday through Wednesday.
+  # 13:30 UTC is after the usual market session; data freshness is still validated from candle dates.
+  schedule:
+    - cron: "30 13 * * 0-3,6"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/fetch_history.py"
+      - ".github/workflows/daily-refresh-historical-data.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-stock-history-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh-history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Install collector dependency
+        run: python -m pip install --disable-pip-version-check selenium
+
+      - name: Validate source and browser
+        env:
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/fetch_history.py
+          test -s data/marketmap.json
+          "${CHROME_BIN}" --version
+          echo "Daily history refresh will use the current market map and request 1D/W/M series."
+
+      - name: Force refresh instead of reusing old successful histories
+        env:
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -euo pipefail
+          # fetch_history.py reuses successful symbols when their manifest exists.
+          # Remove only that cache index for this scheduled run so existing data is fetched again.
+          rm -f data/history_manifest.json
+          python -u scripts/fetch_history.py
+
+      - name: Validate refreshed history manifest
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("data/history_manifest.json")
+          if not p.is_file():
+              raise SystemExit("History collector did not produce a manifest.")
+          m = json.loads(p.read_text(encoding="utf-8"))
+          print("RUN_STATUS:", m.get("status"))
+          print("UPDATED_AT_UTC:", m.get("updated_at_utc"))
+          print("REQUESTED_SYMBOLS:", m.get("requested_symbols"))
+          print("SUCCESSFUL_SYMBOLS:", m.get("successful_symbols"))
+          print("PARTIAL_SYMBOLS:", m.get("partial_symbols"))
+          print("FAILED_SYMBOLS:", m.get("failed_symbols"))
+          print("SUCCESSFUL_INTERVAL_FILES:", m.get("successful_interval_files"))
+          if int(m.get("successful_interval_files", 0)) <= 0:
+              raise SystemExit("No usable refreshed price-history files; refusing to publish an empty refresh.")
+          PY
+
+      - name: Commit refreshed market history
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("data/history_manifest.json")
+          if not p.is_file():
+              raise SystemExit("No manifest produced; nothing to commit.")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          if int(data.get("successful_interval_files", 0)) <= 0:
+              raise SystemExit("No usable history files refreshed; not committing.")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/history data/history_manifest.json
+          if git diff --cached --quiet; then
+            echo "No data files changed."
+          else
+            git commit -m "Refresh daily TSE/IFB price history"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Upload history manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-stock-history-manifest
+          path: data/history_manifest.json
+          if-no-files-found: warn
+          retention-days: 14
