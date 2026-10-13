@@ -314,6 +314,75 @@ def analyze_stock(stock):
     }
 
 
+def add_relative_momentum_tiebreaker(items):
+    """Assign a cross-sectional momentum/volume score used only to break trend-score ties.
+
+    The original weighted technical checklist and heat penalty stay unchanged.
+    Each input metric is ranked across currently eligible instruments; missing
+    metrics are omitted and the remaining weights are renormalized per symbol.
+    This relative score is a ranking aid, not a validated return forecast.
+    """
+    metrics = [
+        ("monthly_6_period", 0.30, lambda item: item["momentum_pct"].get("monthly_6_period")),
+        ("weekly_13_period", 0.25, lambda item: item["momentum_pct"].get("weekly_13_period")),
+        ("daily_60_period", 0.25, lambda item: item["momentum_pct"].get("daily_60_period")),
+        ("daily_20_period", 0.10, lambda item: item["momentum_pct"].get("daily_20_period")),
+        ("volume_ratio", 0.10, lambda item: item.get("volume_vs_20_period_average")),
+    ]
+    accum = {
+        id(item): {"weighted_sum": 0.0, "weight_sum": 0.0, "components": {}}
+        for item in items
+    }
+
+    for metric_name, weight, getter in metrics:
+        values = []
+        for item in items:
+            value = getter(item)
+            if isinstance(value, (int, float)):
+                values.append((float(value), id(item)))
+        if not values:
+            continue
+        values.sort(key=lambda pair: pair[0])
+        n = len(values)
+        start = 0
+        while start < n:
+            end = start
+            while end + 1 < n and values[end + 1][0] == values[start][0]:
+                end += 1
+            # Midrank percentile preserves ties and keeps the scale in [0, 100].
+            percentile = 50.0 if n == 1 else ((start + end) / 2) * 100.0 / (n - 1)
+            for pos in range(start, end + 1):
+                item_id = values[pos][1]
+                accum[item_id]["weighted_sum"] += percentile * weight
+                accum[item_id]["weight_sum"] += weight
+                accum[item_id]["components"][metric_name] = round(percentile, 1)
+            start = end + 1
+
+    for item in items:
+        data = accum[id(item)]
+        item["relative_momentum_score"] = (
+            round(data["weighted_sum"] / data["weight_sum"], 2)
+            if data["weight_sum"] else None
+        )
+        item["relative_momentum_components"] = data["components"]
+
+
+def technical_rank_key(item):
+    """Primary rank remains risk-adjusted checklist score; relative score breaks ties."""
+    momentum = item.get("momentum_pct", {})
+    monthly = momentum.get("monthly_6_period")
+    weekly = momentum.get("weekly_13_period")
+    daily60 = momentum.get("daily_60_period")
+    return (
+        -float(item.get("risk_adjusted_score") or 0),
+        -float(item.get("relative_momentum_score") or 0),
+        -(float(monthly) if monthly is not None else -1e12),
+        -(float(weekly) if weekly is not None else -1e12),
+        -(float(daily60) if daily60 is not None else -1e12),
+        str(item.get("symbol") or ""),
+    )
+
+
 def main():
     if not UNIVERSE_FILE.is_file():
         raise FileNotFoundError(f"Universe file not found: {UNIVERSE_FILE}")
@@ -341,10 +410,8 @@ def main():
         if item["eligible_for_long_term_ranking"]
     ]
     insufficient = len(results) - len(eligible)
-    eligible.sort(
-        key=lambda item: (item["risk_adjusted_score"], item["technical_score"]),
-        reverse=True,
-    )
+    add_relative_momentum_tiebreaker(eligible)
+    eligible.sort(key=technical_rank_key)
 
     output = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -359,6 +426,18 @@ def main():
             "weekly": "SMA13/SMA26, 13-period return",
             "monthly": "SMA6/SMA12, 6-period return",
             "score": "Weighted technical rules normalized for available checks",
+            "tie_breaker": (
+                "For equal risk-adjusted scores only, order by a cross-sectional "
+                "percentile composite: 30% monthly 6-period return, 25% weekly "
+                "13-period return, 25% daily 60-period return, 10% daily 20-period "
+                "return, 10% latest volume versus 20-day average; missing metrics "
+                "are excluded and weights renormalized. This relative tie-breaker "
+                "is provisional and not independently backtested."
+            ),
+            "sort_order": (
+                "Risk-adjusted checklist score descending, relative momentum score "
+                "descending, then monthly/weekly/daily momentum as deterministic tie-breaks."
+            ),
             "risk_adjustment": (
                 "Experimental heat penalty subtracted from technical score; "
                 "ranked by adjusted score"
@@ -370,8 +449,10 @@ def main():
         },
         "warning": (
             "Technical screening only, not a buy/sell recommendation. The heat "
-            "penalty is heuristic and has not yet been validated by historical "
-            "strategy testing. Full TSE/IFB coverage has not been independently verified."
+            "penalty and relative momentum tie-breaker are heuristic and have not "
+            "yet been validated by historical strategy testing. Fundamental data, "
+            "earnings quality, and development projects are not included in this "
+            "technical-only ranking. Full TSE/IFB coverage has not been independently verified."
         ),
         "top_50_for_review": eligible[:50],
     }
