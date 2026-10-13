@@ -110,11 +110,21 @@ def normalize(value: object) -> str:
 
 
 def canonical_url(url: str) -> str:
+    """Normalize harmless URL differences so the same Codal notice is counted once."""
     url = html.unescape(clean_text(url))
     parsed = urllib.parse.urlsplit(url)
     if parsed.scheme not in ("http", "https") or not parsed.netloc:
         return url
-    return urllib.parse.urlunsplit((parsed.scheme.lower(), parsed.netloc.lower(), parsed.path, parsed.query, ""))
+    # Codal's same LetterSerial is often emitted with percent escapes in different
+    # hex cases (%3d vs %3D). These URLs are equivalent but string equality misses it.
+    normalize_escapes = lambda value: re.sub(
+        r"%[0-9a-fA-F]{2}", lambda match: match.group(0).upper(), value
+    )
+    path = normalize_escapes(parsed.path)
+    query = normalize_escapes(parsed.query)
+    return urllib.parse.urlunsplit(
+        (parsed.scheme.lower(), parsed.netloc.lower(), path, query, "")
+    )
 
 
 def url_host(url: str) -> str:
@@ -506,6 +516,195 @@ def make_record(url: str, link_title: str, context: str, source: str,
     }
 
 
+
+
+EVIDENCE_SEGMENT_TERMS = {
+    "sales_evidence": (
+        "به فروش رسانده", "فروش داشته", "درآمد فروش", "درآمد عملیاتی",
+        "درآمد حاصل از فروش", "درآمد حاصل از فروش", "درآمد فروش داشته",
+    ),
+    "profit_evidence": (
+        "سود خالص", "زیان خالص", "سود شناسایی کرده", "زیان شناسایی کرده",
+        "سود محقق کرده", "زیان محقق کرده", "سود شناسایی شده", "زیان شناسایی شده",
+    ),
+    "eps_evidence": (
+        "سود هر سهم", "زیان هر سهم", "به ازای هر سهم",
+        "سودی محقق نکرده", "زیانی محقق نکرده",
+    ),
+    "cash_dividend_evidence": (
+        "سود نقدی هر سهم", "سود نقدی",
+    ),
+    "retained_earnings_evidence": (
+        "سود انباشته پایان دوره", "سود انباشته",
+    ),
+    "registered_capital_evidence": (
+        "سرمایه ثبت شده", "سرمایه ثبت‌شده", "سرمایه فعلی",
+    ),
+    "growth_evidence": (
+        "نسبت به مدت مشابه سال قبل", "نسبت به مدت مشابه",
+        "درصد رشد داشته", "درصد افت داشته", "درصد افزایش داشته",
+        "درصد کاهش داشته", "تغییری نکرده", "درصد رشد", "درصد افت",
+    ),
+    "project_evidence": (
+        "آخرین وضعیت طرح", "طرح های توسعه", "طرح‌های توسعه", "طرح توسعه",
+        "پیشرفت فیزیکی", "پیشرفت پروژه", "مخارج انجام شده",
+        "مخارج سرمایه‌ای", "مخارج سرمایه ای", "زمان بهره برداری",
+        "زمان بهره‌برداری", "بهره برداری از طرح", "بهره‌برداری از طرح",
+        "بهره برداری از طرح ها و پروژه های جدید", "ظرفیت اسمی",
+        "ظرفیت تولید", "راه اندازی خط تولید", "راه‌اندازی خط تولید",
+    ),
+}
+
+
+def extract_text_evidence(text: str) -> dict:
+    """Keep the actual source bullet containing a key financial/project statement."""
+    text = clean_text(text)
+    segments = [
+        clean_text(part)
+        for part in re.split(r"[▪❇🔹🔸]\ufe0f?", text)
+        if clean_text(part)
+    ]
+    evidence = {}
+    for field, terms in EVIDENCE_SEGMENT_TERMS.items():
+        matches = []
+        for segment in segments:
+            if find_terms(segment, terms):
+                value = segment[:600]
+                if value not in matches:
+                    matches.append(value)
+                if len(matches) >= 4:
+                    break
+        evidence[field] = " || ".join(matches)
+    return evidence
+
+
+def evidence_context_quality(text: str, source: str = "") -> tuple:
+    """Prefer a source snippet that carries actual metrics over a longer generic heading."""
+    evidence = extract_text_evidence(text)
+    metric_fields = (
+        "sales_evidence", "profit_evidence", "eps_evidence",
+        "cash_dividend_evidence", "retained_earnings_evidence",
+        "registered_capital_evidence", "growth_evidence", "project_evidence",
+    )
+    filled = sum(1 for field in metric_fields if evidence.get(field))
+    amount_count = len(raw_amount_mentions(text).split("؛")) if raw_amount_mentions(text) else 0
+    keyword_count = len(find_terms(text, PROJECT_KEYWORDS)) + len(
+        find_terms(text, FINANCIAL_KEYWORDS + MONTHLY_KEYWORDS)
+    )
+    source_bonus = 3 if "کدال۳۶۰" in source or "Codal360" in source else 0
+    return (filled * 10 + min(amount_count, 8) * 2 + min(keyword_count, 10) + source_bonus, len(text))
+
+
+def extract_company_tag(text: str) -> str:
+    match = re.search(r"(?:شرکت|گروه)\\s+#([آ-یA-Za-z0-9_‌\\-]{2,70})", text)
+    return clean_text(match.group(1)).replace("_", " ") if match else ""
+
+
+def extract_report_period(text: str) -> str:
+    table = str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
+    normalized_digits = clean_text(text).translate(table)
+    match = re.search(
+        r"(?:دوره|عملکرد)[\\s_]*(\\d{1,2})[\\s_]*ماهه(?:\\s+منتهی\\s+به\\s+(\\d{4}/\\d{1,2}/\\d{1,2}))?",
+        normalized_digits,
+    )
+    if match:
+        period = f"{match.group(1)} ماهه"
+        return f"{period} منتهی به {match.group(2)}" if match.group(2) else period
+    match = re.search(r"منتهی\\s+به\\s+(\\d{4}/\\d{1,2}/\\d{1,2})", normalized_digits)
+    return f"منتهی به {match.group(1)}" if match else ""
+
+
+def extract_audit_status(text: str) -> str:
+    n = normalize(text)
+    statuses = []
+    if "اصلاحیه" in n:
+        statuses.append("اصلاحیه")
+    if "حسابرسیشده" in n:
+        statuses.append("حسابرسی‌شده")
+    elif "حسابرسی نشده" in text or "حسابرسی‌نشده" in text or "حسابرسی‌نشده" in n:
+        statuses.append("حسابرسی‌نشده")
+    return "؛ ".join(statuses)
+
+
+def build_channel_evidence(posts: list[dict]) -> list[dict]:
+    """Create reviewable evidence rows from Telegram summaries without treating them as audited data."""
+    rows_by_key = {}
+    financial_fields = (
+        "sales_evidence", "profit_evidence", "eps_evidence",
+        "cash_dividend_evidence", "retained_earnings_evidence",
+        "registered_capital_evidence", "growth_evidence",
+    )
+    for post in posts:
+        text = clean_text(post.get("text", ""))
+        if not text:
+            continue
+        evidence = extract_text_evidence(text)
+        project_class, project_strength = assess_project_evidence(text)
+        has_financial_evidence = any(evidence.get(field) for field in financial_fields)
+        has_project_evidence = bool(evidence.get("project_evidence")) and project_strength in {"قوی", "متوسط"}
+        if not has_financial_evidence and not has_project_evidence:
+            continue
+
+        source_page = post.get("source_page", "")
+        codal_urls = []
+        for link in post.get("links", []):
+            url = canonical_url(urllib.parse.urljoin(source_page, link.get("url", "")))
+            if is_codal_reference(url) and url not in codal_urls and not is_report_list(url):
+                codal_urls.append(url)
+        # Prefer a report-detail link, when available; otherwise retain the Telegram post identity.
+        codal_urls.sort(key=lambda value: ("decision.aspx" not in value.lower(), value))
+        official_url = codal_urls[0] if codal_urls else ""
+        channel = post.get("channel", "")
+        post_id = post.get("post_id", "")
+        row = {
+            "symbol": extract_symbol("", text),
+            "company": extract_company_tag(text),
+            "report_type": classify_text(text, official_url),
+            "report_period": extract_report_period(text),
+            "audit_status": extract_audit_status(text),
+            **evidence,
+            "project_evidence_class": project_class,
+            "project_evidence_strength": project_strength,
+            "raw_amount_mentions": raw_amount_mentions(text),
+            "channel": channel,
+            "source_name": post.get("source_name", ""),
+            "published_at": post.get("date", ""),
+            "post_id": post_id,
+            "telegram_url": post.get("permalink", ""),
+            "codal_url": official_url,
+            "codal_urls": "؛ ".join(codal_urls),
+            "source_text": text[:3000],
+            "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
+        }
+        key = official_url or f"{channel}:{post_id}"
+        if key not in rows_by_key:
+            row["source_names"] = [row["source_name"]]
+            row["telegram_urls"] = [row["telegram_url"]]
+            rows_by_key[key] = row
+            continue
+
+        existing = rows_by_key[key]
+        if row["source_name"] not in existing["source_names"]:
+            existing["source_names"].append(row["source_name"])
+        if row["telegram_url"] and row["telegram_url"] not in existing["telegram_urls"]:
+            existing["telegram_urls"].append(row["telegram_url"])
+        if evidence_context_quality(row["source_text"], row["source_name"]) > evidence_context_quality(
+            existing["source_text"], "؛ ".join(existing["source_names"])
+        ):
+            source_names = existing["source_names"]
+            telegram_urls = existing["telegram_urls"]
+            rows_by_key[key] = row
+            rows_by_key[key]["source_names"] = source_names
+            rows_by_key[key]["telegram_urls"] = telegram_urls
+
+    result = list(rows_by_key.values())
+    for row in result:
+        row["source_name"] = "؛ ".join(row.pop("source_names", []))
+        row["telegram_url"] = "؛ ".join(row.pop("telegram_urls", []))
+    result.sort(key=lambda row: (row.get("published_at", ""), row.get("symbol", "")), reverse=True)
+    return result
+
+
 def merge_records(records: list[dict]) -> list[dict]:
     merged = {}
     for row in records:
@@ -526,9 +725,9 @@ def merge_records(records: list[dict]) -> list[dict]:
         # A Telegram post normally contains the actual disclosure description;
         # do not let a larger navigation/sidebar fragment from a secondary page
         # replace a shorter, relevant post context.
-        if row_is_telegram and not existing_has_telegram:
-            existing["source_context"] = row["source_context"]
-        elif row_is_telegram == existing_has_telegram and len(row.get("source_context", "")) > len(existing.get("source_context", "")):
+        if evidence_context_quality(row.get("source_context", ""), row.get("source", "")) > evidence_context_quality(
+            existing.get("source_context", ""), "؛ ".join(existing.get("sources", []))
+        ):
             existing["source_context"] = row["source_context"]
         if not existing.get("link_title") and row.get("link_title"):
             existing["link_title"] = row["link_title"]
@@ -862,6 +1061,26 @@ def build_workbook(payload: dict):
     finances = [row for row in announcements if row.get("financial_keywords") or "صورت‌های مالی" in row.get("primary_category", "") or "ماهانه" in row.get("primary_category", "")]
     write_sheet(wb, "صورت‌های مالی", core_headers, finances, core_keys)
 
+    evidence_headers = [
+        "نماد", "ناشر/شرکت طبق متن کانال", "نوع گزارش", "دوره گزارش",
+        "وضعیت حسابرسی/اصلاحیه", "شواهد فروش/درآمد", "شواهد سود/زیان خالص",
+        "شواهد سود هر سهم", "شواهد سود نقدی", "شواهد سود انباشته",
+        "شواهد سرمایه ثبت‌شده", "شواهد رشد/افت نسبت به سال قبل",
+        "شواهد طرح/مخارج/پیشرفت", "ارقام و واحدهای خام",
+        "نوع شواهد پروژه", "قدرت شواهد پروژه", "کانال منبع",
+        "زمان انتشار پست", "لینک پست تلگرام", "لینک اطلاعیه کدال",
+        "متن کامل خلاصه", "وضعیت راستی‌آزمایی",
+    ]
+    evidence_keys = [
+        "symbol", "company", "report_type", "report_period", "audit_status",
+        "sales_evidence", "profit_evidence", "eps_evidence", "cash_dividend_evidence",
+        "retained_earnings_evidence", "registered_capital_evidence", "growth_evidence",
+        "project_evidence", "raw_amount_mentions", "project_evidence_class",
+        "project_evidence_strength", "source_name", "published_at", "telegram_url",
+        "codal_url", "source_text", "validation_status",
+    ]
+    write_sheet(wb, "شواهد مالی و پروژه", evidence_headers, payload.get("channel_evidence", []), evidence_keys)
+
     post_rows = []
     for post in payload["telegram_posts"]:
         body = post.get("text", "")
@@ -982,6 +1201,7 @@ def run(args):
                 all_candidates.append({"url": raw_url, "source": source_name, "context": post_text})
 
     announcements = merge_records(records)
+    channel_evidence = build_channel_evidence(telegram_posts)
     # Do not treat company-index links as announcement records.
     symbol_unique = {}
     for row in symbol_lists:
@@ -1029,6 +1249,7 @@ def run(args):
         if find_terms(body, FINANCIAL_KEYWORDS + MONTHLY_KEYWORDS):
             financial_posts_by_source[name] = financial_posts_by_source.get(name, 0) + 1
 
+    evidence_rows = payload.get("channel_evidence", [])
     summary = [
         {"metric": "زمان تولید UTC", "value": now_utc(), "note": "زمان ساخت فایل؛ نه تاریخ آخرین اطلاعیه"},
         {"metric": "صفحات درخواستی برای هر کانال", "value": args.pages, "note": "حداکثر تعداد صفحه به ازای هر کانال؛ هر صفحه معمولاً حدود ۲۰ پست"},
@@ -1040,6 +1261,12 @@ def run(args):
         {"metric": "گزارش‌های کدال یکتا", "value": len(announcements), "note": "لینک‌های تکراری بین دو کانال ادغام شده‌اند؛ گزارش‌ها لزوماً از صفحه مقصد خوانده نشده‌اند"},
         {"metric": "گزارش‌های کدال دارای منبع کدال۳۶۰", "value": records_by_source.get("تلگرام کدال۳۶۰", 0), "note": "رکوردهای یکتا که کدال۳۶۰ یکی از منابعشان است؛ این عدد با کل یکتاها جمع‌پذیر نیست"},
         {"metric": "فهرست‌های نماد کدال", "value": len(symbol_lists), "note": "این لینک‌ها فهرست گزارش نماد هستند و با اطلاعیه منفرد یکی نیستند"},
+        {"metric": "خلاصه‌های عددی/پروژه‌ای استخراج‌شده از متن کانال‌ها", "value": len(evidence_rows), "note": "متن کانال و نه استخراج مستقیم از PDF کدال؛ هر رقم باید با گزارش رسمی تطبیق داده شود"},
+        {"metric": "شواهد دارای فروش/درآمد", "value": sum(1 for row in evidence_rows if row.get("sales_evidence")), "note": "عبارت خام نقل‌شده از متن پست؛ مبلغ به‌صورت خودکار نرمال‌سازی نشده است"},
+        {"metric": "شواهد دارای سود/زیان خالص", "value": sum(1 for row in evidence_rows if row.get("profit_evidence")), "note": "عبارت خام؛ دوره و واحد باید از گزارش رسمی تأیید شود"},
+        {"metric": "شواهد دارای سود هر سهم", "value": sum(1 for row in evidence_rows if row.get("eps_evidence")), "note": "شامل عباراتی مانند سود محقق‌نشده نیز می‌شود؛ معنا باید از متن کامل بررسی شود"},
+        {"metric": "شواهد دارای رشد/افت سالانه", "value": sum(1 for row in evidence_rows if row.get("growth_evidence")), "note": "فقط بخش متنی حاوی مقایسهٔ دوره‌ای"},
+        {"metric": "شواهد پروژه با قدرت متوسط/قوی", "value": sum(1 for row in evidence_rows if row.get("project_evidence") and row.get("project_evidence_strength") in {"قوی", "متوسط"}), "note": "نامزد بررسی پروژه؛ به معنی ارزش‌گذاری یا بهره‌برداری تأییدشده نیست"},
         {"metric": "همهٔ رکوردهای دارای کلیدواژهٔ پروژه", "value": sum(1 for row in announcements if row.get("project_keywords")), "note": "شامل موارد مبهم/مجوز بهره‌برداری؛ برابر با تعداد پروژه‌های قطعی نیست"},
         {"metric": "نامزدهای پروژه با شواهد متوسط/قوی", "value": sum(1 for row in announcements if row.get("project_keywords") and row.get("project_evidence_strength") in {"قوی", "متوسط"}), "note": "جدول «طرح‌های توسعه» همین موارد را نشان می‌دهد؛ بررسی متن اطلاعیه همچنان لازم است"},
         {"metric": "نامزدهای پروژه با شواهد قوی", "value": sum(1 for row in announcements if row.get("project_keywords") and row.get("project_evidence_strength") == "قوی"), "note": "وجود شاخص پیشرفت/مخارج/بهره‌برداری طرح در متن"},
@@ -1056,6 +1283,7 @@ def run(args):
         "summary": summary,
         "source_status": source_status,
         "telegram_posts": telegram_posts,
+        "channel_evidence": channel_evidence,
         "announcements": announcements,
         "symbol_lists": symbol_lists,
         "attachments": attachment_results,
@@ -1067,6 +1295,11 @@ def run(args):
     print("EXTRACTION_SUMMARY")
     print(f"TELEGRAM_POSTS:{len(telegram_posts)}")
     print(f"CODAL_REPORT_LINKS_UNIQUE:{len(announcements)}")
+    print(f"CHANNEL_EVIDENCE_ROWS:{len(channel_evidence)}")
+    print(f"EVIDENCE_WITH_SALES:{sum(1 for row in channel_evidence if row.get('sales_evidence'))}")
+    print(f"EVIDENCE_WITH_NET_PROFIT:{sum(1 for row in channel_evidence if row.get('profit_evidence'))}")
+    print(f"EVIDENCE_WITH_EPS:{sum(1 for row in channel_evidence if row.get('eps_evidence'))}")
+    print(f"EVIDENCE_WITH_GROWTH:{sum(1 for row in channel_evidence if row.get('growth_evidence'))}")
     print(f"SYMBOL_REPORT_LISTS:{len(symbol_lists)}")
     print(f"PROJECT_KEYWORD_MATCHES:{sum(1 for row in announcements if row.get('project_keywords'))}")
     print(f"FINANCIAL_KEYWORD_MATCHES:{sum(1 for row in announcements if row.get('financial_keywords') or 'صورت‌های مالی' in row.get('primary_category','') or 'ماهانه' in row.get('primary_category',''))}")
