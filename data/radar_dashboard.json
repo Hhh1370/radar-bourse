@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-13T21:57:56+00:00",
+  "generated_at_utc": "2026-10-13T22:11:11+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -17,7 +17,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-13T20:34:12+00:00",
-    "fundai_ratio_snapshot_age_hours": 1.4,
+    "fundai_ratio_snapshot_age_hours": 1.6,
     "fundai_ratio_matched_count": 534,
     "fundai_ratio_scored_count": 531,
     "final_credit_grade_count": 0,
@@ -37,7 +37,7 @@
   },
   "sources": {
     "technical": {
-      "generated_at_utc": "2026-10-13T20:37:11.237459+00:00",
+      "generated_at_utc": "2026-10-13T22:10:45.538526+00:00",
       "label": "تاریخچهٔ قیمت نهایت‌نگر",
       "status": "موجود",
       "note": "Technical screening only, not a buy/sell recommendation. The composite technical rank is provisional and has not been validated by walk-forward or out-of-sample backtesting. Fundamental health, earnings quality, project ROI and cash-flow quality are not included. Full TSE/IFB coverage has not been independently verified."
@@ -52,7 +52,7 @@
       "generated_at_utc": "2026-10-13T20:34:12+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 534 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 1.4 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 534 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 1.6 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "codal_channels": {
@@ -113,8 +113,8 @@
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 88.0,
-      "technical_rank_score": 86.28,
-      "relative_momentum_score": 84.18,
+      "technical_rank_score": 86.55,
+      "relative_momentum_score": 84.78,
       "momentum_pct": {
         "daily_20": 2.17,
         "daily_60": 168.76,
@@ -171,9 +171,9 @@
       "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
       "instrument_kind": "other_or_unconfirmed",
       "credit_assessment": {
-        "provisional_score": 86.3,
+        "provisional_score": 86.4,
         "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 86.3,
+        "observed_component_mean": 86.4,
         "provisional_score_available_weight_pct": 55,
         "nontechnical_components_available": [
           "fundamental"
@@ -181,7 +181,7 @@
         "component_scores": {
           "fundamental": 86.3,
           "earnings_quality": null,
-          "technical": 86.28,
+          "technical": 86.55,
           "money_flow": null,
           "projects": null
         },
@@ -227,7 +227,7 @@
           "technical"
         ]
       },
-      "credit_score": 86.3,
+      "credit_score": 86.4,
       "credit_confidence_score": 44.5,
       "credit_confidence_label": "پایین؛ اتکا محدود",
       "final_credit_grade": null,
@@ -310,177 +310,6 @@
       "rank": 2,
       "bucket": "main",
       "bucket_label": "۵ نامزد موقت رادار",
-      "symbol": "فگستر",
-      "company": "گسترش صنایع روی ایرانیان",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3IZIZ00013",
-      "price": 13270.0,
-      "price_date": "2026-10-12",
-      "technical_targets": {
-        "status": "unavailable",
-        "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
-        "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": null,
-        "data_age_days": null,
-        "current_price": null,
-        "atr14": null,
-        "support_levels": [],
-        "resistance_levels": [],
-        "buy": null,
-        "sell": null,
-        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
-      },
-      "data_age_days": 1,
-      "technical_score": 100.0,
-      "risk_adjusted_score": 86.0,
-      "technical_rank_score": 86.48,
-      "relative_momentum_score": 87.07,
-      "momentum_pct": {
-        "daily_20": 15.69,
-        "daily_60": 143.67,
-        "weekly_13": 123.78,
-        "monthly_6": 386.79
-      },
-      "volume_vs_20_period_average": 0.981,
-      "rsi14_daily": 74.62,
-      "heat_risk": "ریسک داغ‌شدن متوسط",
-      "entry_timing": "فقط پس از تأیید مجدد",
-      "risk_flags": [
-        "rsi_high",
-        "medium_term_surge",
-        "long_term_surge"
-      ],
-      "fundamental_score": 84.4,
-      "fundamental_score_source": "Fundai TTM ratios proxy",
-      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها؛ صورت‌های مالی سالانه/حسابرسی‌شده برای رتبهٔ نهایی هنوز تأیید نشده‌اند",
-      "fundamental_ratio_score": 84.4,
-      "fundamental_ratio_quality": 1.0,
-      "fundamental_ratio_industry": "فلزات اساسی",
-      "fundamental_ratio_report_date": "1405-03-31",
-      "fundamental_ratio_age_days": 114,
-      "fundamental_ratio_components": {
-        "profitability": 94.3,
-        "balance_sheet": 86.7,
-        "valuation": 62.5,
-        "roe_ttm": 93.3,
-        "roa_ttm": 96.7,
-        "net_profit_margin_ttm": 89.7,
-        "debt_to_assets": 86.7,
-        "debt_to_equity": 86.7,
-        "pe_ttm": 92.9,
-        "ps_ttm": 37.9,
-        "pb": 46.7
-      },
-      "fundamental_ratio_metric_count": 8,
-      "fundamental_ratio_peer_count": 31,
-      "fundai_ratios": {
-        "eps": 1905.0,
-        "pe_ttm": 7.024,
-        "ps_ttm": 2.0,
-        "price": 13380.0,
-        "market_value": 4749.9,
-        "operation_income": 2335.634,
-        "net_profit_ttm": 676.27,
-        "net_profit_margin_ttm": 0.29,
-        "roe_ttm": 0.617,
-        "roa_ttm": 0.42,
-        "pb": 4.336,
-        "debt_to_assets": 0.32,
-        "debt_to_equity": 0.471
-      },
-      "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
-      "instrument_kind": "common_equity",
-      "credit_assessment": {
-        "provisional_score": 85.3,
-        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 85.3,
-        "provisional_score_available_weight_pct": 55,
-        "nontechnical_components_available": [
-          "fundamental"
-        ],
-        "component_scores": {
-          "fundamental": 84.4,
-          "earnings_quality": null,
-          "technical": 86.48,
-          "money_flow": null,
-          "projects": null
-        },
-        "component_weights_pct": {
-          "fundamental": 30,
-          "earnings_quality": 15,
-          "technical": 25,
-          "money_flow": 20,
-          "projects": 10
-        },
-        "fundamental_score_source": "Fundai TTM ratios proxy",
-        "fundamental_ratio_quality": 1.0,
-        "fundamental_score_is_proxy": true,
-        "fundamental_quality_gate": {
-          "ready": false,
-          "audited_annual_parsed_count": 0,
-          "comparable_annual_growth_available": false,
-          "annual_reports_parsed": null,
-          "revenue_yoy_pct": null
-        },
-        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
-        "earnings_quality_evidence": [],
-        "earnings_quality_fields_observed": 0,
-        "earnings_quality_report_date": "",
-        "project_score": null,
-        "project_score_validated": false,
-        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
-        "rating_confidence_score": 44.5,
-        "rating_confidence_label": "پایین؛ اتکا محدود",
-        "rating_confidence_is_data_coverage_not_profit_probability": true,
-        "confidence_factors_pct": {
-          "fundamental": 65.0,
-          "earnings_quality": 0.0,
-          "technical": 100,
-          "money_flow": 0.0,
-          "projects": 0.0
-        },
-        "final_rating_eligible": false,
-        "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
-        "final_credit_grade": null,
-        "provisional_input_components": [
-          "fundamental",
-          "technical"
-        ]
-      },
-      "credit_score": 85.3,
-      "credit_confidence_score": 44.5,
-      "credit_confidence_label": "پایین؛ اتکا محدود",
-      "final_credit_grade": null,
-      "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
-      "earnings_quality_score": null,
-      "project_score": null,
-      "project_score_validated": false,
-      "money_flow_history_rows": null,
-      "money_flow_full_year_coverage": false,
-      "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
-      "financial_reports": [],
-      "important_disclosures": [],
-      "channel_evidence": [],
-      "codal_filing_ledger_reports": [],
-      "data_quality": {
-        "technical_available": true,
-        "fundamental_scored": true,
-        "fundamental_score_is_proxy": true,
-        "fundamental_ratio_snapshot_matched": true,
-        "fundamental_ratio_report_age_days": 114,
-        "money_flow_scored": false,
-        "money_flow_12m_verified": false,
-        "channel_evidence_count": 0,
-        "parsed_financial_report_count": 0,
-        "final_credit_grade_available": false
-      }
-    },
-    {
-      "rank": 3,
-      "bucket": "main",
-      "bucket_label": "۵ نامزد موقت رادار",
       "symbol": "لخزر",
       "company": "صنعتی پارس خزر",
       "exchange": "بورس",
@@ -511,8 +340,8 @@
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 100.0,
-      "technical_rank_score": 78.87,
-      "relative_momentum_score": 53.04,
+      "technical_rank_score": 78.92,
+      "relative_momentum_score": 53.15,
       "momentum_pct": {
         "daily_20": -1.85,
         "daily_60": 72.14,
@@ -576,7 +405,7 @@
         "component_scores": {
           "fundamental": 88.1,
           "earnings_quality": null,
-          "technical": 78.87,
+          "technical": 78.92,
           "money_flow": null,
           "projects": null
         },
@@ -652,7 +481,7 @@
       }
     },
     {
-      "rank": 4,
+      "rank": 3,
       "bucket": "main",
       "bucket_label": "۵ نامزد موقت رادار",
       "symbol": "رافزا",
@@ -678,8 +507,8 @@
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 94.0,
-      "technical_rank_score": 84.16,
-      "relative_momentum_score": 72.14,
+      "technical_rank_score": 84.28,
+      "relative_momentum_score": 72.41,
       "momentum_pct": {
         "daily_20": 14.18,
         "daily_60": 84.78,
@@ -746,7 +575,7 @@
         "component_scores": {
           "fundamental": 81.8,
           "earnings_quality": null,
-          "technical": 84.16,
+          "technical": 84.28,
           "money_flow": null,
           "projects": null
         },
@@ -863,6 +692,177 @@
       }
     },
     {
+      "rank": 4,
+      "bucket": "main",
+      "bucket_label": "۵ نامزد موقت رادار",
+      "symbol": "فگستر",
+      "company": "گسترش صنایع روی ایرانیان",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3IZIZ00013",
+      "price": 13390.0,
+      "price_date": "2026-10-13",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
+        "source": "Nahayatnegar historical daily OHLC",
+        "latest_price_date": null,
+        "data_age_days": null,
+        "current_price": null,
+        "atr14": null,
+        "support_levels": [],
+        "resistance_levels": [],
+        "buy": null,
+        "sell": null,
+        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
+      },
+      "data_age_days": 0,
+      "technical_score": 100.0,
+      "risk_adjusted_score": 79.0,
+      "technical_rank_score": 80.57,
+      "relative_momentum_score": 82.49,
+      "momentum_pct": {
+        "daily_20": 13.38,
+        "daily_60": 139.06,
+        "weekly_13": 125.8,
+        "monthly_6": 391.2
+      },
+      "volume_vs_20_period_average": 0.454,
+      "rsi14_daily": 80.91,
+      "heat_risk": "ریسک داغ‌شدن متوسط",
+      "entry_timing": "فقط پس از تأیید مجدد",
+      "risk_flags": [
+        "rsi_high",
+        "medium_term_surge",
+        "long_term_surge"
+      ],
+      "fundamental_score": 84.4,
+      "fundamental_score_source": "Fundai TTM ratios proxy",
+      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها؛ صورت‌های مالی سالانه/حسابرسی‌شده برای رتبهٔ نهایی هنوز تأیید نشده‌اند",
+      "fundamental_ratio_score": 84.4,
+      "fundamental_ratio_quality": 1.0,
+      "fundamental_ratio_industry": "فلزات اساسی",
+      "fundamental_ratio_report_date": "1405-03-31",
+      "fundamental_ratio_age_days": 114,
+      "fundamental_ratio_components": {
+        "profitability": 94.3,
+        "balance_sheet": 86.7,
+        "valuation": 62.5,
+        "roe_ttm": 93.3,
+        "roa_ttm": 96.7,
+        "net_profit_margin_ttm": 89.7,
+        "debt_to_assets": 86.7,
+        "debt_to_equity": 86.7,
+        "pe_ttm": 92.9,
+        "ps_ttm": 37.9,
+        "pb": 46.7
+      },
+      "fundamental_ratio_metric_count": 8,
+      "fundamental_ratio_peer_count": 31,
+      "fundai_ratios": {
+        "eps": 1905.0,
+        "pe_ttm": 7.024,
+        "ps_ttm": 2.0,
+        "price": 13380.0,
+        "market_value": 4749.9,
+        "operation_income": 2335.634,
+        "net_profit_ttm": 676.27,
+        "net_profit_margin_ttm": 0.29,
+        "roe_ttm": 0.617,
+        "roa_ttm": 0.42,
+        "pb": 4.336,
+        "debt_to_assets": 0.32,
+        "debt_to_equity": 0.471
+      },
+      "money_flow_score": null,
+      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "instrument_kind": "common_equity",
+      "credit_assessment": {
+        "provisional_score": 82.7,
+        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
+        "observed_component_mean": 82.7,
+        "provisional_score_available_weight_pct": 55,
+        "nontechnical_components_available": [
+          "fundamental"
+        ],
+        "component_scores": {
+          "fundamental": 84.4,
+          "earnings_quality": null,
+          "technical": 80.57,
+          "money_flow": null,
+          "projects": null
+        },
+        "component_weights_pct": {
+          "fundamental": 30,
+          "earnings_quality": 15,
+          "technical": 25,
+          "money_flow": 20,
+          "projects": 10
+        },
+        "fundamental_score_source": "Fundai TTM ratios proxy",
+        "fundamental_ratio_quality": 1.0,
+        "fundamental_score_is_proxy": true,
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
+        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
+        "earnings_quality_evidence": [],
+        "earnings_quality_fields_observed": 0,
+        "earnings_quality_report_date": "",
+        "project_score": null,
+        "project_score_validated": false,
+        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
+        "rating_confidence_score": 44.5,
+        "rating_confidence_label": "پایین؛ اتکا محدود",
+        "rating_confidence_is_data_coverage_not_profit_probability": true,
+        "confidence_factors_pct": {
+          "fundamental": 65.0,
+          "earnings_quality": 0.0,
+          "technical": 100,
+          "money_flow": 0.0,
+          "projects": 0.0
+        },
+        "final_rating_eligible": false,
+        "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
+        "final_credit_grade": null,
+        "provisional_input_components": [
+          "fundamental",
+          "technical"
+        ]
+      },
+      "credit_score": 82.7,
+      "credit_confidence_score": 44.5,
+      "credit_confidence_label": "پایین؛ اتکا محدود",
+      "final_credit_grade": null,
+      "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
+      "earnings_quality_score": null,
+      "project_score": null,
+      "project_score_validated": false,
+      "money_flow_history_rows": null,
+      "money_flow_full_year_coverage": false,
+      "money_flow_latest_date": "",
+      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "financial_reports": [],
+      "important_disclosures": [],
+      "channel_evidence": [],
+      "codal_filing_ledger_reports": [],
+      "data_quality": {
+        "technical_available": true,
+        "fundamental_scored": true,
+        "fundamental_score_is_proxy": true,
+        "fundamental_ratio_snapshot_matched": true,
+        "fundamental_ratio_report_age_days": 114,
+        "money_flow_scored": false,
+        "money_flow_12m_verified": false,
+        "channel_evidence_count": 0,
+        "parsed_financial_report_count": 0,
+        "final_credit_grade_available": false
+      }
+    },
+    {
       "rank": 5,
       "bucket": "main",
       "bucket_label": "۵ نامزد موقت رادار",
@@ -870,46 +870,46 @@
       "company": "کاشی پارس",
       "exchange": "بورس",
       "chart_id": "IRO1KPRS00013",
-      "price": 21650.0,
-      "price_date": "2026-10-12",
+      "price": 21490.0,
+      "price_date": "2026-10-13",
       "technical_targets": {
         "status": "available",
         "reason": "",
         "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": "2026-10-12",
-        "data_age_days": 1,
-        "current_price": 21650.0,
-        "atr14": 713.5714,
+        "latest_price_date": "2026-10-13",
+        "data_age_days": 0,
+        "current_price": 21490.0,
+        "atr14": 728.5714,
         "support_levels": [
           19220.0
         ],
         "resistance_levels": [],
         "buy": null,
         "sell": {
-          "entry_reference": 21650.0,
+          "entry_reference": 21490.0,
           "target_1": 19220.0,
           "target_2": null,
-          "stop_loss": 22720.3571,
-          "invalidation": 22720.3571,
-          "risk_reward_tp1": 2.27,
+          "stop_loss": 22582.8571,
+          "invalidation": 22582.8571,
+          "risk_reward_tp1": 2.08,
           "risk_reward_tp2": null,
           "status": "scenario_only; confirm entry separately"
         },
         "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
       },
-      "data_age_days": 1,
+      "data_age_days": 0,
       "technical_score": 100.0,
       "risk_adjusted_score": 89.0,
-      "technical_rank_score": 86.57,
-      "relative_momentum_score": 83.61,
+      "technical_rank_score": 86.21,
+      "relative_momentum_score": 82.81,
       "momentum_pct": {
-        "daily_20": 10.8,
-        "daily_60": 143.53,
-        "weekly_13": 143.53,
-        "monthly_6": 196.09
+        "daily_20": 8.37,
+        "daily_60": 143.93,
+        "weekly_13": 141.73,
+        "monthly_6": 193.9
       },
-      "volume_vs_20_period_average": 1.301,
-      "rsi14_daily": 78.57,
+      "volume_vs_20_period_average": 1.284,
+      "rsi14_daily": 75.48,
       "heat_risk": "ریسک داغ‌شدن پایین",
       "entry_timing": "فقط پس از تأیید مجدد",
       "risk_flags": [
@@ -959,9 +959,9 @@
       "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
       "instrument_kind": "common_equity",
       "credit_assessment": {
-        "provisional_score": 81.5,
+        "provisional_score": 81.3,
         "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 81.5,
+        "observed_component_mean": 81.3,
         "provisional_score_available_weight_pct": 55,
         "nontechnical_components_available": [
           "fundamental"
@@ -969,7 +969,7 @@
         "component_scores": {
           "fundamental": 77.2,
           "earnings_quality": null,
-          "technical": 86.57,
+          "technical": 86.21,
           "money_flow": null,
           "projects": null
         },
@@ -1015,7 +1015,7 @@
           "technical"
         ]
       },
-      "credit_score": 81.5,
+      "credit_score": 81.3,
       "credit_confidence_score": 44.5,
       "credit_confidence_label": "پایین؛ اتکا محدود",
       "final_credit_grade": null,
@@ -1052,46 +1052,39 @@
       "company": "فرآورده های غذایی و قند چهارمحال",
       "exchange": "فرابورس",
       "chart_id": "IRO3CHRZ00013",
-      "price": 5960.0,
-      "price_date": "2026-10-12",
+      "price": 5980.0,
+      "price_date": "2026-10-13",
       "technical_targets": {
         "status": "available",
         "reason": "",
         "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": "2026-10-12",
-        "data_age_days": 1,
-        "current_price": 5960.0,
-        "atr14": 235.0,
+        "latest_price_date": "2026-10-13",
+        "data_age_days": 0,
+        "current_price": 5980.0,
+        "atr14": 237.1429,
         "support_levels": [
           5453.3333
         ],
-        "resistance_levels": [],
+        "resistance_levels": [
+          6480.0
+        ],
         "buy": null,
-        "sell": {
-          "entry_reference": 5960.0,
-          "target_1": 5453.3333,
-          "target_2": null,
-          "stop_loss": 6312.5,
-          "invalidation": 6312.5,
-          "risk_reward_tp1": 1.44,
-          "risk_reward_tp2": null,
-          "status": "scenario_only; confirm entry separately"
-        },
+        "sell": null,
         "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
       },
-      "data_age_days": 1,
+      "data_age_days": 0,
       "technical_score": 100.0,
       "risk_adjusted_score": 97.0,
-      "technical_rank_score": 81.48,
-      "relative_momentum_score": 62.51,
+      "technical_rank_score": 81.07,
+      "relative_momentum_score": 61.59,
       "momentum_pct": {
-        "daily_20": 11.19,
-        "daily_60": 53.17,
-        "weekly_13": 70.33,
-        "monthly_6": 166.67
+        "daily_20": 8.33,
+        "daily_60": 59.13,
+        "weekly_13": 70.91,
+        "monthly_6": 167.56
       },
-      "volume_vs_20_period_average": 1.733,
-      "rsi14_daily": 64.33,
+      "volume_vs_20_period_average": 0.993,
+      "rsi14_daily": 58.82,
       "heat_risk": "ریسک داغ‌شدن پایین",
       "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
       "risk_flags": [
@@ -1139,9 +1132,9 @@
       "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
       "instrument_kind": "common_equity",
       "credit_assessment": {
-        "provisional_score": 80.7,
+        "provisional_score": 80.5,
         "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 80.7,
+        "observed_component_mean": 80.5,
         "provisional_score_available_weight_pct": 55,
         "nontechnical_components_available": [
           "fundamental"
@@ -1149,7 +1142,7 @@
         "component_scores": {
           "fundamental": 80.1,
           "earnings_quality": null,
-          "technical": 81.48,
+          "technical": 81.07,
           "money_flow": null,
           "projects": null
         },
@@ -1195,7 +1188,7 @@
           "technical"
         ]
       },
-      "credit_score": 80.7,
+      "credit_score": 80.5,
       "credit_confidence_score": 44.5,
       "credit_confidence_label": "پایین؛ اتکا محدود",
       "final_credit_grade": null,
@@ -1256,8 +1249,8 @@
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 94.0,
-      "technical_rank_score": 81.78,
-      "relative_momentum_score": 66.85,
+      "technical_rank_score": 81.81,
+      "relative_momentum_score": 66.91,
       "momentum_pct": {
         "daily_20": 6.76,
         "daily_60": 83.74,
@@ -1324,7 +1317,7 @@
         "component_scores": {
           "fundamental": 78.9,
           "earnings_quality": null,
-          "technical": 81.78,
+          "technical": 81.81,
           "money_flow": null,
           "projects": null
         },
@@ -1403,228 +1396,6 @@
       "rank": 8,
       "bucket": "watch",
       "bucket_label": "۵ نماد تحت‌نظر موقت",
-      "symbol": "ولساپا",
-      "company": "لیزینگ رایان سایپا",
-      "exchange": "بورس",
-      "chart_id": "IRO1RSAP00013",
-      "price": 2028.0,
-      "price_date": "2026-10-12",
-      "technical_targets": {
-        "status": "unavailable",
-        "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
-        "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": null,
-        "data_age_days": null,
-        "current_price": null,
-        "atr14": null,
-        "support_levels": [],
-        "resistance_levels": [],
-        "buy": null,
-        "sell": null,
-        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
-      },
-      "data_age_days": 1,
-      "technical_score": 100.0,
-      "risk_adjusted_score": 65.0,
-      "technical_rank_score": 75.53,
-      "relative_momentum_score": 88.4,
-      "momentum_pct": {
-        "daily_20": 66.23,
-        "daily_60": 139.72,
-        "weekly_13": 153.82,
-        "monthly_6": 250.87
-      },
-      "volume_vs_20_period_average": 0.878,
-      "rsi14_daily": 100.0,
-      "heat_risk": "ریسک داغ‌شدن بالا",
-      "entry_timing": "انتظار برای اصلاح یا تثبیت",
-      "risk_flags": [
-        "rsi_high",
-        "daily_surge",
-        "medium_term_surge",
-        "long_term_surge"
-      ],
-      "fundamental_score": 83.8,
-      "fundamental_score_source": "Fundai TTM ratios proxy",
-      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها؛ صورت‌های مالی سالانه/حسابرسی‌شده برای رتبهٔ نهایی هنوز تأیید نشده‌اند",
-      "fundamental_ratio_score": 83.8,
-      "fundamental_ratio_quality": 1.0,
-      "fundamental_ratio_industry": "سایر واسطه گری های مالی",
-      "fundamental_ratio_report_date": "1405-03-31",
-      "fundamental_ratio_age_days": 114,
-      "fundamental_ratio_components": {
-        "profitability": 80.9,
-        "balance_sheet": 91.7,
-        "valuation": 81.7,
-        "roe_ttm": 50.0,
-        "roa_ttm": 91.7,
-        "net_profit_margin_ttm": 100.0,
-        "debt_to_assets": 91.7,
-        "debt_to_equity": 91.7,
-        "pe_ttm": 91.7,
-        "ps_ttm": 50.0,
-        "pb": 100.0
-      },
-      "fundamental_ratio_metric_count": 8,
-      "fundamental_ratio_peer_count": 13,
-      "fundai_ratios": {
-        "eps": 335.0,
-        "pe_ttm": 6.197,
-        "ps_ttm": 6.4,
-        "price": 2076.0,
-        "market_value": 4074.98,
-        "operation_income": 632.9726,
-        "net_profit_ttm": 657.57,
-        "net_profit_margin_ttm": 1.038,
-        "roe_ttm": 0.228,
-        "roa_ttm": 0.175,
-        "pb": 1.411,
-        "debt_to_assets": 0.23,
-        "debt_to_equity": 0.299
-      },
-      "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
-      "instrument_kind": "common_equity",
-      "credit_assessment": {
-        "provisional_score": 80.0,
-        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 80.0,
-        "provisional_score_available_weight_pct": 55,
-        "nontechnical_components_available": [
-          "fundamental"
-        ],
-        "component_scores": {
-          "fundamental": 83.8,
-          "earnings_quality": null,
-          "technical": 75.53,
-          "money_flow": null,
-          "projects": null
-        },
-        "component_weights_pct": {
-          "fundamental": 30,
-          "earnings_quality": 15,
-          "technical": 25,
-          "money_flow": 20,
-          "projects": 10
-        },
-        "fundamental_score_source": "Fundai TTM ratios proxy",
-        "fundamental_ratio_quality": 1.0,
-        "fundamental_score_is_proxy": true,
-        "fundamental_quality_gate": {
-          "ready": false,
-          "audited_annual_parsed_count": 0,
-          "comparable_annual_growth_available": false,
-          "annual_reports_parsed": null,
-          "revenue_yoy_pct": null
-        },
-        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
-        "earnings_quality_evidence": [],
-        "earnings_quality_fields_observed": 0,
-        "earnings_quality_report_date": "",
-        "project_score": null,
-        "project_score_validated": false,
-        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
-        "rating_confidence_score": 44.5,
-        "rating_confidence_label": "پایین؛ اتکا محدود",
-        "rating_confidence_is_data_coverage_not_profit_probability": true,
-        "confidence_factors_pct": {
-          "fundamental": 65.0,
-          "earnings_quality": 0.0,
-          "technical": 100,
-          "money_flow": 0.0,
-          "projects": 0.0
-        },
-        "final_rating_eligible": false,
-        "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
-        "final_credit_grade": null,
-        "provisional_input_components": [
-          "fundamental",
-          "technical"
-        ]
-      },
-      "credit_score": 80.0,
-      "credit_confidence_score": 44.5,
-      "credit_confidence_label": "پایین؛ اتکا محدود",
-      "final_credit_grade": null,
-      "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
-      "earnings_quality_score": null,
-      "project_score": null,
-      "project_score_validated": false,
-      "money_flow_history_rows": null,
-      "money_flow_full_year_coverage": false,
-      "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
-      "financial_reports": [],
-      "important_disclosures": [],
-      "channel_evidence": [
-        {
-          "symbol": "ولساپا",
-          "company": "",
-          "report_type": "افشای بااهمیت",
-          "report_period": "منتهی به 1405/12/29",
-          "published_at": "2026-10-06T16:45:14+00:00",
-          "channel": "تلگرام کدال۳۶۰",
-          "sales": "",
-          "profit": "",
-          "eps": "",
-          "dividend": "",
-          "growth": "",
-          "project": "",
-          "project_strength": "ضعیف",
-          "amounts_raw": "",
-          "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
-          "telegram_url": "",
-          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=l1Wlhr8ff4WpxW0FZPxk4A%3D%3D&rt=4&let=11&ct=0&ft=-1",
-          "source_text": "کدال۳۶۰ #ولساپا #افشای_اطلاعات_بااهمیت - (سایر اطلاعات بااهمیت - نتیجه مزایده 42دستگاه انواع خودرو صفر و کارکرده- گروه ب) منتهی به سال مالی 1405/12/29 شرکت #لیزینگ_رایان_سایپا 1405-07-14 20:15:11 (1608775) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 6.56K views 16:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2 📥 دانلود پیوست 3 📥 دانلود پیوست 4",
-          "record_id": "f957a74987235e356ad9c5b2",
-          "detail_status": "metadata_only",
-          "numeric_field_count": 0,
-          "is_secondary_summary": true
-        }
-      ],
-      "codal_filing_ledger_reports": [
-        {
-          "symbol": "ولساپا",
-          "company": "",
-          "report_type": "افشای بااهمیت",
-          "report_period": "منتهی به 1405/12/29",
-          "published_at": "2026-10-06T16:45:14+00:00",
-          "channel": "تلگرام کدال۳۶۰",
-          "sales": "",
-          "profit": "",
-          "eps": "",
-          "dividend": "",
-          "growth": "",
-          "project": "",
-          "project_strength": "ضعیف",
-          "amounts_raw": "",
-          "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
-          "telegram_url": "",
-          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=l1Wlhr8ff4WpxW0FZPxk4A%3D%3D&rt=4&let=11&ct=0&ft=-1",
-          "source_text": "کدال۳۶۰ #ولساپا #افشای_اطلاعات_بااهمیت - (سایر اطلاعات بااهمیت - نتیجه مزایده 42دستگاه انواع خودرو صفر و کارکرده- گروه ب) منتهی به سال مالی 1405/12/29 شرکت #لیزینگ_رایان_سایپا 1405-07-14 20:15:11 (1608775) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 6.56K views 16:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2 📥 دانلود پیوست 3 📥 دانلود پیوست 4",
-          "record_id": "f957a74987235e356ad9c5b2",
-          "detail_status": "metadata_only",
-          "numeric_field_count": 0,
-          "is_secondary_summary": true
-        }
-      ],
-      "data_quality": {
-        "technical_available": true,
-        "fundamental_scored": true,
-        "fundamental_score_is_proxy": true,
-        "fundamental_ratio_snapshot_matched": true,
-        "fundamental_ratio_report_age_days": 114,
-        "money_flow_scored": false,
-        "money_flow_12m_verified": false,
-        "channel_evidence_count": 1,
-        "parsed_financial_report_count": 0,
-        "final_credit_grade_available": false
-      }
-    },
-    {
-      "rank": 9,
-      "bucket": "watch",
-      "bucket_label": "۵ نماد تحت‌نظر موقت",
       "symbol": "ولیز",
       "company": "لیزینگ ایران",
       "exchange": "پایه فرابورس",
@@ -1661,8 +1432,8 @@
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 97.0,
-      "technical_rank_score": 86.47,
-      "relative_momentum_score": 73.61,
+      "technical_rank_score": 86.64,
+      "relative_momentum_score": 73.98,
       "momentum_pct": {
         "daily_20": 23.63,
         "daily_60": 132.32,
@@ -1718,9 +1489,9 @@
       "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
       "instrument_kind": "other_or_unconfirmed",
       "credit_assessment": {
-        "provisional_score": 79.7,
+        "provisional_score": 79.8,
         "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 79.7,
+        "observed_component_mean": 79.8,
         "provisional_score_available_weight_pct": 55,
         "nontechnical_components_available": [
           "fundamental"
@@ -1728,7 +1499,7 @@
         "component_scores": {
           "fundamental": 74.1,
           "earnings_quality": null,
-          "technical": 86.47,
+          "technical": 86.64,
           "money_flow": null,
           "projects": null
         },
@@ -1774,7 +1545,7 @@
           "technical"
         ]
       },
-      "credit_score": 79.7,
+      "credit_score": 79.8,
       "credit_confidence_score": 44.5,
       "credit_confidence_label": "پایین؛ اتکا محدود",
       "final_credit_grade": null,
@@ -1854,7 +1625,7 @@
       }
     },
     {
-      "rank": 10,
+      "rank": 9,
       "bucket": "watch",
       "bucket_label": "۵ نماد تحت‌نظر موقت",
       "symbol": "کساوه",
@@ -1891,8 +1662,8 @@
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 97.0,
-      "technical_rank_score": 80.36,
-      "relative_momentum_score": 60.03,
+      "technical_rank_score": 80.53,
+      "relative_momentum_score": 60.41,
       "momentum_pct": {
         "daily_20": 16.12,
         "daily_60": 56.54,
@@ -1948,9 +1719,9 @@
       "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
       "instrument_kind": "common_equity",
       "credit_assessment": {
-        "provisional_score": 79.1,
+        "provisional_score": 79.2,
         "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 79.1,
+        "observed_component_mean": 79.2,
         "provisional_score_available_weight_pct": 55,
         "nontechnical_components_available": [
           "fundamental"
@@ -1958,7 +1729,7 @@
         "component_scores": {
           "fundamental": 78.1,
           "earnings_quality": null,
-          "technical": 80.36,
+          "technical": 80.53,
           "money_flow": null,
           "projects": null
         },
@@ -2004,7 +1775,178 @@
           "technical"
         ]
       },
-      "credit_score": 79.1,
+      "credit_score": 79.2,
+      "credit_confidence_score": 44.5,
+      "credit_confidence_label": "پایین؛ اتکا محدود",
+      "final_credit_grade": null,
+      "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
+      "earnings_quality_score": null,
+      "project_score": null,
+      "project_score_validated": false,
+      "money_flow_history_rows": null,
+      "money_flow_full_year_coverage": false,
+      "money_flow_latest_date": "",
+      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "financial_reports": [],
+      "important_disclosures": [],
+      "channel_evidence": [],
+      "codal_filing_ledger_reports": [],
+      "data_quality": {
+        "technical_available": true,
+        "fundamental_scored": true,
+        "fundamental_score_is_proxy": true,
+        "fundamental_ratio_snapshot_matched": true,
+        "fundamental_ratio_report_age_days": 114,
+        "money_flow_scored": false,
+        "money_flow_12m_verified": false,
+        "channel_evidence_count": 0,
+        "parsed_financial_report_count": 0,
+        "final_credit_grade_available": false
+      }
+    },
+    {
+      "rank": 10,
+      "bucket": "watch",
+      "bucket_label": "۵ نماد تحت‌نظر موقت",
+      "symbol": "فسوژ",
+      "company": "سوژمیران",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3SOJZ00013",
+      "price": 32000.0,
+      "price_date": "2026-10-13",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
+        "source": "Nahayatnegar historical daily OHLC",
+        "latest_price_date": null,
+        "data_age_days": null,
+        "current_price": null,
+        "atr14": null,
+        "support_levels": [],
+        "resistance_levels": [],
+        "buy": null,
+        "sell": null,
+        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
+      },
+      "data_age_days": 0,
+      "technical_score": 100.0,
+      "risk_adjusted_score": 66.0,
+      "technical_rank_score": 78.66,
+      "relative_momentum_score": 94.14,
+      "momentum_pct": {
+        "daily_20": 23.55,
+        "daily_60": 240.14,
+        "weekly_13": 214.74,
+        "monthly_6": 468.79
+      },
+      "volume_vs_20_period_average": 0.978,
+      "rsi14_daily": 91.09,
+      "heat_risk": "ریسک داغ‌شدن بالا",
+      "entry_timing": "انتظار برای اصلاح یا تثبیت",
+      "risk_flags": [
+        "rsi_high",
+        "medium_term_surge",
+        "long_term_surge"
+      ],
+      "fundamental_score": 79.6,
+      "fundamental_score_source": "Fundai TTM ratios proxy",
+      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها؛ صورت‌های مالی سالانه/حسابرسی‌شده برای رتبهٔ نهایی هنوز تأیید نشده‌اند",
+      "fundamental_ratio_score": 79.6,
+      "fundamental_ratio_quality": 1.0,
+      "fundamental_ratio_industry": "فلزات اساسی",
+      "fundamental_ratio_report_date": "1405-03-31",
+      "fundamental_ratio_age_days": 114,
+      "fundamental_ratio_components": {
+        "profitability": 100.0,
+        "balance_sheet": 96.7,
+        "valuation": 21.6,
+        "roe_ttm": 100.0,
+        "roa_ttm": 100.0,
+        "net_profit_margin_ttm": 100.0,
+        "debt_to_assets": 96.7,
+        "debt_to_equity": 96.7,
+        "pe_ttm": 46.4,
+        "ps_ttm": 0.0,
+        "pb": 10.0
+      },
+      "fundamental_ratio_metric_count": 8,
+      "fundamental_ratio_peer_count": 31,
+      "fundai_ratios": {
+        "eps": 2590.0,
+        "pe_ttm": 12.822,
+        "ps_ttm": 12.9,
+        "price": 33210.0,
+        "market_value": 7970.4,
+        "operation_income": 618.0,
+        "net_profit_ttm": 621.6,
+        "net_profit_margin_ttm": 1.006,
+        "roe_ttm": 0.67,
+        "roa_ttm": 0.529,
+        "pb": 8.587,
+        "debt_to_assets": 0.21,
+        "debt_to_equity": 0.266
+      },
+      "money_flow_score": null,
+      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "instrument_kind": "common_equity",
+      "credit_assessment": {
+        "provisional_score": 79.2,
+        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
+        "observed_component_mean": 79.2,
+        "provisional_score_available_weight_pct": 55,
+        "nontechnical_components_available": [
+          "fundamental"
+        ],
+        "component_scores": {
+          "fundamental": 79.6,
+          "earnings_quality": null,
+          "technical": 78.66,
+          "money_flow": null,
+          "projects": null
+        },
+        "component_weights_pct": {
+          "fundamental": 30,
+          "earnings_quality": 15,
+          "technical": 25,
+          "money_flow": 20,
+          "projects": 10
+        },
+        "fundamental_score_source": "Fundai TTM ratios proxy",
+        "fundamental_ratio_quality": 1.0,
+        "fundamental_score_is_proxy": true,
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
+        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
+        "earnings_quality_evidence": [],
+        "earnings_quality_fields_observed": 0,
+        "earnings_quality_report_date": "",
+        "project_score": null,
+        "project_score_validated": false,
+        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
+        "rating_confidence_score": 44.5,
+        "rating_confidence_label": "پایین؛ اتکا محدود",
+        "rating_confidence_is_data_coverage_not_profit_probability": true,
+        "confidence_factors_pct": {
+          "fundamental": 65.0,
+          "earnings_quality": 0.0,
+          "technical": 100,
+          "money_flow": 0.0,
+          "projects": 0.0
+        },
+        "final_rating_eligible": false,
+        "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
+        "final_credit_grade": null,
+        "provisional_input_components": [
+          "fundamental",
+          "technical"
+        ]
+      },
+      "credit_score": 79.2,
       "credit_confidence_score": 44.5,
       "credit_confidence_label": "پایین؛ اتکا محدود",
       "final_credit_grade": null,
