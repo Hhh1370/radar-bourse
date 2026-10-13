@@ -141,7 +141,9 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/technical_radar.json data/radar_dashboard.json
+          # The dashboard has its own workflow, triggered by technical_radar.json.
+          # Do not commit a competing dashboard snapshot from this long-running job.
+          git add data/technical_radar.json
           if git diff --cached --quiet; then
             echo "No technical radar changes."
           else
