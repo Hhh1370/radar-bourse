@@ -44,14 +44,18 @@ jobs:
           rows = p.get("top_50_for_review", [])
           assert p.get("analysis_errors", 0) == 0, f"analysis errors: {p.get('analysis_errors')}"
           assert rows, "No eligible technical candidates were produced"
-          assert all("relative_momentum_score" in row for row in rows), "Tie-breaker score missing"
+          assert all("relative_momentum_score" in row for row in rows), "Relative momentum score missing"
           assert all(isinstance(row["risk_adjusted_score"], (int, float)) for row in rows), "Risk-adjusted score missing"
+          assert all(isinstance(row.get("technical_rank_score"), (int, float)) for row in rows), "Continuous technical rank score missing"
+          universe = p.get("all_eligible_ranked", [])
+          assert len(universe) == p.get("eligible_for_long_term_ranking"), "Full eligible universe must be retained"
           def sort_key(row):
               momentum = row.get("momentum_pct", {})
               monthly = momentum.get("monthly_6_period")
               weekly = momentum.get("weekly_13_period")
               daily60 = momentum.get("daily_60_period")
               return (
+                  -float(row.get("technical_rank_score") or 0),
                   -float(row.get("risk_adjusted_score") or 0),
                   -float(row.get("relative_momentum_score") or 0),
                   -(float(monthly) if monthly is not None else -1e12),
@@ -61,10 +65,10 @@ jobs:
               )
           keys = [sort_key(row) for row in rows]
           assert keys == sorted(keys), "Technical candidates are not sorted by the declared ranking fields"
-          print(f"TECHNICAL_OUTPUT_VALID: {len(rows)} candidates; eligible={p.get('eligible_for_long_term_ranking')}; errors={p.get('analysis_errors')}")
-          print("TOP_10_TECHNICAL_TIEBREAK:")
+          print(f"TECHNICAL_OUTPUT_VALID: {len(rows)} candidates; full_eligible={len(universe)}; eligible={p.get('eligible_for_long_term_ranking')}; errors={p.get('analysis_errors')}")
+          print("TOP_10_TECHNICAL_RANK:")
           for row in rows[:10]:
-              print(f"{row['symbol']}\tbase={row['risk_adjusted_score']}\trelative={row['relative_momentum_score']}")
+              print(f"{row['symbol']}\trank={row['technical_rank_score']}\tbase={row['risk_adjusted_score']}\trelative={row['relative_momentum_score']}")
           PY
 
       - name: Commit technical results
