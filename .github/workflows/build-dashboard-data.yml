@@ -52,11 +52,25 @@ jobs:
           assert sum(x.get("bucket") == "watch" for x in rows) == 5
           assert "fundamental_scored_count" in p["summary"]
           assert "money_flow_12m_scored_count" in p["summary"]
+          assert "final_credit_grade_count" in p["summary"]
+          assert "high_confidence_count" in p["summary"]
+          assert p["summary"].get("candidate_pool_ranked", 0) >= 650, f"expected broad eligible-universe ranking, got {p['summary'].get('candidate_pool_ranked')}"
           assert all(x.get("symbol") for x in rows)
-          print(f"DASHBOARD_DATA_VALID: {len(rows)} rows")
+          assert all(isinstance(x.get("credit_confidence_score"), (int, float)) and 0 <= x["credit_confidence_score"] <= 100 for x in rows)
+          assert all(isinstance(x.get("credit_score"), (int, float)) for x in rows), "Provisional score missing"
+          assert all(x.get("credit_assessment", {}).get("provisional_score_available_weight_pct", 0) <= 100 for x in rows)
+          assert all(x.get("final_credit_grade") is None or x["credit_assessment"].get("final_rating_eligible") is True for x in rows)
+          if p["summary"]["fundamental_scored_count"] == 0:
+              assert p["summary"]["final_credit_grade_count"] == 0, "Final credit grades must remain withheld with no fundamental scores"
+          expected = sorted(rows, key=lambda x: (-(float(x.get("credit_score")) if isinstance(x.get("credit_score"), (int,float)) else -1), -float(x.get("technical_rank_score") or x.get("risk_adjusted_score") or 0), -float(x.get("credit_confidence_score") or 0), str(x.get("symbol") or "")))
+          assert [x.get("symbol") for x in rows] == [x.get("symbol") for x in expected], "Dashboard rows not sorted by the declared provisional ranking"
+          print(f"DASHBOARD_DATA_VALID: {len(rows)} visible rows from pool {p['summary']['candidate_pool_ranked']}")
           print(f"FUNDAMENTAL_SCORED: {p['summary']['fundamental_scored_count']}")
           print(f"MONEY_FLOW_12M_SCORED: {p['summary']['money_flow_12m_scored_count']}")
-          print(f"CHANNEL_EVIDENCE: {p['summary']['channel_evidence_rows']}")
+          print(f"FINAL_CREDIT_GRADES: {p['summary']['final_credit_grade_count']}")
+          print(f"HIGH_CONFIDENCE: {p['summary']['high_confidence_count']}")
+          for x in rows:
+              print(f"RANK:{x['rank']} SYMBOL:{x['symbol']} SCORE:{x.get('credit_score')} DATA_CONFIDENCE:{x.get('credit_confidence_score')} FINAL_GRADE:{x.get('final_credit_grade')}")
           PY
 
       - name: Commit generated dashboard data
