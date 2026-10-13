@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-13T07:30:13.745050+00:00",
+  "generated_at_utc": "2026-10-13T13:43:21.872110+00:00",
   "source": "Nahayatnegar historical candles",
   "input_universe_count": 741,
   "analyzed_count": 741,
@@ -11,16 +11,18 @@
     "weekly": "SMA13/SMA26, 13-period return",
     "monthly": "SMA6/SMA12, 6-period return",
     "score": "Weighted technical rules normalized for available checks",
+    "tie_breaker": "For equal risk-adjusted scores only, order by a cross-sectional percentile composite: 30% monthly 6-period return, 25% weekly 13-period return, 25% daily 60-period return, 10% daily 20-period return, 10% latest volume versus 20-day average; missing metrics are excluded and weights renormalized. This relative tie-breaker is provisional and not independently backtested.",
+    "sort_order": "Risk-adjusted checklist score descending, relative momentum score descending, then monthly/weekly/daily momentum as deterministic tie-breaks.",
     "risk_adjustment": "Experimental heat penalty subtracted from technical score; ranked by adjusted score",
     "eligibility": "At least 200 daily, 26 weekly and 12 monthly candles, with latest daily data no more than 10 days old"
   },
-  "warning": "Technical screening only, not a buy/sell recommendation. The heat penalty is heuristic and has not yet been validated by historical strategy testing. Full TSE/IFB coverage has not been independently verified.",
+  "warning": "Technical screening only, not a buy/sell recommendation. The heat penalty and relative momentum tie-breaker are heuristic and have not yet been validated by historical strategy testing. Fundamental data, earnings quality, and development projects are not included in this technical-only ranking. Full TSE/IFB coverage has not been independently verified.",
   "top_50_for_review": [
     {
-      "symbol": "آبادا",
-      "company": "تولید نیروی برق آبادان",
+      "symbol": "ما",
+      "company": "بیمه ما",
       "exchange": "بورس",
-      "chart_id": "IRO1NBAB00013",
+      "chart_id": "IRO1BVMA00013",
       "technical_score": 100.0,
       "risk_penalty": 0,
       "risk_adjusted_score": 100.0,
@@ -31,1063 +33,37 @@
       "latest_daily_date": "2026-10-12",
       "data_age_days": 1,
       "history_bars": {
-        "daily": 1373,
-        "weekly": 311,
-        "monthly": 74
-      },
-      "price": {
-        "daily_close": 12380.0,
-        "weekly_close": 12380.0,
-        "monthly_close": 12380.0
-      },
-      "moving_averages": {
-        "daily_sma50": 10870.8,
-        "daily_sma200": 8265.865,
-        "weekly_sma13": 10652.307692307691,
-        "weekly_sma26": 9242.0,
-        "monthly_sma6": 9674.166666666666,
-        "monthly_sma12": 8480.916666666666
-      },
-      "momentum_pct": {
-        "daily_20_period": 12.64786169244767,
-        "daily_60_period": 52.0884520884521,
-        "weekly_13_period": 52.0884520884521,
-        "monthly_6_period": 92.20617916472598
-      },
-      "rsi14_daily": 69.44,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 4924148.0,
-      "average_volume20": 2802863.6,
-      "volume_vs_20_period_average": 1.757,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "اتکام",
-      "company": "بیمه اتکائی امین (سهامی خاص)",
-      "exchange": "بورس",
-      "chart_id": "IRO1ETKA00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2308,
-        "weekly": 528,
-        "monthly": 129
-      },
-      "price": {
-        "daily_close": 2188.0,
-        "weekly_close": 2188.0,
-        "monthly_close": 2188.0
-      },
-      "moving_averages": {
-        "daily_sma50": 1927.88,
-        "daily_sma200": 1514.96,
-        "weekly_sma13": 1930.076923076923,
-        "weekly_sma26": 1634.8461538461538,
-        "monthly_sma6": 1694.0,
-        "monthly_sma12": 1529.0833333333333
-      },
-      "momentum_pct": {
-        "daily_20_period": 9.894525364138618,
-        "daily_60_period": 61.95410806809771,
-        "weekly_13_period": 64.63506395786305,
-        "monthly_6_period": 73.65079365079366
-      },
-      "rsi14_daily": 61.24,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 1966588.0,
-      "average_volume20": 6825243.15,
-      "volume_vs_20_period_average": 0.288,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "اردستان",
-      "company": "سیمان اردستان",
-      "exchange": "بورس",
-      "chart_id": "IRO1ARDS00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 801,
-        "weekly": 180,
-        "monthly": 45
-      },
-      "price": {
-        "daily_close": 34050.0,
-        "weekly_close": 34050.0,
-        "monthly_close": 34050.0
-      },
-      "moving_averages": {
-        "daily_sma50": 28956.2,
-        "daily_sma200": 22930.535,
-        "weekly_sma13": 28728.46153846154,
-        "weekly_sma26": 25558.384615384617,
-        "monthly_sma6": 26756.0,
-        "monthly_sma12": 23138.916666666668
-      },
-      "momentum_pct": {
-        "daily_20_period": 6.806775407779164,
-        "daily_60_period": 37.79846216106839,
-        "weekly_13_period": 37.79846216106839,
-        "monthly_6_period": 87.22164183207785
-      },
-      "rsi14_daily": 67.59,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 4231858.0,
-      "average_volume20": 6185119.35,
-      "volume_vs_20_period_average": 0.684,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "امید",
-      "company": "تامین سرمایه امید",
-      "exchange": "بورس",
-      "chart_id": "IRO1OMID00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1967,
-        "weekly": 441,
-        "monthly": 106
-      },
-      "price": {
-        "daily_close": 3810.0,
-        "weekly_close": 3810.0,
-        "monthly_close": 3810.0
-      },
-      "moving_averages": {
-        "daily_sma50": 3625.8,
-        "daily_sma200": 3010.17,
-        "weekly_sma13": 3580.0,
-        "weekly_sma26": 3299.730769230769,
-        "monthly_sma6": 3360.8333333333335,
-        "monthly_sma12": 3058.5833333333335
-      },
-      "momentum_pct": {
-        "daily_20_period": 2.972972972972965,
-        "daily_60_period": 21.72523961661341,
-        "weekly_13_period": 21.72523961661341,
-        "monthly_6_period": 31.017881705639617
-      },
-      "rsi14_daily": 68.42,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 1737888.0,
-      "average_volume20": 5438019.65,
-      "volume_vs_20_period_average": 0.32,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "امین",
-      "company": "تامین سرمایه امین",
-      "exchange": "بورس",
-      "chart_id": "IRO1TSAN00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1358,
-        "weekly": 304,
-        "monthly": 74
-      },
-      "price": {
-        "daily_close": 2823.0,
-        "weekly_close": 2823.0,
-        "monthly_close": 2823.0
-      },
-      "moving_averages": {
-        "daily_sma50": 2652.72,
-        "daily_sma200": 2149.01,
-        "weekly_sma13": 2601.0,
-        "weekly_sma26": 2301.3846153846152,
-        "monthly_sma6": 2358.8333333333335,
-        "monthly_sma12": 2152.6666666666665
-      },
-      "momentum_pct": {
-        "daily_20_period": -0.28258565877781194,
-        "daily_60_period": 37.43914313534567,
-        "weekly_13_period": 37.43914313534567,
-        "monthly_6_period": 58.952702702702695
-      },
-      "rsi14_daily": 63.83,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 3845728.0,
-      "average_volume20": 6113130.8,
-      "volume_vs_20_period_average": 0.629,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "اوان",
-      "company": "مبین وان کیش",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3MOBZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2020,
-        "weekly": 456,
-        "monthly": 109
-      },
-      "price": {
-        "daily_close": 13910.0,
-        "weekly_close": 13910.0,
-        "monthly_close": 13910.0
-      },
-      "moving_averages": {
-        "daily_sma50": 13418.6,
-        "daily_sma200": 8468.54,
-        "weekly_sma13": 12973.846153846154,
-        "weekly_sma26": 10817.923076923076,
-        "monthly_sma6": 11166.166666666666,
-        "monthly_sma12": 8431.166666666666
-      },
-      "momentum_pct": {
-        "daily_20_period": -6.831882116543875,
-        "daily_60_period": 39.07218556288743,
-        "weekly_13_period": 40.903565640194486,
-        "monthly_6_period": 93.30183435241801
-      },
-      "rsi14_daily": 53.32,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 4537230.0,
-      "average_volume20": 4919573.75,
-      "volume_vs_20_period_average": 0.922,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "اپرداز",
-      "company": "آتیه داده پرداز",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3APDZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2239,
-        "weekly": 501,
-        "monthly": 120
-      },
-      "price": {
-        "daily_close": 5330.0,
-        "weekly_close": 5330.0,
-        "monthly_close": 5330.0
-      },
-      "moving_averages": {
-        "daily_sma50": 4986.04,
-        "daily_sma200": 3737.735,
-        "weekly_sma13": 4914.615384615385,
-        "weekly_sma26": 4208.807692307692,
-        "monthly_sma6": 4354.666666666667,
-        "monthly_sma12": 3774.1666666666665
-      },
-      "momentum_pct": {
-        "daily_20_period": -9.353741496598644,
-        "daily_60_period": 36.42180701305349,
-        "weekly_13_period": 33.68447454226236,
-        "monthly_6_period": 76.49006622516556
-      },
-      "rsi14_daily": 57.86,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 7038606.0,
-      "average_volume20": 15468419.6,
-      "volume_vs_20_period_average": 0.455,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بایکا",
-      "company": "کارخانجات کابلسازی ایران",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7KBLP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1418,
-        "weekly": 404,
-        "monthly": 118
-      },
-      "price": {
-        "daily_close": 28310.0,
-        "weekly_close": 28310.0,
-        "monthly_close": 28310.0
-      },
-      "moving_averages": {
-        "daily_sma50": 26322.2,
-        "daily_sma200": 22442.89,
-        "weekly_sma13": 26243.846153846152,
-        "weekly_sma26": 25274.0,
-        "monthly_sma6": 25654.166666666668,
-        "monthly_sma12": 23883.25
-      },
-      "momentum_pct": {
-        "daily_20_period": 0.5326704545454586,
-        "daily_60_period": 11.019607843137248,
-        "weekly_13_period": 17.322834645669282,
-        "monthly_6_period": 21.356310013717426
-      },
-      "rsi14_daily": 45.79,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 28039.0,
-      "average_volume20": 179903.85,
-      "volume_vs_20_period_average": 0.156,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بزاگرس",
-      "company": "نیروگاه زاگرس کوثر",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3ZKPZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1709,
-        "weekly": 380,
-        "monthly": 91
-      },
-      "price": {
-        "daily_close": 7930.0,
-        "weekly_close": 7930.0,
-        "monthly_close": 7930.0
-      },
-      "moving_averages": {
-        "daily_sma50": 7478.8,
-        "daily_sma200": 5484.23,
-        "weekly_sma13": 7225.384615384615,
-        "weekly_sma26": 6126.0,
-        "monthly_sma6": 6338.833333333333,
-        "monthly_sma12": 5528.75
-      },
-      "momentum_pct": {
-        "daily_20_period": -7.033997655334112,
-        "daily_60_period": 33.27731092436974,
-        "weekly_13_period": 53.980582524271846,
-        "monthly_6_period": 86.32518796992481
-      },
-      "rsi14_daily": 53.88,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 3907442.0,
-      "average_volume20": 6538024.95,
-      "volume_vs_20_period_average": 0.598,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بساما",
-      "company": "بیمه سامان",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3BSMZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2993,
-        "weekly": 693,
-        "monthly": 169
-      },
-      "price": {
-        "daily_close": 14900.0,
-        "weekly_close": 14900.0,
-        "monthly_close": 14900.0
-      },
-      "moving_averages": {
-        "daily_sma50": 12880.6,
-        "daily_sma200": 10768.47,
-        "weekly_sma13": 12501.538461538461,
-        "weekly_sma26": 11516.038461538461,
-        "monthly_sma6": 11947.666666666666,
-        "monthly_sma12": 11112.25
-      },
-      "momentum_pct": {
-        "daily_20_period": 9.39794419970632,
-        "daily_60_period": 44.75857378801127,
-        "weekly_13_period": 61.79824085134107,
-        "monthly_6_period": 39.36956318398652
-      },
-      "rsi14_daily": 50.0,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 459776.0,
-      "average_volume20": 2929533.05,
-      "volume_vs_20_period_average": 0.157,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بسویچ",
-      "company": "پارس سوئیچ",
-      "exchange": "بورس",
-      "chart_id": "IRO1SWIC00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 3955,
-        "weekly": 1026,
-        "monthly": 267
-      },
-      "price": {
-        "daily_close": 4830.0,
-        "weekly_close": 4830.0,
-        "monthly_close": 4830.0
-      },
-      "moving_averages": {
-        "daily_sma50": 4642.6,
-        "daily_sma200": 3452.765,
-        "weekly_sma13": 4490.0,
-        "weekly_sma26": 3888.346153846154,
-        "monthly_sma6": 3996.1666666666665,
-        "monthly_sma12": 3496.9166666666665
-      },
-      "momentum_pct": {
-        "daily_20_period": -9.039548022598876,
-        "daily_60_period": 50.93749999999999,
-        "weekly_13_period": 50.93749999999999,
-        "monthly_6_period": 58.464566929133866
-      },
-      "rsi14_daily": 44.03,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 3195955.0,
-      "average_volume20": 3267683.1,
-      "volume_vs_20_period_average": 0.978,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بمپنا",
-      "company": "تولید برق عسلویه مپنا",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3BMAZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2800,
-        "weekly": 624,
-        "monthly": 147
-      },
-      "price": {
-        "daily_close": 7400.0,
-        "weekly_close": 7400.0,
-        "monthly_close": 7400.0
-      },
-      "moving_averages": {
-        "daily_sma50": 7196.2,
-        "daily_sma200": 5315.265,
-        "weekly_sma13": 6924.615384615385,
-        "weekly_sma26": 5890.192307692308,
-        "monthly_sma6": 6028.5,
-        "monthly_sma12": 5291.0
-      },
-      "momentum_pct": {
-        "daily_20_period": -18.14159292035398,
-        "daily_60_period": 44.81409001956946,
-        "weekly_13_period": 53.526970954356855,
-        "monthly_6_period": 63.283318623124444
-      },
-      "rsi14_daily": 30.1,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 38820688.0,
-      "average_volume20": 24074611.3,
-      "volume_vs_20_period_average": 1.613,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بنیرو",
-      "company": "نیرو ترانس",
-      "exchange": "بورس",
-      "chart_id": "IRO1NIRO00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 4633,
-        "weekly": 1117,
-        "monthly": 270
-      },
-      "price": {
-        "daily_close": 4070.0,
-        "weekly_close": 4070.0,
-        "monthly_close": 4070.0
-      },
-      "moving_averages": {
-        "daily_sma50": 3747.6,
-        "daily_sma200": 2715.265,
-        "weekly_sma13": 3733.846153846154,
-        "weekly_sma26": 3207.153846153846,
-        "monthly_sma6": 3331.6666666666665,
-        "monthly_sma12": 2724.8333333333335
-      },
-      "momentum_pct": {
-        "daily_20_period": 7.105263157894748,
-        "daily_60_period": 9.644396551724132,
-        "weekly_13_period": 12.898751733703184,
-        "monthly_6_period": 80.00884564352057
-      },
-      "rsi14_daily": 63.64,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 38632182.0,
-      "average_volume20": 26810889.3,
-      "volume_vs_20_period_average": 1.441,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بپیوند",
-      "company": "برق و انرژی پیوند گستر پارس",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3PGRZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1370,
-        "weekly": 306,
-        "monthly": 73
-      },
-      "price": {
-        "daily_close": 18430.0,
-        "weekly_close": 18430.0,
-        "monthly_close": 18430.0
-      },
-      "moving_averages": {
-        "daily_sma50": 17955.8,
-        "daily_sma200": 12869.33,
-        "weekly_sma13": 17457.69230769231,
-        "weekly_sma26": 14812.961538461539,
-        "monthly_sma6": 15498.333333333334,
-        "monthly_sma12": 12983.5
-      },
-      "momentum_pct": {
-        "daily_20_period": -1.915912719531665,
-        "daily_60_period": 37.2300819061802,
-        "weekly_13_period": 37.2300819061802,
-        "monthly_6_period": 97.17556435219856
-      },
-      "rsi14_daily": 54.94,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 2309736.0,
-      "average_volume20": 1356456.45,
-      "volume_vs_20_period_average": 1.703,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بکاب",
-      "company": "جوشکاب یزد",
-      "exchange": "بورس",
-      "chart_id": "IRO1JOSH00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 4652,
-        "weekly": 1084,
-        "monthly": 266
-      },
-      "price": {
-        "daily_close": 12620.0,
-        "weekly_close": 12620.0,
-        "monthly_close": 12620.0
-      },
-      "moving_averages": {
-        "daily_sma50": 11863.0,
-        "daily_sma200": 9235.04,
-        "weekly_sma13": 11521.538461538461,
-        "weekly_sma26": 11068.384615384615,
-        "monthly_sma6": 10968.333333333334,
-        "monthly_sma12": 10522.5
-      },
-      "momentum_pct": {
-        "daily_20_period": -7.815924032140254,
-        "daily_60_period": 35.55316863587541,
-        "weekly_13_period": 45.22439585730724,
-        "monthly_6_period": 4.991680532445919
-      },
-      "rsi14_daily": 44.69,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 6944599.0,
-      "average_volume20": 6776566.2,
-      "volume_vs_20_period_average": 1.025,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بکابل",
-      "company": "سیم و کابل ابهر",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3ABCZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 764,
-        "weekly": 173,
-        "monthly": 43
-      },
-      "price": {
-        "daily_close": 5910.0,
-        "weekly_close": 5910.0,
-        "monthly_close": 5910.0
-      },
-      "moving_averages": {
-        "daily_sma50": 5617.2,
-        "daily_sma200": 4601.685,
-        "weekly_sma13": 5506.153846153846,
-        "weekly_sma26": 5028.076923076923,
-        "monthly_sma6": 5095.333333333333,
-        "monthly_sma12": 4670.75
-      },
-      "momentum_pct": {
-        "daily_20_period": -1.170568561872909,
-        "daily_60_period": 34.31818181818183,
-        "weekly_13_period": 34.31818181818183,
-        "monthly_6_period": 46.650124069478906
-      },
-      "rsi14_daily": 57.49,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 24110409.0,
-      "average_volume20": 20064400.95,
-      "volume_vs_20_period_average": 1.202,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بکام",
-      "company": "کارخانجات تولیدی شهید قندی (سهامی عام)",
-      "exchange": "بورس",
-      "chart_id": "IRO1KGND00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 4412,
-        "weekly": 1017,
-        "monthly": 253
-      },
-      "price": {
-        "daily_close": 3500.0,
-        "weekly_close": 3500.0,
-        "monthly_close": 3500.0
-      },
-      "moving_averages": {
-        "daily_sma50": 3124.68,
-        "daily_sma200": 2469.08,
-        "weekly_sma13": 3030.3846153846152,
-        "weekly_sma26": 2589.653846153846,
-        "monthly_sma6": 2685.6666666666665,
-        "monthly_sma12": 2448.25
-      },
-      "momentum_pct": {
-        "daily_20_period": -1.9607843137254943,
-        "daily_60_period": 56.95067264573992,
-        "weekly_13_period": 56.95067264573992,
-        "monthly_6_period": 95.64002235885968
-      },
-      "rsi14_daily": 56.1,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 40346824.0,
-      "average_volume20": 39692628.8,
-      "volume_vs_20_period_average": 1.016,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "بگیلان",
-      "company": "توسعه مسیر برق گیلان",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3GEDZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1402,
-        "weekly": 311,
-        "monthly": 74
-      },
-      "price": {
-        "daily_close": 26230.0,
-        "weekly_close": 26230.0,
-        "monthly_close": 26230.0
-      },
-      "moving_averages": {
-        "daily_sma50": 25522.6,
-        "daily_sma200": 18712.77,
-        "weekly_sma13": 25120.0,
-        "weekly_sma26": 21761.153846153848,
-        "monthly_sma6": 22520.0,
-        "monthly_sma12": 18864.333333333332
-      },
-      "momentum_pct": {
-        "daily_20_period": -6.321428571428567,
-        "daily_60_period": 20.653173873045084,
-        "weekly_13_period": 20.653173873045084,
-        "monthly_6_period": 71.43790849673202
-      },
-      "rsi14_daily": 50.9,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 1350541.0,
-      "average_volume20": 2961706.1,
-      "volume_vs_20_period_average": 0.456,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "تابا",
-      "company": "تابان نیرو سپاهان",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7TABP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2001,
-        "weekly": 518,
+        "daily": 2507,
+        "weekly": 565,
         "monthly": 135
       },
       "price": {
-        "daily_close": 41980.0,
-        "weekly_close": 41980.0,
-        "monthly_close": 41980.0
+        "daily_close": 4120.0,
+        "weekly_close": 4120.0,
+        "monthly_close": 4120.0
       },
       "moving_averages": {
-        "daily_sma50": 36873.0,
-        "daily_sma200": 28062.185,
-        "weekly_sma13": 37689.230769230766,
-        "weekly_sma26": 34836.92307692308,
-        "monthly_sma6": 37071.666666666664,
-        "monthly_sma12": 31972.5
+        "daily_sma50": 3573.78,
+        "daily_sma200": 2588.6,
+        "weekly_sma13": 3483.076923076923,
+        "weekly_sma26": 2973.230769230769,
+        "monthly_sma6": 3130.6666666666665,
+        "monthly_sma12": 2653.3333333333335
       },
       "momentum_pct": {
-        "daily_20_period": 21.46990740740742,
-        "daily_60_period": 20.805755395683455,
-        "weekly_13_period": 16.77329624478443,
-        "monthly_6_period": 24.201183431952657
+        "daily_20_period": 5.102040816326525,
+        "daily_60_period": 74.79847263470513,
+        "weekly_13_period": 74.79847263470513,
+        "monthly_6_period": 88.21379625399726
       },
-      "rsi14_daily": 66.74,
+      "rsi14_daily": 67.01,
       "rsi_state": "محدودهٔ میانی",
       "heat_risk": "ریسک داغ‌شدن پایین",
       "risk_flags": [],
       "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 458657.0,
-      "average_volume20": 885636.05,
-      "volume_vs_20_period_average": 0.518,
+      "latest_daily_volume": 16182711.0,
+      "average_volume20": 9299413.45,
+      "volume_vs_20_period_average": 1.74,
       "checks": {
         "daily_close_above_sma50": true,
         "daily_sma50_above_sma200": true,
@@ -1097,13 +73,21 @@
         "monthly_sma6_above_sma12": true,
         "weekly_13_period_return_positive": true,
         "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 56.54,
+      "relative_momentum_components": {
+        "monthly_6_period": 36.8,
+        "weekly_13_period": 65.1,
+        "daily_60_period": 65.4,
+        "daily_20_period": 39.7,
+        "volume_ratio": 89.2
       }
     },
     {
-      "symbol": "تبرک",
-      "company": "گروه کارخانجات صنعتی تبرک",
+      "symbol": "پارتا",
+      "company": "مجتمع صنعتی آرتاویل تایر",
       "exchange": "فرابورس",
-      "chart_id": "IRO3TIGZ00013",
+      "chart_id": "IRO3ARTZ00013",
       "technical_score": 100.0,
       "risk_penalty": 0,
       "risk_adjusted_score": 100.0,
@@ -1114,37 +98,37 @@
       "latest_daily_date": "2026-10-12",
       "data_age_days": 1,
       "history_bars": {
-        "daily": 1901,
-        "weekly": 430,
-        "monthly": 102
+        "daily": 1535,
+        "weekly": 415,
+        "monthly": 123
       },
       "price": {
-        "daily_close": 22660.0,
-        "weekly_close": 22660.0,
-        "monthly_close": 22660.0
+        "daily_close": 20030.0,
+        "weekly_close": 20030.0,
+        "monthly_close": 20030.0
       },
       "moving_averages": {
-        "daily_sma50": 19645.64,
-        "daily_sma200": 14778.955,
-        "weekly_sma13": 19687.30769230769,
-        "weekly_sma26": 17458.153846153848,
-        "monthly_sma6": 18156.833333333332,
-        "monthly_sma12": 15581.083333333334
+        "daily_sma50": 17031.56,
+        "daily_sma200": 11042.335,
+        "weekly_sma13": 16317.538461538461,
+        "weekly_sma26": 13772.5,
+        "monthly_sma6": 14792.833333333334,
+        "monthly_sma12": 11932.166666666666
       },
       "momentum_pct": {
-        "daily_20_period": 2.44122965641953,
-        "daily_60_period": 24.58764020233122,
-        "weekly_13_period": 33.12966335702956,
-        "monthly_6_period": 66.031652989449
+        "daily_20_period": 3.5677352637021764,
+        "daily_60_period": 66.87494792968425,
+        "weekly_13_period": 80.77617328519855,
+        "monthly_6_period": 94.8822728157229
       },
-      "rsi14_daily": 69.57,
+      "rsi14_daily": 51.0,
       "rsi_state": "محدودهٔ میانی",
       "heat_risk": "ریسک داغ‌شدن پایین",
       "risk_flags": [],
       "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 2481733.0,
-      "average_volume20": 1717523.95,
-      "volume_vs_20_period_average": 1.445,
+      "latest_daily_volume": 370261.0,
+      "average_volume20": 408621.1,
+      "volume_vs_20_period_average": 0.906,
       "checks": {
         "daily_close_above_sma50": true,
         "daily_sma50_above_sma200": true,
@@ -1154,241 +138,21 @@
         "monthly_sma6_above_sma12": true,
         "weekly_13_period_return_positive": true,
         "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 54.05,
+      "relative_momentum_components": {
+        "monthly_6_period": 40.5,
+        "weekly_13_period": 69.8,
+        "daily_60_period": 60.8,
+        "daily_20_period": 36.9,
+        "volume_ratio": 55.5
       }
     },
     {
-      "symbol": "تجلی",
-      "company": "تجلی توسعه معادن و فلزات",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3TMMZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1029,
-        "weekly": 231,
-        "monthly": 56
-      },
-      "price": {
-        "daily_close": 2210.0,
-        "weekly_close": 2210.0,
-        "monthly_close": 2210.0
-      },
-      "moving_averages": {
-        "daily_sma50": 1875.28,
-        "daily_sma200": 1593.475,
-        "weekly_sma13": 1853.7692307692307,
-        "weekly_sma26": 1721.423076923077,
-        "monthly_sma6": 1790.3333333333333,
-        "monthly_sma12": 1634.0
-      },
-      "momentum_pct": {
-        "daily_20_period": 9.081934846989137,
-        "daily_60_period": 36.67285095856525,
-        "weekly_13_period": 36.67285095856525,
-        "monthly_6_period": 55.96330275229357
-      },
-      "rsi14_daily": 68.35,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 95232247.0,
-      "average_volume20": 80449487.85,
-      "volume_vs_20_period_average": 1.184,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "تشتاد",
-      "company": "اشتاد ایران",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7ESHP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2010,
-        "weekly": 505,
-        "monthly": 135
-      },
-      "price": {
-        "daily_close": 7040.0,
-        "weekly_close": 7040.0,
-        "monthly_close": 7040.0
-      },
-      "moving_averages": {
-        "daily_sma50": 5808.2,
-        "daily_sma200": 5090.535,
-        "weekly_sma13": 5850.7692307692305,
-        "weekly_sma26": 5251.884615384615,
-        "monthly_sma6": 5418.333333333333,
-        "monthly_sma12": 5098.333333333333
-      },
-      "momentum_pct": {
-        "daily_20_period": 18.918918918918926,
-        "daily_60_period": 26.164874551971316,
-        "weekly_13_period": 46.66666666666666,
-        "monthly_6_period": 75.60488899975056
-      },
-      "rsi14_daily": 57.46,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 3160427.0,
-      "average_volume20": 1996224.75,
-      "volume_vs_20_period_average": 1.583,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "تماوند",
-      "company": "تامین سرمایه دماوند",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3DIBZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1341,
-        "weekly": 302,
-        "monthly": 73
-      },
-      "price": {
-        "daily_close": 2542.0,
-        "weekly_close": 2542.0,
-        "monthly_close": 2542.0
-      },
-      "moving_averages": {
-        "daily_sma50": 2325.68,
-        "daily_sma200": 2229.46,
-        "weekly_sma13": 2301.923076923077,
-        "weekly_sma26": 2252.5,
-        "monthly_sma6": 2296.1666666666665,
-        "monthly_sma12": 2250.3333333333335
-      },
-      "momentum_pct": {
-        "daily_20_period": 11.052861511577117,
-        "daily_60_period": 29.959100204498966,
-        "weekly_13_period": 29.959100204498966,
-        "monthly_6_period": 14.298561151079149
-      },
-      "rsi14_daily": 64.78,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 19379403.0,
-      "average_volume20": 62272428.55,
-      "volume_vs_20_period_average": 0.311,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "تمحرکه",
-      "company": "ماشین سازی نیرو محرکه",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7NMTP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 4128,
-        "weekly": 1081,
-        "monthly": 279
-      },
-      "price": {
-        "daily_close": 9150.0,
-        "weekly_close": 9150.0,
-        "monthly_close": 9150.0
-      },
-      "moving_averages": {
-        "daily_sma50": 7983.7,
-        "daily_sma200": 7162.075,
-        "weekly_sma13": 8047.153846153846,
-        "weekly_sma26": 7070.7692307692305,
-        "monthly_sma6": 7336.0,
-        "monthly_sma12": 7106.666666666667
-      },
-      "momentum_pct": {
-        "daily_20_period": 1.7797552836484876,
-        "daily_60_period": 45.956292869676176,
-        "weekly_13_period": 41.44380893492039,
-        "monthly_6_period": 56.16999487967229
-      },
-      "rsi14_daily": 50.8,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 1396082.0,
-      "average_volume20": 1786551.2,
-      "volume_vs_20_period_average": 0.781,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "تملت",
-      "company": "تامین سرمایه بانک ملت",
+      "symbol": "فپنتا",
+      "company": "صنعتی سپنتا (سهامی عام)",
       "exchange": "بورس",
-      "chart_id": "IRO1TMLT00013",
+      "chart_id": "IRO1SPTA00013",
       "technical_score": 100.0,
       "risk_penalty": 0,
       "risk_adjusted_score": 100.0,
@@ -1399,37 +163,37 @@
       "latest_daily_date": "2026-10-12",
       "data_age_days": 1,
       "history_bars": {
-        "daily": 1444,
-        "weekly": 323,
-        "monthly": 78
+        "daily": 4737,
+        "weekly": 1300,
+        "monthly": 346
       },
       "price": {
-        "daily_close": 2247.0,
-        "weekly_close": 2247.0,
-        "monthly_close": 2247.0
+        "daily_close": 49790.0,
+        "weekly_close": 49790.0,
+        "monthly_close": 49790.0
       },
       "moving_averages": {
-        "daily_sma50": 2047.9,
-        "daily_sma200": 1520.775,
-        "weekly_sma13": 2008.0,
-        "weekly_sma26": 1767.5384615384614,
-        "monthly_sma6": 1816.8333333333333,
-        "monthly_sma12": 1525.0833333333333
+        "daily_sma50": 41772.0,
+        "daily_sma200": 36566.73,
+        "weekly_sma13": 40200.0,
+        "weekly_sma26": 35027.153846153844,
+        "monthly_sma6": 36009.333333333336,
+        "monthly_sma12": 34859.666666666664
       },
       "momentum_pct": {
-        "daily_20_period": 4.414498141263934,
-        "daily_60_period": 44.50160771704179,
-        "weekly_13_period": 44.50160771704179,
-        "monthly_6_period": 64.97797356828194
+        "daily_20_period": 1.055408970976246,
+        "daily_60_period": 73.36350974930362,
+        "weekly_13_period": 73.36350974930362,
+        "monthly_6_period": 96.88402072047136
       },
-      "rsi14_daily": 66.01,
+      "rsi14_daily": 55.54,
       "rsi_state": "محدودهٔ میانی",
       "heat_risk": "ریسک داغ‌شدن پایین",
       "risk_flags": [],
       "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 11754645.0,
-      "average_volume20": 7459114.55,
-      "volume_vs_20_period_average": 1.576,
+      "latest_daily_volume": 6606392.0,
+      "average_volume20": 6842198.6,
+      "volume_vs_20_period_average": 0.966,
       "checks": {
         "daily_close_above_sma50": true,
         "daily_sma50_above_sma200": true,
@@ -1439,184 +203,21 @@
         "monthly_sma6_above_sma12": true,
         "weekly_13_period_return_positive": true,
         "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 53.61,
+      "relative_momentum_components": {
+        "monthly_6_period": 40.9,
+        "weekly_13_period": 63.9,
+        "daily_60_period": 64.9,
+        "daily_20_period": 29.0,
+        "volume_ratio": 62.1
       }
     },
     {
-      "symbol": "توریل",
-      "company": "توکا ریل (سهامی خاص)",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3TORZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 3196,
-        "weekly": 721,
-        "monthly": 172
-      },
-      "price": {
-        "daily_close": 3590.0,
-        "weekly_close": 3590.0,
-        "monthly_close": 3590.0
-      },
-      "moving_averages": {
-        "daily_sma50": 3228.18,
-        "daily_sma200": 2739.475,
-        "weekly_sma13": 3126.153846153846,
-        "weekly_sma26": 2931.3076923076924,
-        "monthly_sma6": 2912.1666666666665,
-        "monthly_sma12": 2769.6666666666665
-      },
-      "momentum_pct": {
-        "daily_20_period": 2.57142857142858,
-        "daily_60_period": 49.14831740756127,
-        "weekly_13_period": 49.14831740756127,
-        "monthly_6_period": 36.76190476190475
-      },
-      "rsi14_daily": 62.18,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 48915848.0,
-      "average_volume20": 35998526.5,
-      "volume_vs_20_period_average": 1.359,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "تپولا",
-      "company": "مهندسی مرآت پولاد",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7TPOP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1772,
-        "weekly": 474,
-        "monthly": 125
-      },
-      "price": {
-        "daily_close": 18900.0,
-        "weekly_close": 18900.0,
-        "monthly_close": 18900.0
-      },
-      "moving_averages": {
-        "daily_sma50": 18091.2,
-        "daily_sma200": 14808.5,
-        "weekly_sma13": 17525.384615384617,
-        "weekly_sma26": 15130.384615384615,
-        "monthly_sma6": 15606.666666666666,
-        "monthly_sma12": 14395.833333333334
-      },
-      "momentum_pct": {
-        "daily_20_period": -4.977375565610864,
-        "daily_60_period": 52.66558966074313,
-        "weekly_13_period": 49.05362776025237,
-        "monthly_6_period": 60.03386960203218
-      },
-      "rsi14_daily": 44.94,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 979236.0,
-      "average_volume20": 887823.65,
-      "volume_vs_20_period_average": 1.103,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "تپکو",
-      "company": "تولید تجهیزات سنگین هپکو (سهامی عام)",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7HPKP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2254,
-        "weekly": 511,
-        "monthly": 132
-      },
-      "price": {
-        "daily_close": 589.0,
-        "weekly_close": 589.0,
-        "monthly_close": 589.0
-      },
-      "moving_averages": {
-        "daily_sma50": 495.26,
-        "daily_sma200": 418.95,
-        "weekly_sma13": 485.9230769230769,
-        "weekly_sma26": 437.2307692307692,
-        "monthly_sma6": 445.0,
-        "monthly_sma12": 419.0833333333333
-      },
-      "momentum_pct": {
-        "daily_20_period": -4.227642276422761,
-        "daily_60_period": 36.9767441860465,
-        "weekly_13_period": 45.4320987654321,
-        "monthly_6_period": 73.23529411764707
-      },
-      "rsi14_daily": 62.09,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 571911089.0,
-      "average_volume20": 598998388.55,
-      "volume_vs_20_period_average": 0.955,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "تکمبا",
-      "company": "کمباین سازی ایران",
+      "symbol": "لخزر",
+      "company": "صنعتی پارس خزر",
       "exchange": "بورس",
-      "chart_id": "IRO1COMB00013",
+      "chart_id": "IRO1KHAZ00013",
       "technical_score": 100.0,
       "risk_penalty": 0,
       "risk_adjusted_score": 100.0,
@@ -1627,37 +228,37 @@
       "latest_daily_date": "2026-10-12",
       "data_age_days": 1,
       "history_bars": {
-        "daily": 4310,
-        "weekly": 1018,
-        "monthly": 262
+        "daily": 4054,
+        "weekly": 1120,
+        "monthly": 313
       },
       "price": {
-        "daily_close": 9220.0,
-        "weekly_close": 9220.0,
-        "monthly_close": 9220.0
+        "daily_close": 4770.0,
+        "weekly_close": 4770.0,
+        "monthly_close": 4770.0
       },
       "moving_averages": {
-        "daily_sma50": 8155.0,
-        "daily_sma200": 6419.66,
-        "weekly_sma13": 7944.461538461538,
-        "weekly_sma26": 6968.653846153846,
-        "monthly_sma6": 7316.333333333333,
-        "monthly_sma12": 6503.916666666667
+        "daily_sma50": 4373.4,
+        "daily_sma200": 3019.87,
+        "weekly_sma13": 4210.0,
+        "weekly_sma26": 3431.576923076923,
+        "monthly_sma6": 3655.0,
+        "monthly_sma12": 3138.8333333333335
       },
       "momentum_pct": {
-        "daily_20_period": 1.6538037486218293,
-        "daily_60_period": 42.56997062007113,
-        "weekly_13_period": 61.273395137309784,
-        "monthly_6_period": 85.25215993570423
+        "daily_20_period": -1.851851851851849,
+        "daily_60_period": 72.14002165283291,
+        "weekly_13_period": 80.95599393019728,
+        "monthly_6_period": 90.03984063745021
       },
-      "rsi14_daily": 52.71,
+      "rsi14_daily": 52.21,
       "rsi_state": "محدودهٔ میانی",
       "heat_risk": "ریسک داغ‌شدن پایین",
       "risk_flags": [],
       "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 3347415.0,
-      "average_volume20": 5686835.85,
-      "volume_vs_20_period_average": 0.589,
+      "latest_daily_volume": 16262936.0,
+      "average_volume20": 17147180.2,
+      "volume_vs_20_period_average": 0.948,
       "checks": {
         "daily_close_above_sma50": true,
         "daily_sma50_above_sma200": true,
@@ -1667,184 +268,21 @@
         "monthly_sma6_above_sma12": true,
         "weekly_13_period_return_positive": true,
         "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 53.04,
+      "relative_momentum_components": {
+        "monthly_6_period": 37.8,
+        "weekly_13_period": 70.1,
+        "daily_60_period": 63.9,
+        "daily_20_period": 22.0,
+        "volume_ratio": 59.9
       }
     },
     {
-      "symbol": "ثاصفا",
-      "company": "ساختمان اصفهان",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7SESP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1813,
-        "weekly": 506,
-        "monthly": 133
-      },
-      "price": {
-        "daily_close": 21270.0,
-        "weekly_close": 21270.0,
-        "monthly_close": 21270.0
-      },
-      "moving_averages": {
-        "daily_sma50": 16534.8,
-        "daily_sma200": 16486.05,
-        "weekly_sma13": 16059.23076923077,
-        "weekly_sma26": 15844.23076923077,
-        "monthly_sma6": 16185.0,
-        "monthly_sma12": 15731.666666666666
-      },
-      "momentum_pct": {
-        "daily_20_period": 15.035154137371553,
-        "daily_60_period": 62.73909716908952,
-        "weekly_13_period": 60.40723981900453,
-        "monthly_6_period": 31.53988868274582
-      },
-      "rsi14_daily": 62.31,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 317328.0,
-      "average_volume20": 648119.15,
-      "volume_vs_20_period_average": 0.49,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "ثجوان",
-      "company": "تامین مسکن جوانان",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7SJVP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1346,
-        "weekly": 332,
-        "monthly": 84
-      },
-      "price": {
-        "daily_close": 2210.0,
-        "weekly_close": 2210.0,
-        "monthly_close": 2210.0
-      },
-      "moving_averages": {
-        "daily_sma50": 2067.14,
-        "daily_sma200": 1610.395,
-        "weekly_sma13": 2092.5384615384614,
-        "weekly_sma26": 1806.1153846153845,
-        "monthly_sma6": 1907.0,
-        "monthly_sma12": 1637.3333333333333
-      },
-      "momentum_pct": {
-        "daily_20_period": 6.91823899371069,
-        "daily_60_period": 26.79288582903041,
-        "weekly_13_period": 35.16819571865444,
-        "monthly_6_period": 75.39682539682539
-      },
-      "rsi14_daily": 37.68,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 10156835.0,
-      "average_volume20": 12462047.65,
-      "volume_vs_20_period_average": 0.815,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "ثمسکن",
-      "company": "سرمایه گذاری مسکن",
-      "exchange": "بورس",
-      "chart_id": "IRO1MSKN00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 4655,
-        "weekly": 1096,
-        "monthly": 268
-      },
-      "price": {
-        "daily_close": 3310.0,
-        "weekly_close": 3310.0,
-        "monthly_close": 3310.0
-      },
-      "moving_averages": {
-        "daily_sma50": 3089.96,
-        "daily_sma200": 2369.23,
-        "weekly_sma13": 3020.923076923077,
-        "weekly_sma26": 2628.576923076923,
-        "monthly_sma6": 2643.0,
-        "monthly_sma12": 2311.25
-      },
-      "momentum_pct": {
-        "daily_20_period": 2.1604938271605034,
-        "daily_60_period": 39.662447257383974,
-        "weekly_13_period": 39.662447257383974,
-        "monthly_6_period": 72.48566961959352
-      },
-      "rsi14_daily": 60.98,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 79141896.0,
-      "average_volume20": 71199400.5,
-      "volume_vs_20_period_average": 1.112,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "ثپردیس",
-      "company": "سرمایه گذاری مسکن پردیس",
+      "symbol": "فصبا",
+      "company": "صبا فولاد خلیج فارس",
       "exchange": "فرابورس",
-      "chart_id": "IRO3MPRZ00013",
+      "chart_id": "IRO3SBLZ00013",
       "technical_score": 100.0,
       "risk_penalty": 0,
       "risk_adjusted_score": 100.0,
@@ -1855,550 +293,37 @@
       "latest_daily_date": "2026-10-12",
       "data_age_days": 1,
       "history_bars": {
-        "daily": 2462,
-        "weekly": 557,
-        "monthly": 132
-      },
-      "price": {
-        "daily_close": 4340.0,
-        "weekly_close": 4340.0,
-        "monthly_close": 4340.0
-      },
-      "moving_averages": {
-        "daily_sma50": 4216.8,
-        "daily_sma200": 3084.38,
-        "weekly_sma13": 4108.923076923077,
-        "weekly_sma26": 3388.6923076923076,
-        "monthly_sma6": 3552.8333333333335,
-        "monthly_sma12": 3058.0
-      },
-      "momentum_pct": {
-        "daily_20_period": -3.340757238307346,
-        "daily_60_period": 46.12794612794613,
-        "weekly_13_period": 46.12794612794613,
-        "monthly_6_period": 84.8381601362862
-      },
-      "rsi14_daily": 25.86,
-      "rsi_state": "پایین؛ احتمال ضعف مومنتوم",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 43849876.0,
-      "average_volume20": 50067234.6,
-      "volume_vs_20_period_average": 0.876,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "جهرم",
-      "company": "پتروشیمی جهرم (سهامی عام)",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7PJHP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1927,
-        "weekly": 469,
-        "monthly": 124
-      },
-      "price": {
-        "daily_close": 712.0,
-        "weekly_close": 712.0,
-        "monthly_close": 712.0
-      },
-      "moving_averages": {
-        "daily_sma50": 667.44,
-        "daily_sma200": 651.865,
-        "weekly_sma13": 668.2307692307693,
-        "weekly_sma26": 666.4615384615385,
-        "monthly_sma6": 659.3333333333334,
-        "monthly_sma12": 653.6666666666666
-      },
-      "momentum_pct": {
-        "daily_20_period": 10.216718266253878,
-        "daily_60_period": 5.637982195845703,
-        "weekly_13_period": 10.387596899224816,
-        "monthly_6_period": 8.20668693009119
-      },
-      "rsi14_daily": 60.9,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 787408.0,
-      "average_volume20": 2190819.25,
-      "volume_vs_20_period_average": 0.359,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "حآسا",
-      "company": "آسیا سیر ارس",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3ASAZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2022,
-        "weekly": 454,
-        "monthly": 107
-      },
-      "price": {
-        "daily_close": 4450.0,
-        "weekly_close": 4450.0,
-        "monthly_close": 4450.0
-      },
-      "moving_averages": {
-        "daily_sma50": 4320.0,
-        "daily_sma200": 3512.005,
-        "weekly_sma13": 4250.7692307692305,
-        "weekly_sma26": 3740.9615384615386,
-        "monthly_sma6": 3768.3333333333335,
-        "monthly_sma12": 3447.5
-      },
-      "momentum_pct": {
-        "daily_20_period": -5.117270788912576,
-        "daily_60_period": 18.35106382978724,
-        "weekly_13_period": 18.35106382978724,
-        "monthly_6_period": 48.729946524064175
-      },
-      "rsi14_daily": 57.76,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 8131889.0,
-      "average_volume20": 7632552.4,
-      "volume_vs_20_period_average": 1.065,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "حتوکا",
-      "company": "حمل و نقل توکا",
-      "exchange": "بورس",
-      "chart_id": "IRO1HTOK00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 4480,
-        "weekly": 1077,
-        "monthly": 263
-      },
-      "price": {
-        "daily_close": 2738.0,
-        "weekly_close": 2738.0,
-        "monthly_close": 2738.0
-      },
-      "moving_averages": {
-        "daily_sma50": 2433.86,
-        "daily_sma200": 1997.245,
-        "weekly_sma13": 2366.846153846154,
-        "weekly_sma26": 2135.8076923076924,
-        "monthly_sma6": 2186.6666666666665,
-        "monthly_sma12": 2004.6666666666667
-      },
-      "momentum_pct": {
-        "daily_20_period": 0.5508630187293528,
-        "daily_60_period": 56.99541284403671,
-        "weekly_13_period": 56.99541284403671,
-        "monthly_6_period": 51.27071823204419
-      },
-      "rsi14_daily": 56.79,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 60202114.0,
-      "average_volume20": 40672181.0,
-      "volume_vs_20_period_average": 1.48,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "حرهشا",
-      "company": "رهشاد سپاهان",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7RAHP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1787,
-        "weekly": 513,
-        "monthly": 138
-      },
-      "price": {
-        "daily_close": 29260.0,
-        "weekly_close": 29260.0,
-        "monthly_close": 29260.0
-      },
-      "moving_averages": {
-        "daily_sma50": 28372.4,
-        "daily_sma200": 22426.35,
-        "weekly_sma13": 27671.53846153846,
-        "weekly_sma26": 22750.384615384617,
-        "monthly_sma6": 24156.666666666668,
-        "monthly_sma12": 21215.0
-      },
-      "momentum_pct": {
-        "daily_20_period": -6.0070671378091856,
-        "daily_60_period": 32.27848101265822,
-        "weekly_13_period": 33.302961275626416,
-        "monthly_6_period": 83.5633626097867
-      },
-      "rsi14_daily": 41.29,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 408221.0,
-      "average_volume20": 511223.95,
-      "volume_vs_20_period_average": 0.799,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "حریل",
-      "company": "ریل پرداز سیر",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3HRLZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2316,
-        "weekly": 529,
-        "monthly": 127
-      },
-      "price": {
-        "daily_close": 2844.0,
-        "weekly_close": 2844.0,
-        "monthly_close": 2844.0
-      },
-      "moving_averages": {
-        "daily_sma50": 2735.2,
-        "daily_sma200": 2223.42,
-        "weekly_sma13": 2640.6153846153848,
-        "weekly_sma26": 2326.346153846154,
-        "monthly_sma6": 2363.6666666666665,
-        "monthly_sma12": 2189.8333333333335
-      },
-      "momentum_pct": {
-        "daily_20_period": -13.292682926829269,
-        "daily_60_period": 33.02151543498597,
-        "weekly_13_period": 41.35188866799204,
-        "monthly_6_period": 69.99402271368797
-      },
-      "rsi14_daily": 41.7,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 1695910.0,
-      "average_volume20": 12810713.25,
-      "volume_vs_20_period_average": 0.132,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "حسینا",
-      "company": "توسعه خدمات دریایی و بندری سینا",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3SMBZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2674,
-        "weekly": 608,
-        "monthly": 148
-      },
-      "price": {
-        "daily_close": 18730.0,
-        "weekly_close": 18730.0,
-        "monthly_close": 18730.0
-      },
-      "moving_averages": {
-        "daily_sma50": 17158.98,
-        "daily_sma200": 13868.695,
-        "weekly_sma13": 16904.153846153848,
-        "weekly_sma26": 15649.038461538461,
-        "monthly_sma6": 15687.833333333334,
-        "monthly_sma12": 14070.333333333334
-      },
-      "momentum_pct": {
-        "daily_20_period": -2.903058579574913,
-        "daily_60_period": 3.4749461355726208,
-        "weekly_13_period": 19.864328682964285,
-        "monthly_6_period": 53.260780623516894
-      },
-      "rsi14_daily": 56.08,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 16201730.0,
-      "average_volume20": 14300567.9,
-      "volume_vs_20_period_average": 1.133,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "حشکوه",
-      "company": "دلیجان طلایی شکوه پارس",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7DLIP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 1035,
-        "weekly": 243,
-        "monthly": 60
-      },
-      "price": {
-        "daily_close": 1310.0,
-        "weekly_close": 1310.0,
-        "monthly_close": 1310.0
-      },
-      "moving_averages": {
-        "daily_sma50": 1285.8,
-        "daily_sma200": 1144.9,
-        "weekly_sma13": 1275.2307692307693,
-        "weekly_sma26": 1226.2307692307693,
-        "monthly_sma6": 1238.6666666666667,
-        "monthly_sma12": 1142.3333333333333
-      },
-      "momentum_pct": {
-        "daily_20_period": -6.160458452722062,
-        "daily_60_period": 0.6917755572636519,
-        "weekly_13_period": 5.136436597110761,
-        "monthly_6_period": 27.9296875
-      },
-      "rsi14_daily": 51.32,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 28452472.0,
-      "average_volume20": 46081500.35,
-      "volume_vs_20_period_average": 0.617,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "حپترو",
-      "company": "مهندسی حمل و نقل پتروشیمی",
-      "exchange": "بورس",
-      "chart_id": "IRO1HJPT00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 4076,
-        "weekly": 1013,
-        "monthly": 259
-      },
-      "price": {
-        "daily_close": 19210.0,
-        "weekly_close": 19210.0,
-        "monthly_close": 19210.0
-      },
-      "moving_averages": {
-        "daily_sma50": 17013.8,
-        "daily_sma200": 14626.105,
-        "weekly_sma13": 16452.846153846152,
-        "weekly_sma26": 14629.423076923076,
-        "monthly_sma6": 15108.666666666666,
-        "monthly_sma12": 14708.666666666666
-      },
-      "momentum_pct": {
-        "daily_20_period": 0.20865936358893666,
-        "daily_60_period": 61.68672670650619,
-        "weekly_13_period": 71.57913540550196,
-        "monthly_6_period": 53.37325349301396
-      },
-      "rsi14_daily": 68.95,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 2705790.0,
-      "average_volume20": 1375753.35,
-      "volume_vs_20_period_average": 1.967,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "حپرتو",
-      "company": "پرتو بار فرابر خلیج فارس",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3PBFZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 615,
-        "weekly": 145,
+        "daily": 623,
+        "weekly": 139,
         "monthly": 35
       },
       "price": {
-        "daily_close": 10500.0,
-        "weekly_close": 10500.0,
-        "monthly_close": 10500.0
+        "daily_close": 4250.0,
+        "weekly_close": 4250.0,
+        "monthly_close": 4250.0
       },
       "moving_averages": {
-        "daily_sma50": 9359.0,
-        "daily_sma200": 7766.82,
-        "weekly_sma13": 9046.923076923076,
-        "weekly_sma26": 7755.192307692308,
-        "monthly_sma6": 7985.5,
-        "monthly_sma12": 7668.333333333333
+        "daily_sma50": 3487.1,
+        "daily_sma200": 2835.52,
+        "weekly_sma13": 3420.769230769231,
+        "weekly_sma26": 2998.346153846154,
+        "monthly_sma6": 3087.6666666666665,
+        "monthly_sma12": 2826.9166666666665
       },
       "momentum_pct": {
-        "daily_20_period": 1.8428709990300662,
-        "daily_60_period": 46.25992478061012,
-        "weekly_13_period": 53.28467153284671,
-        "monthly_6_period": 92.13174748398902
+        "daily_20_period": 13.636363636363647,
+        "daily_60_period": 58.110119047619044,
+        "weekly_13_period": 58.110119047619044,
+        "monthly_6_period": 88.97287683414852
       },
-      "rsi14_daily": 52.6,
+      "rsi14_daily": 67.41,
       "rsi_state": "محدودهٔ میانی",
       "heat_risk": "ریسک داغ‌شدن پایین",
       "risk_flags": [],
       "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 30445263.0,
-      "average_volume20": 10667852.05,
-      "volume_vs_20_period_average": 2.854,
+      "latest_daily_volume": 157695083.0,
+      "average_volume20": 77850224.9,
+      "volume_vs_20_period_average": 2.026,
       "checks": {
         "daily_close_above_sma50": true,
         "daily_sma50_above_sma200": true,
@@ -2408,70 +333,21 @@
         "monthly_sma6_above_sma12": true,
         "weekly_13_period_return_positive": true,
         "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 51.43,
+      "relative_momentum_components": {
+        "monthly_6_period": 37.1,
+        "weekly_13_period": 49.7,
+        "daily_60_period": 50.7,
+        "daily_20_period": 58.9,
+        "volume_ratio": 93.1
       }
     },
     {
-      "symbol": "حکشتی",
-      "company": "کشتیرانی جمهوری اسلامی ایران",
-      "exchange": "بورس",
-      "chart_id": "IRO1KSHJ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 3843,
-        "weekly": 885,
-        "monthly": 217
-      },
-      "price": {
-        "daily_close": 8670.0,
-        "weekly_close": 8670.0,
-        "monthly_close": 8670.0
-      },
-      "moving_averages": {
-        "daily_sma50": 8335.16,
-        "daily_sma200": 6580.44,
-        "weekly_sma13": 8262.384615384615,
-        "weekly_sma26": 7483.2307692307695,
-        "monthly_sma6": 7271.5,
-        "monthly_sma12": 6560.75
-      },
-      "momentum_pct": {
-        "daily_20_period": -2.84625728372927,
-        "daily_60_period": 8.172177167810357,
-        "weekly_13_period": 18.32946635730859,
-        "monthly_6_period": 63.03121474238436
-      },
-      "rsi14_daily": 38.65,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 96072994.0,
-      "average_volume20": 104480084.85,
-      "volume_vs_20_period_average": 0.92,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "حگهر",
-      "company": "حمل و نقل ترکیبی مواد معدنی گهر ترابر سیرجان",
+      "symbol": "مهرمام",
+      "company": "مهرمام میهن",
       "exchange": "فرابورس",
-      "chart_id": "IRO3GTTZ00013",
+      "chart_id": "IRO5MOMS00013",
       "technical_score": 100.0,
       "risk_penalty": 0,
       "risk_adjusted_score": 100.0,
@@ -2482,37 +358,37 @@
       "latest_daily_date": "2026-10-12",
       "data_age_days": 1,
       "history_bars": {
-        "daily": 897,
-        "weekly": 207,
-        "monthly": 52
+        "daily": 300,
+        "weekly": 70,
+        "monthly": 19
       },
       "price": {
-        "daily_close": 2989.0,
-        "weekly_close": 2989.0,
-        "monthly_close": 2989.0
+        "daily_close": 4740.0,
+        "weekly_close": 4740.0,
+        "monthly_close": 4740.0
       },
       "moving_averages": {
-        "daily_sma50": 2971.34,
-        "daily_sma200": 2597.21,
-        "weekly_sma13": 2938.923076923077,
-        "weekly_sma26": 2534.923076923077,
-        "monthly_sma6": 2609.3333333333335,
-        "monthly_sma12": 2441.25
+        "daily_sma50": 3814.4,
+        "daily_sma200": 2913.34,
+        "weekly_sma13": 3756.923076923077,
+        "weekly_sma26": 3255.8076923076924,
+        "monthly_sma6": 3467.8333333333335,
+        "monthly_sma12": 3023.0833333333335
       },
       "momentum_pct": {
-        "daily_20_period": -5.111111111111111,
-        "daily_60_period": 15.583913379737035,
-        "weekly_13_period": 15.583913379737035,
-        "monthly_6_period": 76.65484633569739
+        "daily_20_period": 19.395465994962223,
+        "daily_60_period": 67.07789918928447,
+        "weekly_13_period": 56.02369980250164,
+        "monthly_6_period": 76.93169092945129
       },
-      "rsi14_daily": 57.65,
+      "rsi14_daily": 69.67,
       "rsi_state": "محدودهٔ میانی",
       "heat_risk": "ریسک داغ‌شدن پایین",
       "risk_flags": [],
       "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 3622512.0,
-      "average_volume20": 13070672.5,
-      "volume_vs_20_period_average": 0.277,
+      "latest_daily_volume": 92960846.0,
+      "average_volume20": 77218952.8,
+      "volume_vs_20_period_average": 1.204,
       "checks": {
         "daily_close_above_sma50": true,
         "daily_sma50_above_sma200": true,
@@ -2522,13 +398,21 @@
         "monthly_sma6_above_sma12": true,
         "weekly_13_period_return_positive": true,
         "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 51.01,
+      "relative_momentum_components": {
+        "monthly_6_period": 30.2,
+        "weekly_13_period": 47.1,
+        "daily_60_period": 60.9,
+        "daily_20_period": 73.1,
+        "volume_ratio": 76.3
       }
     },
     {
-      "symbol": "خاذین",
-      "company": "سایپا آذین",
-      "exchange": "بورس",
-      "chart_id": "IRO1AZIN00013",
+      "symbol": "وفتخار",
+      "company": "سرمایه گذاری افتخار سهام",
+      "exchange": "پایه فرابورس",
+      "chart_id": "IRO7EFSP00013",
       "technical_score": 100.0,
       "risk_penalty": 0,
       "risk_adjusted_score": 100.0,
@@ -2539,37 +423,37 @@
       "latest_daily_date": "2026-10-12",
       "data_age_days": 1,
       "history_bars": {
-        "daily": 5253,
-        "weekly": 1198,
-        "monthly": 293
+        "daily": 981,
+        "weekly": 238,
+        "monthly": 61
       },
       "price": {
-        "daily_close": 3090.0,
-        "weekly_close": 3090.0,
-        "monthly_close": 3090.0
+        "daily_close": 2114.0,
+        "weekly_close": 2114.0,
+        "monthly_close": 2114.0
       },
       "moving_averages": {
-        "daily_sma50": 2787.3,
-        "daily_sma200": 2220.245,
-        "weekly_sma13": 2683.3846153846152,
-        "weekly_sma26": 2335.4615384615386,
-        "monthly_sma6": 2390.3333333333335,
-        "monthly_sma12": 2196.3333333333335
+        "daily_sma50": 1762.08,
+        "daily_sma200": 1526.27,
+        "weekly_sma13": 1736.2307692307693,
+        "weekly_sma26": 1494.2307692307693,
+        "monthly_sma6": 1559.6666666666667,
+        "monthly_sma12": 1460.8333333333333
       },
       "momentum_pct": {
-        "daily_20_period": -2.215189873417722,
-        "daily_60_period": 41.80816888480954,
-        "weekly_13_period": 49.13127413127414,
-        "monthly_6_period": 89.10648714810281
+        "daily_20_period": 16.60231660231659,
+        "daily_60_period": 50.462633451957295,
+        "weekly_13_period": 63.36939721792891,
+        "monthly_6_period": 87.24534986713905
       },
-      "rsi14_daily": 59.26,
+      "rsi14_daily": 60.83,
       "rsi_state": "محدودهٔ میانی",
       "heat_risk": "ریسک داغ‌شدن پایین",
       "risk_flags": [],
       "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 15047670.0,
-      "average_volume20": 19485349.0,
-      "volume_vs_20_period_average": 0.772,
+      "latest_daily_volume": 47740259.0,
+      "average_volume20": 29527778.85,
+      "volume_vs_20_period_average": 1.617,
       "checks": {
         "daily_close_above_sma50": true,
         "daily_sma50_above_sma200": true,
@@ -2579,177 +463,14 @@
         "monthly_sma6_above_sma12": true,
         "weekly_13_period_return_positive": true,
         "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "خاور",
-      "company": "ایران خودرو دیزل",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3IKDP00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 5841,
-        "weekly": 1398,
-        "monthly": 365
       },
-      "price": {
-        "daily_close": 1579.0,
-        "weekly_close": 1579.0,
-        "monthly_close": 1579.0
-      },
-      "moving_averages": {
-        "daily_sma50": 1526.7,
-        "daily_sma200": 1246.645,
-        "weekly_sma13": 1488.8461538461538,
-        "weekly_sma26": 1355.6538461538462,
-        "monthly_sma6": 1344.3333333333333,
-        "monthly_sma12": 1248.0833333333333
-      },
-      "momentum_pct": {
-        "daily_20_period": -0.4413619167717542,
-        "daily_60_period": 21.742482652274475,
-        "weekly_13_period": 29.32022932022933,
-        "monthly_6_period": 47.57009345794392
-      },
-      "rsi14_daily": 63.98,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 470197001.0,
-      "average_volume20": 434070160.2,
-      "volume_vs_20_period_average": 1.083,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "خدیزل",
-      "company": "بهمن دیزل (سهامی عام)",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3DZLZ00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 2383,
-        "weekly": 541,
-        "monthly": 130
-      },
-      "price": {
-        "daily_close": 1800.0,
-        "weekly_close": 1800.0,
-        "monthly_close": 1800.0
-      },
-      "moving_averages": {
-        "daily_sma50": 1720.26,
-        "daily_sma200": 1346.185,
-        "weekly_sma13": 1712.923076923077,
-        "weekly_sma26": 1586.423076923077,
-        "monthly_sma6": 1599.6666666666667,
-        "monthly_sma12": 1394.4166666666667
-      },
-      "momentum_pct": {
-        "daily_20_period": -3.0172413793103425,
-        "daily_60_period": 13.278791692888614,
-        "weekly_13_period": 15.83011583011582,
-        "monthly_6_period": 38.888888888888886
-      },
-      "rsi14_daily": 56.24,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 86627942.0,
-      "average_volume20": 65607900.4,
-      "volume_vs_20_period_average": 1.32,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
-      }
-    },
-    {
-      "symbol": "خراسان",
-      "company": "پتروشیمی خراسان",
-      "exchange": "بورس",
-      "chart_id": "IRO1KRSN00013",
-      "technical_score": 100.0,
-      "risk_penalty": 0,
-      "risk_adjusted_score": 100.0,
-      "available_score_weight": 100,
-      "label": "روند تکنیکال قوی",
-      "eligible_for_long_term_ranking": true,
-      "history_mature": true,
-      "latest_daily_date": "2026-10-12",
-      "data_age_days": 1,
-      "history_bars": {
-        "daily": 3000,
-        "weekly": 672,
-        "monthly": 161
-      },
-      "price": {
-        "daily_close": 57550.0,
-        "weekly_close": 57550.0,
-        "monthly_close": 57550.0
-      },
-      "moving_averages": {
-        "daily_sma50": 53196.0,
-        "daily_sma200": 35796.32,
-        "weekly_sma13": 52283.07692307692,
-        "weekly_sma26": 47328.07692307692,
-        "monthly_sma6": 47834.333333333336,
-        "monthly_sma12": 38241.916666666664
-      },
-      "momentum_pct": {
-        "daily_20_period": -5.593832020997381,
-        "daily_60_period": 40.77788649706457,
-        "weekly_13_period": 40.77788649706457,
-        "monthly_6_period": 75.83794188640044
-      },
-      "rsi14_daily": 64.46,
-      "rsi_state": "محدودهٔ میانی",
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "risk_flags": [],
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 4339471.0,
-      "average_volume20": 5338639.95,
-      "volume_vs_20_period_average": 0.813,
-      "checks": {
-        "daily_close_above_sma50": true,
-        "daily_sma50_above_sma200": true,
-        "weekly_close_above_sma13": true,
-        "weekly_sma13_above_sma26": true,
-        "monthly_close_above_sma6": true,
-        "monthly_sma6_above_sma12": true,
-        "weekly_13_period_return_positive": true,
-        "monthly_6_period_return_positive": true
+      "relative_momentum_score": 50.11,
+      "relative_momentum_components": {
+        "monthly_6_period": 36.2,
+        "weekly_13_period": 54.6,
+        "daily_60_period": 40.9,
+        "daily_20_period": 66.8,
+        "volume_ratio": 86.9
       }
     },
     {
@@ -2807,13 +528,21 @@
         "monthly_sma6_above_sma12": true,
         "weekly_13_period_return_positive": true,
         "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 49.35,
+      "relative_momentum_components": {
+        "monthly_6_period": 39.4,
+        "weekly_13_period": 64.9,
+        "daily_60_period": 49.0,
+        "daily_20_period": 34.5,
+        "volume_ratio": 56.1
       }
     },
     {
-      "symbol": "خساپا",
-      "company": "سایپا",
-      "exchange": "بورس",
-      "chart_id": "IRO1SIPA00013",
+      "symbol": "کرومیت",
+      "company": "توسعه معادن کرومیت کاوندگان",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3KVNZ00013",
       "technical_score": 100.0,
       "risk_penalty": 0,
       "risk_adjusted_score": 100.0,
@@ -2824,37 +553,37 @@
       "latest_daily_date": "2026-10-12",
       "data_age_days": 1,
       "history_bars": {
-        "daily": 5794,
-        "weekly": 1342,
-        "monthly": 335
+        "daily": 589,
+        "weekly": 137,
+        "monthly": 35
       },
       "price": {
-        "daily_close": 689.0,
-        "weekly_close": 689.0,
-        "monthly_close": 689.0
+        "daily_close": 5980.0,
+        "weekly_close": 5980.0,
+        "monthly_close": 5980.0
       },
       "moving_averages": {
-        "daily_sma50": 663.96,
-        "daily_sma200": 543.455,
-        "weekly_sma13": 641.6923076923077,
-        "weekly_sma26": 589.1153846153846,
-        "monthly_sma6": 594.1666666666666,
-        "monthly_sma12": 555.3333333333334
+        "daily_sma50": 4810.3,
+        "daily_sma200": 4113.23,
+        "weekly_sma13": 4779.2307692307695,
+        "weekly_sma26": 4151.461538461538,
+        "monthly_sma6": 4344.833333333333,
+        "monthly_sma12": 4136.25
       },
       "momentum_pct": {
-        "daily_20_period": -6.258503401360549,
-        "daily_60_period": 24.144144144144143,
-        "weekly_13_period": 34.5703125,
-        "monthly_6_period": 36.70634920634921
+        "daily_20_period": 9.523809523809534,
+        "daily_60_period": 62.32356134636265,
+        "weekly_13_period": 80.8832425892317,
+        "monthly_6_period": 91.54388212684177
       },
-      "rsi14_daily": 48.08,
+      "rsi14_daily": 62.5,
       "rsi_state": "محدودهٔ میانی",
       "heat_risk": "ریسک داغ‌شدن پایین",
       "risk_flags": [],
       "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "latest_daily_volume": 3051948713.0,
-      "average_volume20": 5165095895.5,
-      "volume_vs_20_period_average": 0.591,
+      "latest_daily_volume": 10064715.0,
+      "average_volume20": 40522161.25,
+      "volume_vs_20_period_average": 0.248,
       "checks": {
         "daily_close_above_sma50": true,
         "daily_sma50_above_sma200": true,
@@ -2864,6 +593,2679 @@
         "monthly_sma6_above_sma12": true,
         "weekly_13_period_return_positive": true,
         "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 48.7,
+      "relative_momentum_components": {
+        "monthly_6_period": 38.6,
+        "weekly_13_period": 70.0,
+        "daily_60_period": 54.3,
+        "daily_20_period": 51.1,
+        "volume_ratio": 9.2
+      }
+    },
+    {
+      "symbol": "ولانا",
+      "company": "لیزینگ آریادانا",
+      "exchange": "پایه فرابورس",
+      "chart_id": "IRO7VLNP00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 1865,
+        "weekly": 439,
+        "monthly": 114
+      },
+      "price": {
+        "daily_close": 5150.0,
+        "weekly_close": 5150.0,
+        "monthly_close": 5150.0
+      },
+      "moving_averages": {
+        "daily_sma50": 4535.74,
+        "daily_sma200": 3607.27,
+        "weekly_sma13": 4419.7692307692305,
+        "weekly_sma26": 3753.576923076923,
+        "monthly_sma6": 3963.6666666666665,
+        "monthly_sma12": 3642.4166666666665
+      },
+      "momentum_pct": {
+        "daily_20_period": 7.966457023060802,
+        "daily_60_period": 70.36056897122064,
+        "weekly_13_period": 66.77461139896373,
+        "monthly_6_period": 75.05098572399729
+      },
+      "rsi14_daily": 42.7,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 5019921.0,
+      "average_volume20": 6549482.5,
+      "volume_vs_20_period_average": 0.766,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 48.02,
+      "relative_momentum_components": {
+        "monthly_6_period": 28.7,
+        "weekly_13_period": 58.8,
+        "daily_60_period": 62.9,
+        "daily_20_period": 46.7,
+        "volume_ratio": 43.1
+      }
+    },
+    {
+      "symbol": "آبادا",
+      "company": "تولید نیروی برق آبادان",
+      "exchange": "بورس",
+      "chart_id": "IRO1NBAB00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 1373,
+        "weekly": 311,
+        "monthly": 74
+      },
+      "price": {
+        "daily_close": 12380.0,
+        "weekly_close": 12380.0,
+        "monthly_close": 12380.0
+      },
+      "moving_averages": {
+        "daily_sma50": 10870.8,
+        "daily_sma200": 8265.865,
+        "weekly_sma13": 10652.307692307691,
+        "weekly_sma26": 9242.0,
+        "monthly_sma6": 9674.166666666666,
+        "monthly_sma12": 8480.916666666666
+      },
+      "momentum_pct": {
+        "daily_20_period": 12.64786169244767,
+        "daily_60_period": 52.0884520884521,
+        "weekly_13_period": 52.0884520884521,
+        "monthly_6_period": 92.20617916472598
+      },
+      "rsi14_daily": 69.44,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 4924148.0,
+      "average_volume20": 2802863.6,
+      "volume_vs_20_period_average": 1.757,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 47.37,
+      "relative_momentum_components": {
+        "monthly_6_period": 39.2,
+        "weekly_13_period": 40.9,
+        "daily_60_period": 42.7,
+        "daily_20_period": 57.5,
+        "volume_ratio": 89.5
+      }
+    },
+    {
+      "symbol": "کقزوی",
+      "company": "شیشه قزوین",
+      "exchange": "پایه فرابورس",
+      "chart_id": "IRO7SHQP00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 2289,
+        "weekly": 566,
+        "monthly": 140
+      },
+      "price": {
+        "daily_close": 871.0,
+        "weekly_close": 871.0,
+        "monthly_close": 871.0
+      },
+      "moving_averages": {
+        "daily_sma50": 773.48,
+        "daily_sma200": 606.41,
+        "weekly_sma13": 753.0769230769231,
+        "weekly_sma26": 632.2307692307693,
+        "monthly_sma6": 664.6666666666666,
+        "monthly_sma12": 610.4166666666666
+      },
+      "momentum_pct": {
+        "daily_20_period": -0.3432494279176246,
+        "daily_60_period": 58.363636363636374,
+        "weekly_13_period": 52.53940455341506,
+        "monthly_6_period": 95.2914798206278
+      },
+      "rsi14_daily": 68.16,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 117528042.0,
+      "average_volume20": 65019918.5,
+      "volume_vs_20_period_average": 1.808,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 46.99,
+      "relative_momentum_components": {
+        "monthly_6_period": 40.7,
+        "weekly_13_period": 42.1,
+        "daily_60_period": 50.9,
+        "daily_20_period": 24.9,
+        "volume_ratio": 90.7
+      }
+    },
+    {
+      "symbol": "فسرب",
+      "company": "ملی سرب و روی ایران",
+      "exchange": "بورس",
+      "chart_id": "IRO1SORB00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 4609,
+        "weekly": 1086,
+        "monthly": 278
+      },
+      "price": {
+        "daily_close": 2616.0,
+        "weekly_close": 2616.0,
+        "monthly_close": 2616.0
+      },
+      "moving_averages": {
+        "daily_sma50": 2291.06,
+        "daily_sma200": 1725.19,
+        "weekly_sma13": 2299.076923076923,
+        "weekly_sma26": 1965.6153846153845,
+        "monthly_sma6": 2032.3333333333333,
+        "monthly_sma12": 1776.0833333333333
+      },
+      "momentum_pct": {
+        "daily_20_period": 0.7316134000770136,
+        "daily_60_period": 51.91637630662021,
+        "weekly_13_period": 64.11543287327478,
+        "monthly_6_period": 99.08675799086757
+      },
+      "rsi14_daily": 38.09,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 67874241.0,
+      "average_volume20": 72962062.9,
+      "volume_vs_20_period_average": 0.93,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 45.52,
+      "relative_momentum_components": {
+        "monthly_6_period": 41.5,
+        "weekly_13_period": 55.0,
+        "daily_60_period": 42.4,
+        "daily_20_period": 28.6,
+        "volume_ratio": 58.5
+      }
+    },
+    {
+      "symbol": "حپترو",
+      "company": "مهندسی حمل و نقل پتروشیمی",
+      "exchange": "بورس",
+      "chart_id": "IRO1HJPT00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 4076,
+        "weekly": 1013,
+        "monthly": 259
+      },
+      "price": {
+        "daily_close": 19210.0,
+        "weekly_close": 19210.0,
+        "monthly_close": 19210.0
+      },
+      "moving_averages": {
+        "daily_sma50": 17013.8,
+        "daily_sma200": 14626.105,
+        "weekly_sma13": 16452.846153846152,
+        "weekly_sma26": 14629.423076923076,
+        "monthly_sma6": 15108.666666666666,
+        "monthly_sma12": 14708.666666666666
+      },
+      "momentum_pct": {
+        "daily_20_period": 0.20865936358893666,
+        "daily_60_period": 61.68672670650619,
+        "weekly_13_period": 71.57913540550196,
+        "monthly_6_period": 53.37325349301396
+      },
+      "rsi14_daily": 68.95,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 2705790.0,
+      "average_volume20": 1375753.35,
+      "volume_vs_20_period_average": 1.967,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 45.5,
+      "relative_momentum_components": {
+        "monthly_6_period": 15.2,
+        "weekly_13_period": 62.6,
+        "daily_60_period": 53.3,
+        "daily_20_period": 27.0,
+        "volume_ratio": 92.4
+      }
+    },
+    {
+      "symbol": "بکام",
+      "company": "کارخانجات تولیدی شهید قندی (سهامی عام)",
+      "exchange": "بورس",
+      "chart_id": "IRO1KGND00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 4412,
+        "weekly": 1017,
+        "monthly": 253
+      },
+      "price": {
+        "daily_close": 3500.0,
+        "weekly_close": 3500.0,
+        "monthly_close": 3500.0
+      },
+      "moving_averages": {
+        "daily_sma50": 3124.68,
+        "daily_sma200": 2469.08,
+        "weekly_sma13": 3030.3846153846152,
+        "weekly_sma26": 2589.653846153846,
+        "monthly_sma6": 2685.6666666666665,
+        "monthly_sma12": 2448.25
+      },
+      "momentum_pct": {
+        "daily_20_period": -1.9607843137254943,
+        "daily_60_period": 56.95067264573992,
+        "weekly_13_period": 56.95067264573992,
+        "monthly_6_period": 95.64002235885968
+      },
+      "rsi14_daily": 56.1,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 40346824.0,
+      "average_volume20": 39692628.8,
+      "volume_vs_20_period_average": 1.016,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 45.37,
+      "relative_momentum_components": {
+        "monthly_6_period": 40.8,
+        "weekly_13_period": 48.4,
+        "daily_60_period": 49.3,
+        "daily_20_period": 21.7,
+        "volume_ratio": 65.3
+      }
+    },
+    {
+      "symbol": "وپویا",
+      "company": "سرمایه گذاری پویا",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3PIVZ00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 1407,
+        "weekly": 313,
+        "monthly": 75
+      },
+      "price": {
+        "daily_close": 2816.0,
+        "weekly_close": 2816.0,
+        "monthly_close": 2816.0
+      },
+      "moving_averages": {
+        "daily_sma50": 2206.64,
+        "daily_sma200": 1732.13,
+        "weekly_sma13": 2273.230769230769,
+        "weekly_sma26": 1965.5,
+        "monthly_sma6": 2127.1666666666665,
+        "monthly_sma12": 1864.75
+      },
+      "momentum_pct": {
+        "daily_20_period": 15.694330320460148,
+        "daily_60_period": 56.531406336853806,
+        "weekly_13_period": 56.44444444444445,
+        "monthly_6_period": 86.49006622516558
+      },
+      "rsi14_daily": 69.07,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 22961822.0,
+      "average_volume20": 31463292.75,
+      "volume_vs_20_period_average": 0.73,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 45.11,
+      "relative_momentum_components": {
+        "monthly_6_period": 35.5,
+        "weekly_13_period": 47.6,
+        "daily_60_period": 48.3,
+        "daily_20_period": 64.2,
+        "volume_ratio": 40.8
+      }
+    },
+    {
+      "symbol": "حپرتو",
+      "company": "پرتو بار فرابر خلیج فارس",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3PBFZ00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 615,
+        "weekly": 145,
+        "monthly": 35
+      },
+      "price": {
+        "daily_close": 10500.0,
+        "weekly_close": 10500.0,
+        "monthly_close": 10500.0
+      },
+      "moving_averages": {
+        "daily_sma50": 9359.0,
+        "daily_sma200": 7766.82,
+        "weekly_sma13": 9046.923076923076,
+        "weekly_sma26": 7755.192307692308,
+        "monthly_sma6": 7985.5,
+        "monthly_sma12": 7668.333333333333
+      },
+      "momentum_pct": {
+        "daily_20_period": 1.8428709990300662,
+        "daily_60_period": 46.25992478061012,
+        "weekly_13_period": 53.28467153284671,
+        "monthly_6_period": 92.13174748398902
+      },
+      "rsi14_daily": 52.6,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 30445263.0,
+      "average_volume20": 10667852.05,
+      "volume_vs_20_period_average": 2.854,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 44.67,
+      "relative_momentum_components": {
+        "monthly_6_period": 39.1,
+        "weekly_13_period": 43.2,
+        "daily_60_period": 37.5,
+        "daily_20_period": 30.7,
+        "volume_ratio": 96.8
+      }
+    },
+    {
+      "symbol": "شصدف",
+      "company": "صنعتی دوده فام",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3SDFZ00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 1467,
+        "weekly": 329,
+        "monthly": 79
+      },
+      "price": {
+        "daily_close": 17840.0,
+        "weekly_close": 17840.0,
+        "monthly_close": 17840.0
+      },
+      "moving_averages": {
+        "daily_sma50": 16819.0,
+        "daily_sma200": 12297.635,
+        "weekly_sma13": 16065.384615384615,
+        "weekly_sma26": 13450.692307692309,
+        "monthly_sma6": 13743.833333333334,
+        "monthly_sma12": 12454.0
+      },
+      "momentum_pct": {
+        "daily_20_period": -2.6200873362445365,
+        "daily_60_period": 63.220494053064954,
+        "weekly_13_period": 64.54528684744511,
+        "monthly_6_period": 77.86640079760718
+      },
+      "rsi14_daily": 55.99,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 13351497.0,
+      "average_volume20": 16391475.85,
+      "volume_vs_20_period_average": 0.815,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 43.75,
+      "relative_momentum_components": {
+        "monthly_6_period": 30.6,
+        "weekly_13_period": 55.9,
+        "daily_60_period": 55.7,
+        "daily_20_period": 19.4,
+        "volume_ratio": 47.2
+      }
+    },
+    {
+      "symbol": "کهرام",
+      "company": "تولیدی گرانیتی بهسرام",
+      "exchange": "پایه فرابورس",
+      "chart_id": "IRO7BEGP00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 3743,
+        "weekly": 957,
+        "monthly": 249
+      },
+      "price": {
+        "daily_close": 35660.0,
+        "weekly_close": 35660.0,
+        "monthly_close": 35660.0
+      },
+      "moving_averages": {
+        "daily_sma50": 31040.4,
+        "daily_sma200": 23671.15,
+        "weekly_sma13": 30179.23076923077,
+        "weekly_sma26": 26014.23076923077,
+        "monthly_sma6": 27328.333333333332,
+        "monthly_sma12": 24299.166666666668
+      },
+      "momentum_pct": {
+        "daily_20_period": 13.27827191867852,
+        "daily_60_period": 64.25610317825887,
+        "weekly_13_period": 64.25610317825887,
+        "monthly_6_period": 78.74686716791982
+      },
+      "rsi14_daily": 56.86,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 16385.0,
+      "average_volume20": 162003.35,
+      "volume_vs_20_period_average": 0.101,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 43.51,
+      "relative_momentum_components": {
+        "monthly_6_period": 31.0,
+        "weekly_13_period": 55.2,
+        "daily_60_period": 57.3,
+        "daily_20_period": 58.5,
+        "volume_ratio": 2.3
+      }
+    },
+    {
+      "symbol": "پارسیان",
+      "company": "بیمه پارسیان",
+      "exchange": "بورس",
+      "chart_id": "IRO1IPAR00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 3510,
+        "weekly": 795,
+        "monthly": 190
+      },
+      "price": {
+        "daily_close": 1900.0,
+        "weekly_close": 1900.0,
+        "monthly_close": 1900.0
+      },
+      "moving_averages": {
+        "daily_sma50": 1729.18,
+        "daily_sma200": 1316.72,
+        "weekly_sma13": 1675.7692307692307,
+        "weekly_sma26": 1429.076923076923,
+        "monthly_sma6": 1514.1666666666667,
+        "monthly_sma12": 1316.5
+      },
+      "momentum_pct": {
+        "daily_20_period": 0.0,
+        "daily_60_period": 58.99581589958159,
+        "weekly_13_period": 58.99581589958159,
+        "monthly_6_period": 86.09206660137122
+      },
+      "rsi14_daily": 55.9,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 28350749.0,
+      "average_volume20": 34655965.15,
+      "volume_vs_20_period_average": 0.818,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 43.39,
+      "relative_momentum_components": {
+        "monthly_6_period": 35.2,
+        "weekly_13_period": 50.4,
+        "daily_60_period": 51.1,
+        "daily_20_period": 26.5,
+        "volume_ratio": 47.8
+      }
+    },
+    {
+      "symbol": "زاگرس",
+      "company": "پتروشیمی زاگرس (سهامی عام)",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3PZGZ00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 3283,
+        "weekly": 739,
+        "monthly": 179
+      },
+      "price": {
+        "daily_close": 169800.0,
+        "weekly_close": 169800.0,
+        "monthly_close": 169800.0
+      },
+      "moving_averages": {
+        "daily_sma50": 151388.0,
+        "daily_sma200": 121880.01,
+        "weekly_sma13": 145909.23076923078,
+        "weekly_sma26": 128182.65384615384,
+        "monthly_sma6": 130838.0,
+        "monthly_sma12": 120736.0
+      },
+      "momentum_pct": {
+        "daily_20_period": 0.058927519151441565,
+        "daily_60_period": 64.49184806300676,
+        "weekly_13_period": 66.77962106255708,
+        "monthly_6_period": 60.88839196884563
+      },
+      "rsi14_daily": 51.53,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 1682066.0,
+      "average_volume20": 1944047.3,
+      "volume_vs_20_period_average": 0.865,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 42.58,
+      "relative_momentum_components": {
+        "monthly_6_period": 18.7,
+        "weekly_13_period": 58.9,
+        "daily_60_period": 57.9,
+        "daily_20_period": 26.7,
+        "volume_ratio": 51.0
+      }
+    },
+    {
+      "symbol": "اتکام",
+      "company": "بیمه اتکائی امین (سهامی خاص)",
+      "exchange": "بورس",
+      "chart_id": "IRO1ETKA00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 2308,
+        "weekly": 528,
+        "monthly": 129
+      },
+      "price": {
+        "daily_close": 2188.0,
+        "weekly_close": 2188.0,
+        "monthly_close": 2188.0
+      },
+      "moving_averages": {
+        "daily_sma50": 1927.88,
+        "daily_sma200": 1514.96,
+        "weekly_sma13": 1930.076923076923,
+        "weekly_sma26": 1634.8461538461538,
+        "monthly_sma6": 1694.0,
+        "monthly_sma12": 1529.0833333333333
+      },
+      "momentum_pct": {
+        "daily_20_period": 9.894525364138618,
+        "daily_60_period": 61.95410806809771,
+        "weekly_13_period": 64.63506395786305,
+        "monthly_6_period": 73.65079365079366
+      },
+      "rsi14_daily": 61.24,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 1966588.0,
+      "average_volume20": 6825243.15,
+      "volume_vs_20_period_average": 0.288,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 42.08,
+      "relative_momentum_components": {
+        "monthly_6_period": 27.3,
+        "weekly_13_period": 56.2,
+        "daily_60_period": 53.7,
+        "daily_20_period": 52.6,
+        "volume_ratio": 11.5
+      }
+    },
+    {
+      "symbol": "ذوب",
+      "company": "ذوب آهن اصفهان",
+      "exchange": "بورس",
+      "chart_id": "IRO1ZOBI00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 3162,
+        "weekly": 713,
+        "monthly": 173
+      },
+      "price": {
+        "daily_close": 634.0,
+        "weekly_close": 634.0,
+        "monthly_close": 634.0
+      },
+      "moving_averages": {
+        "daily_sma50": 588.4,
+        "daily_sma200": 437.01,
+        "weekly_sma13": 571.9230769230769,
+        "weekly_sma26": 482.88461538461536,
+        "monthly_sma6": 497.1666666666667,
+        "monthly_sma12": 436.8333333333333
+      },
+      "momentum_pct": {
+        "daily_20_period": -14.208389715832205,
+        "daily_60_period": 45.41284403669725,
+        "weekly_13_period": 68.61702127659575,
+        "monthly_6_period": 90.96385542168674
+      },
+      "rsi14_daily": 33.15,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 4620816592.0,
+      "average_volume20": 5507905431.7,
+      "volume_vs_20_period_average": 0.839,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 40.77,
+      "relative_momentum_components": {
+        "monthly_6_period": 38.4,
+        "weekly_13_period": 60.1,
+        "daily_60_period": 36.5,
+        "daily_20_period": 2.0,
+        "volume_ratio": 49.2
+      }
+    },
+    {
+      "symbol": "ورنا",
+      "company": "سرمایه گذاری گروه صنعتی رنا",
+      "exchange": "بورس",
+      "chart_id": "IRO1RENA00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 6121,
+        "weekly": 1435,
+        "monthly": 356
+      },
+      "price": {
+        "daily_close": 7560.0,
+        "weekly_close": 7560.0,
+        "monthly_close": 7560.0
+      },
+      "moving_averages": {
+        "daily_sma50": 6858.0,
+        "daily_sma200": 5050.185,
+        "weekly_sma13": 6577.692307692308,
+        "weekly_sma26": 5793.615384615385,
+        "monthly_sma6": 6113.0,
+        "monthly_sma12": 5150.333333333333
+      },
+      "momentum_pct": {
+        "daily_20_period": 2.717391304347827,
+        "daily_60_period": 60.5095541401274,
+        "weekly_13_period": 60.5095541401274,
+        "monthly_6_period": 56.8139390168015
+      },
+      "rsi14_daily": 49.51,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 109023803.0,
+      "average_volume20": 107662100.0,
+      "volume_vs_20_period_average": 1.013,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 40.76,
+      "relative_momentum_components": {
+        "monthly_6_period": 16.4,
+        "weekly_13_period": 51.9,
+        "daily_60_period": 52.2,
+        "daily_20_period": 33.5,
+        "volume_ratio": 64.9
+      }
+    },
+    {
+      "symbol": "کتوسعه",
+      "company": "توسعه صنایع و معادن کوثر",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3KOMZ00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 678,
+        "weekly": 152,
+        "monthly": 38
+      },
+      "price": {
+        "daily_close": 20270.0,
+        "weekly_close": 20270.0,
+        "monthly_close": 20270.0
+      },
+      "moving_averages": {
+        "daily_sma50": 18569.2,
+        "daily_sma200": 13433.595,
+        "weekly_sma13": 17915.384615384617,
+        "weekly_sma26": 15273.115384615385,
+        "monthly_sma6": 15643.166666666666,
+        "monthly_sma12": 13547.083333333334
+      },
+      "momentum_pct": {
+        "daily_20_period": -1.5541525012141788,
+        "daily_60_period": 53.56060606060606,
+        "weekly_13_period": 53.56060606060606,
+        "monthly_6_period": 74.15585531403042
+      },
+      "rsi14_daily": 67.57,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 1406796.0,
+      "average_volume20": 1230567.65,
+      "volume_vs_20_period_average": 1.143,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 40.1,
+      "relative_momentum_components": {
+        "monthly_6_period": 28.0,
+        "weekly_13_period": 43.5,
+        "daily_60_period": 44.7,
+        "daily_20_period": 23.0,
+        "volume_ratio": 73.4
+      }
+    },
+    {
+      "symbol": "حتوکا",
+      "company": "حمل و نقل توکا",
+      "exchange": "بورس",
+      "chart_id": "IRO1HTOK00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 4480,
+        "weekly": 1077,
+        "monthly": 263
+      },
+      "price": {
+        "daily_close": 2738.0,
+        "weekly_close": 2738.0,
+        "monthly_close": 2738.0
+      },
+      "moving_averages": {
+        "daily_sma50": 2433.86,
+        "daily_sma200": 1997.245,
+        "weekly_sma13": 2366.846153846154,
+        "weekly_sma26": 2135.8076923076924,
+        "monthly_sma6": 2186.6666666666665,
+        "monthly_sma12": 2004.6666666666667
+      },
+      "momentum_pct": {
+        "daily_20_period": 0.5508630187293528,
+        "daily_60_period": 56.99541284403671,
+        "weekly_13_period": 56.99541284403671,
+        "monthly_6_period": 51.27071823204419
+      },
+      "rsi14_daily": 56.79,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 60202114.0,
+      "average_volume20": 40672181.0,
+      "volume_vs_20_period_average": 1.48,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 39.94,
+      "relative_momentum_components": {
+        "monthly_6_period": 14.4,
+        "weekly_13_period": 48.6,
+        "daily_60_period": 49.4,
+        "daily_20_period": 28.0,
+        "volume_ratio": 83.3
+      }
+    },
+    {
+      "symbol": "وساپا",
+      "company": "گروه سرمایه گذاری سایپا",
+      "exchange": "بورس",
+      "chart_id": "IRO1SSAP00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 3906,
+        "weekly": 1039,
+        "monthly": 300
+      },
+      "price": {
+        "daily_close": 9210.0,
+        "weekly_close": 9210.0,
+        "monthly_close": 9210.0
+      },
+      "moving_averages": {
+        "daily_sma50": 8397.2,
+        "daily_sma200": 5993.88,
+        "weekly_sma13": 7974.615384615385,
+        "weekly_sma26": 6841.115384615385,
+        "monthly_sma6": 7234.0,
+        "monthly_sma12": 6393.166666666667
+      },
+      "momentum_pct": {
+        "daily_20_period": 0.8762322015334112,
+        "daily_60_period": 52.913830317117714,
+        "weekly_13_period": 67.18097658377201,
+        "monthly_6_period": 61.86291739894551
+      },
+      "rsi14_daily": 43.56,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 200359573.0,
+      "average_volume20": 235981324.85,
+      "volume_vs_20_period_average": 0.849,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 39.41,
+      "relative_momentum_components": {
+        "monthly_6_period": 19.4,
+        "weekly_13_period": 59.1,
+        "daily_60_period": 44.0,
+        "daily_20_period": 28.7,
+        "volume_ratio": 49.6
+      }
+    },
+    {
+      "symbol": "خنصیر",
+      "company": "مهندسی نصیر ماشین",
+      "exchange": "بورس",
+      "chart_id": "IRO1MNSR00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 3596,
+        "weekly": 959,
+        "monthly": 251
+      },
+      "price": {
+        "daily_close": 4550.0,
+        "weekly_close": 4550.0,
+        "monthly_close": 4550.0
+      },
+      "moving_averages": {
+        "daily_sma50": 4258.4,
+        "daily_sma200": 3255.465,
+        "weekly_sma13": 4106.153846153846,
+        "weekly_sma26": 3538.153846153846,
+        "monthly_sma6": 3665.0,
+        "monthly_sma12": 3267.6666666666665
+      },
+      "momentum_pct": {
+        "daily_20_period": -1.0869565217391353,
+        "daily_60_period": 42.1875,
+        "weekly_13_period": 46.30225080385853,
+        "monthly_6_period": 93.37016574585635
+      },
+      "rsi14_daily": 69.91,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 18997329.0,
+      "average_volume20": 13224408.7,
+      "volume_vs_20_period_average": 1.437,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 39.38,
+      "relative_momentum_components": {
+        "monthly_6_period": 39.8,
+        "weekly_13_period": 34.6,
+        "daily_60_period": 32.8,
+        "daily_20_period": 24.0,
+        "volume_ratio": 81.9
+      }
+    },
+    {
+      "symbol": "شگامرن",
+      "company": "پترو صنعت گامرون",
+      "exchange": "فرابورس",
+      "chart_id": "IRO5PSGS00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 811,
+        "weekly": 236,
+        "monthly": 71
+      },
+      "price": {
+        "daily_close": 27970.0,
+        "weekly_close": 27970.0,
+        "monthly_close": 27970.0
+      },
+      "moving_averages": {
+        "daily_sma50": 24786.74,
+        "daily_sma200": 19806.54,
+        "weekly_sma13": 24303.076923076922,
+        "weekly_sma26": 21062.53846153846,
+        "monthly_sma6": 22177.666666666668,
+        "monthly_sma12": 20233.083333333332
+      },
+      "momentum_pct": {
+        "daily_20_period": 5.547169811320751,
+        "daily_60_period": 65.72850625111097,
+        "weekly_13_period": 59.40955203465177,
+        "monthly_6_period": 53.80808358537257
+      },
+      "rsi14_daily": 64.69,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 76548.0,
+      "average_volume20": 146607.25,
+      "volume_vs_20_period_average": 0.522,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 38.87,
+      "relative_momentum_components": {
+        "monthly_6_period": 15.4,
+        "weekly_13_period": 51.1,
+        "daily_60_period": 59.2,
+        "daily_20_period": 40.7,
+        "volume_ratio": 26.1
+      }
+    },
+    {
+      "symbol": "شلرد",
+      "company": "کود شیمیائی اوره لردگان (سهامی عام)",
+      "exchange": "پایه فرابورس",
+      "chart_id": "IRO7SHLP00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 2404,
+        "weekly": 570,
+        "monthly": 140
+      },
+      "price": {
+        "daily_close": 3410.0,
+        "weekly_close": 3410.0,
+        "monthly_close": 3410.0
+      },
+      "moving_averages": {
+        "daily_sma50": 2860.42,
+        "daily_sma200": 1881.085,
+        "weekly_sma13": 2784.923076923077,
+        "weekly_sma26": 2504.8076923076924,
+        "monthly_sma6": 2538.5,
+        "monthly_sma12": 2032.6666666666667
+      },
+      "momentum_pct": {
+        "daily_20_period": 10.786224821312551,
+        "daily_60_period": 45.35379369138961,
+        "weekly_13_period": 49.824253075571164,
+        "monthly_6_period": 85.32608695652173
+      },
+      "rsi14_daily": 51.91,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 148219818.0,
+      "average_volume20": 196903115.6,
+      "volume_vs_20_period_average": 0.753,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 38.83,
+      "relative_momentum_components": {
+        "monthly_6_period": 34.5,
+        "weekly_13_period": 39.1,
+        "daily_60_period": 36.4,
+        "daily_20_period": 54.0,
+        "volume_ratio": 42.2
+      }
+    },
+    {
+      "symbol": "وسپهر",
+      "company": "سرمایه گذاری گروه مالی سپهر صادرات",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3SAIZ00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 1341,
+        "weekly": 300,
+        "monthly": 72
+      },
+      "price": {
+        "daily_close": 5040.0,
+        "weekly_close": 5040.0,
+        "monthly_close": 5040.0
+      },
+      "moving_averages": {
+        "daily_sma50": 4539.2,
+        "daily_sma200": 3662.915,
+        "weekly_sma13": 4403.846153846154,
+        "weekly_sma26": 3946.6153846153848,
+        "monthly_sma6": 4010.6666666666665,
+        "monthly_sma12": 3699.4166666666665
+      },
+      "momentum_pct": {
+        "daily_20_period": 2.857142857142847,
+        "daily_60_period": 50.44776119402985,
+        "weekly_13_period": 50.44776119402985,
+        "monthly_6_period": 63.31821127673363
+      },
+      "rsi14_daily": 68.75,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 57116083.0,
+      "average_volume20": 29659237.95,
+      "volume_vs_20_period_average": 1.926,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 38.79,
+      "relative_momentum_components": {
+        "monthly_6_period": 20.3,
+        "weekly_13_period": 39.7,
+        "daily_60_period": 40.8,
+        "daily_20_period": 34.3,
+        "volume_ratio": 91.7
+      }
+    },
+    {
+      "symbol": "فارس",
+      "company": "صنایع پتروشیمی خلیج فارس (هلدینگ)",
+      "exchange": "بورس",
+      "chart_id": "IRO1PKLJ00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 2950,
+        "weekly": 668,
+        "monthly": 161
+      },
+      "price": {
+        "daily_close": 13710.0,
+        "weekly_close": 13710.0,
+        "monthly_close": 13710.0
+      },
+      "moving_averages": {
+        "daily_sma50": 10825.14,
+        "daily_sma200": 8014.895,
+        "weekly_sma13": 10792.538461538461,
+        "weekly_sma26": 9963.115384615385,
+        "monthly_sma6": 10142.166666666666,
+        "monthly_sma12": 8781.166666666666
+      },
+      "momentum_pct": {
+        "daily_20_period": 16.304716661011188,
+        "daily_60_period": 71.5036277207906,
+        "weekly_13_period": 39.400101677681754,
+        "monthly_6_period": 66.26243026922145
+      },
+      "rsi14_daily": 65.91,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 180337681.0,
+      "average_volume20": 333089435.8,
+      "volume_vs_20_period_average": 0.541,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 38.51,
+      "relative_momentum_components": {
+        "monthly_6_period": 21.7,
+        "weekly_13_period": 26.9,
+        "daily_60_period": 63.8,
+        "daily_20_period": 66.1,
+        "volume_ratio": 27.3
+      }
+    },
+    {
+      "symbol": "وبصادر",
+      "company": "بانک صادرات ایران",
+      "exchange": "بورس",
+      "chart_id": "IRO1BSDR00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 3432,
+        "weekly": 768,
+        "monthly": 186
+      },
+      "price": {
+        "daily_close": 971.0,
+        "weekly_close": 971.0,
+        "monthly_close": 971.0
+      },
+      "moving_averages": {
+        "daily_sma50": 911.6,
+        "daily_sma200": 673.935,
+        "weekly_sma13": 886.1538461538462,
+        "weekly_sma26": 749.0384615384615,
+        "monthly_sma6": 775.6666666666666,
+        "monthly_sma12": 676.3333333333334
+      },
+      "momentum_pct": {
+        "daily_20_period": -3.479125248508941,
+        "daily_60_period": 35.04867872044506,
+        "weekly_13_period": 47.12121212121212,
+        "monthly_6_period": 99.38398357289529
+      },
+      "rsi14_daily": 54.03,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 5123356329.0,
+      "average_volume20": 2340675957.3,
+      "volume_vs_20_period_average": 2.189,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 38.45,
+      "relative_momentum_components": {
+        "monthly_6_period": 41.8,
+        "weekly_13_period": 35.8,
+        "daily_60_period": 23.4,
+        "daily_20_period": 16.5,
+        "volume_ratio": 94.5
+      }
+    },
+    {
+      "symbol": "رکیش",
+      "company": "کارت اعتباری ایران کیش",
+      "exchange": "بورس",
+      "chart_id": "IRO1RKSH00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 3131,
+        "weekly": 710,
+        "monthly": 171
+      },
+      "price": {
+        "daily_close": 2539.0,
+        "weekly_close": 2539.0,
+        "monthly_close": 2539.0
+      },
+      "moving_averages": {
+        "daily_sma50": 2512.44,
+        "daily_sma200": 1849.515,
+        "weekly_sma13": 2451.076923076923,
+        "weekly_sma26": 2040.2692307692307,
+        "monthly_sma6": 2066.1666666666665,
+        "monthly_sma12": 1816.25
+      },
+      "momentum_pct": {
+        "daily_20_period": -5.4023845007451605,
+        "daily_60_period": 46.76300578034682,
+        "weekly_13_period": 46.76300578034682,
+        "monthly_6_period": 84.9235251274581
+      },
+      "rsi14_daily": 54.51,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 20946549.0,
+      "average_volume20": 13468320.0,
+      "volume_vs_20_period_average": 1.555,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 38.22,
+      "relative_momentum_components": {
+        "monthly_6_period": 33.9,
+        "weekly_13_period": 35.3,
+        "daily_60_period": 37.9,
+        "daily_20_period": 12.1,
+        "volume_ratio": 85.2
+      }
+    },
+    {
+      "symbol": "قجام",
+      "company": "قند تربت جام",
+      "exchange": "پایه فرابورس",
+      "chart_id": "IRO7GTOP00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 2164,
+        "weekly": 555,
+        "monthly": 137
+      },
+      "price": {
+        "daily_close": 14890.0,
+        "weekly_close": 14890.0,
+        "monthly_close": 14890.0
+      },
+      "moving_averages": {
+        "daily_sma50": 13533.0,
+        "daily_sma200": 9572.47,
+        "weekly_sma13": 13322.307692307691,
+        "weekly_sma26": 11553.846153846154,
+        "monthly_sma6": 11915.0,
+        "monthly_sma12": 10009.166666666666
+      },
+      "momentum_pct": {
+        "daily_20_period": 7.976794778825225,
+        "daily_60_period": 53.98138572905895,
+        "weekly_13_period": 64.89479512735328,
+        "monthly_6_period": 70.95292766934558
+      },
+      "rsi14_daily": 53.65,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 165942.0,
+      "average_volume20": 1830855.6,
+      "volume_vs_20_period_average": 0.091,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 37.84,
+      "relative_momentum_components": {
+        "monthly_6_period": 25.1,
+        "weekly_13_period": 56.6,
+        "daily_60_period": 45.0,
+        "daily_20_period": 47.0,
+        "volume_ratio": 2.0
+      }
+    },
+    {
+      "symbol": "تکمبا",
+      "company": "کمباین سازی ایران",
+      "exchange": "بورس",
+      "chart_id": "IRO1COMB00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 4310,
+        "weekly": 1018,
+        "monthly": 262
+      },
+      "price": {
+        "daily_close": 9220.0,
+        "weekly_close": 9220.0,
+        "monthly_close": 9220.0
+      },
+      "moving_averages": {
+        "daily_sma50": 8155.0,
+        "daily_sma200": 6419.66,
+        "weekly_sma13": 7944.461538461538,
+        "weekly_sma26": 6968.653846153846,
+        "monthly_sma6": 7316.333333333333,
+        "monthly_sma12": 6503.916666666667
+      },
+      "momentum_pct": {
+        "daily_20_period": 1.6538037486218293,
+        "daily_60_period": 42.56997062007113,
+        "weekly_13_period": 61.273395137309784,
+        "monthly_6_period": 85.25215993570423
+      },
+      "rsi14_daily": 52.71,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 3347415.0,
+      "average_volume20": 5686835.85,
+      "volume_vs_20_period_average": 0.589,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 37.7,
+      "relative_momentum_components": {
+        "monthly_6_period": 34.3,
+        "weekly_13_period": 52.0,
+        "daily_60_period": 33.3,
+        "daily_20_period": 30.0,
+        "volume_ratio": 30.6
+      }
+    },
+    {
+      "symbol": "ثاصفا",
+      "company": "ساختمان اصفهان",
+      "exchange": "پایه فرابورس",
+      "chart_id": "IRO7SESP00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 1813,
+        "weekly": 506,
+        "monthly": 133
+      },
+      "price": {
+        "daily_close": 21270.0,
+        "weekly_close": 21270.0,
+        "monthly_close": 21270.0
+      },
+      "moving_averages": {
+        "daily_sma50": 16534.8,
+        "daily_sma200": 16486.05,
+        "weekly_sma13": 16059.23076923077,
+        "weekly_sma26": 15844.23076923077,
+        "monthly_sma6": 16185.0,
+        "monthly_sma12": 15731.666666666666
+      },
+      "momentum_pct": {
+        "daily_20_period": 15.035154137371553,
+        "daily_60_period": 62.73909716908952,
+        "weekly_13_period": 60.40723981900453,
+        "monthly_6_period": 31.53988868274582
+      },
+      "rsi14_daily": 62.31,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 317328.0,
+      "average_volume20": 648119.15,
+      "volume_vs_20_period_average": 0.49,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 37.61,
+      "relative_momentum_components": {
+        "monthly_6_period": 7.8,
+        "weekly_13_period": 51.6,
+        "daily_60_period": 54.9,
+        "daily_20_period": 62.4,
+        "volume_ratio": 24.3
+      }
+    },
+    {
+      "symbol": "نوری",
+      "company": "پتروشیمی نوری ( برزویه )",
+      "exchange": "بورس",
+      "chart_id": "IRO1NORI00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 1537,
+        "weekly": 347,
+        "monthly": 85
+      },
+      "price": {
+        "daily_close": 49100.0,
+        "weekly_close": 49100.0,
+        "monthly_close": 49100.0
+      },
+      "moving_averages": {
+        "daily_sma50": 40383.7,
+        "daily_sma200": 30381.795,
+        "weekly_sma13": 39222.46153846154,
+        "weekly_sma26": 35606.46153846154,
+        "monthly_sma6": 37185.0,
+        "monthly_sma12": 32110.333333333332
+      },
+      "momentum_pct": {
+        "daily_20_period": 12.254229538180162,
+        "daily_60_period": 50.60887702831201,
+        "weekly_13_period": 50.60887702831201,
+        "monthly_6_period": 83.28418380678637
+      },
+      "rsi14_daily": 43.58,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 44457490.0,
+      "average_volume20": 109881843.05,
+      "volume_vs_20_period_average": 0.405,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 37.58,
+      "relative_momentum_components": {
+        "monthly_6_period": 32.8,
+        "weekly_13_period": 39.9,
+        "daily_60_period": 41.2,
+        "daily_20_period": 56.3,
+        "volume_ratio": 18.2
+      }
+    },
+    {
+      "symbol": "تشتاد",
+      "company": "اشتاد ایران",
+      "exchange": "پایه فرابورس",
+      "chart_id": "IRO7ESHP00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 2010,
+        "weekly": 505,
+        "monthly": 135
+      },
+      "price": {
+        "daily_close": 7040.0,
+        "weekly_close": 7040.0,
+        "monthly_close": 7040.0
+      },
+      "moving_averages": {
+        "daily_sma50": 5808.2,
+        "daily_sma200": 5090.535,
+        "weekly_sma13": 5850.7692307692305,
+        "weekly_sma26": 5251.884615384615,
+        "monthly_sma6": 5418.333333333333,
+        "monthly_sma12": 5098.333333333333
+      },
+      "momentum_pct": {
+        "daily_20_period": 18.918918918918926,
+        "daily_60_period": 26.164874551971316,
+        "weekly_13_period": 46.66666666666666,
+        "monthly_6_period": 75.60488899975056
+      },
+      "rsi14_daily": 57.46,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 3160427.0,
+      "average_volume20": 1996224.75,
+      "volume_vs_20_period_average": 1.583,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 37.28,
+      "relative_momentum_components": {
+        "monthly_6_period": 29.2,
+        "weekly_13_period": 35.2,
+        "daily_60_period": 15.9,
+        "daily_20_period": 72.0,
+        "volume_ratio": 85.5
+      }
+    },
+    {
+      "symbol": "غناب",
+      "company": "روغن نباتی ناب",
+      "exchange": "پایه فرابورس",
+      "chart_id": "IRO7RNAP00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 907,
+        "weekly": 220,
+        "monthly": 56
+      },
+      "price": {
+        "daily_close": 1174.0,
+        "weekly_close": 1174.0,
+        "monthly_close": 1174.0
+      },
+      "moving_averages": {
+        "daily_sma50": 1111.44,
+        "daily_sma200": 850.76,
+        "weekly_sma13": 1069.8461538461538,
+        "weekly_sma26": 924.5769230769231,
+        "monthly_sma6": 950.3333333333334,
+        "monthly_sma12": 844.0833333333334
+      },
+      "momentum_pct": {
+        "daily_20_period": 0.34188034188034067,
+        "daily_60_period": 36.98949824970828,
+        "weekly_13_period": 57.79569892473118,
+        "monthly_6_period": 72.64705882352942
+      },
+      "rsi14_daily": 53.1,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 57036063.0,
+      "average_volume20": 48075461.1,
+      "volume_vs_20_period_average": 1.186,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 37.21,
+      "relative_momentum_components": {
+        "monthly_6_period": 26.3,
+        "weekly_13_period": 49.3,
+        "daily_60_period": 27.2,
+        "daily_20_period": 27.2,
+        "volume_ratio": 75.0
+      }
+    },
+    {
+      "symbol": "ونیکی",
+      "company": "سرمایه گذاری ملی ایران",
+      "exchange": "بورس",
+      "chart_id": "IRO1NIKI00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 7349,
+        "weekly": 1695,
+        "monthly": 412
+      },
+      "price": {
+        "daily_close": 5860.0,
+        "weekly_close": 5860.0,
+        "monthly_close": 5860.0
+      },
+      "moving_averages": {
+        "daily_sma50": 4788.42,
+        "daily_sma200": 3661.705,
+        "weekly_sma13": 4756.923076923077,
+        "weekly_sma26": 4268.0,
+        "monthly_sma6": 4540.333333333333,
+        "monthly_sma12": 3806.75
+      },
+      "momentum_pct": {
+        "daily_20_period": 11.195445920303616,
+        "daily_60_period": 48.467190271091965,
+        "weekly_13_period": 45.51775515271914,
+        "monthly_6_period": 72.55594817432274
+      },
+      "rsi14_daily": 58.29,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 66334547.0,
+      "average_volume20": 73249649.3,
+      "volume_vs_20_period_average": 0.906,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 37.05,
+      "relative_momentum_components": {
+        "monthly_6_period": 26.1,
+        "weekly_13_period": 33.8,
+        "daily_60_period": 38.9,
+        "daily_20_period": 54.7,
+        "volume_ratio": 55.5
+      }
+    },
+    {
+      "symbol": "واتی",
+      "company": "گروه سرمایه گذاری آتیه دماوند",
+      "exchange": "بورس",
+      "chart_id": "IRO1ATDM00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 4009,
+        "weekly": 953,
+        "monthly": 244
+      },
+      "price": {
+        "daily_close": 7090.0,
+        "weekly_close": 7090.0,
+        "monthly_close": 7090.0
+      },
+      "moving_averages": {
+        "daily_sma50": 7042.4,
+        "daily_sma200": 5227.94,
+        "weekly_sma13": 6835.384615384615,
+        "weekly_sma26": 5824.846153846154,
+        "monthly_sma6": 6017.0,
+        "monthly_sma12": 5306.583333333333
+      },
+      "momentum_pct": {
+        "daily_20_period": -1.664355062413314,
+        "daily_60_period": 50.53078556263271,
+        "weekly_13_period": 50.53078556263271,
+        "monthly_6_period": 66.82352941176471
+      },
+      "rsi14_daily": 51.64,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 47251471.0,
+      "average_volume20": 39780555.9,
+      "volume_vs_20_period_average": 1.188,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 36.59,
+      "relative_momentum_components": {
+        "monthly_6_period": 22.0,
+        "weekly_13_period": 39.8,
+        "daily_60_period": 41.1,
+        "daily_20_period": 22.6,
+        "volume_ratio": 75.2
+      }
+    },
+    {
+      "symbol": "بپیوند",
+      "company": "برق و انرژی پیوند گستر پارس",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3PGRZ00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 1370,
+        "weekly": 306,
+        "monthly": 73
+      },
+      "price": {
+        "daily_close": 18430.0,
+        "weekly_close": 18430.0,
+        "monthly_close": 18430.0
+      },
+      "moving_averages": {
+        "daily_sma50": 17955.8,
+        "daily_sma200": 12869.33,
+        "weekly_sma13": 17457.69230769231,
+        "weekly_sma26": 14812.961538461539,
+        "monthly_sma6": 15498.333333333334,
+        "monthly_sma12": 12983.5
+      },
+      "momentum_pct": {
+        "daily_20_period": -1.915912719531665,
+        "daily_60_period": 37.2300819061802,
+        "weekly_13_period": 37.2300819061802,
+        "monthly_6_period": 97.17556435219856
+      },
+      "rsi14_daily": 54.94,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 2309736.0,
+      "average_volume20": 1356456.45,
+      "volume_vs_20_period_average": 1.703,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 36.3,
+      "relative_momentum_components": {
+        "monthly_6_period": 41.2,
+        "weekly_13_period": 24.1,
+        "daily_60_period": 27.4,
+        "daily_20_period": 21.8,
+        "volume_ratio": 88.5
+      }
+    },
+    {
+      "symbol": "تملت",
+      "company": "تامین سرمایه بانک ملت",
+      "exchange": "بورس",
+      "chart_id": "IRO1TMLT00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 1444,
+        "weekly": 323,
+        "monthly": 78
+      },
+      "price": {
+        "daily_close": 2247.0,
+        "weekly_close": 2247.0,
+        "monthly_close": 2247.0
+      },
+      "moving_averages": {
+        "daily_sma50": 2047.9,
+        "daily_sma200": 1520.775,
+        "weekly_sma13": 2008.0,
+        "weekly_sma26": 1767.5384615384614,
+        "monthly_sma6": 1816.8333333333333,
+        "monthly_sma12": 1525.0833333333333
+      },
+      "momentum_pct": {
+        "daily_20_period": 4.414498141263934,
+        "daily_60_period": 44.50160771704179,
+        "weekly_13_period": 44.50160771704179,
+        "monthly_6_period": 64.97797356828194
+      },
+      "rsi14_daily": 66.01,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 11754645.0,
+      "average_volume20": 7459114.55,
+      "volume_vs_20_period_average": 1.576,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 35.68,
+      "relative_momentum_components": {
+        "monthly_6_period": 21.4,
+        "weekly_13_period": 32.5,
+        "daily_60_period": 35.2,
+        "daily_20_period": 38.1,
+        "volume_ratio": 85.3
+      }
+    },
+    {
+      "symbol": "فباهنر",
+      "company": "صنایع مس شهیدباهنر",
+      "exchange": "بورس",
+      "chart_id": "IRO1BAHN00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 5761,
+        "weekly": 1402,
+        "monthly": 353
+      },
+      "price": {
+        "daily_close": 12670.0,
+        "weekly_close": 12670.0,
+        "monthly_close": 12670.0
+      },
+      "moving_averages": {
+        "daily_sma50": 11815.8,
+        "daily_sma200": 8709.745,
+        "weekly_sma13": 11592.307692307691,
+        "weekly_sma26": 10158.576923076924,
+        "monthly_sma6": 10289.0,
+        "monthly_sma12": 8700.5
+      },
+      "momentum_pct": {
+        "daily_20_period": -6.906686260102868,
+        "daily_60_period": 40.809068681929325,
+        "weekly_13_period": 42.567795656577026,
+        "monthly_6_period": 84.04997094712377
+      },
+      "rsi14_daily": 60.38,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 119243552.0,
+      "average_volume20": 70854156.05,
+      "volume_vs_20_period_average": 1.683,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 35.19,
+      "relative_momentum_components": {
+        "monthly_6_period": 33.0,
+        "weekly_13_period": 30.9,
+        "daily_60_period": 31.3,
+        "daily_20_period": 8.9,
+        "volume_ratio": 88.4
+      }
+    },
+    {
+      "symbol": "خاذین",
+      "company": "سایپا آذین",
+      "exchange": "بورس",
+      "chart_id": "IRO1AZIN00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 5253,
+        "weekly": 1198,
+        "monthly": 293
+      },
+      "price": {
+        "daily_close": 3090.0,
+        "weekly_close": 3090.0,
+        "monthly_close": 3090.0
+      },
+      "moving_averages": {
+        "daily_sma50": 2787.3,
+        "daily_sma200": 2220.245,
+        "weekly_sma13": 2683.3846153846152,
+        "weekly_sma26": 2335.4615384615386,
+        "monthly_sma6": 2390.3333333333335,
+        "monthly_sma12": 2196.3333333333335
+      },
+      "momentum_pct": {
+        "daily_20_period": -2.215189873417722,
+        "daily_60_period": 41.80816888480954,
+        "weekly_13_period": 49.13127413127414,
+        "monthly_6_period": 89.10648714810281
+      },
+      "rsi14_daily": 59.26,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 15047670.0,
+      "average_volume20": 19485349.0,
+      "volume_vs_20_period_average": 0.772,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 35.17,
+      "relative_momentum_components": {
+        "monthly_6_period": 37.4,
+        "weekly_13_period": 37.9,
+        "daily_60_period": 32.2,
+        "daily_20_period": 20.7,
+        "volume_ratio": 43.7
+      }
+    },
+    {
+      "symbol": "ثپردیس",
+      "company": "سرمایه گذاری مسکن پردیس",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3MPRZ00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 2462,
+        "weekly": 557,
+        "monthly": 132
+      },
+      "price": {
+        "daily_close": 4340.0,
+        "weekly_close": 4340.0,
+        "monthly_close": 4340.0
+      },
+      "moving_averages": {
+        "daily_sma50": 4216.8,
+        "daily_sma200": 3084.38,
+        "weekly_sma13": 4108.923076923077,
+        "weekly_sma26": 3388.6923076923076,
+        "monthly_sma6": 3552.8333333333335,
+        "monthly_sma12": 3058.0
+      },
+      "momentum_pct": {
+        "daily_20_period": -3.340757238307346,
+        "daily_60_period": 46.12794612794613,
+        "weekly_13_period": 46.12794612794613,
+        "monthly_6_period": 84.8381601362862
+      },
+      "rsi14_daily": 25.86,
+      "rsi_state": "پایین؛ احتمال ضعف مومنتوم",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 43849876.0,
+      "average_volume20": 50067234.6,
+      "volume_vs_20_period_average": 0.876,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 34.89,
+      "relative_momentum_components": {
+        "monthly_6_period": 33.6,
+        "weekly_13_period": 34.3,
+        "daily_60_period": 37.2,
+        "daily_20_period": 16.8,
+        "volume_ratio": 52.4
+      }
+    },
+    {
+      "symbol": "بمپنا",
+      "company": "تولید برق عسلویه مپنا",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3BMAZ00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 2800,
+        "weekly": 624,
+        "monthly": 147
+      },
+      "price": {
+        "daily_close": 7400.0,
+        "weekly_close": 7400.0,
+        "monthly_close": 7400.0
+      },
+      "moving_averages": {
+        "daily_sma50": 7196.2,
+        "daily_sma200": 5315.265,
+        "weekly_sma13": 6924.615384615385,
+        "weekly_sma26": 5890.192307692308,
+        "monthly_sma6": 6028.5,
+        "monthly_sma12": 5291.0
+      },
+      "momentum_pct": {
+        "daily_20_period": -18.14159292035398,
+        "daily_60_period": 44.81409001956946,
+        "weekly_13_period": 53.526970954356855,
+        "monthly_6_period": 63.283318623124444
+      },
+      "rsi14_daily": 30.1,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 38820688.0,
+      "average_volume20": 24074611.3,
+      "volume_vs_20_period_average": 1.613,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 34.59,
+      "relative_momentum_components": {
+        "monthly_6_period": 20.1,
+        "weekly_13_period": 43.4,
+        "daily_60_period": 35.8,
+        "daily_20_period": 1.1,
+        "volume_ratio": 86.5
+      }
+    },
+    {
+      "symbol": "فالوم",
+      "company": "صنعتی آلومتک",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3ALTP00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 2096,
+        "weekly": 545,
+        "monthly": 138
+      },
+      "price": {
+        "daily_close": 1549.0,
+        "weekly_close": 1549.0,
+        "monthly_close": 1549.0
+      },
+      "moving_averages": {
+        "daily_sma50": 1200.24,
+        "daily_sma200": 1158.935,
+        "weekly_sma13": 1202.1538461538462,
+        "weekly_sma26": 1123.7307692307693,
+        "monthly_sma6": 1176.0,
+        "monthly_sma12": 1167.9166666666667
+      },
+      "momentum_pct": {
+        "daily_20_period": 23.13195548489666,
+        "daily_60_period": 43.028624192059105,
+        "weekly_13_period": 45.856873822975516,
+        "monthly_6_period": 68.18675352877308
+      },
+      "rsi14_daily": 55.82,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 62302716.0,
+      "average_volume20": 107619436.45,
+      "volume_vs_20_period_average": 0.579,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 34.57,
+      "relative_momentum_components": {
+        "monthly_6_period": 22.7,
+        "weekly_13_period": 33.9,
+        "daily_60_period": 33.8,
+        "daily_20_period": 78.0,
+        "volume_ratio": 30.4
+      }
+    },
+    {
+      "symbol": "وبهمن",
+      "company": "سرمایه گذاری بهمن",
+      "exchange": "بورس",
+      "chart_id": "IRO1SBAH00013",
+      "technical_score": 100.0,
+      "risk_penalty": 0,
+      "risk_adjusted_score": 100.0,
+      "available_score_weight": 100,
+      "label": "روند تکنیکال قوی",
+      "eligible_for_long_term_ranking": true,
+      "history_mature": true,
+      "latest_daily_date": "2026-10-12",
+      "data_age_days": 1,
+      "history_bars": {
+        "daily": 4695,
+        "weekly": 1066,
+        "monthly": 256
+      },
+      "price": {
+        "daily_close": 2244.0,
+        "weekly_close": 2244.0,
+        "monthly_close": 2244.0
+      },
+      "moving_averages": {
+        "daily_sma50": 2099.7,
+        "daily_sma200": 1841.55,
+        "weekly_sma13": 2049.846153846154,
+        "weekly_sma26": 1869.576923076923,
+        "monthly_sma6": 1888.6666666666667,
+        "monthly_sma12": 1819.0
+      },
+      "momentum_pct": {
+        "daily_20_period": -4.143528406663821,
+        "daily_60_period": 49.50033311125917,
+        "weekly_13_period": 49.50033311125917,
+        "monthly_6_period": 48.80636604774536
+      },
+      "rsi14_daily": 66.31,
+      "rsi_state": "محدودهٔ میانی",
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "risk_flags": [],
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "latest_daily_volume": 198972284.0,
+      "average_volume20": 120999431.2,
+      "volume_vs_20_period_average": 1.644,
+      "checks": {
+        "daily_close_above_sma50": true,
+        "daily_sma50_above_sma200": true,
+        "weekly_close_above_sma13": true,
+        "weekly_sma13_above_sma26": true,
+        "monthly_close_above_sma6": true,
+        "monthly_sma6_above_sma12": true,
+        "weekly_13_period_return_positive": true,
+        "monthly_6_period_return_positive": true
+      },
+      "relative_momentum_score": 34.19,
+      "relative_momentum_components": {
+        "monthly_6_period": 13.6,
+        "weekly_13_period": 38.8,
+        "daily_60_period": 40.4,
+        "daily_20_period": 15.2,
+        "volume_ratio": 87.8
       }
     }
   ]
