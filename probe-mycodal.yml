@@ -1,0 +1,104 @@
+name: Probe My Codal Statements
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe-mycodal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check public My Codal page and discover API assets
+        shell: bash
+        run: |
+          python - <<'PY'
+          import re
+          import sys
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from html.parser import HTMLParser
+
+          PAGE = "https://my.codal.ir/fa/statements/?page=1"
+          UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/130 Safari/537.36"
+
+          class PageParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.scripts = []
+                  self.links = []
+                  self.title_parts = []
+                  self.in_title = False
+              def handle_starttag(self, tag, attrs):
+                  a = dict(attrs)
+                  if tag.lower() == "script" and a.get("src"):
+                      self.scripts.append(urllib.parse.urljoin(PAGE, a["src"]))
+                  if tag.lower() == "a" and a.get("href"):
+                      href = urllib.parse.urljoin(PAGE, a["href"])
+                      if any(k in href.lower() for k in ("statement", "report", "api", "search")):
+                          self.links.append(href)
+                  if tag.lower() == "title":
+                      self.in_title = True
+              def handle_endtag(self, tag):
+                  if tag.lower() == "title":
+                      self.in_title = False
+              def handle_data(self, data):
+                  if self.in_title:
+                      self.title_parts.append(data.strip())
+
+          def get(url, timeout=15, cap=3_000_000):
+              req = urllib.request.Request(url, headers={
+                  "User-Agent": UA,
+                  "Accept": "text/html,application/json,application/javascript,*/*",
+                  "Referer": "https://my.codal.ir/",
+              })
+              with urllib.request.urlopen(req, timeout=timeout) as res:
+                  body = res.read(cap)
+                  return res.status, res.geturl(), res.headers.get("Content-Type", ""), body
+
+          print("Probing public My Codal statements page...")
+          try:
+              status, final_url, content_type, body = get(PAGE)
+          except Exception as exc:
+              print(f"MY_CODAL_PAGE_ERROR: {type(exc).__name__}: {str(exc)[:300]}")
+              sys.exit(1)
+
+          print(f"MY_CODAL_HTTP_STATUS: {status}")
+          print(f"MY_CODAL_FINAL_URL: {final_url}")
+          print(f"MY_CODAL_CONTENT_TYPE: {content_type}")
+          print(f"MY_CODAL_HTML_BYTES: {len(body)}")
+          text = body.decode("utf-8", errors="replace")
+          parser = PageParser()
+          parser.feed(text)
+          print(f"MY_CODAL_PAGE_TITLE: {' '.join(parser.title_parts)[:180]}")
+          print(f"MY_CODAL_SCRIPT_ASSETS: {len(parser.scripts)}")
+          print(f"MY_CODAL_STATEMENTS_TEXT_PRESENT: {any(x in text.lower() for x in ('صورت مالی', 'صورت‌های مالی', 'statement'))}")
+
+          candidates = set()
+          pattern = re.compile(r'''["'`]([^"'`\s]{1,220})["'`]''')
+          interesting = ("/api/", "api/", "statement", "statements", "financial", "issuer", "report", "search")
+          same_origin_scripts = [u for u in dict.fromkeys(parser.scripts) if urllib.parse.urlparse(u).netloc == "my.codal.ir"][:12]
+          for script_url in same_origin_scripts:
+              try:
+                  _, _, js_type, js_body = get(script_url, timeout=8, cap=2_000_000)
+                  js = js_body.decode("utf-8", errors="replace")
+                  for match in pattern.findall(js):
+                      val = match.replace("\\/", "/")
+                      low = val.lower()
+                      if any(token in low for token in interesting) and ("/" in val or "api" in low):
+                          if len(val) < 180:
+                              candidates.add(val)
+              except Exception as exc:
+                  print(f"ASSET_WARNING: {script_url.rsplit('/', 1)[-1]}: {type(exc).__name__}")
+
+          print("MY_CODAL_RELEVANT_LINKS:")
+          for item in list(dict.fromkeys(parser.links))[:12]:
+              print(f"  {item[:220]}")
+          print("MY_CODAL_API_CANDIDATES:")
+          for item in sorted(candidates)[:35]:
+              print(f"  {item}")
+          print("My Codal probe completed. This workflow only checks access; it does not run the 741-symbol scan.")
+          PY
