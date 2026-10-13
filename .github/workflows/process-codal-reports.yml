@@ -2,9 +2,8 @@ name: Process New Codal Reports
 
 on:
   workflow_dispatch:
-  # Run after the daily public announcement collector.
-  schedule:
-    - cron: "30 14 * * 0-3,6"
+  # The daily collector updates data/codal_disclosures_latest.json; its commit triggers this workflow.
+  # This avoids a redundant run that would reset new-report counts to zero.
   push:
     branches: [main]
     paths:
