@@ -1,0 +1,44 @@
+name: Build Fundamental and Money Flow Radar
+
+on:
+  workflow_dispatch:
+  # Iran market days: Saturday through Wednesday, after the market close.
+  schedule:
+    - cron: "30 9 * * 0-3,6"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fundamental-money-flow-radar
+  cancel-in-progress: false
+
+jobs:
+  build-fundamental-money-radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build fundamental, development-project and money-flow radar
+        run: python -m py_compile scripts/build_fundamental_money_radar.py && python scripts/build_fundamental_money_radar.py
+
+      - name: Commit results
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fundamental_money_radar.json data/tsetmc_instrument_map.json
+          if git diff --cached --quiet; then
+            echo "No fundamental/money-flow data changes."
+          else
+            git commit -m "Build fundamental, project and money flow radar"
+            git push
+          fi
