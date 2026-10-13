@@ -78,11 +78,13 @@ class TechnicalTargetTests(unittest.TestCase):
             if direction == "buy":
                 self.assertLess(stop, entry)
                 self.assertGreater(target1, entry)
-                if setup["target_2"] is not None:\n                    self.assertGreater(setup["target_2"], target1)
+                if setup["target_2"] is not None:
+                    self.assertGreater(setup["target_2"], target1)
             else:
                 self.assertGreater(stop, entry)
                 self.assertLess(target1, entry)
-                if setup["target_2"] is not None:\n                    self.assertLess(setup["target_2"], target1)
+                if setup["target_2"] is not None:
+                    self.assertLess(setup["target_2"], target1)
 
 
 if __name__ == "__main__":
