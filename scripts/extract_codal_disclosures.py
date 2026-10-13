@@ -36,7 +36,18 @@ OUT_XLSX = ROOT / "data" / "codal_disclosures_latest.xlsx"
 OUT_JSON = ROOT / "data" / "codal_disclosures_latest.json"
 
 BOURSE_URL = "https://bourse-trader.ir/index.php?task=codal-reports"
-TELEGRAM_BASE = "https://t.me/s/codalboursetrader"
+TELEGRAM_SOURCES = [
+    {
+        "handle": "codalboursetrader",
+        "name": "تلگرام بورس‌تریدر",
+        "base_url": "https://t.me/s/codalboursetrader",
+    },
+    {
+        "handle": "Codal360_ir",
+        "name": "تلگرام کدال۳۶۰",
+        "base_url": "https://t.me/s/Codal360_ir",
+    },
+]
 USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
@@ -47,7 +58,7 @@ ATTACHMENT_TIMEOUT = 15
 MAX_ATTACHMENT_BYTES = 8 * 1024 * 1024
 MAX_ATTACHMENT_TESTS = 3
 MAX_ATTACHMENT_ROWS_PER_SHEET = 2500
-DEFAULT_TELEGRAM_PAGES = 8
+DEFAULT_TELEGRAM_PAGES = 30
 
 PROJECT_KEYWORDS = (
     "طرح توسعه", "طرح احداث", "پروژه", "پیشرفت فیزیکی", "پیشرفت پروژه",
@@ -56,6 +67,12 @@ PROJECT_KEYWORDS = (
     "عملیات اجرایی", "سرمایه گذاری در طرح", "سرمایه‌گذاری در طرح",
     "فاز توسعه", "ماشین آلات طرح", "ماشین‌آلات طرح", "ظرفیت اسمی",
     "گزارش توجیهی طرح", "پیشرفت طرح", "طرح سرمایه‌گذاری",
+    "طرح های توسعه", "طرح‌های توسعه", "آخرین وضعیت طرح", "مخارج انجام شده",
+    "مخارج انجام‌شده", "مخارج انجام شده تاکنون", "مخارج سرمایه‌ای",
+    "سرمایه گذاری انجام شده", "سرمایه‌گذاری انجام‌شده", "زمان بهره برداری",
+    "زمان بهره‌برداری", "تاریخ بهره برداری", "تاریخ بهره‌برداری",
+    "طرح های در دست اجرا", "طرح‌های در دست اجرا", "پروژه های در جریان",
+    "پروژه‌های در جریان", "مخارج طرح", "پیشرفت طرح توسعه",
 )
 FINANCIAL_KEYWORDS = (
     "صورت های مالی", "صورت‌های مالی", "صورت مالی", "گزارش تفسیری مدیریت",
@@ -387,10 +404,10 @@ def raw_dates(text: str) -> str:
     return "؛ ".join(values[:10])
 
 
-def telegram_link_for(post_id: str) -> str:
+def telegram_link_for(post_id: str, channel_handle: str = "codalboursetrader") -> str:
     if post_id.isdigit():
-        return f"https://t.me/codalboursetrader/{post_id}"
-    return "https://t.me/s/codalboursetrader"
+        return f"https://t.me/{channel_handle}/{post_id}"
+    return f"https://t.me/s/{channel_handle}"
 
 
 def make_record(url: str, link_title: str, context: str, source: str,
@@ -427,8 +444,8 @@ def merge_records(records: list[dict]) -> list[dict]:
             continue
         existing = merged[key]
         # Capture existing provenance before merging the incoming source.
-        existing_has_telegram = "تلگرام بورس‌تریدر" in existing["sources"]
-        row_is_telegram = row["source"] == "تلگرام بورس‌تریدر"
+        existing_has_telegram = any(source.startswith("تلگرام ") for source in existing["sources"])
+        row_is_telegram = row["source"].startswith("تلگرام ")
         if row["source"] not in existing["sources"]:
             existing["sources"].append(row["source"])
         if row["source_page"] and row["source_page"] not in existing["source_pages"]:
@@ -467,60 +484,73 @@ def merge_records(records: list[dict]) -> list[dict]:
 
 
 def fetch_telegram_pages(page_limit: int, source_status: list[dict]) -> list[dict]:
-    posts_by_id = {}
-    seen_urls = set()
-    before = None
-    previous_oldest = None
+    """Fetch recent/archive posts from each configured public Telegram preview."""
+    all_posts = []
+    for source in TELEGRAM_SOURCES:
+        base_url = source["base_url"]
+        channel_handle = source["handle"]
+        source_name = source["name"]
+        posts_by_id = {}
+        seen_urls = set()
+        before = None
+        previous_oldest = None
 
-    for page_index in range(page_limit):
-        page_url = TELEGRAM_BASE if before is None else f"{TELEGRAM_BASE}?before={before}"
-        if page_url in seen_urls:
-            break
-        seen_urls.add(page_url)
-        result = request_url(page_url)
-        status_row = {
-            "source_name": f"تلگرام بورس‌تریدر - صفحه {page_index + 1}",
-            "url": page_url, "http_status": result["http_status"],
-            "content_type": result["content_type"], "body_bytes": result["body_bytes"],
-            "items_found": 0, "note": result["error"],
-        }
-        source_status.append(status_row)
-        if result["http_status"] != 200 or not result["body"]:
-            break
-        parser = TelegramParser()
-        try:
-            parser.feed(result["body"].decode("utf-8", "replace"))
-        except Exception as exc:
-            status_row["note"] = f"HTML parse issue: {type(exc).__name__}: {exc}"
-            break
-        status_row["items_found"] = len(parser.posts)
-        if not parser.posts:
-            status_row["note"] = (status_row["note"] + "; " if status_row["note"] else "") + "HTTP 200 but no Telegram message blocks parsed"
-            break
+        for page_index in range(page_limit):
+            page_url = base_url if before is None else f"{base_url}?before={before}"
+            if page_url in seen_urls:
+                break
+            seen_urls.add(page_url)
+            result = request_url(page_url)
+            status_row = {
+                "source_name": f"{source_name} - صفحه {page_index + 1}",
+                "url": page_url, "http_status": result["http_status"],
+                "content_type": result["content_type"], "body_bytes": result["body_bytes"],
+                "items_found": 0, "note": result["error"],
+            }
+            source_status.append(status_row)
+            if result["http_status"] != 200 or not result["body"]:
+                break
 
-        numeric_ids = []
-        for post in parser.posts:
-            post_id = post.get("post_id", "")
-            if post_id.isdigit():
-                numeric_ids.append(int(post_id))
-                key = post_id
-            else:
-                key = f'no-id:{post.get("date","")}:{post.get("text","")[:140]}'
-            post["source_page"] = page_url
-            post["permalink"] = telegram_link_for(post_id)
-            posts_by_id[key] = post
-        if not numeric_ids:
-            status_row["note"] = "Messages parsed, but post ids were not detected; archive pagination stopped."
-            break
-        oldest = min(numeric_ids)
-        if previous_oldest is not None and oldest >= previous_oldest:
-            status_row["note"] = "Archive did not move to older post ids; stopped to prevent looping."
-            break
-        previous_oldest = oldest
-        before = oldest - 1
-        time.sleep(0.15)
+            parser = TelegramParser()
+            try:
+                parser.feed(result["body"].decode("utf-8", "replace"))
+            except Exception as exc:
+                status_row["note"] = f"HTML parse issue: {type(exc).__name__}: {exc}"
+                break
+            status_row["items_found"] = len(parser.posts)
+            if not parser.posts:
+                status_row["note"] = (status_row["note"] + "; " if status_row["note"] else "") + "HTTP 200 but no Telegram message blocks parsed"
+                break
 
-    return list(posts_by_id.values())
+            numeric_ids = []
+            for post in parser.posts:
+                post_id = post.get("post_id", "")
+                if post_id.isdigit():
+                    numeric_ids.append(int(post_id))
+                    key = f"{channel_handle}:{post_id}"
+                else:
+                    key = f'{channel_handle}:no-id:{post.get("date","")}:{post.get("text","")[:140]}'
+
+                post["source_page"] = page_url
+                post["channel"] = channel_handle
+                post["source_name"] = source_name
+                post["permalink"] = telegram_link_for(post_id, channel_handle)
+                posts_by_id[key] = post
+
+            if not numeric_ids:
+                status_row["note"] = "Messages parsed, but post ids were not detected; archive pagination stopped."
+                break
+            oldest = min(numeric_ids)
+            if previous_oldest is not None and oldest >= previous_oldest:
+                status_row["note"] = "Archive did not move to older post ids; stopped to prevent looping."
+                break
+            previous_oldest = oldest
+            before = oldest - 1
+            time.sleep(0.15)
+
+        all_posts.extend(posts_by_id.values())
+
+    return all_posts
 
 
 def request_attachment_with_curl(url: str) -> dict:
@@ -749,6 +779,8 @@ def build_workbook(payload: dict):
         codal_count = sum(1 for link in post.get("links", []) if is_codal_reference(urllib.parse.urljoin(post.get("source_page", TELEGRAM_BASE), link.get("url", ""))))
         attachment_count = sum(1 for link in post.get("links", []) if is_attachment_candidate(urllib.parse.urljoin(post.get("source_page", TELEGRAM_BASE), link.get("url", ""))))
         post_rows.append({
+            "source_name": post.get("source_name", ""),
+            "channel": post.get("channel", ""),
             "post_id": post.get("post_id", ""), "date": post.get("date", ""),
             "codal_count": codal_count, "attachment_count": attachment_count,
             "project_keywords": "؛ ".join(project_terms), "text": body,
@@ -756,9 +788,9 @@ def build_workbook(payload: dict):
         })
     write_sheet(
         wb, "پست‌های تلگرام",
-        ["شناسه پست", "تاریخ", "تعداد لینک کدال", "تعداد پیوست اکسل", "کلیدواژه‌های طرح", "متن کامل پست", "لینک پست"],
+        ["منبع", "کانال", "شناسه پست", "تاریخ", "تعداد لینک کدال", "تعداد پیوست اکسل", "کلیدواژه‌های طرح", "متن کامل پست", "لینک پست"],
         post_rows,
-        ["post_id", "date", "codal_count", "attachment_count", "project_keywords", "text", "permalink"],
+        ["source_name", "channel", "post_id", "date", "codal_count", "attachment_count", "project_keywords", "text", "permalink"],
     )
 
     write_sheet(
@@ -833,29 +865,31 @@ def run(args):
     })
 
     telegram_posts = fetch_telegram_pages(args.pages, source_status)
-    telegram_detail_link_count = 0
     for post in telegram_posts:
-        post_url = post.get("permalink") or TELEGRAM_BASE
+        post_url = post.get("permalink") or post.get("source_page", "")
         post_text = post.get("text", "")
+        source_name = post.get("source_name", "تلگرام نامشخص")
         for link in post.get("links", []):
-            raw_url = urllib.parse.urljoin(post.get("source_page", TELEGRAM_BASE), link.get("url", ""))
+            raw_url = urllib.parse.urljoin(post.get("source_page", ""), link.get("url", ""))
             if is_codal_reference(raw_url):
                 if is_report_list(raw_url):
-                    row = make_record(raw_url, link.get("title", ""), post_text, "تلگرام بورس‌تریدر", post_url, post.get("date", ""), post.get("post_id", ""))
+                    row = make_record(
+                        raw_url, link.get("title", ""), post_text, source_name,
+                        post_url, post.get("date", ""), post.get("post_id", ""),
+                    )
                     symbol_lists.append({
                         "symbol": row["symbol"], "link_title": row["link_title"],
-                        "url": row["url"], "source": "تلگرام بورس‌تریدر",
+                        "url": row["url"], "source": source_name,
                         "source_context": post_text[:1800],
                     })
                 else:
                     records.append(make_record(
-                        raw_url, link.get("title", ""), post_text, "تلگرام بورس‌تریدر",
+                        raw_url, link.get("title", ""), post_text, source_name,
                         post_url, post.get("date", ""), post.get("post_id", ""),
                     ))
-                    telegram_detail_link_count += 1
-                all_candidates.append({"url": raw_url, "source": "تلگرام بورس‌تریدر", "context": post_text})
+                all_candidates.append({"url": raw_url, "source": source_name, "context": post_text})
             if is_attachment_candidate(raw_url):
-                all_candidates.append({"url": raw_url, "source": "تلگرام بورس‌تریدر", "context": post_text})
+                all_candidates.append({"url": raw_url, "source": source_name, "context": post_text})
 
     announcements = merge_records(records)
     # Do not treat company-index links as announcement records.
@@ -886,11 +920,35 @@ def run(args):
         quality_note += " هیچ ردیف داده‌ای از پیوست XLSX قابل‌خواندن در این اجرا به دست نیامد؛ این به معنای نبود صورت مالی شرکت‌ها نیست."
     if source_problem:
         quality_note += " دست‌کم یک منبع/پیوست ناموفق بود؛ خطاهای آن در شیت «وضعیت منابع» آمده‌اند."
+    posts_by_source = {}
+    for post in telegram_posts:
+        name = post.get("source_name", "تلگرام نامشخص")
+        posts_by_source[name] = posts_by_source.get(name, 0) + 1
+    records_by_source = {}
+    for row in announcements:
+        for name in row.get("source", "").split("؛ "):
+            if name.startswith("تلگرام "):
+                records_by_source[name] = records_by_source.get(name, 0) + 1
+    project_posts_by_source = {}
+    financial_posts_by_source = {}
+    for post in telegram_posts:
+        name = post.get("source_name", "تلگرام نامشخص")
+        body = post.get("text", "")
+        if find_terms(body, PROJECT_KEYWORDS):
+            project_posts_by_source[name] = project_posts_by_source.get(name, 0) + 1
+        if find_terms(body, FINANCIAL_KEYWORDS + MONTHLY_KEYWORDS):
+            financial_posts_by_source[name] = financial_posts_by_source.get(name, 0) + 1
+
     summary = [
         {"metric": "زمان تولید UTC", "value": now_utc(), "note": "زمان ساخت فایل؛ نه تاریخ آخرین اطلاعیه"},
-        {"metric": "صفحات تلگرام درخواست‌شده", "value": args.pages, "note": "حداکثر تعداد صفحه، هر صفحه معمولاً حدود ۲۰ پست"},
-        {"metric": "پست‌های تلگرام استخراج‌شده", "value": len(telegram_posts), "note": "شناسه پست‌ها در صورت قابل‌تشخیص بودن حذف تکراری شده‌اند"},
-        {"metric": "گزارش‌های کدال یکتا", "value": len(announcements), "note": "لینک‌های تکراری ادغام شده‌اند؛ گزارش‌ها لزوماً از صفحه مقصد خوانده نشده‌اند"},
+        {"metric": "صفحات درخواستی برای هر کانال", "value": args.pages, "note": "حداکثر تعداد صفحه به ازای هر کانال؛ هر صفحه معمولاً حدود ۲۰ پست"},
+        {"metric": "پست‌های تلگرام استخراج‌شده", "value": len(telegram_posts), "note": "جمع دو کانال؛ شناسه‌ها در هر کانال جداگانه حذف تکراری می‌شوند"},
+        {"metric": "پست‌های بورس‌تریدر", "value": posts_by_source.get("تلگرام بورس‌تریدر", 0), "note": "پست‌های عمومی استخراج‌شده از آرشیو"},
+        {"metric": "پست‌های کدال۳۶۰", "value": posts_by_source.get("تلگرام کدال۳۶۰", 0), "note": "پست‌های عمومی استخراج‌شده از آرشیو"},
+        {"metric": "پست‌های دارای کلیدواژه طرح در کدال۳۶۰", "value": project_posts_by_source.get("تلگرام کدال۳۶۰", 0), "note": "تطبیق کلیدواژه‌ای؛ هر مورد باید با متن اصلی بازبینی شود"},
+        {"metric": "پست‌های دارای کلیدواژه مالی/ماهانه در کدال۳۶۰", "value": financial_posts_by_source.get("تلگرام کدال۳۶۰", 0), "note": "تطبیق کلیدواژه‌ای؛ لزوماً به معنی صورت مالی کامل نیست"},
+        {"metric": "گزارش‌های کدال یکتا", "value": len(announcements), "note": "لینک‌های تکراری بین دو کانال ادغام شده‌اند؛ گزارش‌ها لزوماً از صفحه مقصد خوانده نشده‌اند"},
+        {"metric": "گزارش‌های کدال دارای منبع کدال۳۶۰", "value": records_by_source.get("تلگرام کدال۳۶۰", 0), "note": "رکوردهای یکتا که کدال۳۶۰ یکی از منابعشان است؛ این عدد با کل یکتاها جمع‌پذیر نیست"},
         {"metric": "فهرست‌های نماد کدال", "value": len(symbol_lists), "note": "این لینک‌ها فهرست گزارش نماد هستند و با اطلاعیه منفرد یکی نیستند"},
         {"metric": "آیتم‌های طرح توسعه", "value": sum(1 for row in announcements if row.get("project_keywords")), "note": "فیلتر کلیدواژه‌ای؛ تأیید انسانی لازم است"},
         {"metric": "آیتم‌های مالی/ماهانه", "value": sum(1 for row in announcements if row.get("financial_keywords") or "صورت‌های مالی" in row.get("primary_category", "") or "ماهانه" in row.get("primary_category", "")), "note": "فیلتر کلیدواژه‌ای و نه تحلیل کامل صورت مالی"},
@@ -930,7 +988,7 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pages", type=int, default=DEFAULT_TELEGRAM_PAGES,
-                        help="maximum Telegram preview pages to crawl (default: 8)")
+                        help="maximum Telegram preview pages per channel to crawl (default: 30)")
     args = parser.parse_args()
     if args.pages < 1 or args.pages > 30:
         parser.error("--pages must be between 1 and 30")
