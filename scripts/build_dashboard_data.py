@@ -18,6 +18,7 @@ DATA = ROOT / "data"
 TECH_FILE = DATA / "technical_radar.json"
 FUND_FILE = DATA / "fundamental_money_radar.json"
 CODAL_FILE = DATA / "codal_disclosures_latest.json"
+LEDGER_FILE = DATA / "codal_filing_ledger.json"
 OUTPUT_FILE = DATA / "radar_dashboard.json"
 
 
@@ -111,6 +112,85 @@ def simplify_evidence(row: dict[str, Any]) -> dict[str, Any]:
 
 
 
+def simplify_ledger_evidence(row: dict[str, Any]) -> dict[str, Any]:
+    """Expose extracted filing-summary candidates in the UI without treating them as verified accounts."""
+    metrics = row.get("financial_metrics") or {}
+    observations = metrics.get("observations") if isinstance(metrics.get("observations"), list) else []
+
+    def values_for(metric: str, limit: int = 2) -> str:
+        found = []
+        for item in observations:
+            if not isinstance(item, dict) or item.get("metric") != metric:
+                continue
+            value = item.get("value")
+            if not isinstance(value, (int, float)):
+                continue
+            unit = shorten(item.get("unit"), 40)
+            period = item.get("period_months")
+            period_text = f" · دوره {int(period)}ماهه" if isinstance(period, (int, float)) else ""
+            growth = item.get("growth_pct_candidate")
+            growth_text = f" · رشد/افت {number(growth, 2)}٪" if isinstance(growth, (int, float)) else ""
+            amount = f"{value:,.2f}" if unit == "ریال به‌ازای هر سهم" else f"{value:,.0f}"
+            context = shorten(item.get("context"), 300)
+            piece = f"{amount} {unit}{period_text}{growth_text}"
+            if context and context not in piece:
+                piece += f" — {context}"
+            if piece not in found:
+                found.append(piece)
+            if len(found) >= limit:
+                break
+        return " || ".join(found)
+
+    classification_labels = {
+        "financial_statement": "صورت مالی/حسابرسی (خلاصهٔ عمومی)",
+        "monthly_activity": "فعالیت ماهانه/تولید و فروش (خلاصهٔ عمومی)",
+        "development_project": "اطلاعیه طرح/پروژه",
+        "material_disclosure": "افشای بااهمیت",
+    }
+    kind = str(row.get("classification") or "")
+    summary_status = str(row.get("source_validation_status") or "")
+    validation = (
+        "عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند."
+    )
+    if summary_status:
+        validation = summary_status + "؛ " + validation
+    amounts = []
+    for item in observations:
+        if isinstance(item, dict) and isinstance(item.get("value"), (int, float)):
+            unit = shorten(item.get("unit"), 35)
+            raw = f"{item['value']:,.2f}" if unit == "ریال به‌ازای هر سهم" else f"{item['value']:,.0f}"
+            rendered = f"{raw} {unit}"
+            if rendered not in amounts:
+                amounts.append(rendered)
+    source_text = str(row.get("source_text") or "")
+    project_text = source_text if kind == "development_project" else ""
+    return {
+        "symbol": shorten(row.get("symbol"), 70),
+        "company": shorten(row.get("company"), 140),
+        "report_type": shorten(classification_labels.get(kind, row.get("report_type") or kind), 120),
+        "report_period": shorten(row.get("report_period"), 100),
+        "published_at": shorten(row.get("published_at"), 50),
+        "channel": shorten(row.get("source_name"), 100),
+        "sales": shorten(values_for("revenue_or_sales"), 800),
+        "profit": shorten(values_for("net_profit"), 800),
+        "eps": shorten(values_for("eps"), 600),
+        "dividend": "",
+        "growth": shorten(values_for("yoy_growth") or values_for("revenue_or_sales") or values_for("net_profit"), 800),
+        "project": shorten(project_text, 700),
+        "project_strength": "ضعیف",
+        "amounts_raw": shorten("؛ ".join(amounts), 260),
+        "validation_status": shorten(validation, 350),
+        "telegram_url": safe_link(row.get("telegram_url")),
+        "codal_url": safe_link(row.get("official_url")),
+        "source_text": shorten(source_text, 1500),
+        "record_id": shorten(row.get("record_id"), 40),
+        "detail_status": shorten(row.get("detail_status"), 60),
+        "numeric_field_count": metrics.get("numeric_field_count", 0),
+        "is_secondary_summary": True,
+    }
+
+
+RATING_WEIGHTS = {
 RATING_WEIGHTS = {
     "fundamental": 30,
     "earnings_quality": 15,
@@ -717,6 +797,7 @@ def main() -> None:
     tech = read_json(TECH_FILE)
     fund = read_json(FUND_FILE)
     codal = read_json(CODAL_FILE)
+    ledger = read_json(LEDGER_FILE) if LEDGER_FILE.is_file() else {"reports": [], "last_run": {}}
     ratio_snapshot = read_json(FUNDAI_RATIO_FILE) if FUNDAI_RATIO_FILE.is_file() else {
         "generated_at_utc": "", "downloaded_row_count": 0, "rows": [],
         "quality_notes": ["Snapshot file is missing."],
@@ -727,6 +808,13 @@ def main() -> None:
         tech_rows = tech.get("top_50_for_review", [])
     fund_rows = fund.get("stocks", [])
     evidence_rows = codal.get("channel_evidence", [])
+    ledger_rows = ledger.get("reports", []) if isinstance(ledger.get("reports"), list) else []
+    ledger_display_rows = [
+        simplify_ledger_evidence(row) for row in ledger_rows
+        if isinstance(row, dict) and row.get("classification") in {
+            "financial_statement", "monthly_activity", "development_project", "material_disclosure"
+        }
+    ]
     announcement_rows = codal.get("announcements", [])
     if not isinstance(tech_rows, list) or not tech_rows:
         raise ValueError("Technical source has no top_50_for_review candidates.")
@@ -760,6 +848,42 @@ def main() -> None:
             evidence_map.setdefault(key, []).append(item)
     for key, items in evidence_map.items():
         items.sort(key=lambda x: str(x.get("published_at") or ""), reverse=True)
+
+    # Keep the official-source/channel evidence map used by scoring separate from the
+    # secondary-text ledger. The ledger is display-only until official tables are verified.
+    display_evidence_map: dict[str, list[dict[str, Any]]] = {
+        key: [simplify_evidence(row) for row in items]
+        for key, items in evidence_map.items()
+    }
+    for item in ledger_display_rows:
+        key = norm(item.get("symbol"))
+        if key:
+            display_evidence_map.setdefault(key, []).append(item)
+    for key, items in display_evidence_map.items():
+        items.sort(key=lambda x: str(x.get("published_at") or ""), reverse=True)
+        unique_items = []
+        seen_keys = set()
+        for entry in items:
+            serial_match = re.search(r"letters?erial=([^&]+)", str(entry.get("codal_url") or ""), flags=re.I)
+            identity = norm(serial_match.group(1)) if serial_match else norm(
+                "|".join((str(entry.get("symbol") or ""), str(entry.get("report_period") or ""),
+                          str(entry.get("report_type") or ""), str(entry.get("published_at") or "")))
+            )
+            if identity and identity in seen_keys:
+                # Prefer the ledger row when it contains extracted candidate metrics.
+                existing_index = next((i for i, prior in enumerate(unique_items) if (
+                    norm(re.search(r"letters?erial=([^&]+)", str(prior.get("codal_url") or ""), flags=re.I).group(1))
+                    if re.search(r"letters?erial=([^&]+)", str(prior.get("codal_url") or ""), flags=re.I)
+                    else norm("|".join((str(prior.get("symbol") or ""), str(prior.get("report_period") or ""),
+                                        str(prior.get("report_type") or ""), str(prior.get("published_at") or ""))))
+                ) == identity), None)
+                if existing_index is not None and entry.get("is_secondary_summary") and entry.get("numeric_field_count", 0):
+                    unique_items[existing_index] = entry
+                continue
+            if identity:
+                seen_keys.add(identity)
+            unique_items.append(entry)
+        display_evidence_map[key] = unique_items
 
     candidates = []
     for item in ranked:
@@ -851,10 +975,11 @@ def main() -> None:
                 for x in (fundamental.get("important_disclosures") or [])[:4]
                 if isinstance(x, dict)
             ],
-            "channel_evidence": [
-                simplify_evidence(x)
-                for x in evidence_map.get(key, [])[:4]
-            ],
+            "channel_evidence": display_evidence_map.get(key, [])[:6],
+            "codal_filing_ledger_reports": [
+                entry for entry in display_evidence_map.get(key, [])
+                if entry.get("is_secondary_summary")
+            ][:6],
         }
         base["data_quality"] = {
             "technical_available": technical_score is not None,
@@ -903,6 +1028,14 @@ def main() -> None:
     project_candidates.sort(key=lambda x: str(x.get("published_at") or ""), reverse=True)
 
     source_warnings = []
+    ledger_summary = ledger.get("last_run", {}) if isinstance(ledger.get("last_run"), dict) else {}
+    if not ledger_rows:
+        source_warnings.append("دفتر پایدار گزارش‌های کدال هنوز خالی است؛ پردازش انتشار گزارش‌های تازه باید بررسی شود.")
+    elif not ledger_summary.get("official_statement_tables_verified", False):
+        source_warnings.append(
+            f"دفتر کدال {len(ledger_rows)} گزارش/اطلاعیهٔ یکتا نگه می‌دارد؛ "
+            "اعداد قابل استخراج فعلاً از خلاصهٔ عمومی‌اند و تا تطبیق با جدول رسمی، امتیاز بنیادی/کیفیت سود را تغییر نمی‌دهند."
+        )
     ratio_snapshot_generated = str(ratio_snapshot.get("generated_at_utc") or "")
     ratio_snapshot_age_hours = None
     if ratio_snapshot_generated:
@@ -984,6 +1117,13 @@ def main() -> None:
             "channel_evidence_rows": len(evidence_rows),
             "project_evidence_rows": len(project_candidates),
             "statement_reports_detailed": counts.get("statement_reports_detailed", 0),
+            "codal_ledger_records": len(ledger_rows),
+            "codal_ledger_records_seen_this_run": ledger_summary.get("records_seen_in_snapshot", 0),
+            "codal_ledger_new_records": ledger_summary.get("new_records_count", 0),
+            "codal_ledger_new_financial_statements": ledger_summary.get("new_financial_statement_records_count", 0),
+            "codal_ledger_new_monthly_activity": ledger_summary.get("new_monthly_activity_records_count", 0),
+            "codal_ledger_statement_numeric_summaries": ledger_summary.get("financial_statement_records_with_numeric_summary", 0),
+            "codal_ledger_monthly_numeric_summaries": ledger_summary.get("monthly_activity_records_with_numeric_summary", 0),
         },
         "sources": {
             "technical": {
@@ -1014,8 +1154,13 @@ def main() -> None:
             "codal_channels": {
                 "generated_at_utc": latest_codal,
                 "label": "بورس‌تریدر و کدال۳۶۰",
-                "status": "خلاصهٔ متنی",
-                "note": str(codal.get("quality_note") or ""),
+                "status": "دفتر گزارش‌ها و خلاصهٔ متنی؛ جدول رسمی هنوز اعتبارسنجی نشده",
+                "note": (
+                    str(codal.get("quality_note") or "") + " "
+                    + f"دفتر پایدار: {len(ledger_rows)} رکورد؛ "
+                    + f"تازه در آخرین اجرا: {ledger_summary.get('new_records_count', 0)}؛ "
+                    + "مبالغ استخراج‌شده از خلاصه‌ها تا تطبیق با پیوست رسمی در امتیاز بنیادی استفاده نمی‌شوند."
+                ),
             },
         },
         "warnings": source_warnings,
@@ -1029,17 +1174,23 @@ def main() -> None:
             "earnings_quality": "فقط از اقلام عددی خوانده‌شده از صورت مالی ساختاریافته محاسبه می‌شود؛ کلیدواژه‌های کانال در امتیاز کیفیت سود وارد نمی‌شوند.",
             "money_flow": "فقط وقتی در امتیاز تلفیقی وارد می‌شود که نماد سهام عادی، تاریخچه حداقل ۲۰۰ جلسه، پرچم پوشش سالانه، تاریخ آخرین داده و امتیاز معتبر داشته باشد.",
             "channel_evidence": "خلاصه‌های متنی تلگرام، شواهد خام هستند و جایگزین تطبیق با صورت مالی/اطلاعیهٔ رسمی نیستند.",
+            "codal_filing_ledger": "اطلاعیه‌های تکراری با شناسه/پیوند کدال حذف تکرار و در دفتر پایدار نگهداری می‌شوند. ارقام استخراج‌شده از خلاصهٔ ثانویه برای نمایش و پیگیری‌اند و تا تأیید پیوست رسمی وارد امتیاز بنیادی/کیفیت سود نمی‌شوند.",
         },
         "candidates": candidates[:10],
         "all_candidate_count": len(candidates),
         "recent_evidence": [
-            simplify_evidence(x)
-            for x in sorted(
-                [x for x in evidence_rows if isinstance(x, dict)],
+            item for item in sorted(
+                [
+                    *ledger_display_rows,
+                    *[
+                        simplify_evidence(x) for x in evidence_rows
+                        if isinstance(x, dict)
+                    ],
+                ],
                 key=lambda x: str(x.get("published_at") or ""),
                 reverse=True,
-            )[:80]
-        ],
+            )
+        ][:100],
         "recent_projects": project_candidates[:30],
     }
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
