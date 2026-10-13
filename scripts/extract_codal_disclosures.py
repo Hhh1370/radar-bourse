@@ -776,8 +776,8 @@ def build_workbook(payload: dict):
     for post in payload["telegram_posts"]:
         body = post.get("text", "")
         project_terms = find_terms(body, PROJECT_KEYWORDS)
-        codal_count = sum(1 for link in post.get("links", []) if is_codal_reference(urllib.parse.urljoin(post.get("source_page", TELEGRAM_BASE), link.get("url", ""))))
-        attachment_count = sum(1 for link in post.get("links", []) if is_attachment_candidate(urllib.parse.urljoin(post.get("source_page", TELEGRAM_BASE), link.get("url", ""))))
+        codal_count = sum(1 for link in post.get("links", []) if is_codal_reference(urllib.parse.urljoin(post.get("source_page", "https://t.me/s/codalboursetrader"), link.get("url", ""))))
+        attachment_count = sum(1 for link in post.get("links", []) if is_attachment_candidate(urllib.parse.urljoin(post.get("source_page", "https://t.me/s/codalboursetrader"), link.get("url", ""))))
         post_rows.append({
             "source_name": post.get("source_name", ""),
             "channel": post.get("channel", ""),
