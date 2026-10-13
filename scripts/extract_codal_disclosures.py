@@ -363,6 +363,75 @@ def find_terms(text: str, terms: tuple[str, ...]) -> list[str]:
     return found
 
 
+def assess_project_evidence(text: str) -> tuple[str, str]:
+    """Separate concrete development evidence from broad keyword-only mentions."""
+    n = normalize(text)
+
+    # Operational licenses, brand permissions, and exploitation rights are material
+    # disclosures, but alone do not prove that a new capex/development project exists.
+    license_terms = (
+        "اجازه بهره برداری از برند",
+        "اجازه بهره برداری",
+        "حق انحصاری بهره برداری",
+        "واگذاری حق انحصاری بهره برداری",
+    )
+    has_license_only = any(normalize(term) in n for term in license_terms)
+    has_strong_status = any(normalize(term) in n for term in (
+        "آخرین وضعیت طرح", "طرح های توسعه", "طرحهای توسعه", "طرح توسعه",
+        "پیشرفت فیزیکی", "پیشرفت پروژه", "مخارج انجام شده تاکنون",
+        "مخارج انجام شده", "مخارج انجام‌شده", "مخارج طرح",
+        "تکمیل طرح", "گزارش توجیهی طرح", "ظرفیت اسمی",
+    ))
+    if has_strong_status:
+        return "وضعیت، پیشرفت یا مخارج طرح", "قوی"
+
+    commissioning_terms = (
+        "بهره برداری از طرح ها و پروژه های جدید",
+        "بهره برداری از طرح", "بهره برداری از پروژه",
+        "تولید آزمایشی", "راه اندازی خط تولید",
+        "راه اندازی کارخانه", "راه اندازی پروژه",
+        "افزایش ظرفیت تولید", "توسعه خطوط تولید",
+    )
+    if any(normalize(term) in n for term in commissioning_terms):
+        return "راه‌اندازی یا بهره‌برداری طرح/پروژه", "قوی"
+
+    if has_license_only:
+        return "مجوز یا حق بهره‌برداری؛ شاهد مستقیم توسعه نیست", "ضعیف"
+
+    has_capital_event = any(normalize(term) in n for term in (
+        "افزایش سرمایه", "پیشنهاد هیئت مدیره به مجمع",
+    ))
+    has_capex_context = any(normalize(term) in n for term in (
+        "طرح های توسعه", "طرح توسعه", "پروژه", "مخارج سرمایه ای",
+        "مخارج سرمایه‌ای", "سرمایه گذاری انجام شده", "سرمایه گذاری در طرح",
+        "تامین مالی پروژه", "تأمین مالی پروژه",
+    ))
+    if has_capital_event and has_capex_context:
+        return "تأمین مالی طرح/پروژه یا مخارج سرمایه‌ای", "متوسط"
+
+    transaction_terms = (
+        "واگذاری پروژه", "فروش پروژه", "انتخاب شریک سرمایه گذار پروژه",
+        "انتخاب شریک سرمایه‌گذار پروژه", "مناقصه پروژه", "عدم نتیجه برگزاری مناقصه",
+        "مشارکت در پروژه", "انعقاد قرارداد پروژه",
+    )
+    if any(normalize(term) in n for term in transaction_terms):
+        return "واگذاری، مشارکت یا ریسک اجرای پروژه", "متوسط"
+
+    if any(normalize(term) in n for term in (
+        "طرح توسعه خطوط", "شفاف سازی درخصوص طرح توسعه",
+        "طرح احداث", "عملیات اجرایی طرح", "پیشرفت طرح",
+    )):
+        return "اقدام توسعه‌ای مشخص؛ نیازمند بررسی متن", "قوی"
+
+    if "پروژه" in n or "طرح توسعه" in n or "طرح احداث" in n:
+        return "ذکر پروژه/طرح بدون جزئیات کافی در خلاصه", "متوسط"
+
+    if any(normalize(term) in n for term in ("راه اندازی", "بهره برداری")):
+        return "اشاره عمومی یا فرعی به راه‌اندازی/بهره‌برداری", "ضعیف"
+
+    return "تطبیق کلیدواژه‌ای مبهم", "ضعیف"
+
+
 def classify_text(text: str, link: str = "") -> str:
     if is_report_list(link):
         return "فهرست گزارش‌های نماد"
@@ -370,7 +439,7 @@ def classify_text(text: str, link: str = "") -> str:
         return "صورت‌های مالی/حسابرسی"
     if find_terms(text, MONTHLY_KEYWORDS):
         return "گزارش فعالیت ماهانه/تولید و فروش"
-    if find_terms(text, PROJECT_KEYWORDS):
+    if find_terms(text, PROJECT_KEYWORDS) and assess_project_evidence(text)[1] != "ضعیف":
         return "طرح توسعه/پروژه"
     if find_terms(text, CAPITAL_KEYWORDS):
         return "افزایش سرمایه"
@@ -426,6 +495,8 @@ def make_record(url: str, link_title: str, context: str, source: str,
         "date": clean_text(post_date) or raw_dates(text),
         "primary_category": classify_text(text, url),
         "project_keywords": "؛ ".join(project_terms),
+        "project_evidence_class": assess_project_evidence(text)[0],
+        "project_evidence_strength": assess_project_evidence(text)[1],
         "financial_keywords": "؛ ".join(financial_terms),
         "raw_amount_mentions": raw_amount_mentions(text),
         "source_context": clean_text(context)[:1800],
@@ -478,6 +549,7 @@ def merge_records(records: list[dict]) -> list[dict]:
         evidence = clean_text(" ".join((row.get("link_title", ""), row.get("source_context", ""))))
         row["primary_category"] = classify_text(evidence, row.get("url", ""))
         row["project_keywords"] = "؛ ".join(find_terms(evidence, PROJECT_KEYWORDS))
+        row["project_evidence_class"], row["project_evidence_strength"] = assess_project_evidence(evidence)
         row["financial_keywords"] = "؛ ".join(find_terms(evidence, FINANCIAL_KEYWORDS + MONTHLY_KEYWORDS))
         row["raw_amount_mentions"] = raw_amount_mentions(evidence)
         if not row.get("symbol"):
@@ -771,17 +843,21 @@ def build_workbook(payload: dict):
 
     core_headers = [
         "نوع پیوند", "عنوان لینک", "نماد استخراج‌شده", "تاریخ انتشار/متن",
-        "دسته‌بندی اولیه", "کلیدواژه‌های طرح توسعه", "کلیدواژه‌های مالی/ماهانه",
-        "ارقام و واحدهای خام", "متن زمینه", "لینک اطلاعیه", "منبع استخراج", "صفحه/پست منبع",
+        "دسته‌بندی اولیه", "کلیدواژه‌های طرح توسعه", "نوع شواهد پروژه", "قدرت شواهد",
+        "کلیدواژه‌های مالی/ماهانه", "ارقام و واحدهای خام", "متن زمینه",
+        "لینک اطلاعیه", "منبع استخراج", "صفحه/پست منبع",
     ]
     core_keys = [
         "link_type", "link_title", "symbol", "date", "primary_category",
-        "project_keywords", "financial_keywords", "raw_amount_mentions",
-        "source_context", "url", "source", "source_page",
+        "project_keywords", "project_evidence_class", "project_evidence_strength",
+        "financial_keywords", "raw_amount_mentions", "source_context", "url", "source", "source_page",
     ]
     announcements = payload["announcements"]
     write_sheet(wb, "اطلاعیه‌ها", core_headers, announcements, core_keys)
-    projects = [row for row in announcements if row.get("project_keywords")]
+    projects = [
+        row for row in announcements
+        if row.get("project_keywords") and row.get("project_evidence_strength") in {"قوی", "متوسط"}
+    ]
     write_sheet(wb, "طرح‌های توسعه", core_headers, projects, core_keys)
     finances = [row for row in announcements if row.get("financial_keywords") or "صورت‌های مالی" in row.get("primary_category", "") or "ماهانه" in row.get("primary_category", "")]
     write_sheet(wb, "صورت‌های مالی", core_headers, finances, core_keys)
@@ -964,7 +1040,10 @@ def run(args):
         {"metric": "گزارش‌های کدال یکتا", "value": len(announcements), "note": "لینک‌های تکراری بین دو کانال ادغام شده‌اند؛ گزارش‌ها لزوماً از صفحه مقصد خوانده نشده‌اند"},
         {"metric": "گزارش‌های کدال دارای منبع کدال۳۶۰", "value": records_by_source.get("تلگرام کدال۳۶۰", 0), "note": "رکوردهای یکتا که کدال۳۶۰ یکی از منابعشان است؛ این عدد با کل یکتاها جمع‌پذیر نیست"},
         {"metric": "فهرست‌های نماد کدال", "value": len(symbol_lists), "note": "این لینک‌ها فهرست گزارش نماد هستند و با اطلاعیه منفرد یکی نیستند"},
-        {"metric": "آیتم‌های طرح توسعه", "value": sum(1 for row in announcements if row.get("project_keywords")), "note": "فیلتر کلیدواژه‌ای؛ تأیید انسانی لازم است"},
+        {"metric": "همهٔ رکوردهای دارای کلیدواژهٔ پروژه", "value": sum(1 for row in announcements if row.get("project_keywords")), "note": "شامل موارد مبهم/مجوز بهره‌برداری؛ برابر با تعداد پروژه‌های قطعی نیست"},
+        {"metric": "نامزدهای پروژه با شواهد متوسط/قوی", "value": sum(1 for row in announcements if row.get("project_keywords") and row.get("project_evidence_strength") in {"قوی", "متوسط"}), "note": "جدول «طرح‌های توسعه» همین موارد را نشان می‌دهد؛ بررسی متن اطلاعیه همچنان لازم است"},
+        {"metric": "نامزدهای پروژه با شواهد قوی", "value": sum(1 for row in announcements if row.get("project_keywords") and row.get("project_evidence_strength") == "قوی"), "note": "وجود شاخص پیشرفت/مخارج/بهره‌برداری طرح در متن"},
+        {"metric": "موارد پروژه با شاهد ضعیف/مبهم", "value": sum(1 for row in announcements if row.get("project_keywords") and row.get("project_evidence_strength") == "ضعیف"), "note": "از شیت «طرح‌های توسعه» حذف شده‌اند، اما در شیت «اطلاعیه‌ها» باقی می‌مانند"},
         {"metric": "آیتم‌های مالی/ماهانه", "value": sum(1 for row in announcements if row.get("financial_keywords") or "صورت‌های مالی" in row.get("primary_category", "") or "ماهانه" in row.get("primary_category", "")), "note": "فیلتر کلیدواژه‌ای و نه تحلیل کامل صورت مالی"},
         {"metric": "پیوست‌های آزمایش‌شده", "value": len([a for a in attachment_results if a.get("http_status") != "SKIPPED"]), "note": f"حداکثر {MAX_ATTACHMENT_TESTS} پیوست در هر اجرا"},
         {"metric": "فایل‌های XLSX خوانده‌شده", "value": sum(1 for row in attachment_results if row.get("is_xlsx") == "بله"), "note": "محتوای خام در شیت «داده‌های پیوست» است"},
