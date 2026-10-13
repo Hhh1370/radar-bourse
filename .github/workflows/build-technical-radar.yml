@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - "scripts/build_technical_radar.py"
+      - "scripts/build_dashboard_data.py"
+      - "tests/**"
       - ".github/workflows/build-technical-radar.yml"
 
 permissions:
@@ -29,8 +31,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Validate Python syntax
-        run: python -m py_compile scripts/build_technical_radar.py
+      - name: Validate Python syntax and regression tests
+        run: |
+          python -m py_compile scripts/build_technical_radar.py scripts/build_dashboard_data.py tests/test_technical_targets.py
+          python -m unittest discover -s tests -v
 
       - name: Build technical radar
         run: python -u scripts/build_technical_radar.py
@@ -71,16 +75,73 @@ jobs:
               print(f"{row['symbol']}\trank={row['technical_rank_score']}\tbase={row['risk_adjusted_score']}\trelative={row['relative_momentum_score']}")
           PY
 
+
+      - name: Rebuild dashboard from freshly generated technical radar
+        run: python -u scripts/build_dashboard_data.py
+
+      - name: Verify target contract and regenerated dashboard
+        run: |
+          python - <<'PY'
+          import json
+          import math
+          from pathlib import Path
+
+          technical = json.loads(Path("data/technical_radar.json").read_text(encoding="utf-8"))
+          dashboard = json.loads(Path("data/radar_dashboard.json").read_text(encoding="utf-8"))
+          rows = technical.get("all_eligible_ranked", [])
+          target_statuses = {"available": 0, "unavailable": 0}
+          for row in rows:
+              target = row.get("technical_targets")
+              assert isinstance(target, dict), f"Missing target object for {row.get('symbol')}"
+              assert target.get("status") in target_statuses, f"Invalid target status for {row.get('symbol')}"
+              target_statuses[target["status"]] += 1
+              if target["status"] != "available":
+                  assert target.get("buy") is None and target.get("sell") is None, "Unavailable data must not expose scenarios"
+                  continue
+              close = target.get("current_price")
+              atr = target.get("atr14")
+              assert isinstance(close, (int, float)) and close > 0, "Invalid target reference price"
+              assert isinstance(atr, (int, float)) and math.isfinite(atr) and atr > 0, "Invalid ATR"
+              for direction in ("buy", "sell"):
+                  setup = target.get(direction)
+                  if setup is None:
+                      continue
+                  entry, stop, tp1 = setup.get("entry_reference"), setup.get("stop_loss"), setup.get("target_1")
+                  assert all(isinstance(v, (int, float)) and math.isfinite(v) for v in (entry, stop, tp1)), f"Invalid {direction} geometry for {row.get('symbol')}"
+                  assert abs(entry - close) < 0.0001, "Entry reference must equal daily close"
+                  assert setup.get("risk_reward_tp1", 0) >= 1.3, "Scenario below minimum reward/risk"
+                  if direction == "buy":
+                      assert stop < entry < tp1, f"Bad buy geometry for {row.get('symbol')}"
+                  else:
+                      assert tp1 < entry < stop, f"Bad sell geometry for {row.get('symbol')}"
+                  tp2 = setup.get("target_2")
+                  if tp2 is not None:
+                      assert tp2 > tp1 if direction == "buy" else tp2 < tp1, "Target 2 must extend beyond target 1"
+
+          assert dashboard.get("schema_version") == 1
+          visible = dashboard.get("candidates", [])
+          assert len(visible) == 10, f"Expected 10 visible candidates, got {len(visible)}"
+          assert sum(x.get("bucket") == "main" for x in visible) == 5
+          assert sum(x.get("bucket") == "watch" for x in visible) == 5
+          assert all(isinstance(x.get("technical_targets"), dict) for x in visible)
+          assert dashboard.get("generated_at_utc"), "Dashboard generation time missing"
+          if dashboard.get("summary", {}).get("fundamental_statement_scored_count", 0) == 0:
+              assert dashboard.get("summary", {}).get("final_credit_grade_count", 0) == 0, "Final rating gate failed"
+          print(f"TECHNICAL_TARGETS_VALID: {len(rows)} rows; available={target_statuses['available']}; unavailable={target_statuses['unavailable']}")
+          print(f"DASHBOARD_REFRESHED: {len(visible)} visible cards; generated_at={dashboard['generated_at_utc']}")
+          print(f"FINAL_CREDIT_GRADES: {dashboard['summary'].get('final_credit_grade_count', 0)}")
+          PY
+
       - name: Commit technical results
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/technical_radar.json
+          git add data/technical_radar.json data/radar_dashboard.json
           if git diff --cached --quiet; then
             echo "No technical radar changes."
           else
-            git commit -m "Build weekly and monthly technical radar"
+            git commit -m "Rebuild technical and dashboard radar data"
             git push
           fi
