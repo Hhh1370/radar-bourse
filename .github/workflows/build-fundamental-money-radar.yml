@@ -2,9 +2,9 @@ name: Build Fundamental and Money Flow Radar
 
 on:
   workflow_dispatch:
-  # Iran market days: Saturday through Wednesday, after the market close.
+  # Full-market scan weekly to avoid exhausting third-party API quotas.
   schedule:
-    - cron: "30 9 * * 0-3,6"
+    - cron: "30 9 * * 6"
 
 permissions:
   contents: write
@@ -27,8 +27,18 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Build fundamental, development-project and money-flow radar (bounded requests)
-        run: python -m py_compile scripts/build_fundamental_money_radar.py && python scripts/build_fundamental_money_radar.py
+      - name: Validate Python syntax
+        run: python -m py_compile scripts/build_fundamental_money_radar.py
+
+      - name: Preflight BrsApi endpoints before full scan
+        env:
+          BRS_API_KEY: ${{ secrets.BRS_API_KEY }}
+        run: python scripts/build_fundamental_money_radar.py --probe
+
+      - name: Build fundamental, development-project and money-flow radar
+        env:
+          BRS_API_KEY: ${{ secrets.BRS_API_KEY }}
+        run: python scripts/build_fundamental_money_radar.py
 
       - name: Commit results
         shell: bash
