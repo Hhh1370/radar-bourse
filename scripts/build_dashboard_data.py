@@ -454,8 +454,9 @@ def main() -> None:
         technical_score = number(item.get("technical_score"), 1)
         adjusted_score = number(item.get("risk_adjusted_score"), 1)
         symbol_evidence = evidence_map.get(key, [])
-        project_assessment = score_project_evidence(fundamental, symbol_evidence)
-        rating = credit_assessment(item, fundamental, symbol_evidence, project_assessment)
+        simplified_symbol_evidence = [simplify_evidence(row) for row in symbol_evidence]
+        project_assessment = score_project_evidence(fundamental, simplified_symbol_evidence)
+        rating = credit_assessment(item, fundamental, simplified_symbol_evidence, project_assessment)
         base = {
             "rank": None,
             "bucket": "watch",
