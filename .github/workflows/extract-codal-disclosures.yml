@@ -6,7 +6,7 @@ on:
       pages:
         description: "Maximum Telegram archive pages to inspect (1-30)"
         required: true
-        default: "8"
+        default: "30"
   push:
     branches: [main]
     paths:
@@ -44,7 +44,7 @@ jobs:
           PYTHONUNBUFFERED: "1"
         run: |
           set -euo pipefail
-          PAGES="${{ inputs.pages || '8' }}"
+          PAGES="${{ inputs.pages || '30' }}"
           python scripts/extract_codal_disclosures.py --pages "$PAGES"
 
       - name: Commit extracted JSON and Excel to repository
@@ -61,6 +61,8 @@ jobs:
             echo "Output files match the existing committed version."
           else
             git commit -m "Update Codal disclosure Excel report"
+            # Another workflow may have advanced main after this job checked out.
+            git pull --rebase origin main
             git push
           fi
 
