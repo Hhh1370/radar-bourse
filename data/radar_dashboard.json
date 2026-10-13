@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-13T15:28:01+00:00",
+  "generated_at_utc": "2026-10-13T15:29:52+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -16,7 +16,7 @@
     "fundamental_scored_count": 0,
     "final_credit_grade_count": 0,
     "high_confidence_count": 0,
-    "money_flow_12m_scored_count": 9,
+    "money_flow_12m_scored_count": 8,
     "codal_disclosure_links": 870,
     "channel_evidence_rows": 158,
     "project_evidence_rows": 5,
@@ -43,10 +43,12 @@
     }
   },
   "warnings": [
-    "امتیاز بنیادی استانداردشده برای هیچ نمادی ساخته نشده است؛ دادهٔ ناقص به معنی بنیادی خنثی نیست."
+    "امتیاز بنیادی استانداردشده برای هیچ نمادی ساخته نشده است؛ دادهٔ ناقص به معنی بنیادی خنثی نیست.",
+    "پوشش معتبر پول حقیقی فقط برای 8 نماد از 697 نامزد تکنیکال موجود است؛ برای رتبهٔ نهایی کافی نیست.",
+    "هنوز امتیاز کمیِ طرح توسعه با هزینه، زمان بهره‌برداری و شواهد گزارش‌سطحیِ اعتبارسنجی‌شده وجود ندارد؛ بنابراین رتبهٔ نهایی صادر نمی‌شود."
   ],
   "methodology": {
-    "main_and_watch": "۵ ردیف اول و ۵ ردیف بعدیِ خروجی تکنیکال فعلی؛ این تقسیم‌بندی، انتخاب نهایی بنیادی نیست.",
+    "main_and_watch": "نامزدها از کل جهان واجدشرایط تکنیکال رتبه‌بندی می‌شوند؛ ۵ مورد اول و ۵ مورد بعدی بر اساس امتیاز موقتِ اجزای معتبر موجود انتخاب می‌شوند، نه رتبهٔ نهایی بنیادی.",
     "technical_score": "امتیاز تکنیکال و جریمهٔ گرمای روند از فایل رادار تکنیکال خوانده می‌شود. امتیاز نسبی برای شکستن تساوی استفاده می‌شود و هنوز بک‌تست نشده است.",
     "credit_model": "وزن‌های امتیاز تلفیقی: بنیادی ۳۰٪، کیفیت سود ۱۵٪، تکنیکال ۲۵٪، پول حقیقی ۲۰٪ و طرح توسعه ۱۰٪. فقط اجزای عددی معتبر در امتیاز موقت وارد می‌شوند؛ وزن پوشش موجود جداگانه اعلام می‌شود.",
     "final_rating_gate": "رتبهٔ نهایی فقط در صورت موجود بودن امتیاز بنیادی، کیفیت سود ساختاریافته، تکنیکال، پول حقیقی ۱۲ماهه و امتیاز کمی اعتبارسنجی‌شده طرح‌ها و اطمینان پوشش حداقل ۷۵ صادر می‌شود. در غیر این صورت رتبه معلق می‌ماند.",
@@ -106,6 +108,13 @@
           "technical": 25,
           "money_flow": 20,
           "projects": 10
+        },
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
         },
         "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
         "earnings_quality_evidence": [],
@@ -204,6 +213,13 @@
           "technical": 25,
           "money_flow": 20,
           "projects": 10
+        },
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
         },
         "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
         "earnings_quality_evidence": [],
@@ -304,6 +320,13 @@
           "money_flow": 20,
           "projects": 10
         },
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
         "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
         "earnings_quality_evidence": [],
         "earnings_quality_fields_observed": 0,
@@ -402,6 +425,13 @@
           "money_flow": 20,
           "projects": 10
         },
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
         "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
         "earnings_quality_evidence": [],
         "earnings_quality_fields_observed": 0,
@@ -499,6 +529,13 @@
           "technical": 25,
           "money_flow": 20,
           "projects": 10
+        },
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
         },
         "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
         "earnings_quality_evidence": [],
@@ -599,6 +636,13 @@
           "money_flow": 20,
           "projects": 10
         },
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
         "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
         "earnings_quality_evidence": [],
         "earnings_quality_fields_observed": 0,
@@ -696,6 +740,13 @@
           "technical": 25,
           "money_flow": 20,
           "projects": 10
+        },
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
         },
         "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
         "earnings_quality_evidence": [],
@@ -836,6 +887,13 @@
           "money_flow": 20,
           "projects": 10
         },
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
         "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
         "earnings_quality_evidence": [],
         "earnings_quality_fields_observed": 0,
@@ -935,6 +993,13 @@
           "money_flow": 20,
           "projects": 10
         },
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
         "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
         "earnings_quality_evidence": [],
         "earnings_quality_fields_observed": 0,
@@ -1033,6 +1098,13 @@
           "technical": 25,
           "money_flow": 20,
           "projects": 10
+        },
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
         },
         "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
         "earnings_quality_evidence": [],
