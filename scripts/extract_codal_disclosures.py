@@ -12,7 +12,9 @@ import html
 import io
 import json
 import re
+import subprocess
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.parse
@@ -242,6 +244,9 @@ class TelegramParser(HTMLParser):
 class PageAnchorParser(HTMLParser):
     """Collect links and their nearest table/list/article context from HTML."""
 
+    VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+                 "link", "meta", "param", "source", "track", "wbr"}
+
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.stack = []
@@ -249,6 +254,8 @@ class PageAnchorParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag.lower() in self.VOID_TAGS:
+            return
         self.stack.append({"tag": tag.lower(), "attrs": attrs, "parts": []})
 
     def handle_startendtag(self, tag, attrs):
@@ -288,6 +295,21 @@ class PageAnchorParser(HTMLParser):
                 "context": context[:1800],
             })
         del self.stack[idx:]
+
+
+def filter_navigation_context(context: str, link_title: str = "") -> str:
+    """Avoid assigning sidebar/navigation keywords to the linked disclosure."""
+    text = clean_text(context)
+    nav_phrases = (
+        "سابقه معاملات", "ریز معاملات امروز", "سهامداران عمده",
+        "افزایش سرمایه", "تعدیل قیمت", "تابلو عرضه و تقاضا",
+        "اندیکاتورها", "در TSETMC", "در کدال", "رتبه بندی بنیادی",
+    )
+    normalized = normalize(text)
+    nav_hits = sum(1 for phrase in nav_phrases if normalize(phrase) in normalized)
+    if nav_hits >= 3:
+        return clean_text(link_title)
+    return text or clean_text(link_title)
 
 
 def extract_symbol(url: str, text: str) -> str:
@@ -408,7 +430,14 @@ def merge_records(records: list[dict]) -> list[dict]:
             existing["sources"].append(row["source"])
         if row["source_page"] and row["source_page"] not in existing["source_pages"]:
             existing["source_pages"].append(row["source_page"])
-        if len(row.get("source_context", "")) > len(existing.get("source_context", "")):
+        # A Telegram post normally contains the actual disclosure description;
+        # do not let a larger navigation/sidebar fragment from a secondary page
+        # replace a shorter, relevant post context.
+        existing_has_telegram = "تلگرام بورس‌تریدر" in existing["sources"]
+        row_is_telegram = row["source"] == "تلگرام بورس‌تریدر"
+        if row_is_telegram and not existing_has_telegram:
+            existing["source_context"] = row["source_context"]
+        elif row_is_telegram == existing_has_telegram and len(row.get("source_context", "")) > len(existing.get("source_context", "")):
             existing["source_context"] = row["source_context"]
         if not existing.get("link_title") and row.get("link_title"):
             existing["link_title"] = row["link_title"]
@@ -425,6 +454,14 @@ def merge_records(records: list[dict]) -> list[dict]:
     for row in merged.values():
         row["source"] = "؛ ".join(row.pop("sources", []))
         row["source_page"] = "؛ ".join(row.pop("source_pages", []))
+        # Recompute text-derived fields from the preferred, de-duplicated context.
+        evidence = clean_text(" ".join((row.get("link_title", ""), row.get("source_context", ""))))
+        row["primary_category"] = classify_text(evidence, row.get("url", ""))
+        row["project_keywords"] = "؛ ".join(find_terms(evidence, PROJECT_KEYWORDS))
+        row["financial_keywords"] = "؛ ".join(find_terms(evidence, FINANCIAL_KEYWORDS + MONTHLY_KEYWORDS))
+        row["raw_amount_mentions"] = raw_amount_mentions(evidence)
+        if not row.get("symbol"):
+            row["symbol"] = extract_symbol(row.get("url", ""), evidence)
     return sorted(merged.values(), key=lambda item: (item.get("date", ""), item.get("symbol", ""), item.get("url", "")), reverse=True)
 
 
@@ -485,6 +522,63 @@ def fetch_telegram_pages(page_limit: int, source_status: list[dict]) -> list[dic
     return list(posts_by_id.values())
 
 
+def request_attachment_with_curl(url: str) -> dict:
+    """Download a bounded Codal attachment with curl, which may handle this host better than urllib."""
+    with tempfile.NamedTemporaryFile(prefix="codal-xlsx-", suffix=".bin") as target:
+        command = [
+            "curl", "--location", "--http1.1",
+            "--connect-timeout", "7", "--max-time", str(ATTACHMENT_TIMEOUT),
+            "--max-filesize", str(MAX_ATTACHMENT_BYTES), "--retry", "0",
+            "--user-agent", USER_AGENT, "--header", "Accept: */*",
+            "--silent", "--show-error", "--output", target.name,
+            "--write-out", "%{http_code}\\t%{content_type}\\t%{url_effective}", url,
+        ]
+        try:
+            proc = subprocess.run(
+                command, capture_output=True, text=True,
+                timeout=ATTACHMENT_TIMEOUT + 3, check=False,
+            )
+            stdout = (proc.stdout or "").strip()
+            fields = stdout.split("\\t", 2)
+            status = fields[0] if fields and fields[0] else "ERROR"
+            try:
+                status = int(status)
+            except (TypeError, ValueError):
+                pass
+            content_type = fields[1] if len(fields) > 1 else ""
+            effective_url = fields[2] if len(fields) > 2 else url
+            target.flush()
+            actual_size = Path(target.name).stat().st_size
+            too_large = actual_size > MAX_ATTACHMENT_BYTES or proc.returncode == 63
+            with open(target.name, "rb") as body_file:
+                body = body_file.read(MAX_ATTACHMENT_BYTES + 1)
+            err = clean_text(proc.stderr or "")
+            if proc.returncode != 0 and not err:
+                err = f"curl exited with code {proc.returncode}"
+            if too_large:
+                err = f"Attachment exceeded the {MAX_ATTACHMENT_BYTES}-byte safety limit."
+            return {
+                "url": effective_url or url,
+                "http_status": status,
+                "content_type": content_type,
+                "body": body,
+                "body_bytes": len(body),
+                "too_large": too_large,
+                "error": err[:300],
+            }
+        except subprocess.TimeoutExpired:
+            target.flush()
+            actual_size = Path(target.name).stat().st_size
+            with open(target.name, "rb") as body_file:
+                body = body_file.read(MAX_ATTACHMENT_BYTES + 1)
+            return {
+                "url": url, "http_status": "ERROR", "content_type": "",
+                "body": body, "body_bytes": len(body),
+                "too_large": actual_size > MAX_ATTACHMENT_BYTES,
+                "error": f"curl timed out after {ATTACHMENT_TIMEOUT} seconds",
+            }
+
+
 def download_xlsx_attachments(candidates: list[dict], source_status: list[dict]):
     attachment_results = []
     extracted_rows = []
@@ -496,7 +590,7 @@ def download_xlsx_attachments(candidates: list[dict], source_status: list[dict])
     selected = list(unique.items())[:MAX_ATTACHMENT_TESTS]
 
     for url, candidate in selected:
-        result = request_url(url, timeout=ATTACHMENT_TIMEOUT, max_bytes=MAX_ATTACHMENT_BYTES)
+        result = request_attachment_with_curl(url)
         body = result["body"]
         is_zip = bool(body) and zipfile.is_zipfile(io.BytesIO(body))
         is_xlsx = False
@@ -715,8 +809,9 @@ def run(args):
         url = urllib.parse.urljoin(BOURSE_URL, link["url"])
         if is_codal_reference(url):
             bourse_codal_count += 1
-            context = link.get("context") or link.get("title") or ""
-            row = make_record(url, link.get("title", ""), context, "بورس‌تریدر", BOURSE_URL)
+            title = link.get("title", "")
+            context = filter_navigation_context(link.get("context") or "", title)
+            row = make_record(url, title, context, "بورس‌تریدر", BOURSE_URL)
             if is_report_list(url):
                 symbol_lists.append({
                     "symbol": row["symbol"], "link_title": row["link_title"],
