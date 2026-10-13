@@ -16,7 +16,7 @@ concurrency:
 jobs:
   build-fundamental-money-radar:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 60
 
     steps:
       - name: Checkout repository
@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Build fundamental, development-project and money-flow radar
+      - name: Build fundamental, development-project and money-flow radar (bounded requests)
         run: python -m py_compile scripts/build_fundamental_money_radar.py && python scripts/build_fundamental_money_radar.py
 
       - name: Commit results
