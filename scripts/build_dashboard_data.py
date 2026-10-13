@@ -902,6 +902,19 @@ def main() -> None:
     project_candidates.sort(key=lambda x: str(x.get("published_at") or ""), reverse=True)
 
     source_warnings = []
+    ratio_snapshot_generated = str(ratio_snapshot.get("generated_at_utc") or "")
+    ratio_snapshot_age_hours = None
+    if ratio_snapshot_generated:
+        try:
+            ratio_snapshot_dt = datetime.fromisoformat(ratio_snapshot_generated.replace("Z", "+00:00"))
+            if ratio_snapshot_dt.tzinfo is None:
+                ratio_snapshot_dt = ratio_snapshot_dt.replace(tzinfo=timezone.utc)
+            ratio_snapshot_age_hours = round(
+                max(0.0, (datetime.now(timezone.utc) - ratio_snapshot_dt.astimezone(timezone.utc)).total_seconds() / 3600.0),
+                1,
+            )
+        except (TypeError, ValueError, OverflowError):
+            ratio_snapshot_age_hours = None
     counts = fund.get("counts", {}) if isinstance(fund.get("counts"), dict) else {}
     if top_scores_count == 0:
         source_warnings.append("هیچ امتیاز نسبی بنیادی قابل‌استفاده برای نمادهای واجد شرایط موجود نیست؛ دادهٔ گمشده امتیاز صفر یا خنثی نیست.")
@@ -912,6 +925,12 @@ def main() -> None:
     if ratio_matched_count < max(100, len(ranked) * 0.5):
         source_warnings.append(
             f"پوشش نمادهای رادار در snapshot نسبت‌های Fundai محدود است: {ratio_matched_count} از {len(ranked)} نماد."
+        )
+    if ratio_snapshot_age_hours is None:
+        source_warnings.append("زمان snapshot نسبت‌های Fundai قابل‌تأیید نیست؛ تازگی داده را بررسی کن.")
+    elif ratio_snapshot_age_hours > 72:
+        source_warnings.append(
+            f"snapshot نسبت‌های Fundai حدود {ratio_snapshot_age_hours} ساعت عمر دارد؛ برای رتبه‌بندی جدید باید داده تازه شود."
         )
     for note in ratio_snapshot.get("quality_notes", []) if isinstance(ratio_snapshot.get("quality_notes"), list) else []:
         source_warnings.append("Fundai: " + str(note))
@@ -953,6 +972,8 @@ def main() -> None:
             "fundamental_scored_count": top_scores_count,
             "fundamental_statement_scored_count": native_fundamental_score_count,
             "fundai_ratio_rows_available": ratio_snapshot.get("downloaded_row_count", 0),
+            "fundai_ratio_snapshot_generated_at_utc": ratio_snapshot_generated,
+            "fundai_ratio_snapshot_age_hours": ratio_snapshot_age_hours,
             "fundai_ratio_matched_count": ratio_matched_count,
             "fundai_ratio_scored_count": ratio_scores_in_ranked,
             "final_credit_grade_count": final_grade_count,
@@ -982,7 +1003,8 @@ def main() -> None:
                 "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
                 "note": (
                     f"{ratio_snapshot.get('downloaded_row_count', 0)} ردیف دریافت شد؛ "
-                    f"{ratio_matched_count} نماد با جهان تکنیکال تطبیق دارند. "
+                    f"{ratio_matched_count} نماد با جهان تکنیکال تطبیق دارند؛ "
+                    f"سن snapshot: {ratio_snapshot_age_hours if ratio_snapshot_age_hours is not None else 'نامشخص'} ساعت. "
                     "امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. "
                     + "؛ ".join(str(x) for x in ratio_snapshot.get("quality_notes", []) if x)
                 ),
