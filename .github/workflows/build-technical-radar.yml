@@ -144,6 +144,9 @@ jobs:
           # The dashboard has its own workflow, triggered by technical_radar.json.
           # Do not commit a competing dashboard snapshot from this long-running job.
           git add data/technical_radar.json
+          # The generator rebuilds the dashboard for validation, but the dedicated
+          # dashboard workflow owns that file. Reset its working-tree copy before rebase.
+          git checkout -- data/radar_dashboard.json
           if git diff --cached --quiet; then
             echo "No technical radar changes."
           else
