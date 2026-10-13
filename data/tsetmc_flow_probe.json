@@ -1,0 +1,107 @@
+{
+  "generated_at_utc": "2026-10-13T13:37:09+00:00",
+  "purpose": "Direct TSETMC flow endpoint probe; no paid API",
+  "sources": [
+    {
+      "name": "ClientTypeAll",
+      "url": "https://cdn.tsetmc.com/api/ClientType/GetClientTypeAll",
+      "http_status": 0,
+      "content_type": "",
+      "body_bytes": 0,
+      "elapsed_seconds": 36.493,
+      "json_parsed": false,
+      "parse_error": "",
+      "too_large": false,
+      "error": "URLError: <urlopen error timed out>",
+      "payload_outline": {}
+    }
+  ],
+  "symbols": [
+    {
+      "requested_symbol": "فولاد",
+      "search_url": "https://cdn.tsetmc.com/api/Instrument/GetInstrumentSearch/%D9%81%D9%88%D9%84%D8%A7%D8%AF",
+      "search": {
+        "http_status": 0,
+        "content_type": "",
+        "body_bytes": 0,
+        "elapsed_seconds": 36.442,
+        "json_parsed": false,
+        "parse_error": "",
+        "too_large": false,
+        "error": "URLError: <urlopen error timed out>"
+      },
+      "search_payload_outline": {},
+      "matches": [],
+      "clienttype_tests": [],
+      "closing_price_test": {}
+    },
+    {
+      "requested_symbol": "وبملت",
+      "search_url": "https://cdn.tsetmc.com/api/Instrument/GetInstrumentSearch/%D9%88%D8%A8%D9%85%D9%84%D8%AA",
+      "search": {
+        "http_status": 0,
+        "content_type": "",
+        "body_bytes": 0,
+        "elapsed_seconds": 36.275,
+        "json_parsed": false,
+        "parse_error": "",
+        "too_large": false,
+        "error": "URLError: <urlopen error timed out>"
+      },
+      "search_payload_outline": {},
+      "matches": [],
+      "clienttype_tests": [],
+      "closing_price_test": {}
+    },
+    {
+      "requested_symbol": "فملی",
+      "search_url": "https://cdn.tsetmc.com/api/Instrument/GetInstrumentSearch/%D9%81%D9%85%D9%84%DB%8C",
+      "search": {
+        "http_status": 0,
+        "content_type": "",
+        "body_bytes": 0,
+        "elapsed_seconds": 36.361,
+        "json_parsed": false,
+        "parse_error": "",
+        "too_large": false,
+        "error": "URLError: <urlopen error timed out>"
+      },
+      "search_payload_outline": {},
+      "matches": [],
+      "clienttype_tests": [],
+      "closing_price_test": {}
+    },
+    {
+      "requested_symbol": "آباد",
+      "search_url": "https://cdn.tsetmc.com/api/Instrument/GetInstrumentSearch/%D8%A2%D8%A8%D8%A7%D8%AF",
+      "search": {
+        "http_status": 0,
+        "content_type": "",
+        "body_bytes": 0,
+        "elapsed_seconds": 36.465,
+        "json_parsed": false,
+        "parse_error": "",
+        "too_large": false,
+        "error": "URLError: <urlopen error timed out>"
+      },
+      "search_payload_outline": {},
+      "matches": [],
+      "clienttype_tests": [],
+      "closing_price_test": {}
+    }
+  ],
+  "conclusion": {
+    "clienttype_all_json_success": false,
+    "symbols_mapped": [],
+    "symbol_match_count": 0,
+    "historical_clienttype_success_count": 0,
+    "historical_clienttype_success_examples": [],
+    "direct_flow_data_usable_for_next_stage": false,
+    "limitations": [
+      "Only four instruments and three trading dates were tested.",
+      "Endpoint is community-documented and may change without notice.",
+      "A single successful daily response does not prove full 12-month coverage.",
+      "This probe is not a market-wide scan and does not assign investment scores."
+    ]
+  }
+}
