@@ -1,0 +1,85 @@
+name: Build Radar Dashboard Data
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/build_dashboard_data.py"
+      - ".github/workflows/build-dashboard-data.yml"
+      - "data/technical_radar.json"
+      - "data/fundamental_money_radar.json"
+      - "data/codal_disclosures_latest.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: radar-dashboard-data
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate generator syntax
+        run: python -m py_compile scripts/build_dashboard_data.py
+
+      - name: Generate compact dashboard data
+        run: python -u scripts/build_dashboard_data.py
+
+      - name: Validate dashboard data contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path("data/radar_dashboard.json").read_text(encoding="utf-8"))
+          assert p.get("schema_version") == 1
+          rows = p.get("candidates")
+          assert isinstance(rows, list) and len(rows) == 10, f"expected 10 rows, got {len(rows) if isinstance(rows, list) else type(rows).__name__}"
+          assert sum(x.get("bucket") == "main" for x in rows) == 5
+          assert sum(x.get("bucket") == "watch" for x in rows) == 5
+          assert "fundamental_scored_count" in p["summary"]
+          assert "money_flow_12m_scored_count" in p["summary"]
+          assert all(x.get("symbol") for x in rows)
+          print(f"DASHBOARD_DATA_VALID: {len(rows)} rows")
+          print(f"FUNDAMENTAL_SCORED: {p['summary']['fundamental_scored_count']}")
+          print(f"MONEY_FLOW_12M_SCORED: {p['summary']['money_flow_12m_scored_count']}")
+          print(f"CHANNEL_EVIDENCE: {p['summary']['channel_evidence_rows']}")
+          PY
+
+      - name: Commit generated dashboard data
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s data/radar_dashboard.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/radar_dashboard.json
+          if git diff --cached --quiet; then
+            echo "Dashboard data is unchanged."
+          else
+            git commit -m "Update radar dashboard data"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Upload dashboard data artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-dashboard-data
+          path: data/radar_dashboard.json
+          if-no-files-found: warn
+          retention-days: 14
