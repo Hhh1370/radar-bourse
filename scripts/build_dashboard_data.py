@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import re
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -301,6 +302,274 @@ def fundamental_quality_gate(fundamental: dict[str, Any]) -> dict[str, Any]:
         "annual_reports_parsed": annual_count,
         "revenue_yoy_pct": growth.get("revenue_yoy_pct") if matched_growth else None,
     }
+
+
+
+FUNDAI_RATIO_FILE = DATA / "fundai_financial_ratios.json"
+FUNDAI_METRIC_KEYS = (
+    "roe_ttm", "roa_ttm", "net_profit_margin_ttm", "debt_to_assets",
+    "debt_to_equity", "pe_ttm", "ps_ttm", "pb",
+)
+
+
+def finite_number(value):
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(float(value))
+
+
+def jalali_to_gregorian(jy: int, jm: int, jd: int):
+    """Convert a valid Jalali date to datetime.date without third-party dependencies."""
+    from datetime import date
+
+    if not (1 <= jm <= 12 and 1 <= jd <= 31):
+        return None
+    jy += 1595
+    days = -355668 + (365 * jy) + (jy // 33) * 8 + ((jy % 33 + 3) // 4) + jd
+    if jm < 7:
+        days += (jm - 1) * 31
+    else:
+        days += ((jm - 7) * 30) + 186
+    gy = 400 * (days // 146097)
+    days %= 146097
+    if days > 36524:
+        gy += 100 * ((days - 1) // 36524)
+        days = (days - 1) % 36524
+        if days >= 365:
+            days += 1
+    gy += 4 * (days // 1461)
+    days %= 1461
+    if days > 365:
+        gy += (days - 1) // 365
+        days = (days - 1) % 365
+    gd = days + 1
+    leap = (gy % 4 == 0 and gy % 100 != 0) or gy % 400 == 0
+    month_lengths = [31, 29 if leap else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    gm = 1
+    while gm <= 12 and gd > month_lengths[gm - 1]:
+        gd -= month_lengths[gm - 1]
+        gm += 1
+    try:
+        return date(gy, gm, gd)
+    except ValueError:
+        return None
+
+
+def report_age_days(value: Any):
+    """Compute report age for the Jalali date strings returned by Fundai."""
+    from datetime import date
+
+    if not value:
+        return None
+    match = re.match(r"^\s*(\d{4})[-/](\d{1,2})[-/](\d{1,2})", str(value))
+    if not match:
+        return None
+    jy, jm, jd = map(int, match.groups())
+    parsed = jalali_to_gregorian(jy, jm, jd)
+    if parsed is None:
+        return None
+    age = (datetime.now(timezone.utc).date() - parsed).days
+    return age if age >= 0 else None
+
+
+def _metric_value(row: dict[str, Any], key: str):
+    value = row.get(key)
+    if not finite_number(value):
+        return None
+    value = float(value)
+    if key in {"pe_ttm", "ps_ttm", "pb"}:
+        if value <= 0:
+            return None
+        # Extreme positive valuation multiples are retained as a strong penalty.
+        return value
+    if key == "debt_to_assets":
+        return value if 0 <= value <= 3 else None
+    if key == "debt_to_equity":
+        return value if 0 <= value <= 200 else None
+    if key in {"roe_ttm", "roa_ttm", "net_profit_margin_ttm"}:
+        return max(-5.0, min(5.0, value))
+    return value
+
+
+def build_fundai_ratio_scores(snapshot: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Create transparent industry-relative snapshot scores from Fundai TTM ratios.
+
+    This is a proxy for screening. It does not turn a latest TTM snapshot into
+    an audited annual analysis, earnings-quality score, or final credit rating.
+    """
+    raw_rows = snapshot.get("rows", [])
+    if not isinstance(raw_rows, list):
+        return {}
+    rows_by_symbol: dict[str, dict[str, Any]] = {}
+    for raw in raw_rows:
+        if not isinstance(raw, dict):
+            continue
+        symbol = str(raw.get("company") or "").strip()
+        key = norm(symbol)
+        if not key:
+            continue
+        prior = rows_by_symbol.get(key)
+        if prior is None or str(raw.get("report_date") or "") > str(prior.get("report_date") or ""):
+            rows_by_symbol[key] = raw
+    rows = list(rows_by_symbol.values())
+    if not rows:
+        return {}
+
+    # Establish peer groups only when a sector has enough peers; otherwise
+    # fall back to the broad market rather than inventing tiny peer rankings.
+    industry_counts: dict[str, int] = {}
+    for row in rows:
+        industry = shorten(row.get("industry"), 120) or "صنعت نامشخص"
+        industry_counts[industry] = industry_counts.get(industry, 0) + 1
+
+    score_fields = {key: {} for key in FUNDAI_METRIC_KEYS}
+    peer_fields = {key: {} for key in FUNDAI_METRIC_KEYS}
+    score_specs = {
+        "roe_ttm": True,
+        "roa_ttm": True,
+        "net_profit_margin_ttm": True,
+        "debt_to_assets": False,
+        "debt_to_equity": False,
+        "pe_ttm": False,
+        "ps_ttm": False,
+        "pb": False,
+    }
+
+    for field, higher_is_better in score_specs.items():
+        groups: dict[str, list[tuple[str, float]]] = {}
+        for row in rows:
+            ticker = norm(row.get("company"))
+            value = _metric_value(row, field)
+            if not ticker or value is None:
+                continue
+            industry = shorten(row.get("industry"), 120) or "صنعت نامشخص"
+            group = "MARKET" if industry_counts.get(industry, 0) < 8 else industry
+            # PE without positive earnings is not a valid low-valuation signal.
+            if field == "pe_ttm":
+                profit = row.get("net_profit_ttm")
+                eps = row.get("eps")
+                if not finite_number(profit) or float(profit) <= 0 or not finite_number(eps) or float(eps) <= 0:
+                    continue
+                if value > 1000:
+                    # Keep extreme valuations in the cohort but their score is overridden below.
+                    value = min(value, 10000.0)
+            groups.setdefault(group, []).append((ticker, value))
+
+        for group, vals in groups.items():
+            ordered = sorted(vals, key=lambda pair: pair[1])
+            n = len(ordered)
+            cursor = 0
+            while cursor < n:
+                end = cursor
+                while end + 1 < n and ordered[end + 1][1] == ordered[cursor][1]:
+                    end += 1
+                pct = 50.0 if n == 1 else ((cursor + end) / 2.0) * 100.0 / (n - 1)
+                score = pct if higher_is_better else 100.0 - pct
+                for index in range(cursor, end + 1):
+                    ticker = ordered[index][0]
+                    final_score = score
+                    raw = rows_by_symbol.get(ticker, {})
+                    raw_value = _metric_value(raw, field)
+                    if field == "pe_ttm" and raw_value is not None and raw_value > 1000:
+                        final_score = min(final_score, 5.0)
+                    elif field == "ps_ttm" and raw_value is not None and raw_value > 100:
+                        final_score = min(final_score, 5.0)
+                    elif field == "pb" and raw_value is not None and raw_value > 100:
+                        final_score = min(final_score, 5.0)
+                    score_fields[field][ticker] = round(max(0.0, min(100.0, final_score)), 1)
+                    peer_fields[field][ticker] = n
+                cursor = end + 1
+
+    output = {}
+    for key, row in rows_by_symbol.items():
+        scores = {metric: score_fields[metric].get(key) for metric in FUNDAI_METRIC_KEYS}
+        observed = [v for v in scores.values() if finite_number(v)]
+        profitability_keys = ("roe_ttm", "roa_ttm", "net_profit_margin_ttm")
+        profitability = [(scores[k], w) for k, w in (
+            ("roe_ttm", 0.40), ("roa_ttm", 0.30), ("net_profit_margin_ttm", 0.30)
+        ) if finite_number(scores[k])]
+        profitability_score = (
+            sum(float(v) * w for v, w in profitability) / sum(w for _, w in profitability)
+            if profitability else None
+        )
+        net_profit = row.get("net_profit_ttm")
+        profit_sign = (
+            100.0 if finite_number(net_profit) and float(net_profit) > 0 else
+            0.0 if finite_number(net_profit) and float(net_profit) < 0 else
+            50.0 if finite_number(net_profit) else None
+        )
+        if profitability_score is not None and profit_sign is not None:
+            profitability_score = 0.85 * profitability_score + 0.15 * profit_sign
+
+        balance_parts = [(scores[k], w) for k, w in (
+            ("debt_to_assets", 0.65), ("debt_to_equity", 0.35)
+        ) if finite_number(scores[k])]
+        balance_score = (
+            sum(float(v) * w for v, w in balance_parts) / sum(w for _, w in balance_parts)
+            if balance_parts else None
+        )
+        valuation_parts = [(scores[k], w) for k, w in (
+            ("pe_ttm", 0.40), ("ps_ttm", 0.30), ("pb", 0.30)
+        ) if finite_number(scores[k])]
+        valuation_score = (
+            sum(float(v) * w for v, w in valuation_parts) / sum(w for _, w in valuation_parts)
+            if valuation_parts else None
+        )
+        categories = [(profitability_score, 0.50), (balance_score, 0.25), (valuation_score, 0.25)]
+        categories = [(v, w) for v, w in categories if finite_number(v)]
+        category_count = len(categories)
+        metric_count = len(observed)
+        enough = (
+            metric_count >= 4
+            and sum(1 for k in profitability_keys if finite_number(scores[k])) >= 2
+            and finite_number(valuation_score)
+            and category_count >= 2
+        )
+        composite = (
+            round(sum(float(v) * w for v, w in categories) / sum(w for _, w in categories), 1)
+            if enough else None
+        )
+
+        age = report_age_days(row.get("report_date"))
+        coverage_fraction = min(1.0, metric_count / len(FUNDAI_METRIC_KEYS))
+        date_factor = 1.0 if age is not None and age <= 210 else (
+            0.8 if age is not None and age <= 300 else
+            0.55 if age is not None and age <= 450 else 0.25
+        )
+        peer_counts = [peer_fields[k].get(key) for k in FUNDAI_METRIC_KEYS if peer_fields[k].get(key)]
+        median_peer_count = sorted(peer_counts)[len(peer_counts) // 2] if peer_counts else 0
+        peer_factor = 1.0 if median_peer_count >= 8 else 0.7 if median_peer_count >= 3 else 0.4
+        quality = round(coverage_fraction * date_factor * peer_factor, 3)
+        output[key] = {
+            "symbol": str(row.get("company") or ""),
+            "industry": str(row.get("industry") or ""),
+            "report_date": str(row.get("report_date") or ""),
+            "report_age_days": age,
+            "ratio_score": composite,
+            "ratio_score_status": (
+                "امتیاز نسبی مقدماتی از نسبت‌های TTM در مقایسه با هم‌صنعتی‌ها؛ نه رتبهٔ اعتباری نهایی"
+                if composite is not None else
+                "دادهٔ نسبی برای امتیاز مقدماتی کافی نیست"
+            ),
+            "ratio_score_source": "Fundai public financial-ratio table",
+            "ratio_score_quality": quality,
+            "ratio_score_metric_count": metric_count,
+            "ratio_score_components": {
+                "profitability": round(profitability_score, 1) if profitability_score is not None else None,
+                "balance_sheet": round(balance_score, 1) if balance_score is not None else None,
+                "valuation": round(valuation_score, 1) if valuation_score is not None else None,
+                **scores,
+            },
+            "peer_count_median": median_peer_count,
+            "raw_ratios": {
+                key_name: (float(row[key_name]) if finite_number(row.get(key_name)) else None)
+                for key_name in (
+                    "eps", "pe_ttm", "ps_ttm", "price", "market_value",
+                    "operation_income", "net_profit_ttm", "net_profit_margin_ttm",
+                    "roe_ttm", "roa_ttm", "pb", "debt_to_assets", "debt_to_equity",
+                )
+            },
+            "snapshot_generated_at_utc": str(snapshot.get("generated_at_utc") or ""),
+        }
+    return output
 
 
 def credit_assessment(
