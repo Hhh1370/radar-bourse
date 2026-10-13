@@ -269,6 +269,40 @@ def valid_money_flow(fundamental: dict[str, Any]) -> bool:
     )
 
 
+def fundamental_quality_gate(fundamental: dict[str, Any]) -> dict[str, Any]:
+    """Require parsed audited annual data and a comparable annual growth pair before final rating."""
+    reports = [
+        row for row in (fundamental.get("financial_reports") or [])
+        if isinstance(row, dict)
+        and isinstance(row.get("financial_metrics"), dict)
+        and isinstance(row.get("ratios"), dict)
+    ]
+    annual_audited = [
+        row for row in reports
+        if (
+            row.get("period_type") == "annual"
+            or "سالمالیمنتهی" in norm(row.get("title", ""))
+        )
+        and "حسابرسیشده" in norm(row.get("title", ""))
+    ]
+    assessment = fundamental.get("fundamental_assessment") or {}
+    growth = assessment.get("annual_growth_candidates_pct") or {}
+    annual_count = assessment.get("annual_reports_parsed")
+    matched_growth = isinstance(growth.get("revenue_yoy_pct"), (int, float))
+    comparable = (
+        isinstance(annual_count, (int, float)) and annual_count >= 2
+        and assessment.get("coverage_grade") == "قابل‌مقایسه‌تر"
+        and matched_growth
+    )
+    return {
+        "ready": bool(annual_audited and comparable and isinstance(fundamental.get("fundamental_score"), (int, float))),
+        "audited_annual_parsed_count": len(annual_audited),
+        "comparable_annual_growth_available": comparable,
+        "annual_reports_parsed": annual_count,
+        "revenue_yoy_pct": growth.get("revenue_yoy_pct") if matched_growth else None,
+    }
+
+
 def credit_assessment(
     tech_item: dict[str, Any],
     fundamental: dict[str, Any],
@@ -314,8 +348,14 @@ def credit_assessment(
         and isinstance(row.get("ratios"), dict)
         for row in (fundamental.get("financial_reports") or [])
     )
-    fund_quality = 1.0 if fundamental_score is not None and parsed_report else 0.0
+    fundamental_gate = fundamental_quality_gate(fundamental)
+    fund_quality = (
+        1.0 if fundamental_gate["ready"] else
+        0.5 if fundamental_score is not None and parsed_report else 0.0
+    )
     earnings_quality = min(1.0, float(earnings.get("coverage") or 0)) if earnings_score is not None else 0.0
+    if earnings_score is not None and not fundamental_gate["comparable_annual_growth_available"]:
+        earnings_quality = min(earnings_quality, 0.65)
     project_quality = 1.0 if project_score is not None else (
         0.35 if project_evidence.get("evidence_count", 0) > 0 else 0.0
     )
@@ -329,7 +369,7 @@ def credit_assessment(
     confidence_score = round(sum(weights[key] * confidence_factors[key] for key in weights), 1)
 
     final_ready = (
-        fundamental_score is not None and earnings_score is not None
+        fundamental_gate["ready"] and earnings_score is not None
         and technical_score is not None and flow_score is not None
         and project_score is not None and confidence_score >= 75
     )
@@ -351,6 +391,7 @@ def credit_assessment(
         "provisional_score_available_weight_pct": round(available_weight, 1),
         "component_scores": components,
         "component_weights_pct": weights,
+        "fundamental_quality_gate": fundamental_gate,
         "earnings_quality_status": earnings.get("status"),
         "earnings_quality_evidence": earnings.get("evidence", []),
         "earnings_quality_fields_observed": earnings.get("fields_observed", 0),
@@ -504,13 +545,7 @@ def main() -> None:
     final_grade_count = sum(1 for x in candidates if x.get("final_credit_grade") is not None)
     reliable_confidence_count = sum(1 for x in candidates if (x.get("credit_confidence_score") or 0) >= 75)
     top_scores_count = sum(1 for x in fund_rows if number(x.get("fundamental_score")) is not None)
-    full_year_flow_count = sum(
-        1 for x in fund_rows
-        if x.get("money_flow_full_year_coverage") is True
-        and isinstance(x.get("money_flow_history_rows"), (int, float))
-        and x.get("money_flow_history_rows") >= 200
-        and number(x.get("money_flow_score")) is not None
-    )
+    full_year_flow_count = sum(1 for x in fund_rows if valid_money_flow(x))
     project_candidates = [
         simplify_evidence(x) for x in evidence_rows
         if x.get("project_evidence")
@@ -524,8 +559,14 @@ def main() -> None:
         source_warnings.append("امتیاز بنیادی استانداردشده برای هیچ نمادی ساخته نشده است؛ دادهٔ ناقص به معنی بنیادی خنثی نیست.")
     if full_year_flow_count == 0:
         source_warnings.append("هیچ امتیاز پول حقیقی با پوشش ۱۲ماهه در خروجی بنیادی قابل تأیید نیست.")
+    elif full_year_flow_count < max(50, len(tech_rows) * 0.5):
+        source_warnings.append(f"پوشش معتبر پول حقیقی فقط برای {full_year_flow_count} نماد از {len(tech_rows)} نامزد تکنیکال موجود است؛ برای رتبهٔ نهایی کافی نیست.")
+    if top_scores_count and top_scores_count < len(fund_rows) * 0.5:
+        source_warnings.append(f"فقط {top_scores_count} نماد از {len(fund_rows)} رکورد بنیادی امتیاز دارند؛ پوشش بنیادی گسترده نیست.")
     if not project_candidates:
         source_warnings.append("شواهد متنی کافی دربارهٔ طرح‌های توسعه در آرشیو فعلی کم است؛ نبود رکورد، به معنی نبود پروژه نیست.")
+    if not any(x.get("project_score") is not None and x.get("project_score_validated") is True for x in candidates):
+        source_warnings.append("هنوز امتیاز کمیِ طرح توسعه با هزینه، زمان بهره‌برداری و شواهد گزارش‌سطحیِ اعتبارسنجی‌شده وجود ندارد؛ بنابراین رتبهٔ نهایی صادر نمی‌شود.")
     if not any(
         x.get("http_status") == 200 and x.get("body_bytes", 0) > 0
         for x in codal.get("source_status", [])
@@ -582,7 +623,7 @@ def main() -> None:
         },
         "warnings": source_warnings,
         "methodology": {
-            "main_and_watch": "۵ ردیف اول و ۵ ردیف بعدیِ خروجی تکنیکال فعلی؛ این تقسیم‌بندی، انتخاب نهایی بنیادی نیست.",
+            "main_and_watch": "نامزدها از کل جهان واجدشرایط تکنیکال رتبه‌بندی می‌شوند؛ ۵ مورد اول و ۵ مورد بعدی بر اساس امتیاز موقتِ اجزای معتبر موجود انتخاب می‌شوند، نه رتبهٔ نهایی بنیادی.",
             "technical_score": "امتیاز تکنیکال و جریمهٔ گرمای روند از فایل رادار تکنیکال خوانده می‌شود. امتیاز نسبی برای شکستن تساوی استفاده می‌شود و هنوز بک‌تست نشده است.",
             "credit_model": "وزن‌های امتیاز تلفیقی: بنیادی ۳۰٪، کیفیت سود ۱۵٪، تکنیکال ۲۵٪، پول حقیقی ۲۰٪ و طرح توسعه ۱۰٪. فقط اجزای عددی معتبر در امتیاز موقت وارد می‌شوند؛ وزن پوشش موجود جداگانه اعلام می‌شود.",
             "final_rating_gate": "رتبهٔ نهایی فقط در صورت موجود بودن امتیاز بنیادی، کیفیت سود ساختاریافته، تکنیکال، پول حقیقی ۱۲ماهه و امتیاز کمی اعتبارسنجی‌شده طرح‌ها و اطمینان پوشش حداقل ۷۵ صادر می‌شود. در غیر این صورت رتبه معلق می‌ماند.",
