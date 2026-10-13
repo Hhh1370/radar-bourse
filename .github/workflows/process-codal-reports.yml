@@ -1,0 +1,94 @@
+name: Process New Codal Reports
+
+on:
+  workflow_dispatch:
+  # Run after the daily public announcement collector.
+  schedule:
+    - cron: "30 14 * * 0-3,6"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/process_codal_reports.py"
+      - ".github/workflows/process-codal-reports.yml"
+      - "data/codal_disclosures_latest.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: codal-report-ledger
+  cancel-in-progress: false
+
+jobs:
+  process-reports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate parser syntax
+        run: python -m py_compile scripts/process_codal_reports.py
+
+      - name: Process recently discovered reports and merge the persistent ledger
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python -u scripts/process_codal_reports.py
+
+      - name: Validate ledger invariants
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path("data/codal_filing_ledger.json").read_text(encoding="utf-8"))
+          rows = p.get("reports")
+          summary = p.get("last_run") or {}
+          assert p.get("schema_version") == 1
+          assert isinstance(rows, list) and rows, "No reports were retained"
+          ids = [row.get("record_id") for row in rows]
+          assert all(ids) and len(ids) == len(set(ids)), "Report IDs must be unique"
+          assert p.get("source_status") == "summary_text_only_official_attachments_not_verified"
+          assert p.get("official_statement_tables_verified") is not True
+          assert int(summary.get("total_records_in_ledger", 0)) == len(rows)
+          assert int(summary.get("records_seen_in_snapshot", 0)) > 0, "No current source rows were processed"
+          print("CODAL_LEDGER_VALID")
+          for key in (
+              "records_seen_in_snapshot", "total_records_in_ledger", "new_records_count",
+              "new_financial_statement_records_count", "new_monthly_activity_records_count",
+              "new_project_records_count", "financial_statement_records_with_numeric_summary",
+              "monthly_activity_records_with_numeric_summary",
+          ):
+              print(f"{key.upper()}:{summary.get(key)}")
+          PY
+
+      - name: Commit durable filing ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/codal_filing_ledger.json
+          if git diff --cached --quiet; then
+            echo "Codal filing ledger is unchanged."
+          else
+            git commit -m "Update persistent Codal filing ledger"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Upload ledger snapshot for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codal-filing-ledger
+          path: data/codal_filing_ledger.json
+          if-no-files-found: warn
+          retention-days: 14
