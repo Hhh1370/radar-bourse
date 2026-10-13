@@ -249,8 +249,12 @@ def calculate_technical_targets(candles, data_age_days):
                 zones.append([value])
         return [sum(zone) / len(zone) for zone in zones]
 
-    supports = sorted((v for v in cluster(lows) if v < close), reverse=True)
-    resistances = sorted(v for v in cluster(highs) if v > close)
+    # Only local levels are eligible for targets. Older prices beyond five ATR
+    # can be distorted by corporate actions or regime changes and are not useful
+    # as an immediate swing objective.
+    max_target_distance = 5.0 * atr
+    supports = sorted((v for v in cluster(lows) if 0 < close - v <= max_target_distance), reverse=True)
+    resistances = sorted(v for v in cluster(highs) if 0 < v - close <= max_target_distance)
     minimum_risk = max(0.75 * atr, close * 0.002)
     maximum_risk = 3.0 * atr
     min_reward_multiple = 1.3
@@ -264,14 +268,15 @@ def calculate_technical_targets(candles, data_age_days):
                 if minimum_risk <= close - (level - 0.15 * atr) <= maximum_risk
             ), close - 1.5 * atr)
             risk = close - stop
-            target1 = next((
-                level for level in resistances
-                if level - close >= min_reward_multiple * risk
-            ), None)
+            # Do not skip the nearest barrier to force a better-looking R/R.
+            target1 = resistances[0] if resistances else None
             if risk <= 0 or target1 is None:
                 return None
+            reward = target1 - close
+            if reward < min_reward_multiple * risk or reward > max_target_distance:
+                return None
             target2 = next((
-                level for level in resistances if level >= target1 + 0.25 * atr
+                level for level in resistances if target1 + 0.25 * atr <= level - close <= max_target_distance
             ), None)
             return {
                 "entry_reference": round(close, 4),
@@ -289,14 +294,15 @@ def calculate_technical_targets(candles, data_age_days):
             if minimum_risk <= (level + 0.15 * atr) - close <= maximum_risk
         ), close + 1.5 * atr)
         risk = stop - close
-        target1 = next((
-            level for level in supports
-            if close - level >= min_reward_multiple * risk
-        ), None)
+        # Do not jump past a nearby support just because it offers poor R/R.
+        target1 = supports[0] if supports else None
         if risk <= 0 or target1 is None:
             return None
+        reward = close - target1
+        if reward < min_reward_multiple * risk or reward > max_target_distance:
+            return None
         target2 = next((
-            level for level in supports if level <= target1 - 0.25 * atr
+            level for level in supports if max_target_distance >= close - level >= close - target1 + 0.25 * atr
         ), None)
         return {
             "entry_reference": round(close, 4),
