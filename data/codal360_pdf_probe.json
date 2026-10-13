@@ -1,0 +1,57 @@
+{
+  "generated_at_utc": "2026-10-13T14:13:11+00:00",
+  "channel": "https://t.me/s/Codal360_ir",
+  "page_http_status": 200,
+  "page_content_type": "text/html; charset=utf-8",
+  "page_body_bytes": 172268,
+  "page_error": "",
+  "pdf_candidates_found": 19,
+  "pdfs_tested": [
+    {
+      "url": "https://codal.ir/DownloadFile.aspx?hs=5vMPMWMdLqrkhOOObOOOV3Ue8sNg%3d%3d&ft=1005&let=11",
+      "title": "📥 دانلود فایل PDF",
+      "source_post_id": "",
+      "http_status": 0,
+      "content_type": "",
+      "effective_url": "https://codal.ir/DownloadFile.aspx?hs=5vMPMWMdLqrkhOOObOOOV3Ue8sNg%3d%3d&ft=1005&let=11",
+      "body_bytes": 0,
+      "pdf_magic_valid": false,
+      "error": "curl: (28) Failed to connect to codal.ir port 443 after 6000 ms: Timeout was reached",
+      "pdf_parse_error": "",
+      "pdf_text": {}
+    },
+    {
+      "url": "https://codal.ir/DownloadFile.aspx?hs=LRmO31OVpOBSYUy3bLAJPQ%3d%3d&ft=1005&let=11",
+      "title": "📥 دانلود فایل PDF",
+      "source_post_id": "",
+      "http_status": 0,
+      "content_type": "",
+      "effective_url": "https://codal.ir/DownloadFile.aspx?hs=LRmO31OVpOBSYUy3bLAJPQ%3d%3d&ft=1005&let=11",
+      "body_bytes": 0,
+      "pdf_magic_valid": false,
+      "error": "curl: (28) Failed to connect to codal.ir port 443 after 6002 ms: Timeout was reached",
+      "pdf_parse_error": "",
+      "pdf_text": {}
+    },
+    {
+      "url": "https://codal.ir/DownloadFile.aspx?hs=aoCafEWSkkL36C63gVbsWQ%3d%3d&ft=1005&let=58",
+      "title": "📥 دانلود فایل PDF",
+      "source_post_id": "",
+      "http_status": 0,
+      "content_type": "",
+      "effective_url": "https://codal.ir/DownloadFile.aspx?hs=aoCafEWSkkL36C63gVbsWQ%3d%3d&ft=1005&let=58",
+      "body_bytes": 0,
+      "pdf_magic_valid": false,
+      "error": "curl: (28) Failed to connect to codal.ir port 443 after 6002 ms: Timeout was reached",
+      "pdf_parse_error": "",
+      "pdf_text": {}
+    }
+  ],
+  "conclusion": {
+    "pdf_links_tested": 3,
+    "valid_pdf_downloads": 0,
+    "pdfs_with_extractable_text": 0,
+    "can_use_pdf_route_for_fundamentals": false,
+    "note": "Three links or fewer were tested; a successful single file does not prove all Codal attachments are accessible."
+  }
+}
