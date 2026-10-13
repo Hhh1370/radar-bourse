@@ -1,0 +1,76 @@
+name: Extract Codal Disclosures to Excel
+
+on:
+  workflow_dispatch:
+    inputs:
+      pages:
+        description: "Maximum Telegram archive pages to inspect (1-30)"
+        required: true
+        default: "8"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/extract_codal_disclosures.py"
+      - ".github/workflows/extract-codal-disclosures.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: codal-disclosure-excel
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install workbook dependency
+        run: python -m pip install --disable-pip-version-check openpyxl
+
+      - name: Validate script syntax
+        run: python -m py_compile scripts/extract_codal_disclosures.py
+
+      - name: Extract public disclosure links and create Excel workbook
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -euo pipefail
+          PAGES="${{ inputs.pages || '8' }}"
+          python scripts/extract_codal_disclosures.py --pages "$PAGES"
+
+      - name: Commit extracted JSON and Excel to repository
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s data/codal_disclosures_latest.json
+          test -s data/codal_disclosures_latest.xlsx
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/codal_disclosures_latest.json data/codal_disclosures_latest.xlsx
+          if git diff --cached --quiet; then
+            echo "Output files match the existing committed version."
+          else
+            git commit -m "Update Codal disclosure Excel report"
+            git push
+          fi
+
+      - name: Publish workbook and source log as downloadable artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codal-disclosures-excel
+          path: |
+            data/codal_disclosures_latest.xlsx
+            data/codal_disclosures_latest.json
+          if-no-files-found: warn
+          retention-days: 14
