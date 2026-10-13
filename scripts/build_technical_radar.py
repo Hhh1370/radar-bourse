@@ -358,5 +358,9 @@ def analyze_stock(stock):
         1,
     )
 
-    if technical_score >= 75:
-        label = "روند
+        if technical_score >= 75:
+        label = "روند تکنیکال قوی"
+    elif technical_score >= 55:
+        label = "روند تکنیکال متوسط"
+    else:
+        label = "روند تکنیکال ضعیف"  
