@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-13T16:27:33+00:00",
+  "generated_at_utc": "2026-10-13T19:47:28+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -17,7 +17,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-13T16:24:52+00:00",
-    "fundai_ratio_snapshot_age_hours": 0.0,
+    "fundai_ratio_snapshot_age_hours": 3.4,
     "fundai_ratio_matched_count": 534,
     "fundai_ratio_scored_count": 531,
     "final_credit_grade_count": 0,
@@ -45,7 +45,7 @@
       "generated_at_utc": "2026-10-13T16:24:52+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 534 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 0.0 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 534 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 3.4 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "codal_channels": {
@@ -82,6 +82,10 @@
       "chart_id": "IRO7FANP00013",
       "price": 3760.0,
       "price_date": "2026-10-12",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "تارگت تکنیکال هنوز محاسبه نشده"
+      },
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 88.0,
@@ -237,6 +241,10 @@
       "chart_id": "IRO3IZIZ00013",
       "price": 13270.0,
       "price_date": "2026-10-12",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "تارگت تکنیکال هنوز محاسبه نشده"
+      },
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 86.0,
@@ -393,6 +401,10 @@
       "chart_id": "IRO1KHAZ00013",
       "price": 4770.0,
       "price_date": "2026-10-12",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "تارگت تکنیکال هنوز محاسبه نشده"
+      },
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 100.0,
@@ -545,6 +557,10 @@
       "chart_id": "IRO3RYHZ00013",
       "price": 12380.0,
       "price_date": "2026-10-12",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "تارگت تکنیکال هنوز محاسبه نشده"
+      },
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 94.0,
@@ -741,6 +757,10 @@
       "chart_id": "IRO1KPRS00013",
       "price": 21650.0,
       "price_date": "2026-10-12",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "تارگت تکنیکال هنوز محاسبه نشده"
+      },
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 89.0,
@@ -897,6 +917,10 @@
       "chart_id": "IRO3CHRZ00013",
       "price": 5960.0,
       "price_date": "2026-10-12",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "تارگت تکنیکال هنوز محاسبه نشده"
+      },
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 97.0,
@@ -1051,6 +1075,10 @@
       "chart_id": "IRO1JAMD00013",
       "price": 19750.0,
       "price_date": "2026-10-12",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "تارگت تکنیکال هنوز محاسبه نشده"
+      },
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 94.0,
@@ -1206,6 +1234,10 @@
       "chart_id": "IRO1RSAP00013",
       "price": 2028.0,
       "price_date": "2026-10-12",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "تارگت تکنیکال هنوز محاسبه نشده"
+      },
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 65.0,
@@ -1363,6 +1395,10 @@
       "chart_id": "IRO7LZIN00013",
       "price": 4500.0,
       "price_date": "2026-10-12",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "تارگت تکنیکال هنوز محاسبه نشده"
+      },
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 97.0,
@@ -1517,6 +1553,10 @@
       "chart_id": "IRO1SINA00013",
       "price": 33860.0,
       "price_date": "2026-10-12",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "تارگت تکنیکال هنوز محاسبه نشده"
+      },
       "data_age_days": 1,
       "technical_score": 100.0,
       "risk_adjusted_score": 97.0,
