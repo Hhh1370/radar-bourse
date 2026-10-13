@@ -10,6 +10,7 @@ on:
       - "data/technical_radar.json"
       - "data/fundamental_money_radar.json"
       - "data/codal_disclosures_latest.json"
+      - "data/fundai_financial_ratios.json"
 
 permissions:
   contents: write
@@ -70,8 +71,11 @@ jobs:
           ), "Composite score may be absent only when no nontechnical component exists"
           assert all(x.get("credit_assessment", {}).get("provisional_score_available_weight_pct", 0) <= 100 for x in rows)
           assert all(x.get("final_credit_grade") is None or x["credit_assessment"].get("final_rating_eligible") is True for x in rows)
-          if p["summary"]["fundamental_scored_count"] == 0:
-              assert p["summary"]["final_credit_grade_count"] == 0, "Final credit grades must remain withheld with no fundamental scores"
+          if p["summary"].get("fundamental_statement_scored_count", 0) == 0:
+              assert p["summary"]["final_credit_grade_count"] == 0, "Final credit grades must remain withheld without structured statement scores"
+          assert p["summary"].get("fundai_ratio_rows_available", 0) >= 500, "Fundai ratio snapshot is missing or too small"
+          assert p["summary"].get("fundai_ratio_matched_count", 0) >= 450, "Unexpectedly low ticker match count for the ratio snapshot"
+          assert p["summary"].get("fundai_ratio_scored_count", 0) >= 400, "Unexpectedly low number of ratio-based fundamental scores"
           expected = sorted(rows, key=lambda x: (-(float(x.get("credit_score")) if isinstance(x.get("credit_score"), (int,float)) else -1), -float(x.get("technical_rank_score") or x.get("risk_adjusted_score") or 0), -float(x.get("credit_confidence_score") or 0), str(x.get("symbol") or "")))
           assert [x.get("symbol") for x in rows] == [x.get("symbol") for x in expected], "Dashboard rows not sorted by the declared provisional ranking"
           print(f"DASHBOARD_DATA_VALID: {len(rows)} visible rows from pool {p['summary']['candidate_pool_ranked']}")
