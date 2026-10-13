@@ -108,12 +108,278 @@ def simplify_evidence(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+
+
+RATING_WEIGHTS = {
+    "fundamental": 30,
+    "earnings_quality": 15,
+    "technical": 25,
+    "money_flow": 20,
+    "projects": 10,
+}
+
+
+def metric_number(report: dict[str, Any], key: str):
+    value = (report.get("financial_metrics") or {}).get(key)
+    if not isinstance(value, dict):
+        return None
+    primary = value.get("primary_value_candidate")
+    return float(primary) if isinstance(primary, (int, float)) else None
+
+
+def calculate_earnings_quality(fundamental: dict[str, Any]) -> dict[str, Any]:
+    """Score earnings quality only from parsed structured report fields—not post keywords."""
+    reports = [
+        row for row in (fundamental.get("financial_reports") or [])
+        if isinstance(row, dict)
+        and isinstance(row.get("financial_metrics"), dict)
+        and isinstance(row.get("ratios"), dict)
+    ]
+    reports.sort(key=lambda row: str(row.get("date") or ""), reverse=True)
+    if not reports:
+        return {
+            "score": None,
+            "status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
+            "fields_observed": 0,
+            "report_date": "",
+            "evidence": [],
+        }
+
+    report = reports[0]
+    ratios = report.get("ratios") or {}
+    required_keys = (
+        "revenue", "net_profit", "operating_cash_flow", "total_assets",
+        "total_liabilities", "current_assets", "current_liabilities",
+    )
+    observed = [key for key in required_keys if metric_number(report, key) is not None]
+    net_profit = metric_number(report, "net_profit")
+    revenue = metric_number(report, "revenue")
+    operating_cash = metric_number(report, "operating_cash_flow")
+    margin = ratios.get("net_margin_pct")
+    cash_conversion = ratios.get("operating_cash_flow_to_net_profit")
+    leverage = ratios.get("liabilities_to_assets_pct")
+    current_ratio = ratios.get("current_ratio")
+
+    if len(observed) < 4 or net_profit is None or revenue in (None, 0):
+        return {
+            "score": None,
+            "status": "پوشش اقلام صورت مالی برای سنجش کیفیت سود ناکافی است",
+            "fields_observed": len(observed),
+            "report_date": str(report.get("date") or ""),
+            "evidence": [],
+        }
+
+    score = 50.0
+    evidence = []
+    if net_profit > 0:
+        score += 10; evidence.append("سود خالص مثبت در دادهٔ ساختاریافته")
+    else:
+        score -= 20; evidence.append("هشدار: سود خالص صفر یا منفی")
+    if operating_cash is not None:
+        if operating_cash > 0:
+            score += 15; evidence.append("جریان نقد عملیاتی مثبت")
+        else:
+            score -= 15; evidence.append("هشدار: جریان نقد عملیاتی غیرمثبت")
+    if isinstance(cash_conversion, (int, float)):
+        if cash_conversion >= 0.8:
+            score += 15; evidence.append("تبدیل سود به نقد مناسب (حداقل ۰٫۸)")
+        elif cash_conversion >= 0:
+            score += 5; evidence.append("تبدیل سود به نقد مثبت اما محدود")
+        else:
+            score -= 10; evidence.append("هشدار: جریان نقد با سود خالص هم‌جهت نیست")
+    if isinstance(margin, (int, float)):
+        if margin >= 15:
+            score += 10; evidence.append("حاشیه سود خالص حداقل ۱۵٪")
+        elif margin > 0:
+            score += 5; evidence.append("حاشیه سود خالص مثبت")
+        else:
+            score -= 10; evidence.append("حاشیه سود خالص منفی")
+    if isinstance(leverage, (int, float)):
+        if leverage <= 60:
+            score += 10; evidence.append("نسبت بدهی به دارایی حداکثر ۶۰٪")
+        elif leverage >= 85:
+            score -= 10; evidence.append("هشدار: نسبت بدهی به دارایی بالا")
+    if isinstance(current_ratio, (int, float)):
+        if current_ratio >= 1.2:
+            score += 10; evidence.append("نسبت جاری حداقل ۱٫۲")
+        elif current_ratio < 1:
+            score -= 10; evidence.append("هشدار: نسبت جاری کمتر از ۱")
+
+    return {
+        "score": round(max(0, min(100, score)), 1),
+        "status": "کیفیت سود مقدماتی از اقلام ساختاریافته؛ نیازمند کنترل دوره/واحد/حسابرسی",
+        "fields_observed": len(observed),
+        "report_date": str(report.get("date") or ""),
+        "report_title": shorten(report.get("title"), 220),
+        "evidence": evidence,
+        "coverage": round(len(observed) / len(required_keys), 2),
+        "audit_hint": "حسابرسی‌شده" if "حسابرسی شده" in norm(report.get("title", "")) else "وضعیت حسابرسی نیازمند بررسی",
+    }
+
+
+def score_project_evidence(fundamental: dict[str, Any], evidence_rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Do not award a project score until a report-level numeric score is explicitly validated."""
+    assessment = fundamental.get("project_assessment")
+    if isinstance(assessment, dict):
+        score = assessment.get("score")
+        validated = assessment.get("report_level_validated") is True or assessment.get("validated") is True
+        if isinstance(score, (int, float)) and validated:
+            return {
+                "score": round(max(0, min(100, float(score))), 1),
+                "status": "امتیاز طرح با دادهٔ عددی گزارش‌سطحی و پرچم اعتبارسنجی",
+                "validated": True,
+                "evidence_count": len(evidence_rows),
+            }
+    candidates = [
+        row for row in evidence_rows
+        if row.get("project")
+        and row.get("project_strength") in {"قوی", "متوسط"}
+        and row.get("codal_url")
+    ]
+    return {
+        "score": None,
+        "status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
+        "validated": False,
+        "evidence_count": len(candidates),
+    }
+
+
+def technical_quality(item: dict[str, Any]) -> float:
+    bars = item.get("history_bars") or {}
+    daily, weekly, monthly = bars.get("daily") or 0, bars.get("weekly") or 0, bars.get("monthly") or 0
+    age = item.get("data_age_days")
+    if not isinstance(age, (int, float)) or age < 0 or age > 10:
+        return 0.0
+    if daily < 200 or weekly < 26 or monthly < 12:
+        return 0.0
+    history_factor = min(1.0, daily / 500.0, weekly / 52.0, monthly / 24.0)
+    age_factor = 1.0 if age <= 3 else (0.85 if age <= 7 else 0.65)
+    return round(max(0, min(1, history_factor * age_factor)), 3)
+
+
+def valid_money_flow(fundamental: dict[str, Any]) -> bool:
+    rows = fundamental.get("money_flow_history_rows")
+    return (
+        fundamental.get("instrument_kind") == "common_equity"
+        and isinstance(fundamental.get("money_flow_score"), (int, float))
+        and fundamental.get("money_flow_full_year_coverage") is True
+        and isinstance(rows, (int, float)) and rows >= 200
+        and bool(fundamental.get("money_flow_latest_date"))
+        and not str(fundamental.get("money_flow_error") or "").strip()
+    )
+
+
+def credit_assessment(
+    tech_item: dict[str, Any],
+    fundamental: dict[str, Any],
+    evidence_rows: list[dict[str, Any]],
+    project_evidence: dict[str, Any],
+) -> dict[str, Any]:
+    """Return a provisional blended score and data-completeness confidence, not profit probability."""
+    technical_score = tech_item.get("technical_rank_score")
+    if not isinstance(technical_score, (int, float)):
+        technical_score = tech_item.get("risk_adjusted_score")
+    technical_score = float(technical_score) if isinstance(technical_score, (int, float)) else None
+    fundamental_score = fundamental.get("fundamental_score")
+    fundamental_score = float(fundamental_score) if isinstance(fundamental_score, (int, float)) else None
+    earnings = calculate_earnings_quality(fundamental)
+    earnings_score = earnings.get("score")
+    flow_ok = valid_money_flow(fundamental)
+    flow_score = float(fundamental["money_flow_score"]) if flow_ok else None
+    project_score = project_evidence.get("score")
+    project_score = float(project_score) if isinstance(project_score, (int, float)) and project_evidence.get("validated") is True else None
+
+    components = {
+        "fundamental": fundamental_score,
+        "earnings_quality": earnings_score,
+        "technical": technical_score,
+        "money_flow": flow_score,
+        "projects": project_score,
+    }
+    weights = {"fundamental": 30, "earnings_quality": 15, "technical": 25, "money_flow": 20, "projects": 10}
+    available_weight = sum(weights[key] for key, value in components.items() if isinstance(value, (int, float)))
+    provisional_score = (
+        round(sum(weights[key] * float(value) for key, value in components.items() if isinstance(value, (int, float))) / available_weight, 1)
+        if available_weight else None
+    )
+
+    flow_rows = fundamental.get("money_flow_history_rows")
+    flow_quality = 1.0 if flow_ok else (
+        0.5 if isinstance(fundamental.get("money_flow_score"), (int, float))
+        and isinstance(flow_rows, (int, float)) and flow_rows >= 60 else 0.0
+    )
+    t_quality = technical_quality(tech_item)
+    parsed_report = any(
+        isinstance(row, dict) and isinstance(row.get("financial_metrics"), dict)
+        and isinstance(row.get("ratios"), dict)
+        for row in (fundamental.get("financial_reports") or [])
+    )
+    fund_quality = 1.0 if fundamental_score is not None and parsed_report else 0.0
+    earnings_quality = min(1.0, float(earnings.get("coverage") or 0)) if earnings_score is not None else 0.0
+    project_quality = 1.0 if project_score is not None else (
+        0.35 if project_evidence.get("evidence_count", 0) > 0 else 0.0
+    )
+    confidence_factors = {
+        "fundamental": fund_quality,
+        "earnings_quality": earnings_quality,
+        "technical": t_quality,
+        "money_flow": flow_quality,
+        "projects": project_quality,
+    }
+    confidence_score = round(sum(weights[key] * confidence_factors[key] for key in weights), 1)
+
+    final_ready = (
+        fundamental_score is not None and earnings_score is not None
+        and technical_score is not None and flow_score is not None
+        and project_score is not None and confidence_score >= 75
+    )
+    if final_ready:
+        reliability_label = "پوشش مناسب برای بازبینی نهایی"
+        rating_status = "امتیاز تلفیقی قابل محاسبه؛ نیازمند بازبینی انسانی و آزمون تاریخی"
+    elif confidence_score >= 60:
+        reliability_label = "متوسط؛ داده‌های مهم ناقص"
+        rating_status = "موقت؛ رتبهٔ اعتباری نهایی صادر نشده"
+    elif confidence_score >= 35:
+        reliability_label = "پایین؛ اتکا محدود"
+        rating_status = "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست"
+    else:
+        reliability_label = "بسیار پایین؛ داده ناکافی"
+        rating_status = "تعلیق رتبهٔ نهایی؛ فقط غربالگری تکنیکال/دادهٔ محدود"
+
+    return {
+        "provisional_score": provisional_score,
+        "provisional_score_available_weight_pct": round(available_weight, 1),
+        "component_scores": components,
+        "component_weights_pct": weights,
+        "earnings_quality_status": earnings.get("status"),
+        "earnings_quality_evidence": earnings.get("evidence", []),
+        "earnings_quality_fields_observed": earnings.get("fields_observed", 0),
+        "earnings_quality_report_date": earnings.get("report_date", ""),
+        "project_score": project_score,
+        "project_score_status": project_evidence.get("status"),
+        "rating_confidence_score": confidence_score,
+        "rating_confidence_label": reliability_label,
+        "rating_confidence_is_data_coverage_not_profit_probability": True,
+        "confidence_factors_pct": {key: round(value * 100, 1) for key, value in confidence_factors.items()},
+        "final_rating_eligible": final_ready,
+        "final_rating_status": rating_status,
+        "final_credit_grade": None if not final_ready else (
+            "A" if provisional_score >= 80 else
+            "B" if provisional_score >= 70 else
+            "C" if provisional_score >= 60 else "D"
+        ),
+        "provisional_input_components": [key for key, value in components.items() if isinstance(value, (int, float))],
+    }
+
+
 def main() -> None:
     tech = read_json(TECH_FILE)
     fund = read_json(FUND_FILE)
     codal = read_json(CODAL_FILE)
 
-    tech_rows = tech.get("top_50_for_review", [])
+    tech_rows = tech.get("all_eligible_ranked")
+    if not isinstance(tech_rows, list) or not tech_rows:
+        tech_rows = tech.get("top_50_for_review", [])
     fund_rows = fund.get("stocks", [])
     evidence_rows = codal.get("channel_evidence", [])
     announcement_rows = codal.get("announcements", [])
@@ -126,10 +392,9 @@ def main() -> None:
     if not isinstance(announcement_rows, list):
         announcement_rows = []
 
-    # The existing technical file stores up to 50 already-ranked, eligible
-    # instruments. The dashboard shows the first five as technical candidates
-    # and the next five as technical watchlist entries—not fundamental picks.
-    ranked = tech_rows[:10]
+    # Score every eligible instrument before forming the provisional 5+5.
+    # Final investment/credit grades remain withheld when material data layers are missing.
+    ranked = tech_rows
     fund_map = index_by_symbol(fund_rows)
     evidence_map: dict[str, list[dict[str, Any]]] = {}
     for item in evidence_rows:
@@ -140,16 +405,19 @@ def main() -> None:
         items.sort(key=lambda x: str(x.get("published_at") or ""), reverse=True)
 
     candidates = []
-    for idx, item in enumerate(ranked, start=1):
+    for item in ranked:
         symbol = str(item.get("symbol") or "").strip()
         key = norm(symbol)
         fundamental = fund_map.get(key, {})
         technical_score = number(item.get("technical_score"), 1)
         adjusted_score = number(item.get("risk_adjusted_score"), 1)
+        symbol_evidence = evidence_map.get(key, [])
+        project_assessment = score_project_evidence(fundamental, symbol_evidence)
+        rating = credit_assessment(item, fundamental, symbol_evidence, project_assessment)
         base = {
-            "rank": idx,
-            "bucket": "main" if idx <= 5 else "watch",
-            "bucket_label": "نامزد تکنیکال برای بررسی" if idx <= 5 else "تحت نظر تکنیکال",
+            "rank": None,
+            "bucket": "watch",
+            "bucket_label": "نامزد موقت رادار",
             "symbol": symbol,
             "company": str(item.get("company") or fundamental.get("company") or symbol),
             "exchange": str(item.get("exchange") or ""),
@@ -159,6 +427,7 @@ def main() -> None:
             "data_age_days": item.get("data_age_days"),
             "technical_score": technical_score,
             "risk_adjusted_score": adjusted_score,
+            "technical_rank_score": number(item.get("technical_rank_score"), 2),
             "relative_momentum_score": number(item.get("relative_momentum_score"), 2),
             "momentum_pct": {
                 "daily_20": number((item.get("momentum_pct") or {}).get("daily_20_period"), 2),
@@ -173,8 +442,17 @@ def main() -> None:
             "risk_flags": item.get("risk_flags", []) if isinstance(item.get("risk_flags"), list) else [],
             "fundamental_score": number(fundamental.get("fundamental_score"), 2),
             "fundamental_status": str(fundamental.get("fundamental_status") or "داده‌ای برای این نماد در منبع بنیادی موجود نیست"),
-            "money_flow_score": number(fundamental.get("money_flow_score"), 2),
+            "money_flow_score": number(fundamental.get("money_flow_score"), 2) if valid_money_flow(fundamental) else None,
             "money_flow_status": str(fundamental.get("money_flow_status") or "داده‌ای برای این نماد در منبع پول حقیقی موجود نیست"),
+            "instrument_kind": str(fundamental.get("instrument_kind") or "unconfirmed"),
+            "credit_assessment": rating,
+            "credit_score": rating.get("provisional_score"),
+            "credit_confidence_score": rating.get("rating_confidence_score"),
+            "credit_confidence_label": rating.get("rating_confidence_label"),
+            "final_credit_grade": rating.get("final_credit_grade"),
+            "final_rating_status": rating.get("final_rating_status"),
+            "earnings_quality_score": rating.get("component_scores", {}).get("earnings_quality"),
+            "project_score": rating.get("project_score"),
             "money_flow_history_rows": fundamental.get("money_flow_history_rows"),
             "money_flow_full_year_coverage": fundamental.get("money_flow_full_year_coverage") is True,
             "money_flow_latest_date": str(fundamental.get("money_flow_latest_date") or ""),
@@ -198,11 +476,33 @@ def main() -> None:
             "technical_available": technical_score is not None,
             "fundamental_scored": base["fundamental_score"] is not None,
             "money_flow_scored": base["money_flow_score"] is not None,
-            "money_flow_12m_verified": base["money_flow_full_year_coverage"] and (base["money_flow_history_rows"] or 0) >= 200,
-            "channel_evidence_count": len(evidence_map.get(key, [])),
+            "money_flow_12m_verified": valid_money_flow(fundamental),
+            "channel_evidence_count": len(symbol_evidence),
+            "parsed_financial_report_count": sum(
+                1 for report in (fundamental.get("financial_reports") or [])
+                if isinstance(report, dict)
+                and isinstance(report.get("financial_metrics"), dict)
+                and isinstance(report.get("ratios"), dict)
+            ),
+            "final_credit_grade_available": rating.get("final_rating_eligible") is True,
         }
         candidates.append(base)
 
+    candidates.sort(
+        key=lambda row: (
+            -(float(row.get("credit_score")) if isinstance(row.get("credit_score"), (int, float)) else -1.0),
+            -float(row.get("technical_rank_score") or row.get("risk_adjusted_score") or 0),
+            -float(row.get("credit_confidence_score") or 0),
+            str(row.get("symbol") or ""),
+        )
+    )
+    for index, row in enumerate(candidates, start=1):
+        row["rank"] = index
+        row["bucket"] = "main" if index <= 5 else "watch"
+        row["bucket_label"] = "۵ نامزد موقت رادار" if index <= 5 else "۵ نماد تحت‌نظر موقت"
+
+    final_grade_count = sum(1 for x in candidates if x.get("final_credit_grade") is not None)
+    reliable_confidence_count = sum(1 for x in candidates if (x.get("credit_confidence_score") or 0) >= 75)
     top_scores_count = sum(1 for x in fund_rows if number(x.get("fundamental_score")) is not None)
     full_year_flow_count = sum(
         1 for x in fund_rows
@@ -247,10 +547,13 @@ def main() -> None:
             "technical_analyzed": tech.get("analyzed_count"),
             "technical_eligible": tech.get("eligible_for_long_term_ranking"),
             "technical_errors": tech.get("analysis_errors"),
-            "technical_candidates_shown": len(candidates),
-            "technical_main_count": sum(1 for x in candidates if x["bucket"] == "main"),
-            "technical_watch_count": sum(1 for x in candidates if x["bucket"] == "watch"),
+            "technical_candidates_shown": min(10, len(candidates)),
+            "technical_main_count": min(5, len(candidates)),
+            "technical_watch_count": max(0, min(5, len(candidates) - 5)),
+            "candidate_pool_ranked": len(candidates),
             "fundamental_scored_count": top_scores_count,
+            "final_credit_grade_count": final_grade_count,
+            "high_confidence_count": reliable_confidence_count,
             "money_flow_12m_scored_count": full_year_flow_count,
             "codal_disclosure_links": len(announcement_rows),
             "channel_evidence_rows": len(evidence_rows),
@@ -281,11 +584,15 @@ def main() -> None:
         "methodology": {
             "main_and_watch": "۵ ردیف اول و ۵ ردیف بعدیِ خروجی تکنیکال فعلی؛ این تقسیم‌بندی، انتخاب نهایی بنیادی نیست.",
             "technical_score": "امتیاز تکنیکال و جریمهٔ گرمای روند از فایل رادار تکنیکال خوانده می‌شود. امتیاز نسبی برای شکستن تساوی استفاده می‌شود و هنوز بک‌تست نشده است.",
-            "fundamental_score": "فقط در صورت وجود امتیاز محاسبه‌شده نشان داده می‌شود. دادهٔ گمشده به صفر یا وضعیت خنثی تبدیل نشده است.",
-            "money_flow": "پوشش ۱۲ماهه فقط وقتی تأیید می‌شود که منبع هر دو پوشش و حداقل ۲۰۰ ردیف تاریخچه را گزارش کرده باشد؛ برای امتیاز معتبر، score هم باید موجود باشد.",
+            "credit_model": "وزن‌های امتیاز تلفیقی: بنیادی ۳۰٪، کیفیت سود ۱۵٪، تکنیکال ۲۵٪، پول حقیقی ۲۰٪ و طرح توسعه ۱۰٪. فقط اجزای عددی معتبر در امتیاز موقت وارد می‌شوند؛ وزن پوشش موجود جداگانه اعلام می‌شود.",
+            "final_rating_gate": "رتبهٔ نهایی فقط در صورت موجود بودن امتیاز بنیادی، کیفیت سود ساختاریافته، تکنیکال، پول حقیقی ۱۲ماهه و امتیاز کمی اعتبارسنجی‌شده طرح‌ها و اطمینان پوشش حداقل ۷۵ صادر می‌شود. در غیر این صورت رتبه معلق می‌ماند.",
+            "confidence": "امتیاز اطمینان، سنجهٔ پوشش و کیفیت داده است؛ احتمال سود یا احتمال درست بودن پیش‌بینی نیست.",
+            "earnings_quality": "فقط از اقلام عددی خوانده‌شده از صورت مالی ساختاریافته محاسبه می‌شود؛ کلیدواژه‌های کانال در امتیاز کیفیت سود وارد نمی‌شوند.",
+            "money_flow": "فقط وقتی در امتیاز تلفیقی وارد می‌شود که نماد سهام عادی، تاریخچه حداقل ۲۰۰ جلسه، پرچم پوشش سالانه، تاریخ آخرین داده و امتیاز معتبر داشته باشد.",
             "channel_evidence": "خلاصه‌های متنی تلگرام، شواهد خام هستند و جایگزین تطبیق با صورت مالی/اطلاعیهٔ رسمی نیستند.",
         },
-        "candidates": candidates,
+        "candidates": candidates[:10],
+        "all_candidate_count": len(candidates),
         "recent_evidence": [
             simplify_evidence(x)
             for x in sorted(
@@ -300,16 +607,25 @@ def main() -> None:
     OUTPUT_FILE.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     # Re-read and validate what the app will consume.
     check = json.loads(OUTPUT_FILE.read_text(encoding="utf-8"))
-    assert len(check.get("candidates", [])) == len(candidates)
-    assert sum(1 for x in check["candidates"] if x["bucket"] == "main") <= 5
-    assert sum(1 for x in check["candidates"] if x["bucket"] == "watch") <= 5
+    assert len(check.get("candidates", [])) == min(10, len(candidates))
+    assert sum(1 for x in check["candidates"] if x["bucket"] == "main") == min(5, len(candidates))
+    assert sum(1 for x in check["candidates"] if x["bucket"] == "watch") == max(0, min(5, len(candidates) - 5))
+    assert all("credit_confidence_score" in x for x in check["candidates"])
+    assert all("final_credit_grade" in x for x in check["candidates"])
+    if check["summary"]["fundamental_scored_count"] == 0:
+        assert all(x["final_credit_grade"] is None for x in check["candidates"]), "Cannot issue final rating without fundamental scores"
     print("RADAR_DASHBOARD_DATA_SUMMARY")
     print(f"TECHNICAL_UNIVERSE:{check['summary']['universe_count']}")
     print(f"TECHNICAL_ELIGIBLE:{check['summary']['technical_eligible']}")
     print(f"TECHNICAL_MAIN:{check['summary']['technical_main_count']}")
     print(f"TECHNICAL_WATCH:{check['summary']['technical_watch_count']}")
+    print(f"CANDIDATE_POOL_RANKED:{check['summary']['candidate_pool_ranked']}")
     print(f"FUNDAMENTAL_SCORED:{check['summary']['fundamental_scored_count']}")
     print(f"MONEY_FLOW_12M_SCORED:{check['summary']['money_flow_12m_scored_count']}")
+    print(f"FINAL_CREDIT_GRADES:{check['summary']['final_credit_grade_count']}")
+    print(f"HIGH_CONFIDENCE_COUNT:{check['summary']['high_confidence_count']}")
+    for row in check["candidates"]:
+        print(f"RANK:{row['rank']} SYMBOL:{row['symbol']} SCORE:{row.get('credit_score')} CONFIDENCE:{row.get('credit_confidence_score')} FINAL_GRADE:{row.get('final_credit_grade')} STATUS:{row.get('final_rating_status')}")
     print(f"CHANNEL_EVIDENCE:{check['summary']['channel_evidence_rows']}")
     print(f"OUTPUT:{OUTPUT_FILE.relative_to(ROOT)}")
     print(f"STATUS:{check['dashboard_status']}")
