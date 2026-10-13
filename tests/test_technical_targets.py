@@ -75,16 +75,24 @@ class TechnicalTargetTests(unittest.TestCase):
             stop = setup["stop_loss"]
             target1 = setup["target_1"]
             self.assertGreaterEqual(setup["risk_reward_tp1"], 1.3)
+            self.assertLessEqual(abs(entry - result["current_price"]), 0.0001)
+            self.assertLessEqual(abs(target1 - entry), 5 * result["atr14"])
             if direction == "buy":
                 self.assertLess(stop, entry)
                 self.assertGreater(target1, entry)
+                # An emitted setup must use the closest local resistance, not skip it.
+                self.assertEqual(target1, result["resistance_levels"][0])
                 if setup["target_2"] is not None:
                     self.assertGreater(setup["target_2"], target1)
+                    self.assertLessEqual(setup["target_2"] - entry, 5 * result["atr14"])
             else:
                 self.assertGreater(stop, entry)
                 self.assertLess(target1, entry)
+                # An emitted setup must use the closest local support, not skip it.
+                self.assertEqual(target1, result["support_levels"][0])
                 if setup["target_2"] is not None:
                     self.assertLess(setup["target_2"], target1)
+                    self.assertLessEqual(entry - setup["target_2"], 5 * result["atr14"])
 
 
 if __name__ == "__main__":
