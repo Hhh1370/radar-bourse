@@ -1,0 +1,62 @@
+name: Probe Direct TSETMC Flow Data
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/probe_tsetmc_flow.py"
+      - ".github/workflows/probe-tsetmc-flow.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: direct-tsetmc-flow-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate Python syntax
+        run: python -m py_compile scripts/probe_tsetmc_flow.py
+
+      - name: Probe a few TSETMC symbols and recent trading dates
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python scripts/probe_tsetmc_flow.py
+
+      - name: Commit probe report
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s data/tsetmc_flow_probe.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/tsetmc_flow_probe.json
+          if git diff --cached --quiet; then
+            echo "TSETMC probe report unchanged."
+          else
+            git commit -m "Record direct TSETMC flow probe"
+            git push
+          fi
+
+      - name: Upload diagnostic report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsetmc-flow-probe
+          path: data/tsetmc_flow_probe.json
+          if-no-files-found: warn
+          retention-days: 14
