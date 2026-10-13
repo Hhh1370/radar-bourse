@@ -989,7 +989,7 @@ def main() -> None:
             "fundamental_ratio_report_age_days": ratio.get("report_age_days"),
             "money_flow_scored": base["money_flow_score"] is not None,
             "money_flow_12m_verified": valid_money_flow(fundamental),
-            "channel_evidence_count": len(symbol_evidence),
+            "channel_evidence_count": len(display_evidence_map.get(key, [])),
             "parsed_financial_report_count": sum(
                 1 for report in (fundamental.get("financial_reports") or [])
                 if isinstance(report, dict)
