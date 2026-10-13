@@ -1,0 +1,56 @@
+{
+  "generated_at_utc": "2026-10-13T15:45:36+00:00",
+  "purpose": "Public front-end source probe; no login, no guessed endpoint requests, no paid API.",
+  "landing_page": {
+    "url": "https://fundai.ir/",
+    "effective_url": "https://fundai.ir/",
+    "http_status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "body_bytes": 43839,
+    "elapsed_seconds": 0.74,
+    "error": "",
+    "title": "فاندای | سایت تحلیل بنیادی رایگان بورس تهران و فرابورس",
+    "linked_script_count": 3,
+    "scripts_inspected": 3
+  },
+  "static_assets": [
+    {
+      "url": "https://fundai.ir/assets/js/index-CDu1f7JE.js",
+      "http_status": 200,
+      "body_bytes": 402586,
+      "content_type": "application/javascript; charset=utf-8",
+      "elapsed_seconds": 0.79,
+      "error": "",
+      "api_path_mentions": [],
+      "contains_fundai_stock_terms": true
+    },
+    {
+      "url": "https://fundai.ir/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js",
+      "http_status": 200,
+      "body_bytes": 1239,
+      "content_type": "application/javascript",
+      "elapsed_seconds": 0.09,
+      "error": "",
+      "api_path_mentions": [],
+      "contains_fundai_stock_terms": false
+    },
+    {
+      "url": "https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920",
+      "http_status": 200,
+      "body_bytes": 31679,
+      "content_type": "text/javascript;charset=UTF-8",
+      "elapsed_seconds": 0.06,
+      "error": "",
+      "api_path_mentions": [],
+      "contains_fundai_stock_terms": false
+    }
+  ],
+  "candidate_public_routes_seen_in_source": [],
+  "conclusion": {
+    "landing_page_reachable": true,
+    "static_js_reachable_count": 3,
+    "routes_found_count": 0,
+    "status": "DISCOVERY_ONLY",
+    "note": "A route string found in a public JS bundle is not proof it is public or suitable; test only explicit documented public routes, and never bypass authentication."
+  }
+}
