@@ -30,7 +30,7 @@ USER_AGENT = (
 REQUIRED_FIELDS = ("company", "report_date", "price", "eps", "tsetmc_id")
 METRIC_FIELDS = (
     "roe_ttm", "roa_ttm", "net_profit_margin_ttm",
-    "pe_ttm", "ps_ttm", "pb", "debt_to_assets",
+    "pe_ttm", "ps_ttm", "pb", "debt_to_assets", "debt_to_equity",
 )
 
 
