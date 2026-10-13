@@ -1,4 +1,4 @@
-name: Probe My Codal Statements
+name: Probe My Codal and Official Codal API
 
 on:
   workflow_dispatch:
@@ -7,98 +7,112 @@ permissions:
   contents: read
 
 jobs:
-  probe-mycodal:
+  probe-codal:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Check public My Codal page and discover API assets
+      - name: Probe Codal endpoints without failing on one blocked host
         shell: bash
         run: |
           python - <<'PY'
-          import re
-          import sys
+          import json
           import urllib.error
           import urllib.parse
           import urllib.request
-          from html.parser import HTMLParser
+          from xml.etree import ElementTree
 
-          PAGE = "https://my.codal.ir/fa/statements/?page=1"
-          UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/130 Safari/537.36"
+          UA = (
+              "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+          )
+          SYMBOL = "فملی"
+          params = {
+              "Audited": "true",
+              "AuditorRef": "-1",
+              "Category": "1",
+              "Childs": "false",
+              "CompanyState": "0",
+              "CompanyType": "-1",
+              "Consolidatable": "true",
+              "IsNotAudited": "false",
+              "Isic": "-1",
+              "Length": "5",
+              "LetterCode": "",
+              "LetterType": "-1",
+              "Mains": "true",
+              "NotAudited": "false",
+              "NotConsolidatable": "true",
+              "PageNumber": "1",
+              "Publisher": "false",
+              "Symbol": SYMBOL,
+              "TracingNo": "-1",
+              "search": "true",
+          }
+          query_url = (
+              "https://search.codal.ir/api/search/v2/q?"
+              + urllib.parse.urlencode(params)
+          )
+          endpoints = [
+              ("CODAL_SEARCH_API", query_url, "application/json, application/xml, */*"),
+              ("CODAL_COMPANIES_API", "https://search.codal.ir/api/search/v1/companies", "application/json, */*"),
+              ("CODAL_MAIN_SITE", "https://www.codal.ir/", "text/html, */*"),
+              ("MY_CODAL_STATEMENTS", "https://my.codal.ir/fa/statements/?page=1", "text/html, */*"),
+          ]
 
-          class PageParser(HTMLParser):
-              def __init__(self):
-                  super().__init__()
-                  self.scripts = []
-                  self.links = []
-                  self.title_parts = []
-                  self.in_title = False
-              def handle_starttag(self, tag, attrs):
-                  a = dict(attrs)
-                  if tag.lower() == "script" and a.get("src"):
-                      self.scripts.append(urllib.parse.urljoin(PAGE, a["src"]))
-                  if tag.lower() == "a" and a.get("href"):
-                      href = urllib.parse.urljoin(PAGE, a["href"])
-                      if any(k in href.lower() for k in ("statement", "report", "api", "search")):
-                          self.links.append(href)
-                  if tag.lower() == "title":
-                      self.in_title = True
-              def handle_endtag(self, tag):
-                  if tag.lower() == "title":
-                      self.in_title = False
-              def handle_data(self, data):
-                  if self.in_title:
-                      self.title_parts.append(data.strip())
-
-          def get(url, timeout=15, cap=3_000_000):
-              req = urllib.request.Request(url, headers={
-                  "User-Agent": UA,
-                  "Accept": "text/html,application/json,application/javascript,*/*",
-                  "Referer": "https://my.codal.ir/",
-              })
-              with urllib.request.urlopen(req, timeout=timeout) as res:
-                  body = res.read(cap)
-                  return res.status, res.geturl(), res.headers.get("Content-Type", ""), body
-
-          print("Probing public My Codal statements page...")
-          try:
-              status, final_url, content_type, body = get(PAGE)
-          except Exception as exc:
-              print(f"MY_CODAL_PAGE_ERROR: {type(exc).__name__}: {str(exc)[:300]}")
-              sys.exit(1)
-
-          print(f"MY_CODAL_HTTP_STATUS: {status}")
-          print(f"MY_CODAL_FINAL_URL: {final_url}")
-          print(f"MY_CODAL_CONTENT_TYPE: {content_type}")
-          print(f"MY_CODAL_HTML_BYTES: {len(body)}")
-          text = body.decode("utf-8", errors="replace")
-          parser = PageParser()
-          parser.feed(text)
-          print(f"MY_CODAL_PAGE_TITLE: {' '.join(parser.title_parts)[:180]}")
-          print(f"MY_CODAL_SCRIPT_ASSETS: {len(parser.scripts)}")
-          print(f"MY_CODAL_STATEMENTS_TEXT_PRESENT: {any(x in text.lower() for x in ('صورت مالی', 'صورت‌های مالی', 'statement'))}")
-
-          candidates = set()
-          pattern = re.compile(r'''["'`]([^"'`\s]{1,220})["'`]''')
-          interesting = ("/api/", "api/", "statement", "statements", "financial", "issuer", "report", "search")
-          same_origin_scripts = [u for u in dict.fromkeys(parser.scripts) if urllib.parse.urlparse(u).netloc == "my.codal.ir"][:12]
-          for script_url in same_origin_scripts:
+          def probe(name, url, accept):
+              req = urllib.request.Request(
+                  url,
+                  headers={
+                      "User-Agent": UA,
+                      "Accept": accept,
+                      "Accept-Language": "fa-IR,fa;q=0.9,en;q=0.8",
+                      "Referer": "https://www.codal.ir/",
+                      "Connection": "close",
+                  },
+                  method="GET",
+              )
               try:
-                  _, _, js_type, js_body = get(script_url, timeout=8, cap=2_000_000)
-                  js = js_body.decode("utf-8", errors="replace")
-                  for match in pattern.findall(js):
-                      val = match.replace("\\/", "/")
-                      low = val.lower()
-                      if any(token in low for token in interesting) and ("/" in val or "api" in low):
-                          if len(val) < 180:
-                              candidates.add(val)
+                  with urllib.request.urlopen(req, timeout=12) as response:
+                      body = response.read(1_500_000)
+                      content_type = response.headers.get("Content-Type", "")
+                      print(f"{name}_STATUS: {response.status}")
+                      print(f"{name}_FINAL_URL: {response.geturl()[:240]}")
+                      print(f"{name}_CONTENT_TYPE: {content_type}")
+                      print(f"{name}_BYTES_READ: {len(body)}")
+                      sample = body.decode("utf-8-sig", errors="replace").strip()
+                      print(f"{name}_SAMPLE: {sample[:180].replace(chr(10), ' ')}")
+                      low = sample.lower()
+                      if name == "CODAL_SEARCH_API":
+                          parsed = False
+                          try:
+                              data = json.loads(sample)
+                              parsed = True
+                              if isinstance(data, dict):
+                                  print(f"{name}_JSON_KEYS: {','.join(list(data.keys())[:20])}")
+                                  letters = data.get("Letters") or data.get("letters") or []
+                                  print(f"{name}_LETTER_ROWS: {len(letters) if isinstance(letters, list) else 'not-a-list'}")
+                                  if isinstance(letters, list) and letters:
+                                      print(f"{name}_FIRST_TITLE: {str(letters[0].get('Title', ''))[:160]}")
+                              elif isinstance(data, list):
+                                  print(f"{name}_JSON_ROWS: {len(data)}")
+                          except Exception:
+                              pass
+                          if not parsed and sample.startswith("<"):
+                              try:
+                                  root = ElementTree.fromstring(sample)
+                                  print(f"{name}_XML_ROOT: {root.tag}")
+                                  print(f"{name}_XML_ROWS: {len(list(root))}")
+                              except Exception as exc:
+                                  print(f"{name}_PARSE_NOTE: {type(exc).__name__}")
+                      print(f"{name}_OK: True")
               except Exception as exc:
-                  print(f"ASSET_WARNING: {script_url.rsplit('/', 1)[-1]}: {type(exc).__name__}")
+                  print(f"{name}_OK: False")
+                  print(f"{name}_ERROR: {type(exc).__name__}: {str(exc)[:260]}")
 
-          print("MY_CODAL_RELEVANT_LINKS:")
-          for item in list(dict.fromkeys(parser.links))[:12]:
-              print(f"  {item[:220]}")
-          print("MY_CODAL_API_CANDIDATES:")
-          for item in sorted(candidates)[:35]:
-              print(f"  {item}")
-          print("My Codal probe completed. This workflow only checks access; it does not run the 741-symbol scan.")
+          print("Starting endpoint checks; one failed host will not stop the probe.")
+          for name, url, accept in endpoints:
+              print(f"--- {name} ---")
+              probe(name, url, accept)
+          print("PROBE_FINISHED: True")
+          print("Note: this is only a connectivity check; no full-universe scan was run.")
           PY
