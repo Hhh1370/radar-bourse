@@ -101,6 +101,27 @@ def main():
         time.sleep(0.15)
 
     combined="\n".join(all_text)
+    # Capture small source excerpts around actual request functions and data path
+    # strings to understand the public app's client wiring without guessing endpoints.
+    source_contexts = {}
+    combined_lower = combined.lower()
+    for needle in ("fetch(", "axios", "baseurl", "xmlhttprequest", "graphql", "/api", "stock", "financial", "ratio", "filter", "statement", "report"):
+        contexts = []
+        start = 0
+        while len(contexts) < 8:
+            at = combined_lower.find(needle, start)
+            if at < 0: break
+            lo, hi = max(0, at - 220), min(len(combined), at + 360)
+            contexts.append(combined[lo:hi].replace("\\n", " ")[:600])
+            start = at + len(needle)
+        if contexts: source_contexts[needle] = contexts
+    quoted_route_strings = []
+    for match in re.finditer(r"""["']([^"'\\r\\n]{1,180})["']""", combined):
+        value = match.group(1)
+        low = value.lower()
+        if any(term in low for term in ("api", "graphql", "trpc", "endpoint", "financial", "statement", "ratio", "filter", "stock")):
+            if value not in quoted_route_strings:
+                quoted_route_strings.append(value)
     unique_api=[]
     for pat in [r"""["'](/api/[A-Za-z0-9_?&=./{}\-]+)["']""",
                 r"""["'](/(?:graphql|trpc|data)/[A-Za-z0-9_?&=./{}\-]+)["']"""]:
@@ -118,6 +139,8 @@ def main():
             "scripts_inspected":len(assets)
         },
         "static_assets":assets,
+        "source_contexts":source_contexts,
+        "quoted_data_route_or_endpoint_strings":quoted_route_strings[:250],
         "candidate_public_routes_seen_in_source":unique_api[:250],
         "conclusion":{
             "landing_page_reachable":root["http_status"]==200 and root["body_bytes"]>1000,
