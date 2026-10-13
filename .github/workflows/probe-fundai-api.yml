@@ -1,0 +1,63 @@
+name: Probe Fundai Read-Only API
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/probe_fundai_api.py"
+      - ".github/workflows/probe-fundai-api.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fundai-readonly-api-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate probe syntax
+        run: python -m py_compile scripts/probe_fundai_api.py
+
+      - name: Check public read-only API routes
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python -u scripts/probe_fundai_api.py
+
+      - name: Commit API probe result
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s data/fundai_api_probe.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fundai_api_probe.json
+          if git diff --cached --quiet; then
+            echo "Fundai API probe unchanged."
+          else
+            git commit -m "Record Fundai read-only API probe"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Upload diagnostic report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fundai-readonly-api-probe
+          path: data/fundai_api_probe.json
+          if-no-files-found: warn
+          retention-days: 14
