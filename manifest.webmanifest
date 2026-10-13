@@ -1,0 +1,20 @@
+{
+  "name": "رادار بورس ایران",
+  "short_name": "رادار بورس",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d1410",
+  "theme_color": "#111a16",
+  "description": "غربالگری داده‌محور بازار بورس و فرابورس ایران",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
