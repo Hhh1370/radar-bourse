@@ -62,6 +62,7 @@ def fetch(url):
                 "data_keys":list(payload["data"].keys())[:40] if isinstance(payload,dict) and isinstance(payload.get("data"),dict) else [],
                 "data_count":len(payload.get("data")) if isinstance(payload,dict) and isinstance(payload.get("data"),list) else None,
                 "body_excerpt":text[:900] if payload is None else "",
+                "_payload":payload,
             }
         except subprocess.TimeoutExpired:
             temp.flush()
@@ -78,15 +79,65 @@ def main():
     OUT.parent.mkdir(parents=True,exist_ok=True)
     results=[]
     for name,url in ROUTES:
-        row={"name":name,**fetch(url)}
+        raw=fetch(url)
+        payload=raw.pop("_payload", None)
+        row={"name":name,**raw}
+        if name == "fundamental_filters_access" and isinstance(payload, dict):
+            row["public_access_metadata"] = payload
+        if name == "fundamental_ratio_filters_no_parameters" and isinstance(payload, dict):
+            sample_rows = payload.get("results") if isinstance(payload.get("results"), list) else []
+            row["results_count"] = payload.get("count")
+            row["next_page_url"] = payload.get("next")
+            row["previous_page_url"] = payload.get("previous")
+            row["columns"] = payload.get("columns") if isinstance(payload.get("columns"), list) else payload.get("columns")
+            row["first_rows_sample"] = sample_rows[:8]
+            row["first_row_keys"] = list(sample_rows[0].keys()) if sample_rows and isinstance(sample_rows[0], dict) else []
+        if name == "financial_packages" and isinstance(payload, (dict, list)):
+            row["packages_shape"] = list(payload.keys()) if isinstance(payload,dict) else f"list:{len(payload)}"
+            row["packages_sample"] = payload[:3] if isinstance(payload,list) else {k:payload[k] for k in list(payload)[:10]}
         results.append(row)
-        print(f"ENDPOINT:{name} HTTP:{row['http_status']} BYTES:{row['body_bytes']} JSON:{row['json_parsed']} SUCCESS:{row['json_success']} MESSAGE:{row['response_message'][:150]} ERROR:{row['error']}")
+        print(f"ENDPOINT:{name} HTTP:{row['http_status']} BYTES:{row['body_bytes']} JSON:{row['json_parsed']} RESULTS:{row.get('results_count')} NEXT:{bool(row.get('next_page_url'))} MESSAGE:{row['response_message'][:150]} ERROR:{row['error']}")
         time.sleep(0.2)
-    ok=[x for x in results if x["http_status"]==200 and x["json_success"] is True]
+
+    # Follow only the pagination URL explicitly returned by the live endpoint;
+    # cap to 3 pages for schema discovery, and never fabricate query parameters.
+    ratio_result=next((x for x in results if x["name"]=="fundamental_ratio_filters_no_parameters"),None)
+    pages=[]
+    next_url=ratio_result.get("next_page_url") if ratio_result else None
+    page_attempt=0
+    while next_url and page_attempt<2:
+        page_attempt += 1
+        raw=fetch(next_url)
+        payload=raw.pop("_payload",None)
+        page={
+            "requested_url":next_url,
+            "http_status":raw["http_status"],
+            "body_bytes":raw["body_bytes"],
+            "elapsed_seconds":raw["elapsed_seconds"],
+            "error":raw["error"],
+            "response_keys":raw["response_keys"],
+            "results_count":None,
+            "next_page_url":None,
+            "first_row_keys":[],
+            "first_rows_sample":[],
+        }
+        if isinstance(payload,dict):
+            rows=payload.get("results") if isinstance(payload.get("results"),list) else []
+            page["results_count"]=payload.get("count")
+            page["next_page_url"]=payload.get("next")
+            page["first_row_keys"]=list(rows[0].keys()) if rows and isinstance(rows[0],dict) else []
+            page["first_rows_sample"]=rows[:2]
+        pages.append(page)
+        print(f"PAGINATION_PAGE:{page_attempt+1} HTTP:{page['http_status']} RESULTS:{page['results_count']} NEXT:{bool(page['next_page_url'])}")
+        next_url=page["next_page_url"]
+        time.sleep(0.2)
+
+    ok=[x for x in results if x["http_status"]==200 and x["json_parsed"]]
     report={
         "generated_at_utc":datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "purpose":"Unauthenticated GET probes of routes referenced in Fundai public JS; no bypass or paid API.",
         "results":results,
+        "pagination_schema_probe":pages,
         "conclusion":{
             "tested":len(results),
             "http_200_json_success_count":len(ok),
