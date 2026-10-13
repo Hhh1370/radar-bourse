@@ -1,0 +1,87 @@
+name: Probe Codal Excel attachments
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe-excel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Test whether public Codal Excel links can be downloaded
+        shell: bash
+        run: |
+          set -uo pipefail
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
+          HTML=/tmp/codal-telegram.html
+          echo 'Fetching the public Bourse-Trader Codal Telegram preview...'
+          curl --location --http1.1 --tlsv1.2 --connect-timeout 8 --max-time 20 \
+            --retry 1 --retry-delay 1 --user-agent "$UA" \
+            --header 'Accept: text/html,application/xhtml+xml,*/*' \
+            --silent --show-error --output "$HTML" \
+            --write-out 'TELEGRAM_HTTP_STATUS:%{http_code}\nTELEGRAM_CONTENT_TYPE:%{content_type}\n' \
+            'https://t.me/s/codalboursetrader' || true
+          if [ ! -s "$HTML" ]; then
+            echo 'TELEGRAM_BODY_BYTES:0'
+            echo 'PROBE_FINISHED: False'
+            exit 0
+          fi
+          wc -c < "$HTML" | awk '{print "TELEGRAM_BODY_BYTES:"$1}'
+          python - "$HTML" /tmp/excel-urls.txt <<'PY'
+          import html
+          import sys
+          from html.parser import HTMLParser
+          from urllib.parse import urlparse
+
+          source, out = sys.argv[1], sys.argv[2]
+          class Links(HTMLParser):
+              def __init__(self):
+                  super().__init__(convert_charrefs=True)
+                  self.links = []
+              def handle_starttag(self, tag, attrs):
+                  if tag.lower() != 'a':
+                      return
+                  href = dict(attrs).get('href')
+                  if not href:
+                      return
+                  href = html.unescape(href.strip())
+                  host = (urlparse(href).hostname or '').lower()
+                  if host == 'excel.codal.ir' or host.endswith('.excel.codal.ir'):
+                      if href not in self.links:
+                          self.links.append(href)
+
+          p = Links()
+          with open(source, encoding='utf-8', errors='replace') as f:
+              p.feed(f.read())
+          urls = p.links[:5]
+          with open(out, 'w', encoding='utf-8') as f:
+              for url in urls:
+                  f.write(url + '\n')
+          print(f'EXCEL_LINKS_DISCOVERED:{len(p.links)}')
+          print(f'EXCEL_LINKS_TO_TEST:{len(urls)}')
+          PY
+          count=0
+          while IFS= read -r URL; do
+            [ -n "$URL" ] || continue
+            count=$((count+1))
+            OUT="/tmp/codal-excel-${count}.bin"
+            echo "--- EXCEL_ATTACHMENT_${count} ---"
+            curl --location --http1.1 --tlsv1.2 --connect-timeout 8 --max-time 20 \
+              --retry 0 --user-agent "$UA" \
+              --header 'Accept: */*' --silent --show-error \
+              --output "$OUT" \
+              --write-out 'EXCEL_HTTP_STATUS:%{http_code}\nEXCEL_CONTENT_TYPE:%{content_type}\nEXCEL_EFFECTIVE_URL:%{url_effective}\n' \
+              "$URL" || true
+            if [ -s "$OUT" ]; then
+              wc -c < "$OUT" | awk '{print "EXCEL_BODY_BYTES:"$1}'
+              od -An -tx1 -N8 "$OUT" | tr -d '\n' | awk '{print "EXCEL_MAGIC_BYTES:"$0}'
+            else
+              echo 'EXCEL_BODY_BYTES:0'
+            fi
+          done < /tmp/excel-urls.txt
+          echo "EXCEL_ATTACHMENTS_TESTED:${count}"
+          echo 'PROBE_FINISHED: True'
+          echo 'Interpretation: HTTP 200 and PK ZIP magic 50 4b 03 04 usually indicate a downloadable XLSX file; HTML/error bodies do not.'
