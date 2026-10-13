@@ -1,4 +1,4 @@
-name: Probe My Codal and Official Codal API
+name: Probe free Codal fallback sources
 
 on:
   workflow_dispatch:
@@ -7,112 +7,70 @@ permissions:
   contents: read
 
 jobs:
-  probe-codal:
+  probe-free-sources:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Probe Codal endpoints without failing on one blocked host
+      - name: Probe direct Codal and free fallback sites
         shell: bash
         run: |
-          python - <<'PY'
-          import json
-          import urllib.error
-          import urllib.parse
-          import urllib.request
-          from xml.etree import ElementTree
-
-          UA = (
-              "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-              "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
-          )
-          SYMBOL = "فملی"
-          params = {
-              "Audited": "true",
-              "AuditorRef": "-1",
-              "Category": "1",
-              "Childs": "false",
-              "CompanyState": "0",
-              "CompanyType": "-1",
-              "Consolidatable": "true",
-              "IsNotAudited": "false",
-              "Isic": "-1",
-              "Length": "5",
-              "LetterCode": "",
-              "LetterType": "-1",
-              "Mains": "true",
-              "NotAudited": "false",
-              "NotConsolidatable": "true",
-              "PageNumber": "1",
-              "Publisher": "false",
-              "Symbol": SYMBOL,
-              "TracingNo": "-1",
-              "search": "true",
-          }
-          query_url = (
-              "https://search.codal.ir/api/search/v2/q?"
-              + urllib.parse.urlencode(params)
-          )
-          endpoints = [
-              ("CODAL_SEARCH_API", query_url, "application/json, application/xml, */*"),
-              ("CODAL_COMPANIES_API", "https://search.codal.ir/api/search/v1/companies", "application/json, */*"),
-              ("CODAL_MAIN_SITE", "https://www.codal.ir/", "text/html, */*"),
-              ("MY_CODAL_STATEMENTS", "https://my.codal.ir/fa/statements/?page=1", "text/html, */*"),
-          ]
-
-          def probe(name, url, accept):
-              req = urllib.request.Request(
-                  url,
-                  headers={
-                      "User-Agent": UA,
-                      "Accept": accept,
-                      "Accept-Language": "fa-IR,fa;q=0.9,en;q=0.8",
-                      "Referer": "https://www.codal.ir/",
-                      "Connection": "close",
-                  },
-                  method="GET",
-              )
-              try:
-                  with urllib.request.urlopen(req, timeout=12) as response:
-                      body = response.read(1_500_000)
-                      content_type = response.headers.get("Content-Type", "")
-                      print(f"{name}_STATUS: {response.status}")
-                      print(f"{name}_FINAL_URL: {response.geturl()[:240]}")
-                      print(f"{name}_CONTENT_TYPE: {content_type}")
-                      print(f"{name}_BYTES_READ: {len(body)}")
-                      sample = body.decode("utf-8-sig", errors="replace").strip()
-                      print(f"{name}_SAMPLE: {sample[:180].replace(chr(10), ' ')}")
-                      low = sample.lower()
-                      if name == "CODAL_SEARCH_API":
-                          parsed = False
-                          try:
-                              data = json.loads(sample)
-                              parsed = True
-                              if isinstance(data, dict):
-                                  print(f"{name}_JSON_KEYS: {','.join(list(data.keys())[:20])}")
-                                  letters = data.get("Letters") or data.get("letters") or []
-                                  print(f"{name}_LETTER_ROWS: {len(letters) if isinstance(letters, list) else 'not-a-list'}")
-                                  if isinstance(letters, list) and letters:
-                                      print(f"{name}_FIRST_TITLE: {str(letters[0].get('Title', ''))[:160]}")
-                              elif isinstance(data, list):
-                                  print(f"{name}_JSON_ROWS: {len(data)}")
-                          except Exception:
-                              pass
-                          if not parsed and sample.startswith("<"):
-                              try:
-                                  root = ElementTree.fromstring(sample)
-                                  print(f"{name}_XML_ROOT: {root.tag}")
-                                  print(f"{name}_XML_ROWS: {len(list(root))}")
-                              except Exception as exc:
-                                  print(f"{name}_PARSE_NOTE: {type(exc).__name__}")
-                      print(f"{name}_OK: True")
-              except Exception as exc:
-                  print(f"{name}_OK: False")
-                  print(f"{name}_ERROR: {type(exc).__name__}: {str(exc)[:260]}")
-
-          print("Starting endpoint checks; one failed host will not stop the probe.")
-          for name, url, accept in endpoints:
-              print(f"--- {name} ---")
-              probe(name, url, accept)
-          print("PROBE_FINISHED: True")
-          print("Note: this is only a connectivity check; no full-universe scan was run.")
+          set +e
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
+          probe() {
+            NAME="$1"
+            URL="$2"
+            OUT="/tmp/${NAME}.html"
+            echo "--- ${NAME} ---"
+            curl --location --http1.1 --tlsv1.2 --connect-timeout 8 --max-time 18 \
+              --retry 1 --retry-delay 1 --user-agent "$UA" \
+              --header 'Accept: text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8' \
+              --header 'Accept-Language: fa-IR,fa;q=0.9,en;q=0.8' \
+              --silent --show-error \
+              --output "$OUT" --write-out 'HTTP_STATUS:%{http_code}\nCONTENT_TYPE:%{content_type}\nEFFECTIVE_URL:%{url_effective}\n' \
+              "$URL"
+            CURL_EXIT=$?
+            echo "CURL_EXIT:${CURL_EXIT}"
+            if [ -f "$OUT" ]; then
+              wc -c < "$OUT" | awk '{print "BODY_BYTES:"$1}'
+              python - "$NAME" "$OUT" <<'PY'
+          import re, sys
+          from html.parser import HTMLParser
+          name, path = sys.argv[1], sys.argv[2]
+          raw = open(path, 'rb').read()
+          text = raw.decode('utf-8', 'replace')
+          class P(HTMLParser):
+              def __init__(self): super().__init__(); self.links=[]; self.text=[]; self.current=''
+              def handle_starttag(self, tag, attrs):
+                  d=dict(attrs)
+                  if tag=='a' and d.get('href'): self.links.append(d['href'])
+              def handle_data(self, data):
+                  s=data.strip()
+                  if s: self.text.append(s)
+          p=P()
+          try: p.feed(text)
+          except Exception: pass
+          codal_links=[x for x in p.links if 'codal.ir' in x.lower()]
+          xlsx_links=[x for x in p.links if x.lower().endswith(('.xlsx','.xls')) or 'excel' in x.lower()]
+          report_words=sum(1 for x in p.text if any(k in x for k in ('صورت‌های مالی','صورت های مالی','طرح توسعه','پیشرفت فیزیکی','گزارش فعالیت ماهانه','افشای اطلاعات بااهمیت')))
+          telegram_posts=len(re.findall(r'class="tgme_widget_message_wrap', text))
+          titles=' | '.join(p.text[:12])[:420]
+          print(f'PARSED_LINKS:{len(p.links)}')
+          print(f'CODAL_LINKS:{len(codal_links)}')
+          print(f'EXCEL_LINKS:{len(xlsx_links)}')
+          print(f'REPORT_KEYWORD_MATCHES:{report_words}')
+          print(f'TELEGRAM_POST_BLOCKS:{telegram_posts}')
+          print(f'TEXT_SAMPLE:{titles}')
+          if codal_links: print('SAMPLE_CODAL_LINK:'+codal_links[0][:300])
           PY
+            else
+              echo 'BODY_BYTES:0'
+            fi
+          }
+          echo 'Probe started. This is connectivity only; no full market scan.'
+          probe 'BOURSE_TRADER_CODAL' 'https://bourse-trader.ir/index.php?task=codal-reports'
+          probe 'BOURSE_TRADER_HOME' 'https://bourse-trader.ir/'
+          probe 'TELEGRAM_CODAL_RECENT' 'https://t.me/s/codalboursetrader'
+          probe 'TELEGRAM_CODAL_ARCHIVE' 'https://t.me/s/codalboursetrader?before=203061'
+          probe 'MY_CODAL_STATEMENTS' 'https://my.codal.ir/fa/statements/?page=1'
+          echo 'PROBE_FINISHED: True'
+          echo 'Decision rule: use only sources with HTTP 200 and non-empty useful HTML; never treat a blocked source as zero company activity.'
