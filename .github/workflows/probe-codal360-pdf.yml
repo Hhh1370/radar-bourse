@@ -1,0 +1,66 @@
+name: Probe Codal360 PDF Access
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/probe_codal360_pdf.py"
+      - ".github/workflows/probe-codal360-pdf.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: codal360-pdf-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PDF text extractor
+        run: python -m pip install --disable-pip-version-check pypdf
+
+      - name: Validate probe syntax
+        run: python -m py_compile scripts/probe_codal360_pdf.py
+
+      - name: Probe up to three recent PDF attachment links
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python -u scripts/probe_codal360_pdf.py
+
+      - name: Commit probe report
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s data/codal360_pdf_probe.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/codal360_pdf_probe.json
+          if git diff --cached --quiet; then
+            echo "PDF probe output unchanged."
+          else
+            git commit -m "Record Codal360 PDF accessibility probe"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Upload PDF probe report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codal360-pdf-probe
+          path: data/codal360_pdf_probe.json
+          if-no-files-found: warn
+          retention-days: 14
