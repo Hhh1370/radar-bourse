@@ -1249,7 +1249,7 @@ def run(args):
         if find_terms(body, FINANCIAL_KEYWORDS + MONTHLY_KEYWORDS):
             financial_posts_by_source[name] = financial_posts_by_source.get(name, 0) + 1
 
-    evidence_rows = payload.get("channel_evidence", [])
+    evidence_rows = channel_evidence
     summary = [
         {"metric": "زمان تولید UTC", "value": now_utc(), "note": "زمان ساخت فایل؛ نه تاریخ آخرین اطلاعیه"},
         {"metric": "صفحات درخواستی برای هر کانال", "value": args.pages, "note": "حداکثر تعداد صفحه به ازای هر کانال؛ هر صفحه معمولاً حدود ۲۰ پست"},
