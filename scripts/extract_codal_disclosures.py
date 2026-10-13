@@ -532,7 +532,7 @@ def request_attachment_with_curl(url: str) -> dict:
             "--max-filesize", str(MAX_ATTACHMENT_BYTES), "--retry", "0",
             "--user-agent", USER_AGENT, "--header", "Accept: */*",
             "--silent", "--show-error", "--output", target.name,
-            "--write-out", "%{http_code}\\t%{content_type}\\t%{url_effective}", url,
+            "--write-out", "%{http_code}|%{content_type}|%{url_effective}", url,
         ]
         try:
             proc = subprocess.run(
@@ -540,7 +540,7 @@ def request_attachment_with_curl(url: str) -> dict:
                 timeout=ATTACHMENT_TIMEOUT + 3, check=False,
             )
             stdout = (proc.stdout or "").strip()
-            fields = stdout.split("\\t", 2)
+            fields = stdout.split("|", 2)
             status = fields[0] if fields and fields[0] else "ERROR"
             try:
                 status = int(status)
