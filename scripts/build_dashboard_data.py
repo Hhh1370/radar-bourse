@@ -332,9 +332,21 @@ def credit_assessment(
     }
     weights = {"fundamental": 30, "earnings_quality": 15, "technical": 25, "money_flow": 20, "projects": 10}
     available_weight = sum(weights[key] for key, value in components.items() if isinstance(value, (int, float)))
-    provisional_score = (
+    observed_component_mean = (
         round(sum(weights[key] * float(value) for key, value in components.items() if isinstance(value, (int, float))) / available_weight, 1)
         if available_weight else None
+    )
+    nontechnical_components = [
+        key for key in ("fundamental", "earnings_quality", "money_flow", "projects")
+        if isinstance(components.get(key), (int, float))
+    ]
+    # A lone technical score must never masquerade as a credit score.
+    # Keep the technical signal separate; a composite provisional score needs
+    # at least one valid nontechnical component alongside technical data.
+    provisional_score = (
+        observed_component_mean
+        if isinstance(technical_score, (int, float)) and nontechnical_components
+        else None
     )
 
     flow_rows = fundamental.get("money_flow_history_rows")
@@ -388,7 +400,10 @@ def credit_assessment(
 
     return {
         "provisional_score": provisional_score,
+        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه" if provisional_score is not None else "امتیاز تلفیقی صادر نشده؛ فقط امتیاز تکنیکال قابل نمایش است",
+        "observed_component_mean": observed_component_mean,
         "provisional_score_available_weight_pct": round(available_weight, 1),
+        "nontechnical_components_available": nontechnical_components,
         "component_scores": components,
         "component_weights_pct": weights,
         "fundamental_quality_gate": fundamental_gate,
@@ -658,6 +673,11 @@ def main() -> None:
     assert all("final_credit_grade" in x for x in check["candidates"])
     if check["summary"]["fundamental_scored_count"] == 0:
         assert all(x["final_credit_grade"] is None for x in check["candidates"]), "Cannot issue final rating without fundamental scores"
+    for row in check["candidates"]:
+        component_scores = row.get("credit_assessment", {}).get("component_scores", {})
+        nontechnical = [k for k in ("fundamental", "earnings_quality", "money_flow", "projects") if isinstance(component_scores.get(k), (int, float))]
+        if not nontechnical:
+            assert row.get("credit_score") is None, f"{row['symbol']} incorrectly received a composite credit score from technical-only data"
     print("RADAR_DASHBOARD_DATA_SUMMARY")
     print(f"TECHNICAL_UNIVERSE:{check['summary']['universe_count']}")
     print(f"TECHNICAL_ELIGIBLE:{check['summary']['technical_eligible']}")
