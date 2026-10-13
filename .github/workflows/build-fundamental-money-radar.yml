@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: fundamental-money-flow-radar
@@ -52,3 +53,10 @@ jobs:
             git commit -m "Build fundamental, project and money flow radar"
             git push
           fi
+
+      - name: Dispatch dashboard rebuild after fundamental and flow refresh
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --fail-with-body --silent --show-error -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/build-dashboard-data.yml/dispatches" -d '{"ref":"main"}'
