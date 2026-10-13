@@ -30,21 +30,23 @@ USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
 )
-REQUEST_TIMEOUT = 18
-RETRIES = 2
-TSETMC_DELAY = 0.15
-CODAL_DELAY = 0.20
-MAX_GENERAL_SEARCH_PAGES = 3
-MAX_FINANCIAL_SEARCH_PAGES = 3
-MAX_PROJECT_DETAILS_PER_STOCK = 2
-MAX_FINANCIAL_DETAILS_PER_STOCK = 3
+REQUEST_TIMEOUT = 10
+RETRIES = 1
+TSETMC_DELAY = 0.08
+CODAL_DELAY = 0.08
+MAX_GENERAL_SEARCH_PAGES = 2
+MAX_FINANCIAL_SEARCH_PAGES = 2
+MAX_PROJECT_DETAILS_PER_STOCK = 1
+MAX_FINANCIAL_DETAILS_PER_STOCK = 2
 FLOW_WINDOWS = (5, 20, 60, 120, 252)
 COMMON_EQUITY_ISIN_PREFIXES = ("IRO1", "IRO3")
 
 TSETMC_UNAVAILABLE = False
 TSETMC_UNAVAILABLE_REASON = None
+TSETMC_CONSECUTIVE_FAILURES = 0
 CODAL_UNAVAILABLE = False
 CODAL_UNAVAILABLE_REASON = None
+CODAL_CONSECUTIVE_FAILURES = 0
 
 PROJECT_KEYWORDS = (
     "طرح توسعه", "طرح احداث", "پروژه", "پیشرفت فیزیکی", "پیشرفت پروژه",
@@ -174,8 +176,17 @@ def find_array(payload, keys):
 
 
 def request_bytes(url, delay=0.0):
-    global TSETMC_UNAVAILABLE, TSETMC_UNAVAILABLE_REASON
-    global CODAL_UNAVAILABLE, CODAL_UNAVAILABLE_REASON
+    """Fetch a URL with bounded retries and a source-level circuit breaker."""
+    global TSETMC_UNAVAILABLE, TSETMC_UNAVAILABLE_REASON, TSETMC_CONSECUTIVE_FAILURES
+    global CODAL_UNAVAILABLE, CODAL_UNAVAILABLE_REASON, CODAL_CONSECUTIVE_FAILURES
+
+    is_tsetmc = "cdn.tsetmc.com" in url
+    is_codal = "codal.ir" in url
+    if is_tsetmc and TSETMC_UNAVAILABLE:
+        raise RuntimeError(TSETMC_UNAVAILABLE_REASON or "TSETMC API unavailable")
+    if is_codal and CODAL_UNAVAILABLE:
+        raise RuntimeError(CODAL_UNAVAILABLE_REASON or "Codal API unavailable")
+
     last_error = None
     for attempt in range(RETRIES + 1):
         request = urllib.request.Request(
@@ -183,39 +194,51 @@ def request_bytes(url, delay=0.0):
             headers={
                 "User-Agent": USER_AGENT,
                 "Accept": "application/json" if "search.codal.ir" in url else "text/html,application/json,*/*",
-                "Referer": "https://www.codal.ir/" if "codal.ir" in url else "https://www.tsetmc.com/",
+                "Referer": "https://www.codal.ir/" if is_codal else "https://www.tsetmc.com/",
             },
         )
         try:
             with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
                 body = response.read()
-            if delay:
-                time.sleep(delay)
             if not body:
                 raise ValueError("empty response body")
+            if delay:
+                time.sleep(delay)
+            if is_tsetmc:
+                TSETMC_CONSECUTIVE_FAILURES = 0
+            if is_codal:
+                CODAL_CONSECUTIVE_FAILURES = 0
             return body
         except urllib.error.HTTPError as exc:
             last_error = exc
-            if "cdn.tsetmc.com" in url and exc.code in (301, 302, 303, 403, 451):
+            # Clear service-level blocks should immediately stop expensive retries.
+            if is_tsetmc and exc.code in (403, 451):
                 TSETMC_UNAVAILABLE = True
-                TSETMC_UNAVAILABLE_REASON = f"HTTP {exc.code}; TSETMC CDN may be geoblocked from the runner"
+                TSETMC_UNAVAILABLE_REASON = f"HTTP {exc.code}; TSETMC CDN may be blocked from the runner"
                 raise RuntimeError(TSETMC_UNAVAILABLE_REASON) from exc
-            if "codal.ir" in url and exc.code in (403, 451):
+            if is_codal and exc.code in (403, 429, 451, 500, 502, 503, 504):
                 CODAL_UNAVAILABLE = True
-                CODAL_UNAVAILABLE_REASON = f"HTTP {exc.code}; Codal endpoint may be blocked from the runner"
+                CODAL_UNAVAILABLE_REASON = f"Codal endpoint returned HTTP {exc.code}; stopped to avoid repeated timeouts"
                 raise RuntimeError(CODAL_UNAVAILABLE_REASON) from exc
             if exc.code in (400, 401, 403, 404):
                 break
-        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+        except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
             last_error = exc
         if attempt < RETRIES:
-            time.sleep(0.5 * (attempt + 1))
-    if "cdn.tsetmc.com" in url:
-        TSETMC_UNAVAILABLE = True
-        TSETMC_UNAVAILABLE_REASON = f"TSETMC request unavailable after retries: {last_error}"
-    if "codal.ir" in url and isinstance(last_error, urllib.error.HTTPError) and last_error.code in (403, 429, 451, 500, 502, 503, 504):
-        CODAL_UNAVAILABLE = True
-        CODAL_UNAVAILABLE_REASON = f"Codal endpoint unavailable after retries: HTTP {last_error.code}"
+            time.sleep(0.35)
+
+    # If the same provider fails twice in a row, open the circuit for this run.
+    if is_tsetmc:
+        TSETMC_CONSECUTIVE_FAILURES += 1
+        if TSETMC_CONSECUTIVE_FAILURES >= 2:
+            TSETMC_UNAVAILABLE = True
+            TSETMC_UNAVAILABLE_REASON = f"TSETMC failed on consecutive requests: {last_error}"
+    elif is_codal:
+        CODAL_CONSECUTIVE_FAILURES += 1
+        if CODAL_CONSECUTIVE_FAILURES >= 2:
+            CODAL_UNAVAILABLE = True
+            CODAL_UNAVAILABLE_REASON = f"Codal failed on consecutive requests: {last_error}"
+
     raise RuntimeError(f"request failed: {last_error}")
 
 
@@ -1355,7 +1378,7 @@ def main():
         }
         results.append(record)
 
-        if index % 25 == 0 or index == len(stocks):
+        if index % 10 == 0 or index == len(stocks):
             print(
                 f"Processed {index}/{len(stocks)} | Codal={counts['codal_general_search_success']} "
                 f"FS-search={counts['codal_financial_search_success']} statements={counts['statement_reports_detailed']} "
@@ -1391,6 +1414,7 @@ def main():
             "money_flow": "5/20/60/120/252 trading-session natural-person net flow, positivity consistency and per-capita value comparison when TSETMC history is available; 252-session coverage is separately noted.",
             "fundamental": "First-pass extraction of statement labels from Codal embedded datasource; ratios include margins, liabilities/assets, current ratio, operating cash flow/net profit and finance cost/operating profit. Annual growth is not scored until equal periods are explicitly matched.",
             "development_projects": "Searches recent Codal report titles for project/development terms, opens available report pages, preserves textual evidence on capex/progress/commissioning/capacity/return. Candidate values require report-level review; no ROI estimate is fabricated.",
+            "request_budget": "Two recent Codal search pages per search type, up to two financial report details and one project detail per symbol; request timeout is 10 seconds with one retry. Consecutive provider failures trigger a circuit breaker.",
             "cache": "Reuses previously fetched detail for unchanged published reports; search metadata and money-flow history are refreshed each scheduled run.",
             "limitations": "Cell layouts vary between Codal statement templates. All scraped financial values are candidate extractions, not verified facts; missing items remain null.",
         },
