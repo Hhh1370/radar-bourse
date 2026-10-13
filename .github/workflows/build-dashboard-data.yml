@@ -10,6 +10,7 @@ on:
       - "data/technical_radar.json"
       - "data/fundamental_money_radar.json"
       - "data/codal_disclosures_latest.json"
+      - "data/codal_filing_ledger.json"
       - "data/fundai_financial_ratios.json"
 
 permissions:
@@ -55,6 +56,8 @@ jobs:
           assert "money_flow_12m_scored_count" in p["summary"]
           assert "final_credit_grade_count" in p["summary"]
           assert "high_confidence_count" in p["summary"]
+          assert "codal_ledger_records" in p["summary"]
+          assert "codal_ledger_new_records" in p["summary"]
           assert p["summary"].get("candidate_pool_ranked", 0) >= 650, f"expected broad eligible-universe ranking, got {p['summary'].get('candidate_pool_ranked')}"
           assert all(x.get("symbol") for x in rows)
           assert all(isinstance(x.get("credit_confidence_score"), (int, float)) and 0 <= x["credit_confidence_score"] <= 100 for x in rows)
@@ -82,6 +85,8 @@ jobs:
           print(f"FUNDAMENTAL_SCORED: {p['summary']['fundamental_scored_count']}")
           print(f"MONEY_FLOW_12M_SCORED: {p['summary']['money_flow_12m_scored_count']}")
           print(f"FINAL_CREDIT_GRADES: {p['summary']['final_credit_grade_count']}")
+          print(f"CODAL_LEDGER_RECORDS: {p['summary']['codal_ledger_records']}")
+          print(f"CODAL_LEDGER_NEW: {p['summary']['codal_ledger_new_records']}")
           print(f"HIGH_CONFIDENCE: {p['summary']['high_confidence_count']}")
           for x in rows:
               print(f"RANK:{x['rank']} SYMBOL:{x['symbol']} SCORE:{x.get('credit_score')} DATA_CONFIDENCE:{x.get('credit_confidence_score')} FINAL_GRADE:{x.get('final_credit_grade')}")
