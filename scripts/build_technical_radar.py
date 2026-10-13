@@ -1,4 +1,5 @@
 import json
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -149,64 +150,96 @@ def assess_heat(rsi_value, daily_20, daily_60, monthly_6, volume_ratio):
 
 
 def calculate_technical_targets(candles, data_age_days):
-    """Conservative, data-gated swing targets from actual OHLC candles.
+    """Emit conservative daily swing scenarios only from fresh, valid OHLC history.
 
-    Levels are descriptive scenarios, not forecasts. No targets are emitted when
-    price history is stale/short, OHLC is invalid, ATR is unavailable, or reward
-    relative to risk is too small.
+    Targets are confirmed historical pivot zones, not price predictions. A side
+    is withheld if its stop/target geometry cannot meet the minimum reward/risk.
     """
     blocked = {
         "status": "unavailable",
         "reason": "دادهٔ کافی/تازه برای تارگت معتبر نیست",
         "source": "Nahayatnegar historical daily OHLC",
         "latest_price_date": None,
+        "data_age_days": None,
         "current_price": None,
         "atr14": None,
+        "support_levels": [],
+        "resistance_levels": [],
         "buy": None,
         "sell": None,
+        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference",
     }
-    if not isinstance(data_age_days, (int, float)) or data_age_days < 0 or data_age_days > 5:
-        blocked["reason"] = "تاریخ آخرین کندل بیش از ۵ روز یا نامعتبر است"
+    if (
+        isinstance(data_age_days, bool)
+        or not isinstance(data_age_days, (int, float))
+        or not (0 <= data_age_days <= 5)
+    ):
+        blocked["reason"] = "سن دادهٔ ورودی نامعتبر است یا از ۵ روز بیشتر است"
         return blocked
-    valid = []
-    for c in candles:
+
+    # De-duplicate timestamps and reject invalid/non-finite OHLC rows.
+    candles_by_time = {}
+    for candle in candles:
         try:
-            o, h, l, close = (float(c[k]) for k in ("open", "high", "low", "close"))
-            t = int(c["time"])
-            if min(o, h, l, close) <= 0 or h < max(o, close, l) or l > min(o, close, h):
+            timestamp = int(candle["time"])
+            o, h, l, close = (
+                float(candle[key]) for key in ("open", "high", "low", "close")
+            )
+            if timestamp <= 0 or not all(math.isfinite(v) for v in (o, h, l, close)):
                 continue
-            valid.append({"time": t, "open": o, "high": h, "low": l, "close": close})
-        except (KeyError, TypeError, ValueError):
+            if min(o, h, l, close) <= 0:
+                continue
+            if h < max(o, close, l) or l > min(o, close, h):
+                continue
+            # Invalid extreme timestamps are not allowed to poison latest-date checks.
+            datetime.fromtimestamp(timestamp, timezone.utc)
+            candles_by_time[timestamp] = {
+                "time": timestamp, "open": o, "high": h, "low": l, "close": close
+            }
+        except (KeyError, TypeError, ValueError, OverflowError, OSError):
             continue
+
+    valid = [candles_by_time[t] for t in sorted(candles_by_time)]
     if len(valid) < 120:
         blocked["reason"] = "کمتر از ۱۲۰ کندل روزانهٔ معتبر"
         return blocked
+
+    latest = valid[-1]
+    latest_date = datetime.fromtimestamp(latest["time"], timezone.utc).date()
+    actual_age = (datetime.now(timezone.utc).date() - latest_date).days
+    if actual_age < 0 or actual_age > 5:
+        blocked["reason"] = "آخرین کندل معتبر بیش از ۵ روز قدیمی یا دارای تاریخ آینده است"
+        return blocked
+
     valid = valid[-250:]
     latest = valid[-1]
     close = latest["close"]
     true_ranges = []
-    for i, c in enumerate(valid):
-        prev_close = valid[i - 1]["close"] if i else c["close"]
-        true_ranges.append(max(c["high"] - c["low"], abs(c["high"] - prev_close), abs(c["low"] - prev_close)))
-    atr = sum(true_ranges[-14:]) / 14 if len(true_ranges) >= 14 else None
-    if not atr or atr <= 0:
+    for i, candle in enumerate(valid):
+        previous_close = valid[i - 1]["close"] if i else candle["close"]
+        true_ranges.append(max(
+            candle["high"] - candle["low"],
+            abs(candle["high"] - previous_close),
+            abs(candle["low"] - previous_close),
+        ))
+    atr = sum(true_ranges[-14:]) / 14
+    if not math.isfinite(atr) or atr <= 0:
         blocked["reason"] = "محاسبهٔ ATR معتبر نیست"
         return blocked
 
-    # Three-bar swing pivots with a three-bar confirmation buffer.
-    lows, highs = [], []
+    # A pivot is only usable after three bars have confirmed it on either side.
     window = valid[-120:]
+    lows, highs = [], []
     for i in range(3, len(window) - 3):
-        c = window[i]
-        if c["low"] <= min(x["low"] for x in window[i-3:i] + window[i+1:i+4]):
-            if c["low"] < close:
-                lows.append(c["low"])
-        if c["high"] >= max(x["high"] for x in window[i-3:i] + window[i+1:i+4]):
-            if c["high"] > close:
-                highs.append(c["high"])
+        candle = window[i]
+        left_right = window[i - 3:i] + window[i + 1:i + 4]
+        if candle["low"] <= min(x["low"] for x in left_right) and candle["low"] < close:
+            lows.append(candle["low"])
+        if candle["high"] >= max(x["high"] for x in left_right) and candle["high"] > close:
+            highs.append(candle["high"])
 
     def cluster(levels):
-        # Merge nearby pivots to avoid counting one zone repeatedly.
+        # Merge nearby pivots into zones; sort first for deterministic clustering.
         zones = []
         tolerance = max(0.35 * atr, close * 0.002)
         for value in sorted(levels):
@@ -214,69 +247,86 @@ def calculate_technical_targets(candles, data_age_days):
                 zones[-1].append(value)
             else:
                 zones.append([value])
-        return [sum(z) / len(z) for z in zones if len(z) >= 1]
+        return [sum(zone) / len(zone) for zone in zones]
 
-    supports = sorted((x for x in cluster(lows) if x < close), reverse=True)
-    resistances = sorted(x for x in cluster(highs) if x > close)
-    date = datetime.fromtimestamp(latest["time"], timezone.utc).date().isoformat()
+    supports = sorted((v for v in cluster(lows) if v < close), reverse=True)
+    resistances = sorted(v for v in cluster(highs) if v > close)
+    minimum_risk = max(0.75 * atr, close * 0.002)
+    maximum_risk = 3.0 * atr
+    min_reward_multiple = 1.3
 
     def setup(direction):
         if direction == "buy":
-            stop_candidates = [x for x in supports if close - x <= 3 * atr]
-            stop = (stop_candidates[0] - 0.15 * atr) if stop_candidates else close - 1.5 * atr
-            targets = [x for x in resistances if x > close + 0.25 * atr]
+            # Prefer the nearest structurally valid support, but avoid a stop that
+            # is implausibly tight; only fall back to 1.5 ATR if no zone qualifies.
+            stop = next((
+                level - 0.15 * atr for level in supports
+                if minimum_risk <= close - (level - 0.15 * atr) <= maximum_risk
+            ), close - 1.5 * atr)
             risk = close - stop
-            if risk <= 0:
+            target1 = next((
+                level for level in resistances
+                if level - close >= min_reward_multiple * risk
+            ), None)
+            if risk <= 0 or target1 is None:
                 return None
-            target1 = targets[0] if targets else close + 1.5 * atr
-            target2 = next((x for x in targets[1:] if x > target1 + 0.25 * atr), None)
-            if target1 - close < 1.3 * risk:
-                target1 = None
-            if target2 is None and target1 is not None:
-                target2 = max(close + 2 * risk, close + 2 * atr)
-            if target1 is None or (target1 - close) / risk < 1.3:
-                return None
-            return {"entry_reference": round(close, 4), "target_1": round(target1, 4),
-                    "target_2": round(target2, 4) if target2 else None,
-                    "stop_loss": round(stop, 4), "invalidation": round(stop, 4),
-                    "risk_reward_tp1": round((target1-close)/risk, 2),
-                    "risk_reward_tp2": round((target2-close)/risk, 2) if target2 else None,
-                    "status": "scenario_only; confirm entry separately"}
-        stop_candidates = [x for x in resistances if x - close <= 3 * atr]
-        stop = (stop_candidates[0] + 0.15 * atr) if stop_candidates else close + 1.5 * atr
-        targets = sorted((x for x in supports if x < close - 0.25 * atr), reverse=True)
+            target2 = next((
+                level for level in resistances if level >= target1 + 0.25 * atr
+            ), None)
+            return {
+                "entry_reference": round(close, 4),
+                "target_1": round(target1, 4),
+                "target_2": round(target2, 4) if target2 is not None else None,
+                "stop_loss": round(stop, 4),
+                "invalidation": round(stop, 4),
+                "risk_reward_tp1": round((target1 - close) / risk, 2),
+                "risk_reward_tp2": round((target2 - close) / risk, 2) if target2 is not None else None,
+                "status": "scenario_only; confirm entry separately",
+            }
+
+        stop = next((
+            level + 0.15 * atr for level in resistances
+            if minimum_risk <= (level + 0.15 * atr) - close <= maximum_risk
+        ), close + 1.5 * atr)
         risk = stop - close
-        if risk <= 0:
+        target1 = next((
+            level for level in supports
+            if close - level >= min_reward_multiple * risk
+        ), None)
+        if risk <= 0 or target1 is None:
             return None
-        target1 = targets[0] if targets else close - 1.5 * atr
-        target2 = next((x for x in targets[1:] if x < target1 - 0.25 * atr), None)
-        if close - target1 < 1.3 * risk:
-            target1 = None
-        if target2 is None and target1 is not None:
-            target2 = min(close - 2 * risk, close - 2 * atr)
-        if target1 is None or (close-target1)/risk < 1.3:
-            return None
-        return {"entry_reference": round(close, 4), "target_1": round(target1, 4),
-                "target_2": round(target2, 4) if target2 else None,
-                "stop_loss": round(stop, 4), "invalidation": round(stop, 4),
-                "risk_reward_tp1": round((close-target1)/risk, 2),
-                "risk_reward_tp2": round((close-target2)/risk, 2) if target2 else None,
-                "status": "scenario_only; confirm entry separately"}
+        target2 = next((
+            level for level in supports if level <= target1 - 0.25 * atr
+        ), None)
+        return {
+            "entry_reference": round(close, 4),
+            "target_1": round(target1, 4),
+            "target_2": round(target2, 4) if target2 is not None else None,
+            "stop_loss": round(stop, 4),
+            "invalidation": round(stop, 4),
+            "risk_reward_tp1": round((close - target1) / risk, 2),
+            "risk_reward_tp2": round((close - target2) / risk, 2) if target2 is not None else None,
+            "status": "scenario_only; confirm entry separately",
+        }
+
+    if not supports and not resistances:
+        blocked["reason"] = "نقاط نوسانی کافی برای سطوح معتبر یافت نشد"
+        return blocked
 
     return {
-        "status": "available" if (supports or resistances) else "unavailable",
-        "reason": "" if (supports or resistances) else "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
+        "status": "available",
+        "reason": "",
         "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": date,
+        "latest_price_date": latest_date.isoformat(),
+        "data_age_days": actual_age,
         "current_price": round(close, 4),
         "atr14": round(atr, 4),
-        "support_levels": [round(x, 4) for x in supports[:3]],
-        "resistance_levels": [round(x, 4) for x in resistances[:3]],
+        "support_levels": [round(value, 4) for value in supports[:3]],
+        "resistance_levels": [round(value, 4) for value in resistances[:3]],
         "buy": setup("buy"),
         "sell": setup("sell"),
-        "method": "confirmed 3-bar swing levels + ATR14; minimum TP1 reward/risk 1.3; daily close reference",
+        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference",
     }
-
 
 def analyze_stock(stock):
     history = stock.get("history", {})
