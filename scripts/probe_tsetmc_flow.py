@@ -23,7 +23,23 @@ USER_AGENT = (
     "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
 )
 SYMBOLS = ["فولاد", "وبملت", "فملی", "آباد"]
-DATES = ["14050720", "14050719", "14050718"]
+# TSETMC's API expects Gregorian YYYYMMDD, not the Jalali dates shown in the UI.
+# Include up to three recent Iranian trading weekdays (Sunday through Thursday).
+def recent_trading_dates(count=3):
+    from datetime import date, timedelta
+    day = date.today()
+    found = []
+    for offset in range(14):
+        candidate = day - timedelta(days=offset)
+        # Python weekday: Friday=4, Saturday=5; Iran market is normally closed.
+        if candidate.weekday() in (4, 5):
+            continue
+        found.append(candidate.strftime("%Y%m%d"))
+        if len(found) >= count:
+            break
+    return found
+
+DATES = recent_trading_dates(3)
 TIMEOUT = 12
 
 
