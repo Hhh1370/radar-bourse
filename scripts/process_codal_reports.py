@@ -409,6 +409,7 @@ def build_record(row: dict, evidence: dict | None, seen_at: str) -> dict | None:
         "audit_status": audit_status[:100],
         "is_correction": is_correction,
         "official_url": official_url,
+        "telegram_url": str(evidence.get("telegram_url") or evidence.get("telegram_urls") or row.get("telegram_url") or "").strip()[:400],
         "source_name": summary_source[:180],
         "source_text": text_source,
         "financial_metrics": metric_data,
