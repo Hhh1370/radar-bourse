@@ -365,15 +365,25 @@ def add_relative_momentum_tiebreaker(items):
             if data["weight_sum"] else None
         )
         item["relative_momentum_components"] = data["components"]
+        # Checklist scores saturate at 100 for many names; use a continuous
+        # cross-sectional component so the displayed technical score can rank them.
+        checklist = float(item.get("risk_adjusted_score") or 0)
+        relative = item.get("relative_momentum_score")
+        item["technical_rank_score"] = (
+            round(0.55 * checklist + 0.45 * float(relative), 2)
+            if isinstance(relative, (int, float))
+            else round(checklist, 2)
+        )
 
 
 def technical_rank_key(item):
-    """Primary rank remains risk-adjusted checklist score; relative score breaks ties."""
+    """Rank by the continuous technical composite, then resolve ties deterministically."""
     momentum = item.get("momentum_pct", {})
     monthly = momentum.get("monthly_6_period")
     weekly = momentum.get("weekly_13_period")
     daily60 = momentum.get("daily_60_period")
     return (
+        -float(item.get("technical_rank_score") or 0),
         -float(item.get("risk_adjusted_score") or 0),
         -float(item.get("relative_momentum_score") or 0),
         -(float(monthly) if monthly is not None else -1e12),
@@ -425,18 +435,18 @@ def main():
             "daily": "SMA50/SMA200, 20/60-period returns, RSI14",
             "weekly": "SMA13/SMA26, 13-period return",
             "monthly": "SMA6/SMA12, 6-period return",
-            "score": "Weighted technical rules normalized for available checks",
-            "tie_breaker": (
-                "For equal risk-adjusted scores only, order by a cross-sectional "
-                "percentile composite: 30% monthly 6-period return, 25% weekly "
-                "13-period return, 25% daily 60-period return, 10% daily 20-period "
-                "return, 10% latest volume versus 20-day average; missing metrics "
-                "are excluded and weights renormalized. This relative tie-breaker "
-                "is provisional and not independently backtested."
+            "score": "Weighted checklist score based on available positive daily/weekly/monthly trend checks.",
+            "ranking_score": (
+                "Provisional technical rank = 55% risk-adjusted checklist score + "
+                "45% cross-sectional relative momentum score. The relative score "
+                "uses percentiles: 30% 6-period monthly return, 25% 13-period weekly "
+                "return, 25% 60-period daily return, 10% 20-period daily return and "
+                "10% latest volume / 20-session average; missing measures are "
+                "excluded and available weights are renormalized."
             ),
             "sort_order": (
-                "Risk-adjusted checklist score descending, relative momentum score "
-                "descending, then monthly/weekly/daily momentum as deterministic tie-breaks."
+                "Technical rank score descending; then risk-adjusted checklist, "
+                "relative momentum and longer-period momentum."
             ),
             "risk_adjustment": (
                 "Experimental heat penalty subtracted from technical score; "
@@ -448,13 +458,14 @@ def main():
             ),
         },
         "warning": (
-            "Technical screening only, not a buy/sell recommendation. The heat "
-            "penalty and relative momentum tie-breaker are heuristic and have not "
-            "yet been validated by historical strategy testing. Fundamental data, "
-            "earnings quality, and development projects are not included in this "
-            "technical-only ranking. Full TSE/IFB coverage has not been independently verified."
+            "Technical screening only, not a buy/sell recommendation. The composite "
+            "technical rank is provisional and has not been validated by walk-forward "
+            "or out-of-sample backtesting. Fundamental health, earnings quality, "
+            "project ROI and cash-flow quality are not included. Full TSE/IFB coverage "
+            "has not been independently verified."
         ),
         "top_50_for_review": eligible[:50],
+        "all_eligible_ranked": eligible,
     }
 
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
