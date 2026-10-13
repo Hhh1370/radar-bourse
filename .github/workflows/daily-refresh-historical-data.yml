@@ -10,6 +10,7 @@ on:
     branches: [main]
     paths:
       - "scripts/fetch_history.py"
+      - "scripts/fetch_history_incremental.py"
       - ".github/workflows/daily-refresh-historical-data.yml"
 
 permissions:
@@ -17,7 +18,7 @@ permissions:
 
 concurrency:
   group: daily-stock-history-refresh
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   refresh-history:
@@ -49,21 +50,20 @@ jobs:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
         run: |
           set -euo pipefail
-          python -m py_compile scripts/fetch_history.py
+          python -m py_compile scripts/fetch_history.py scripts/fetch_history_incremental.py
           test -s data/marketmap.json
           "${CHROME_BIN}" --version
-          echo "Daily history refresh will use the current market map and request 1D/W/M series."
+          echo "Daily history refresh will incrementally update 1D/W/M series from the current market map."
 
-      - name: Force refresh instead of reusing old successful histories
+      - name: Refresh recent bars and merge with existing history
         env:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
           PYTHONUNBUFFERED: "1"
         run: |
           set -euo pipefail
-          # fetch_history.py reuses successful symbols when their manifest exists.
-          # Remove only that cache index for this scheduled run so existing data is fetched again.
-          rm -f data/history_manifest.json
-          python -u scripts/fetch_history.py
+          # Fetch a recent overlap for each symbol and merge it with the existing history.
+          # Keep the manifest so the collector can locate each symbol\x27s last saved bars.
+          python -u scripts/fetch_history_incremental.py
 
       - name: Validate refreshed history manifest
         if: always()
