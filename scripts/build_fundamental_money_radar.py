@@ -9,7 +9,9 @@ all extracted figures keep source links/snippets and should be reviewed for cont
 import html
 import json
 import math
+import os
 import re
+import sys
 import time
 import urllib.error
 import urllib.parse
@@ -26,12 +28,23 @@ OUTPUT_FILE = ROOT / "data" / "fundamental_money_radar.json"
 
 TSETMC_BASE = "https://cdn.tsetmc.com/api"
 CODAL_SEARCH_BASE = "https://search.codal.ir/api/search/v2/q"
+BRS_API_BASE = "https://api.brsapi.ir"
+BRS_API_KEY = os.environ.get("BRS_API_KEY", "").strip()
+BRS_API_DELAY = 0.22
+BRS_API_UNAVAILABLE = False
+BRS_API_UNAVAILABLE_REASON = None
+BRS_API_CONSECUTIVE_FAILURES = 0
+BRS_ANNOUNCEMENT_CACHE = {}
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
 )
 REQUEST_TIMEOUT = 10
 RETRIES = 1
+REPORT_TIMEOUT = 7
+REPORT_RETRIES = 0
+CODAL_REPORT_FAILURES = {}
+CODAL_REPORT_UNAVAILABLE = set()
 TSETMC_DELAY = 0.08
 CODAL_DELAY = 0.08
 MAX_GENERAL_SEARCH_PAGES = 2
@@ -274,88 +287,132 @@ def tsetmc_get(path):
     return request_json(f"{TSETMC_BASE}/{path.lstrip('/')}", delay=TSETMC_DELAY)
 
 
-def codal_search(symbol, financial_only=False):
-    if CODAL_UNAVAILABLE:
-        raise RuntimeError(CODAL_UNAVAILABLE_REASON or "Codal endpoint unavailable")
+def brsapi_get_json(path, params):
+    """Call BrsApi; used because Codal/TSETMC direct hosts are geo-restricted."""
+    global BRS_API_UNAVAILABLE, BRS_API_UNAVAILABLE_REASON, BRS_API_CONSECUTIVE_FAILURES
+    if not BRS_API_KEY:
+        raise RuntimeError("BRS_API_KEY is missing; add it as a GitHub Actions repository secret.")
+    if BRS_API_UNAVAILABLE:
+        raise RuntimeError(BRS_API_UNAVAILABLE_REASON or "BrsApi is unavailable")
 
-    # General disclosures: newest page for project announcements and material events.
-    # Category 1: paginate a few pages to retain multiple financial periods.
-    max_pages = MAX_FINANCIAL_SEARCH_PAGES if financial_only else MAX_GENERAL_SEARCH_PAGES
+    query = dict(params)
+    query["key"] = BRS_API_KEY
+    url = f"{BRS_API_BASE}/{path.lstrip('/')}?{urllib.parse.urlencode(query)}"
+    try:
+        body = request_bytes(url, delay=BRS_API_DELAY)
+        payload = json.loads(body.decode("utf-8-sig", errors="replace"))
+        # Detect common provider-side API-key / quota errors instead of treating them as empty data.
+        if isinstance(payload, dict):
+            status_text = " ".join(
+                str(first_value(payload, (name,)) or "")
+                for name in ("error", "message", "detail", "status", "success")
+            ).casefold()
+            if any(term in status_text for term in (
+                "invalid key", "invalid api", "unauthorized", "quota exceeded",
+                "api key required", "کلید نامعتبر", "کلید api", "محدودیت درخواست",
+            )):
+                raise RuntimeError(status_text[:180])
+        BRS_API_CONSECUTIVE_FAILURES = 0
+        return payload
+    except Exception as exc:
+        safe_error = str(exc).replace(BRS_API_KEY, "[REDACTED]")
+        BRS_API_CONSECUTIVE_FAILURES += 1
+        if BRS_API_CONSECUTIVE_FAILURES >= 2:
+            BRS_API_UNAVAILABLE = True
+            BRS_API_UNAVAILABLE_REASON = f"BrsApi failed twice consecutively: {safe_error[:180]}"
+        raise RuntimeError(safe_error[:220]) from exc
+
+
+def _brsapi_announcement_rows(payload):
+    rows = find_array(payload, ("announcements", "announcement", "items", "results", "result", "data", "letters", "records", "list"))
+    if rows:
+        return rows
+    if isinstance(payload, list):
+        return payload
+    if isinstance(payload, dict):
+        if first_value(payload, ("count_announcement", "count_page", "total", "totalCount")) is not None:
+            return []
+        # A structured error should not be misreported as an empty filing history.
+        message = first_value(payload, ("error", "message", "detail", "status"))
+        if message:
+            raise RuntimeError(f"BrsApi announcement response: {str(message)[:180]}")
+    raise ValueError("Unrecognized BrsApi announcement response schema")
+
+
+def brsapi_codal_search(symbol):
+    """Fetch the latest announcement page once per symbol and cache it for both filters."""
+    if symbol in BRS_ANNOUNCEMENT_CACHE:
+        return BRS_ANNOUNCEMENT_CACHE[symbol]
+
+    payload = brsapi_get_json("Codal/Announcement.php", {"l18": symbol, "page": "1"})
+    rows = _brsapi_announcement_rows(payload)
     reports = []
     seen = set()
 
-    for page_number in range(1, max_pages + 1):
-        params = {
-            "PageNumber": str(page_number),
-            "Symbol": symbol,
-            "LetterType": "-1",
-            "Category": "1" if financial_only else "-1",
-            "FromDate": "1400/01/01",
-            "ToDate": "1500/01/01",
-            "Audited": "true",
-            "NotAudited": "true",
-            "Consolidatable": "true",
-            "NotConsolidatable": "true",
-            "Childs": "false",
-            "Mains": "true",
-            "Publisher": "false",
-            "search": "true",
-        }
-        url = CODAL_SEARCH_BASE + "?" + urllib.parse.urlencode(params)
-        payload = request_json(url, delay=CODAL_DELAY)
-        rows = find_array(payload, ("Letters", "letters", "Reports", "reports"))
-        if not rows:
-            break
-
-        for raw in rows:
-            if not isinstance(raw, dict):
-                continue
-            title = first_value(raw, ("Title", "title", "LetterTitle", "letterTitle", "subject"))
-            if not title:
-                continue
-            report_url = first_value(raw, ("Url", "url", "ReportUrl", "reportUrl"))
-            report_url = html.unescape(str(report_url)) if report_url else None
-            if report_url:
-                report_url = urllib.parse.urljoin("https://www.codal.ir/", report_url)
-            tracing_no = first_value(raw, ("TracingNo", "tracingNo", "tracingNO"))
-            date = first_value(raw, ("PublishDateTime", "publishDateTime", "PublishDateTime_Gregorian", "SentDateTime", "SentDateTime_Gregorian"))
-            letter_code = first_value(raw, ("LetterCode", "letterCode"))
-            has_html = first_value(raw, ("HasHtml", "hasHtmlReport", "hasHtml"))
-            has_excel = first_value(raw, ("HasExcel", "hasExcelReport", "hasExcel"))
-            key = (str(tracing_no or ""), str(title), str(date or ""))
-            if key in seen:
-                continue
-            seen.add(key)
-            projects = [kw for kw in PROJECT_KEYWORDS if normalize_text(kw) in normalize_text(title)]
-            financials = [kw for kw in FINANCIAL_KEYWORDS if normalize_text(kw) in normalize_text(title)]
-            material = [kw for kw in IMPORTANT_DISCLOSURE_KEYWORDS if normalize_text(kw) in normalize_text(title)]
-            reports.append({
-                "title": str(title).strip(),
-                "date": str(date).strip() if date else None,
-                "url": report_url,
-                "tracing_no": str(tracing_no) if tracing_no is not None else None,
-                "letter_code": str(letter_code) if letter_code else None,
-                "has_html": as_bool(has_html),
-                "has_excel": as_bool(has_excel),
-                "is_project_candidate": bool(projects),
-                "project_keywords": projects,
-                "is_financial_report_candidate": bool(financials),
-                "financial_keywords": financials,
-                "is_important_disclosure": bool(material),
-                "important_disclosure_keywords": material,
-                "source": "Codal search API",
-            })
-
-        # Codal's default page size is generally 20; stop once the last page is partial.
-        if len(rows) < 20:
-            break
+    for raw in rows:
+        if not isinstance(raw, dict):
+            continue
+        title = first_value(raw, ("title", "Title", "subject", "letterTitle", "name"))
+        if not title:
+            continue
+        title = str(title).strip()
+        date = first_value(raw, ("date_publish", "date_send", "date_title", "date", "publishDate", "sentDate"))
+        report_url = first_value(raw, ("link", "url", "reportUrl", "report_url"))
+        excel_url = first_value(raw, ("link_excel", "excelUrl", "excel_url"))
+        pdf_url = first_value(raw, ("link_pdf", "pdfUrl", "pdf_url"))
+        attachment_url = first_value(raw, ("link_attachment", "attachmentUrl", "attachment_url"))
+        if report_url:
+            report_url = urllib.parse.urljoin("https://www.codal.ir/", html.unescape(str(report_url)))
+        if excel_url:
+            excel_url = urllib.parse.urljoin("https://excel.codal.ir/", html.unescape(str(excel_url)))
+        if pdf_url:
+            pdf_url = urllib.parse.urljoin("https://www.codal.ir/", html.unescape(str(pdf_url)))
+        code = first_value(raw, ("code", "tracingNo", "TracingNo", "id"))
+        key = (str(code or ""), title, str(date or ""))
+        if key in seen:
+            continue
+        seen.add(key)
+        norm_title = normalize_text(title)
+        project_keywords = [kw for kw in PROJECT_KEYWORDS if normalize_text(kw) in norm_title]
+        financial_keywords = [kw for kw in FINANCIAL_KEYWORDS if normalize_text(kw) in norm_title]
+        # A few Codal titles do not use the exact canonical wording in FINANCIAL_KEYWORDS.
+        is_financial = bool(financial_keywords) or "صورت" in norm_title or "عملکردماهانه" in norm_title or "تولیدوفروش" in norm_title
+        material_keywords = [kw for kw in IMPORTANT_DISCLOSURE_KEYWORDS if normalize_text(kw) in norm_title]
+        reports.append({
+            "title": title,
+            "date": str(date).strip() if date else None,
+            "url": str(report_url) if report_url else None,
+            "excel_url": str(excel_url) if excel_url else None,
+            "pdf_url": str(pdf_url) if pdf_url else None,
+            "attachment_url": str(attachment_url) if attachment_url else None,
+            "tracing_no": str(code) if code is not None else None,
+            "letter_code": str(first_value(raw, ("category", "letterCode", "code")) or ""),
+            "has_html": bool(report_url),
+            "has_excel": bool(excel_url),
+            "is_project_candidate": bool(project_keywords),
+            "project_keywords": project_keywords,
+            "is_financial_report_candidate": is_financial,
+            "financial_keywords": financial_keywords,
+            "is_important_disclosure": bool(material_keywords),
+            "important_disclosure_keywords": material_keywords,
+            "source": "BrsApi Codal announcement proxy",
+        })
 
     reports.sort(key=lambda r: normalize_text(r.get("date") or ""), reverse=True)
+    BRS_ANNOUNCEMENT_CACHE[symbol] = reports
     return reports
 
 
+def codal_search(symbol, financial_only=False):
+    """Use BrsApi rather than calling geo-restricted Codal directly from GitHub Actions."""
+    reports = brsapi_codal_search(symbol)
+    if financial_only:
+        return [r for r in reports if r.get("is_financial_report_candidate")]
+    return list(reports)
+
+
 def normalize_history(payload):
-    rows = find_array(payload, ("clientType", "clientTypeHistory", "clienttype", "clientTypeHistoryDto"))
+    rows = find_array(payload, ("clientType", "clientTypeHistory", "clienttype", "clientTypeHistoryDto", "history", "data", "items", "records", "result", "results"))
     cleaned, seen = [], set()
     for raw in rows:
         if not isinstance(raw, dict):
@@ -382,10 +439,10 @@ def normalize_history(payload):
             "sell_real_volume": n("sell_I_Volume", "sellIVolume", "sell_i_volume"),
             "buy_legal_volume": n("buy_N_Volume", "buyNVolume", "buy_n_volume"),
             "sell_legal_volume": n("sell_N_Volume", "sellNVolume", "sell_n_volume"),
-            "buy_real_count": n("buy_I_Count", "buyICount", "buy_i_count"),
-            "sell_real_count": n("sell_I_Count", "sellICount", "sell_i_count"),
-            "buy_legal_count": n("buy_N_Count", "buyNCount", "buy_n_count"),
-            "sell_legal_count": n("sell_N_Count", "sellNCount", "sell_n_count"),
+            "buy_real_count": n("buy_I_Count", "buyICount", "buy_i_count", "Buy_CountI", "buy_count_i"),
+            "sell_real_count": n("sell_I_Count", "sellICount", "sell_i_count", "Sell_CountI", "sell_count_i"),
+            "buy_legal_count": n("buy_N_Count", "buyNCount", "buy_n_count", "Buy_CountN", "buy_count_n"),
+            "sell_legal_count": n("sell_N_Count", "sellNCount", "sell_n_count", "Sell_CountN", "sell_count_n"),
         })
     cleaned.sort(key=lambda row: row["date_sort"])
     return cleaned[-252:]
@@ -542,7 +599,14 @@ def get_tsetmc_snapshot(ins_code):
     }
 
 
-def fetch_flow(ins_code):
+def fetch_flow(ins_code=None, symbol=None):
+    if BRS_API_KEY:
+        if not symbol:
+            raise ValueError("symbol is required for BrsApi client-type history")
+        payload = brsapi_get_json("Tsetmc/History.php", {"type": "1", "l18": symbol})
+        return normalize_history(payload)
+    if not ins_code:
+        raise ValueError("ins_code is required for direct TSETMC history")
     payload = tsetmc_get(f"ClientType/GetClientTypeHistory/{urllib.parse.quote(ins_code, safe='')}")
     return normalize_history(payload)
 
@@ -566,6 +630,61 @@ class ScriptCollector(HTMLParser):
             self.parts.append(data)
 
 
+class HTMLTableRows(HTMLParser):
+    """Extract visible HTML table rows, including Codal Excel-as-HTML exports."""
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.table_depth = 0
+        self.in_row = False
+        self.in_cell = False
+        self.current_row = []
+        self.current_cell = []
+        self.rows = []
+
+    def handle_starttag(self, tag, attrs):
+        tag = tag.lower()
+        if tag == "table":
+            self.table_depth += 1
+        elif self.table_depth and tag == "tr":
+            self.in_row = True
+            self.current_row = []
+        elif self.table_depth and self.in_row and tag in {"td", "th"}:
+            self.in_cell = True
+            self.current_cell = []
+        elif self.table_depth and self.in_cell and tag == "br":
+            self.current_cell.append(" ")
+
+    def handle_endtag(self, tag):
+        tag = tag.lower()
+        if tag in {"td", "th"} and self.in_cell:
+            value = re.sub(r"\s+", " ", " ".join(self.current_cell)).strip()
+            self.current_row.append(value)
+            self.current_cell = []
+            self.in_cell = False
+        elif tag == "tr" and self.in_row:
+            if any(self.current_row):
+                self.rows.append(self.current_row)
+            self.current_row = []
+            self.in_row = False
+        elif tag == "table" and self.table_depth:
+            self.table_depth -= 1
+
+    def handle_data(self, data):
+        if self.in_cell and data:
+            self.current_cell.append(data)
+
+
+def extract_html_table_rows(page_text):
+    parser = HTMLTableRows()
+    try:
+        parser.feed(page_text)
+        parser.close()
+    except Exception:
+        return []
+    # Avoid huge mostly-empty tables and repeated header/layout fragments.
+    return [row for row in parser.rows if len(row) >= 2 and any(cell.strip() for cell in row)]
+
+
 class VisibleTextCollector(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -583,10 +702,45 @@ class VisibleTextCollector(HTMLParser):
 
 
 def fetch_report_page(url):
+    """Fetch a report with a short, per-host breaker so one blocked host does not block another."""
     if not url:
         raise ValueError("report URL missing")
-    body = request_bytes(url, delay=CODAL_DELAY)
-    return body.decode("utf-8-sig", errors="replace")
+    host = (urllib.parse.urlparse(url).hostname or "").lower()
+    if host in CODAL_REPORT_UNAVAILABLE:
+        raise RuntimeError(f"report host temporarily disabled after repeated failures: {host}")
+
+    last_error = None
+    for attempt in range(REPORT_RETRIES + 1):
+        request = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": USER_AGENT,
+                "Accept": "text/html,application/xhtml+xml,application/json,*/*",
+                "Referer": "https://www.codal.ir/",
+            },
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=REPORT_TIMEOUT) as response:
+                body = response.read()
+            if not body:
+                raise ValueError("empty report response")
+            CODAL_REPORT_FAILURES[host] = 0
+            time.sleep(CODAL_DELAY)
+            return body.decode("utf-8-sig", errors="replace")
+        except urllib.error.HTTPError as exc:
+            last_error = exc
+            if exc.code in (403, 404, 429, 451):
+                CODAL_REPORT_UNAVAILABLE.add(host)
+                break
+        except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
+            last_error = exc
+        if attempt < REPORT_RETRIES:
+            time.sleep(0.25)
+
+    CODAL_REPORT_FAILURES[host] = CODAL_REPORT_FAILURES.get(host, 0) + 1
+    if CODAL_REPORT_FAILURES[host] >= 2:
+        CODAL_REPORT_UNAVAILABLE.add(host)
+    raise RuntimeError(f"report fetch failed for {host}: {last_error}")
 
 
 def extract_datasource(page_text):
@@ -786,7 +940,7 @@ def report_year_end(report):
 
 
 def choose_financial_reports(reports):
-    reports = [r for r in reports if r.get("url") and (r.get("has_html") or "صورت" in r.get("title", ""))]
+    reports = [r for r in reports if (r.get("url") or r.get("excel_url")) and (r.get("has_html") or r.get("has_excel") or "صورت" in r.get("title", ""))]
     reports.sort(key=lambda r: str(r.get("date") or ""), reverse=True)
     annuals = [r for r in reports if report_period_key(r) == "annual" and "صورت" in r.get("title", "")]
     # Keep one consistent parent-company/consolidated series and avoid duplicate filings for the same year.
@@ -803,7 +957,7 @@ def choose_financial_reports(reports):
     selected, seen = [], set()
     candidates = unique_annuals[:2] + interim[:1]
     for r in candidates:
-        key = r.get("url") or r.get("tracing_no") or r.get("title")
+        key = r.get("url") or r.get("excel_url") or r.get("tracing_no") or r.get("title")
         if key in seen:
             continue
         selected.append(r)
@@ -1005,32 +1159,50 @@ def build_project_assessment(report, page_text, datasource):
 
 def detail_financial_report(report):
     result = dict(report)
-    if not report.get("url"):
+    candidates = []
+    if report.get("excel_url"):
+        candidates.append(("excel", report["excel_url"]))
+    if report.get("url"):
+        candidates.append(("html", report["url"]))
+    if not candidates:
         result["detail_status"] = "report URL unavailable"
         return result
-    try:
-        page = fetch_report_page(report["url"])
-        datasource = extract_datasource(page)
-        if not datasource:
-            result["detail_status"] = "report fetched but datasource table was not found"
-            result["page_text_contains_financial_table"] = any(k in page for k in ("datasource", "صورت", "سود"))
+
+    errors = []
+    for content_kind, content_url in candidates:
+        try:
+            page = fetch_report_page(content_url)
+            datasource = extract_datasource(page)
+            if not datasource:
+                table_rows = extract_html_table_rows(page)
+                if table_rows:
+                    datasource = {"tables": table_rows}
+            if not datasource:
+                errors.append(f"{content_kind}: no statement table found")
+                continue
+            metrics, rows = extract_metric_rows(datasource)
+            if not metrics:
+                errors.append(f"{content_kind}: table parsed but financial labels not mapped")
+                continue
+            result["detail_status"] = "parsed_with_heuristic_cell_mapping"
+            result["detail_source_kind"] = content_kind
+            result["detail_source_url"] = content_url
+            result["financial_metrics"] = metrics
+            result["ratios"] = metrics_and_ratios(metrics)
+            result["parsed_row_count"] = len(rows)
+            result["period_type"] = report_period_key(report)
+            result["fiscal_year_end"] = report_year_end(report)
+            result["consolidation_mode"] = "consolidated" if "تلفیقی" in normalize_text(report.get("title", "")) else "standalone"
+            unit_match = re.search(r"(میلیون\s*ریال|هزار\s*ریال|مبالغ?\s*(?:به|برحسب)\s*ریال|ریال)", page)
+            result["report_unit_hint"] = unit_match.group(1) if unit_match else None
+            result["source_units_note"] = "Raw units vary by report; ratios are computed from within-report values only. Check units and row labels before use."
             return result
-        metrics, rows = extract_metric_rows(datasource)
-        result["detail_status"] = "parsed_with_heuristic_cell_mapping" if metrics else "datasource_parsed_but_metrics_not_mapped"
-        result["financial_metrics"] = metrics
-        result["ratios"] = metrics_and_ratios(metrics)
-        result["parsed_row_count"] = len(rows)
-        result["period_type"] = report_period_key(report)
-        result["fiscal_year_end"] = report_year_end(report)
-        result["consolidation_mode"] = "consolidated" if "تلفیقی" in normalize_text(report.get("title", "")) else "standalone"
-        unit_match = re.search(r"(میلیون\s*ریال|هزار\s*ریال|مبالغ?\s*(?:به|برحسب)\s*ریال|ریال)", page)
-        result["report_unit_hint"] = unit_match.group(1) if unit_match else None
-        result["source_units_note"] = "Raw units vary by report; ratios are computed from within-report values only. Check units and row labels before use."
-        return result
-    except Exception as exc:
-        result["detail_status"] = "detail_fetch_failed"
-        result["detail_error"] = str(exc)[:220]
-        return result
+        except Exception as exc:
+            errors.append(f"{content_kind}: {str(exc)[:160]}")
+
+    result["detail_status"] = "detail_fetch_failed_or_unparsed"
+    result["detail_error"] = "; ".join(errors)[:600]
+    return result
 
 
 def score_fundamentals(reports):
@@ -1148,7 +1320,44 @@ def merge_cached_detail(cached, latest_report, symbol, company):
     return merged
 
 
+
+def probe_sources():
+    """Small preflight: validate both API endpoints before the 741-symbol run."""
+    if not BRS_API_KEY:
+        raise RuntimeError(
+            "BRS_API_KEY is missing. Request a key from https://api.brsapi.ir/Panel/register.html "
+            "and save it in GitHub repository Actions secrets as BRS_API_KEY."
+        )
+    sample_symbol = "فملی"
+    print(f"Preflight: checking BrsApi announcement endpoint for {sample_symbol}...")
+    reports = brsapi_codal_search(sample_symbol)
+    print(f"Announcement records returned: {len(reports)}")
+    if not reports:
+        raise RuntimeError(
+            "BrsApi returned no announcement records for فملی. Check the key, provider response schema, and quota; full scan stopped."
+        )
+
+    print(f"Preflight: checking BrsApi حقیقی/حقوقی history for {sample_symbol}...")
+    history = fetch_flow(symbol=sample_symbol)
+    print(f"Money-flow sessions returned: {len(history)}")
+    if len(history) < 20:
+        raise RuntimeError(
+            f"BrsApi returned only {len(history)} usable money-flow rows for فملی; full scan stopped."
+        )
+
+    print(f"Latest recognized money-flow date: {history[-1]['date_raw'] if history else 'N/A'}")
+    print(f"At least 252 sessions: {len(history) >= 252}")
+    print("BrsApi preflight passed; full-universe scan may begin.")
+
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "--probe":
+        probe_sources()
+        return
+    if not BRS_API_KEY:
+        raise RuntimeError(
+            "BRS_API_KEY is not configured. GitHub-hosted runners are being blocked by direct Codal/TSETMC endpoints. "
+            "Request a BrsApi key, add it under Settings > Secrets and variables > Actions as BRS_API_KEY, then rerun."
+        )
     if not UNIVERSE_FILE.is_file():
         raise FileNotFoundError(f"Universe file not found: {UNIVERSE_FILE}")
     universe = read_json(UNIVERSE_FILE)
@@ -1177,10 +1386,10 @@ def main():
     for old_stock in old_stocks:
         old_symbol = str(old_stock.get("symbol", "")).strip()
         for detail in old_stock.get("financial_reports", []) or []:
-            if isinstance(detail, dict):
+            if isinstance(detail, dict) and detail.get("detail_status") == "parsed_with_heuristic_cell_mapping":
                 financial_detail_cache[report_cache_key(old_symbol, detail)] = detail
         for detail in old_stock.get("project_disclosure_candidates", []) or []:
-            if isinstance(detail, dict):
+            if isinstance(detail, dict) and detail.get("full_report_fetched") is True:
                 project_detail_cache[report_cache_key(old_symbol, detail)] = detail
 
     results = []
@@ -1196,13 +1405,15 @@ def main():
         "snapshot_success": 0,
         "codal_errors": 0,
         "tsetmc_errors": 0,
+        "brsapi_announcement_symbols": 0,
+        "brsapi_flow_symbols": 0,
         "project_title_matches": 0,
         "financial_detail_cache_hits": 0,
         "project_detail_cache_hits": 0,
     }
 
     print(f"Input universe records: {len(stocks)}")
-    print("Starting Codal financial/project layer; TSETMC money-flow is optional if CDN is accessible.")
+    print("Starting BrsApi-backed report discovery and money-flow history; direct Codal/TSETMC hosts are bypassed.")
 
     for index, stock in enumerate(stocks, start=1):
         symbol = str(stock.get("symbol", "")).strip()
@@ -1211,25 +1422,21 @@ def main():
         company = stock.get("company", "")
         all_reports, statement_reports = [], []
         codal_error = None
-        if CODAL_UNAVAILABLE:
-            # A source-level failure is recorded once, not as hundreds of per-symbol errors.
-            codal_error = CODAL_UNAVAILABLE_REASON or "Codal endpoint unavailable"
-        else:
-            try:
-                all_reports = codal_search(symbol, financial_only=False)
-                counts["codal_general_search_success"] += 1
-            except Exception as exc:
-                codal_error = str(exc)[:220]
-                counts["codal_errors"] += 1
-            if not CODAL_UNAVAILABLE:
-                try:
-                    statement_reports = codal_search(symbol, financial_only=True)
-                    counts["codal_financial_search_success"] += 1
-                except Exception as exc:
-                    codal_error = (codal_error + " | " if codal_error else "") + str(exc)[:220]
-                    counts["codal_errors"] += 1
-            elif not codal_error:
-                codal_error = CODAL_UNAVAILABLE_REASON or "Codal endpoint unavailable"
+        try:
+            all_reports = codal_search(symbol, financial_only=False)
+            counts["codal_general_search_success"] += 1
+            counts["brsapi_announcement_symbols"] += 1
+        except Exception as exc:
+            codal_error = str(exc).replace(BRS_API_KEY, "[REDACTED]")[:220]
+            counts["codal_errors"] += 1
+        try:
+            # Filter the same per-symbol response; this deliberately avoids spending a second API call.
+            statement_reports = codal_search(symbol, financial_only=True)
+            counts["codal_financial_search_success"] += 1
+        except Exception as exc:
+            if not codal_error:
+                codal_error = str(exc).replace(BRS_API_KEY, "[REDACTED]")[:220]
+            counts["codal_errors"] += 1
 
         for report in all_reports:
             report["symbol"] = symbol
@@ -1240,26 +1447,57 @@ def main():
 
         # Use direct Codal search regardless of whether TSETMC can map the symbol.
         # This prevents a TSETMC failure from silently skipping fundamentals/projects.
-        mapping = symbol_map.get(symbol)
-        if not isinstance(mapping, dict) or not mapping.get("ins_code"):
-            if not TSETMC_UNAVAILABLE:
-                try:
-                    mapping = find_instrument(symbol)
-                    if mapping:
-                        symbol_map[symbol] = mapping
-                except Exception as exc:
-                    counts["tsetmc_errors"] += 1
-                    if not TSETMC_UNAVAILABLE:
-                        print(f"TSETMC mapping error [{symbol}]: {str(exc)[:180]}")
-                    mapping = None
+        chart_id = str(stock.get("chart_id") or "")
+        if BRS_API_KEY:
+            kind = "common_equity" if chart_id.startswith(COMMON_EQUITY_ISIN_PREFIXES) else "other_or_unconfirmed"
+            mapping = {
+                "ins_code": None,
+                "isin": None,
+                "ticker_tsetmc": symbol,
+                "company_tsetmc": company,
+                "instrument_kind": kind,
+                "mapping_source": "stock_universe chart_id prefix; no numeric TSETMC code needed for BrsApi",
+            }
+            counts["brsapi_symbol_mapping"] = counts.get("brsapi_symbol_mapping", 0) + (1 if chart_id else 0)
+        else:
+            mapping = symbol_map.get(symbol)
+            if not isinstance(mapping, dict) or not mapping.get("ins_code"):
+                if not TSETMC_UNAVAILABLE:
+                    try:
+                        mapping = find_instrument(symbol)
+                        if mapping:
+                            symbol_map[symbol] = mapping
+                    except Exception as exc:
+                        counts["tsetmc_errors"] += 1
+                        if not TSETMC_UNAVAILABLE:
+                            print(f"TSETMC mapping error [{symbol}]: {str(exc)[:180]}")
+                        mapping = None
         if mapping and mapping.get("ins_code"):
             counts["tsetmc_mapping_success"] += 1
             if mapping.get("instrument_kind") == "common_equity":
                 counts["confirmed_common_equities"] += 1
 
         snapshot = None
+        marketmap_price = as_number(stock.get("marketmap_close_price"))
+        if marketmap_price is not None:
+            snapshot = {"closing_price": marketmap_price, "source": "stock_universe marketmap cache; not a TSETMC live snapshot"}
         flow = {"score": None, "status": "دادهٔ پول حقیقی/حقوقی دریافت نشده", "evidence": [], "windows": {}}
-        if mapping and mapping.get("ins_code") and not TSETMC_UNAVAILABLE:
+        if BRS_API_KEY:
+            try:
+                history = fetch_flow(symbol=symbol)
+                flow = score_money_flow(history)
+                flow["history_rows"] = len(history)
+                flow["latest_date_raw"] = history[-1]["date_raw"] if history else None
+                flow["full_year_coverage"] = len(history) >= 252
+                if len(history) >= 252:
+                    counts["flow_history_success"] += 1
+                if history:
+                    counts["brsapi_flow_symbols"] += 1
+            except Exception as exc:
+                safe_error = str(exc).replace(BRS_API_KEY, "[REDACTED]")
+                counts["tsetmc_errors"] += 1
+                flow = {"score": None, "status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق", "evidence": [], "windows": {}, "error": safe_error[:220]}
+        elif mapping and mapping.get("ins_code") and not TSETMC_UNAVAILABLE:
             try:
                 snapshot = get_tsetmc_snapshot(mapping["ins_code"])
                 counts["snapshot_success"] += 1
@@ -1267,18 +1505,17 @@ def main():
                 counts["tsetmc_errors"] += 1
                 if not TSETMC_UNAVAILABLE:
                     print(f"TSETMC snapshot error [{symbol}]: {str(exc)[:180]}")
-            if not TSETMC_UNAVAILABLE:
-                try:
-                    history = fetch_flow(mapping["ins_code"])
-                    flow = score_money_flow(history)
-                    flow["history_rows"] = len(history)
-                    flow["latest_date_raw"] = history[-1]["date_raw"] if history else None
-                    flow["full_year_coverage"] = len(history) >= 252
-                    if len(history) >= 252:
-                        counts["flow_history_success"] += 1
-                except Exception as exc:
-                    counts["tsetmc_errors"] += 1
-                    flow = {"score": None, "status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق", "evidence": [], "windows": {}, "error": str(exc)[:220]}
+            try:
+                history = fetch_flow(mapping["ins_code"])
+                flow = score_money_flow(history)
+                flow["history_rows"] = len(history)
+                flow["latest_date_raw"] = history[-1]["date_raw"] if history else None
+                flow["full_year_coverage"] = len(history) >= 252
+                if len(history) >= 252:
+                    counts["flow_history_success"] += 1
+            except Exception as exc:
+                counts["tsetmc_errors"] += 1
+                flow = {"score": None, "status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق", "evidence": [], "windows": {}, "error": str(exc)[:220]}
 
         project_reports = [r for r in all_reports if r.get("is_project_candidate")]
         important_reports = [r for r in all_reports if r.get("is_important_disclosure")]
@@ -1329,15 +1566,33 @@ def main():
                 "return_evidence": [],
                 "return_numeric_candidates": [],
             }
+            project_sources = []
             if report.get("url") and report.get("has_html"):
+                project_sources.append(("html", report["url"]))
+            if report.get("excel_url"):
+                project_sources.append(("excel", report["excel_url"]))
+            fetch_errors = []
+            for source_kind, source_url in project_sources:
                 try:
-                    page = fetch_report_page(report["url"])
+                    page = fetch_report_page(source_url)
                     datasource = extract_datasource(page)
-                    detail_item = build_project_assessment({**report, "symbol": symbol, "company": company}, page, datasource)
+                    if not datasource:
+                        table_rows = extract_html_table_rows(page)
+                        if table_rows:
+                            datasource = {"tables": table_rows}
+                    detail_item = build_project_assessment(
+                        {**report, "symbol": symbol, "company": company}, page, datasource
+                    )
+                    detail_item["detail_source_kind"] = source_kind
+                    detail_item["detail_source_url"] = source_url
                     counts["project_reports_detailed"] += 1
+                    break
                 except Exception as exc:
-                    detail_item["assessment_status"] = "detail fetch failed"
-                    detail_item["detail_error"] = str(exc)[:220]
+                    fetch_errors.append(f"{source_kind}: {str(exc)[:140]}")
+            if project_sources and not detail_item.get("full_report_fetched"):
+                detail_item["assessment_status"] = "detail fetch failed or table/text not found"
+                if fetch_errors:
+                    detail_item["detail_error"] = "; ".join(fetch_errors)[:500]
             project_details.append(detail_item)
             project_watchlist.append(detail_item)
         for report in important_reports[:5]:
@@ -1386,6 +1641,11 @@ def main():
                 f"TSETMC-blocked={TSETMC_UNAVAILABLE}"
             )
 
+    if counts["brsapi_announcement_symbols"] == 0 and counts["brsapi_flow_symbols"] == 0:
+        raise RuntimeError(
+            "No usable data was returned by BrsApi for any symbol. Previous output is left untouched; inspect endpoint/key/quota errors above."
+        )
+
     # Separate ranking layers; do not fill missing scores with zero for interpretation.
     money_candidates = [r for r in results if isinstance(r.get("money_flow_score"), (int, float)) and r.get("money_flow_full_year_coverage") is True and r.get("instrument_kind") == "common_equity"]
     money_candidates.sort(key=lambda r: (r.get("money_flow_score", -1), (r.get("money_flow_windows", {}).get("60", {}) or {}).get("real_net_value_pct_of_real_turnover") if (r.get("money_flow_windows", {}).get("60", {}) or {}).get("real_net_value_pct_of_real_turnover") is not None else -999), reverse=True)
@@ -1394,13 +1654,15 @@ def main():
 
     output = {
         "generated_at_utc": utc_now(),
-        "source": "Codal public search API + TSETMC public API where accessible",
+        "source": "BrsApi Codal announcements and TSETMC client-type history; marketmap price cache",
+        "source_access_mode": "BrsApi authenticated proxy; direct Codal/TSETMC endpoints are not used for search/history",
+        "brsapi_configured": bool(BRS_API_KEY),
         "input_universe_count": len(stocks),
         "coverage_verified_for_all_active_market_symbols": False,
-        "tsetmc_api_status": "blocked_or_unavailable" if TSETMC_UNAVAILABLE else "reachable_or_not_proven_blocked",
-        "tsetmc_api_note": TSETMC_UNAVAILABLE_REASON,
-        "codal_api_status": "blocked_or_unavailable" if CODAL_UNAVAILABLE else "reachable_or_not_proven_blocked",
-        "codal_api_note": CODAL_UNAVAILABLE_REASON,
+        "tsetmc_api_status": "proxied_via_brsapi" if BRS_API_KEY else ("blocked_or_unavailable" if TSETMC_UNAVAILABLE else "not_tested"),
+        "tsetmc_api_note": "Client-type history retrieved through BrsApi when configured; direct GitHub-runner TSETMC calls are bypassed.",
+        "codal_api_status": "announcements_via_brsapi; direct report details may be geo-blocked" if BRS_API_KEY else ("blocked_or_unavailable" if CODAL_UNAVAILABLE else "not_tested"),
+        "codal_api_note": "BrsApi provides announcement metadata; report-page detail extraction still depends on availability of report links from the runner.",
         "counts": {
             **counts,
             "universe_records_processed": len(results),
@@ -1416,7 +1678,7 @@ def main():
             "development_projects": "Searches recent Codal report titles for project/development terms, opens available report pages, preserves textual evidence on capex/progress/commissioning/capacity/return. Candidate values require report-level review; no ROI estimate is fabricated.",
             "request_budget": "Two recent Codal search pages per search type, up to two financial report details and one project detail per symbol; request timeout is 10 seconds with one retry. Consecutive provider failures trigger a circuit breaker.",
             "cache": "Reuses previously fetched detail for unchanged published reports; search metadata and money-flow history are refreshed each scheduled run.",
-            "limitations": "Cell layouts vary between Codal statement templates. All scraped financial values are candidate extractions, not verified facts; missing items remain null.",
+            "limitations": "BrsApi announcement metadata is only one recent page per ticker; financial statement/project details are scored only if the linked report content can actually be fetched and parsed. Cell layouts vary; all values are candidate extractions pending source review.",
         },
         "warning": "Research screener only, not investment advice. TSETMC CDN may geo-block GitHub runners. Do not interpret an unscored/missing layer as neutral. Coverage of every active TSE/IFB ordinary share is not independently verified.",
         "top_50_money_flow_for_review": money_candidates[:50],
@@ -1441,13 +1703,19 @@ def main():
     print(f"Financial detail cache hits: {counts['financial_detail_cache_hits']}")
     print(f"Project detail cache hits: {counts['project_detail_cache_hits']}")
     print(f"TSETMC mappings: {counts['tsetmc_mapping_success']}")
+    print(f"BrsApi announcement symbols: {counts['brsapi_announcement_symbols']}")
+    print(f"BrsApi flow symbols with rows: {counts['brsapi_flow_symbols']}")
+    print(f"BrsApi symbols classified from chart IDs: {counts.get('brsapi_symbol_mapping', 0)}")
     print(f"TSETMC snapshots received: {counts['snapshot_success']}")
     print(f"Money-flow histories with >=252 sessions: {counts['flow_history_success']}")
     print(f"TSETMC errors: {counts['tsetmc_errors']}")
     print(f"Codal errors: {counts['codal_errors']}")
-    print(f"TSETMC API unavailable: {TSETMC_UNAVAILABLE}")
-    print(f"Codal API unavailable: {CODAL_UNAVAILABLE}")
-    print(f"Codal note: {CODAL_UNAVAILABLE_REASON}")
+    print(f"BrsApi key configured: {bool(BRS_API_KEY)}")
+    print(f"BrsApi API unavailable: {BRS_API_UNAVAILABLE}")
+    print(f"BrsApi note: {BRS_API_UNAVAILABLE_REASON}")
+    print(f"Direct TSETMC unavailable: {TSETMC_UNAVAILABLE}")
+    print(f"Direct Codal detail host unavailable: {CODAL_UNAVAILABLE}")
+    print(f"Direct Codal note: {CODAL_UNAVAILABLE_REASON}")
     print(f"Output: {OUTPUT_FILE.relative_to(ROOT)}")
     print(f"Instrument map: {MAP_FILE.relative_to(ROOT)}")
 
