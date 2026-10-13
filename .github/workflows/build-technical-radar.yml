@@ -8,6 +8,9 @@ on:
       - "scripts/build_technical_radar.py"
       - "scripts/build_dashboard_data.py"
       - "tests/**"
+      - "data/history/**"
+      - "data/stock_universe.json"
+      - "data/history_manifest.json"
       - ".github/workflows/build-technical-radar.yml"
 
 permissions:
