@@ -596,7 +596,7 @@ def evidence_context_quality(text: str, source: str = "") -> tuple:
 
 
 def extract_company_tag(text: str) -> str:
-    match = re.search(r"(?:شرکت|گروه)\\s+#([آ-یA-Za-z0-9_‌\\-]{2,70})", text)
+    match = re.search(r"(?:شرکت|گروه)\s+#([آ-یA-Za-z0-9_‌\-]{2,70})", text)
     return clean_text(match.group(1)).replace("_", " ") if match else ""
 
 
@@ -604,13 +604,13 @@ def extract_report_period(text: str) -> str:
     table = str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
     normalized_digits = clean_text(text).translate(table)
     match = re.search(
-        r"(?:دوره|عملکرد)[\\s_]*(\\d{1,2})[\\s_]*ماهه(?:\\s+منتهی\\s+به\\s+(\\d{4}/\\d{1,2}/\\d{1,2}))?",
+        r"(?:دوره|عملکرد)[\s_]*(\d{1,2})[\s_]*ماهه(?:\s+منتهی\s+به\s+(\d{4}/\d{1,2}/\d{1,2}))?",
         normalized_digits,
     )
     if match:
         period = f"{match.group(1)} ماهه"
         return f"{period} منتهی به {match.group(2)}" if match.group(2) else period
-    match = re.search(r"منتهی\\s+به\\s+(\\d{4}/\\d{1,2}/\\d{1,2})", normalized_digits)
+    match = re.search(r"منتهی\s+به\s+(\d{4}/\d{1,2}/\d{1,2})", normalized_digits)
     return f"منتهی به {match.group(1)}" if match else ""
 
 
