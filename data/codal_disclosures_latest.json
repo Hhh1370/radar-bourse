@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-10-13T13:27:49+00:00",
+  "generated_at_utc": "2026-10-13T13:29:16+00:00",
   "summary": [
     {
       "metric": "زمان تولید UTC",
-      "value": "2026-10-13T13:27:49+00:00",
+      "value": "2026-10-13T13:29:16+00:00",
       "note": "زمان ساخت فایل؛ نه تاریخ آخرین اطلاعیه"
     },
     {
@@ -77,7 +77,7 @@
       "url": "https://t.me/s/codalboursetrader",
       "http_status": 200,
       "content_type": "text/html; charset=utf-8",
-      "body_bytes": 159651,
+      "body_bytes": 159652,
       "items_found": 20,
       "note": ""
     },
@@ -86,7 +86,7 @@
       "url": "https://t.me/s/codalboursetrader?before=247747",
       "http_status": 200,
       "content_type": "text/html; charset=utf-8",
-      "body_bytes": 156543,
+      "body_bytes": 156546,
       "items_found": 20,
       "note": ""
     },
@@ -95,7 +95,7 @@
       "url": "https://t.me/s/codalboursetrader?before=247726",
       "http_status": 200,
       "content_type": "text/html; charset=utf-8",
-      "body_bytes": 157998,
+      "body_bytes": 157996,
       "items_found": 20,
       "note": ""
     },
@@ -104,7 +104,7 @@
       "url": "https://t.me/s/codalboursetrader?before=247705",
       "http_status": 200,
       "content_type": "text/html; charset=utf-8",
-      "body_bytes": 157131,
+      "body_bytes": 157132,
       "items_found": 20,
       "note": ""
     },
@@ -113,7 +113,7 @@
       "url": "https://t.me/s/codalboursetrader?before=247684",
       "http_status": 200,
       "content_type": "text/html; charset=utf-8",
-      "body_bytes": 156459,
+      "body_bytes": 156458,
       "items_found": 20,
       "note": ""
     },
@@ -131,7 +131,7 @@
       "url": "https://t.me/s/codalboursetrader?before=247642",
       "http_status": 200,
       "content_type": "text/html; charset=utf-8",
-      "body_bytes": 162019,
+      "body_bytes": 162016,
       "items_found": 20,
       "note": ""
     },
@@ -140,36 +140,36 @@
       "url": "https://t.me/s/codalboursetrader?before=247621",
       "http_status": 200,
       "content_type": "text/html; charset=utf-8",
-      "body_bytes": 168504,
+      "body_bytes": 168505,
       "items_found": 20,
       "note": ""
     },
     {
       "source_name": "پیوست اکسل",
       "url": "https://excel.codal.ir/service/Excel/GetAll/JBsqvslfTvARtL61f2Wg9w%3d%3d/0",
-      "http_status": "000\t\thttps://excel.codal.ir/service/Excel/GetAll/JBsqvslfTvARtL61f2Wg9w%3d%3d/0",
+      "http_status": 0,
       "content_type": "",
       "body_bytes": 0,
       "items_found": 0,
-      "note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7000 ms: Timeout was reached"
+      "note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7001 ms: Timeout was reached"
     },
     {
       "source_name": "پیوست اکسل",
       "url": "https://excel.codal.ir/service/Excel/GetAll/J1aPpo73eSoo2Dong5HGyg%3d%3d/0",
-      "http_status": "000\t\thttps://excel.codal.ir/service/Excel/GetAll/J1aPpo73eSoo2Dong5HGyg%3d%3d/0",
+      "http_status": 0,
       "content_type": "",
       "body_bytes": 0,
       "items_found": 0,
-      "note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7000 ms: Timeout was reached"
+      "note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7001 ms: Timeout was reached"
     },
     {
       "source_name": "پیوست اکسل",
       "url": "https://excel.codal.ir/service/Excel/GetAll/r2RrHefXhTNZFw8HmjCTZQ%3d%3d/0",
-      "http_status": "000\t\thttps://excel.codal.ir/service/Excel/GetAll/r2RrHefXhTNZFw8HmjCTZQ%3d%3d/0",
+      "http_status": 0,
       "content_type": "",
       "body_bytes": 0,
       "items_found": 0,
-      "note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7000 ms: Timeout was reached"
+      "note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7002 ms: Timeout was reached"
     }
   ],
   "telegram_posts": [
@@ -343,7 +343,7 @@
     {
       "post_id": "247751",
       "date": "2026-10-13T12:54:06+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #تپسی 🏛️ پیشگامان فن آوری و دانش آرامیس 📌 #مشخصات_کمیته_حسابرسی_و_واحد_حسابرسی_داخلی 📋 مشخصات کمیته حسابرسی و واحد حسابرسی داخلی 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۲:۳۰ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 11 views 12:54 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #تپسی 🏛️ پیشگامان فن آوری و دانش آرامیس 📌 #مشخصات_کمیته_حسابرسی_و_واحد_حسابرسی_داخلی 📋 مشخصات کمیته حسابرسی و واحد حسابرسی داخلی 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۲:۳۰ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 12 views 12:54 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -404,7 +404,7 @@
     {
       "post_id": "247752",
       "date": "2026-10-13T12:57:04+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #پیمان 🏛️ پیمان غرب 📌 #توضیحات_در_خصوص_اطلاعات_و_صورت_های_مالی_منتشر_شده 📋 توضیحات در خصوص اطلاعات و صورت های مالی منتشر شده 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۴:۴۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 11 views 12:57 📋 اطلاعیه 📕 PDF",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #پیمان 🏛️ پیمان غرب 📌 #توضیحات_در_خصوص_اطلاعات_و_صورت_های_مالی_منتشر_شده 📋 توضیحات در خصوص اطلاعات و صورت های مالی منتشر شده 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۴:۴۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 12 views 12:57 📋 اطلاعیه 📕 PDF",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -453,7 +453,7 @@
     {
       "post_id": "247753",
       "date": "2026-10-13T12:57:05+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #کفرآور 🏛️ فرآورده های سیمان شرق 📌 #گزارش_فعالیت_هیئت_مدیره 📋 گزارش فعالیت هیئت مدیره دوره ۱۲ ماهه منتهی به ۱۴۰۵/۰۵/۳۱ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۶:۴۳ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 11 views 12:57 📋 اطلاعیه 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #کفرآور 🏛️ فرآورده های سیمان شرق 📌 #گزارش_فعالیت_هیئت_مدیره 📋 گزارش فعالیت هیئت مدیره دوره ۱۲ ماهه منتهی به ۱۴۰۵/۰۵/۳۱ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۶:۴۳ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 12 views 12:57 📋 اطلاعیه 🔗 TSETMC 📊 سابقه 📈 چارت",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -909,7 +909,7 @@
     {
       "post_id": "247761",
       "date": "2026-10-13T13:15:05+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #پاسا 🏛️ ایران یاسا تایر و رابر 📋 کمیته انتصابات 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۲:۲۴ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:15 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #پاسا 🏛️ ایران یاسا تایر و رابر 📋 کمیته انتصابات 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۲:۲۴ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 6 views 13:15 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -966,7 +966,7 @@
     {
       "post_id": "247762",
       "date": "2026-10-13T13:15:06+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #ولملت 🏛️ واسپاری ملت 📋 توقف نماد معاملاتی ناشر به استناد ماده ۱۹ مکرر/ ۱۲ مکرر ۳دستورالعمل اجرایی نحوه انجام معاملات 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۲:۳۰ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:15 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #ولملت 🏛️ واسپاری ملت 📋 توقف نماد معاملاتی ناشر به استناد ماده ۱۹ مکرر/ ۱۲ مکرر ۳دستورالعمل اجرایی نحوه انجام معاملات 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۲:۳۰ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 6 views 13:15 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -1023,7 +1023,7 @@
     {
       "post_id": "247763",
       "date": "2026-10-13T13:15:07+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #آسود 🏛️ نهال آرمان اقتصاد 📋 صورت وضعیت پورتفوی صندوق سرمایه گذاری دوره ۱ ماهه منتهی به ۱۴۰۵/۰۷/۱۵ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۳:۵۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 4 views 13:15 📋 اطلاعیه 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #آسود 🏛️ نهال آرمان اقتصاد 📋 صورت وضعیت پورتفوی صندوق سرمایه گذاری دوره ۱ ماهه منتهی به ۱۴۰۵/۰۷/۱۵ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۳:۵۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:15 📋 اطلاعیه 🔗 TSETMC 📊 سابقه 📈 چارت",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -1076,7 +1076,7 @@
     {
       "post_id": "247764",
       "date": "2026-10-13T13:18:08+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #پاسا 🏛️ ایران یاسا تایر و رابر 📋 مشخصات کمیته ریسک 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۳۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 4 views 13:18 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #پاسا 🏛️ ایران یاسا تایر و رابر 📋 مشخصات کمیته ریسک 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۳۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:18 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -1133,7 +1133,7 @@
     {
       "post_id": "247765",
       "date": "2026-10-13T13:18:09+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #واتی 🏛️ گروه سرمایه گذاری آتیه دماوند 📌 #افشای_اطلاعات_با_اهمیت 📋 افشای اطلاعات بااهمیت - (برگزاری مزایده - گروه ب) منتهی به سال مالی ۱۴۰۵/۰۹/۳۰ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۳۸ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 4 views 13:18 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #واتی 🏛️ گروه سرمایه گذاری آتیه دماوند 📌 #افشای_اطلاعات_با_اهمیت 📋 افشای اطلاعات بااهمیت - (برگزاری مزایده - گروه ب) منتهی به سال مالی ۱۴۰۵/۰۹/۳۰ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۳۸ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:18 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -1194,7 +1194,7 @@
     {
       "post_id": "247766",
       "date": "2026-10-13T13:18:10+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #پارند_ثابت 🏛️ صندوق سرمایه گذاری پارند پایدار سپهر(ETF) 📋 تصمیمات مجمع صندوق سرمایه گذاری 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۴۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 4 views 13:18 📋 اطلاعیه 📕 PDF",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #پارند_ثابت 🏛️ صندوق سرمایه گذاری پارند پایدار سپهر(ETF) 📋 تصمیمات مجمع صندوق سرمایه گذاری 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۴۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:18 📋 اطلاعیه 📕 PDF",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -1239,7 +1239,7 @@
     {
       "post_id": "247767",
       "date": "2026-10-13T13:27:04+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #وزمین 🏛️ بانک ایران زمین 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی سال مالی منتهی به ۱۴۰۴/۱۲/۲۹ (حسابرسی شده) (شرکت توسعه تجارت داتام) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۵۴:۴۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 1 view 13:27 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #وزمین 🏛️ بانک ایران زمین 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی سال مالی منتهی به ۱۴۰۴/۱۲/۲۹ (حسابرسی شده) (شرکت توسعه تجارت داتام) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۵۴:۴۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 3 views 13:27 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -1349,7 +1349,7 @@
     {
       "post_id": "247728",
       "date": "2026-10-13T11:45:05+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #فافق 🏛️ صنایع مس افق کرمان 📌 #معرفی /تغییر_در_ترکیب_اعضای_هیئت _مدیره 📋 معرفی /تغییر در ترکیب اعضای هیئت مدیره/مدیر عامل(اصلاحیه) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۵:۱۴:۱۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 9 views 11:45 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #فافق 🏛️ صنایع مس افق کرمان 📌 #معرفی /تغییر_در_ترکیب_اعضای_هیئت _مدیره 📋 معرفی /تغییر در ترکیب اعضای هیئت مدیره/مدیر عامل(اصلاحیه) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۵:۱۴:۱۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 10 views 11:45 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -1659,7 +1659,7 @@
     {
       "post_id": "247734",
       "date": "2026-10-13T12:06:05+00:00",
-      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #شپترو 🏛️ پتروشیمی آبادان 📋 مشخصات کمیته ریسک 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۵:۳۵:۱۳ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 13 views 12:06 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "text": "اطلاعیه کدال | بورس تریدر 🏷️ #شپترو 🏛️ پتروشیمی آبادان 📋 مشخصات کمیته ریسک 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۵:۳۵:۱۳ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 14 views 12:06 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "links": [
         {
           "url": "https://t.me/codalboursetrader",
@@ -9149,7 +9149,7 @@
       "project_keywords": "",
       "financial_keywords": "",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #پارند_ثابت 🏛️ صندوق سرمایه گذاری پارند پایدار سپهر(ETF) 📋 تصمیمات مجمع صندوق سرمایه گذاری 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۴۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 4 views 13:18 📋 اطلاعیه 📕 PDF",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #پارند_ثابت 🏛️ صندوق سرمایه گذاری پارند پایدار سپهر(ETF) 📋 تصمیمات مجمع صندوق سرمایه گذاری 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۴۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:18 📋 اطلاعیه 📕 PDF",
       "source": "بورس‌تریدر؛ تلگرام بورس‌تریدر",
       "source_page": "https://bourse-trader.ir/index.php?task=codal-reports؛ https://t.me/codalboursetrader/247766",
       "post_id": ""
@@ -9164,7 +9164,7 @@
       "project_keywords": "",
       "financial_keywords": "",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #پاسا 🏛️ ایران یاسا تایر و رابر 📋 مشخصات کمیته ریسک 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۳۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 4 views 13:18 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #پاسا 🏛️ ایران یاسا تایر و رابر 📋 مشخصات کمیته ریسک 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۳۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:18 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "source": "بورس‌تریدر؛ تلگرام بورس‌تریدر",
       "source_page": "https://bourse-trader.ir/index.php?task=codal-reports؛ https://t.me/codalboursetrader/247764",
       "post_id": ""
@@ -9179,7 +9179,7 @@
       "project_keywords": "",
       "financial_keywords": "",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #ولملت 🏛️ واسپاری ملت 📋 توقف نماد معاملاتی ناشر به استناد ماده ۱۹ مکرر/ ۱۲ مکرر ۳دستورالعمل اجرایی نحوه انجام معاملات 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۲:۳۰ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:15 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #ولملت 🏛️ واسپاری ملت 📋 توقف نماد معاملاتی ناشر به استناد ماده ۱۹ مکرر/ ۱۲ مکرر ۳دستورالعمل اجرایی نحوه انجام معاملات 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۲:۳۰ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 6 views 13:15 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "source": "تلگرام بورس‌تریدر",
       "source_page": "https://t.me/codalboursetrader/247762",
       "post_id": "247762"
@@ -9194,7 +9194,7 @@
       "project_keywords": "",
       "financial_keywords": "",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #پاسا 🏛️ ایران یاسا تایر و رابر 📋 کمیته انتصابات 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۲:۲۴ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:15 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #پاسا 🏛️ ایران یاسا تایر و رابر 📋 کمیته انتصابات 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۲:۲۴ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 6 views 13:15 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "source": "تلگرام بورس‌تریدر",
       "source_page": "https://t.me/codalboursetrader/247761",
       "post_id": "247761"
@@ -9314,7 +9314,7 @@
       "project_keywords": "",
       "financial_keywords": "",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #کفرآور 🏛️ فرآورده های سیمان شرق 📌 #گزارش_فعالیت_هیئت_مدیره 📋 گزارش فعالیت هیئت مدیره دوره ۱۲ ماهه منتهی به ۱۴۰۵/۰۵/۳۱ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۶:۴۳ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 11 views 12:57 📋 اطلاعیه 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #کفرآور 🏛️ فرآورده های سیمان شرق 📌 #گزارش_فعالیت_هیئت_مدیره 📋 گزارش فعالیت هیئت مدیره دوره ۱۲ ماهه منتهی به ۱۴۰۵/۰۵/۳۱ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۶:۴۳ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 12 views 12:57 📋 اطلاعیه 🔗 TSETMC 📊 سابقه 📈 چارت",
       "source": "تلگرام بورس‌تریدر",
       "source_page": "https://t.me/codalboursetrader/247753",
       "post_id": "247753"
@@ -9329,7 +9329,7 @@
       "project_keywords": "",
       "financial_keywords": "صورت های مالی؛ صورت‌های مالی",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #پیمان 🏛️ پیمان غرب 📌 #توضیحات_در_خصوص_اطلاعات_و_صورت_های_مالی_منتشر_شده 📋 توضیحات در خصوص اطلاعات و صورت های مالی منتشر شده 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۴:۴۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 11 views 12:57 📋 اطلاعیه 📕 PDF",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #پیمان 🏛️ پیمان غرب 📌 #توضیحات_در_خصوص_اطلاعات_و_صورت_های_مالی_منتشر_شده 📋 توضیحات در خصوص اطلاعات و صورت های مالی منتشر شده 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۴:۴۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 12 views 12:57 📋 اطلاعیه 📕 PDF",
       "source": "تلگرام بورس‌تریدر",
       "source_page": "https://t.me/codalboursetrader/247752",
       "post_id": "247752"
@@ -9344,7 +9344,7 @@
       "project_keywords": "",
       "financial_keywords": "",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #تپسی 🏛️ پیشگامان فن آوری و دانش آرامیس 📌 #مشخصات_کمیته_حسابرسی_و_واحد_حسابرسی_داخلی 📋 مشخصات کمیته حسابرسی و واحد حسابرسی داخلی 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۲:۳۰ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 11 views 12:54 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #تپسی 🏛️ پیشگامان فن آوری و دانش آرامیس 📌 #مشخصات_کمیته_حسابرسی_و_واحد_حسابرسی_داخلی 📋 مشخصات کمیته حسابرسی و واحد حسابرسی داخلی 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۲۲:۳۰ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 12 views 12:54 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "source": "تلگرام بورس‌تریدر",
       "source_page": "https://t.me/codalboursetrader/247751",
       "post_id": "247751"
@@ -9584,7 +9584,7 @@
       "project_keywords": "",
       "financial_keywords": "",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #شپترو 🏛️ پتروشیمی آبادان 📋 مشخصات کمیته ریسک 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۵:۳۵:۱۳ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 13 views 12:06 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #شپترو 🏛️ پتروشیمی آبادان 📋 مشخصات کمیته ریسک 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۵:۳۵:۱۳ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 14 views 12:06 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "source": "تلگرام بورس‌تریدر",
       "source_page": "https://t.me/codalboursetrader/247734",
       "post_id": "247734"
@@ -9674,7 +9674,7 @@
       "project_keywords": "",
       "financial_keywords": "",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #فافق 🏛️ صنایع مس افق کرمان 📌 #معرفی /تغییر_در_ترکیب_اعضای_هیئت _مدیره 📋 معرفی /تغییر در ترکیب اعضای هیئت مدیره/مدیر عامل(اصلاحیه) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۵:۱۴:۱۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 9 views 11:45 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #فافق 🏛️ صنایع مس افق کرمان 📌 #معرفی /تغییر_در_ترکیب_اعضای_هیئت _مدیره 📋 معرفی /تغییر در ترکیب اعضای هیئت مدیره/مدیر عامل(اصلاحیه) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۵:۱۴:۱۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 10 views 11:45 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "source": "تلگرام بورس‌تریدر",
       "source_page": "https://t.me/codalboursetrader/247728",
       "post_id": "247728"
@@ -11504,7 +11504,7 @@
       "project_keywords": "",
       "financial_keywords": "",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #واتی 🏛️ گروه سرمایه گذاری آتیه دماوند 📌 #افشای_اطلاعات_با_اهمیت 📋 افشای اطلاعات بااهمیت - (برگزاری مزایده - گروه ب) منتهی به سال مالی ۱۴۰۵/۰۹/۳۰ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۳۸ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 4 views 13:18 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #واتی 🏛️ گروه سرمایه گذاری آتیه دماوند 📌 #افشای_اطلاعات_با_اهمیت 📋 افشای اطلاعات بااهمیت - (برگزاری مزایده - گروه ب) منتهی به سال مالی ۱۴۰۵/۰۹/۳۰ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۵:۳۸ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:18 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
       "source": "بورس‌تریدر؛ تلگرام بورس‌تریدر",
       "source_page": "https://bourse-trader.ir/index.php?task=codal-reports؛ https://t.me/codalboursetrader/247765",
       "post_id": ""
@@ -11534,7 +11534,7 @@
       "project_keywords": "",
       "financial_keywords": "",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #آسود 🏛️ نهال آرمان اقتصاد 📋 صورت وضعیت پورتفوی صندوق سرمایه گذاری دوره ۱ ماهه منتهی به ۱۴۰۵/۰۷/۱۵ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۳:۵۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 4 views 13:15 📋 اطلاعیه 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #آسود 🏛️ نهال آرمان اقتصاد 📋 صورت وضعیت پورتفوی صندوق سرمایه گذاری دوره ۱ ماهه منتهی به ۱۴۰۵/۰۷/۱۵ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۳:۵۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 5 views 13:15 📋 اطلاعیه 🔗 TSETMC 📊 سابقه 📈 چارت",
       "source": "بورس‌تریدر؛ تلگرام بورس‌تریدر",
       "source_page": "https://bourse-trader.ir/index.php?task=codal-reports؛ https://t.me/codalboursetrader/247763",
       "post_id": ""
@@ -11549,7 +11549,7 @@
       "project_keywords": "",
       "financial_keywords": "صورت های مالی؛ صورت‌های مالی",
       "raw_amount_mentions": "",
-      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #وزمین 🏛️ بانک ایران زمین 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی سال مالی منتهی به ۱۴۰۴/۱۲/۲۹ (حسابرسی شده) (شرکت توسعه تجارت داتام) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۵۴:۴۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 1 view 13:27 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
+      "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #وزمین 🏛️ بانک ایران زمین 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی سال مالی منتهی به ۱۴۰۴/۱۲/۲۹ (حسابرسی شده) (شرکت توسعه تجارت داتام) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۵۴:۴۲ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 3 views 13:27 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
       "source": "بورس‌تریدر؛ تلگرام بورس‌تریدر",
       "source_page": "https://bourse-trader.ir/index.php?task=codal-reports؛ https://t.me/codalboursetrader/247767",
       "post_id": ""
@@ -11634,39 +11634,39 @@
     {
       "url": "https://excel.codal.ir/service/Excel/GetAll/JBsqvslfTvARtL61f2Wg9w%3d%3d/0",
       "host": "excel.codal.ir",
-      "http_status": "000\t\thttps://excel.codal.ir/service/Excel/GetAll/JBsqvslfTvARtL61f2Wg9w%3d%3d/0",
+      "http_status": 0,
       "content_type": "",
       "body_bytes": 0,
       "is_xlsx": "خیر/تأییدنشده",
       "sheet_count": 0,
       "extracted_rows": 0,
-      "parse_note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7000 ms: Timeout was reached",
+      "parse_note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7001 ms: Timeout was reached",
       "source": "بورس‌تریدر",
       "source_context": "1 وزمین بانک ایران زمین لینک سابقه معاملات وزمین ریز معاملات امروز وزمین سهامداران عمده وزمین افزایش سرمایه وزمین تعدیل قیمت وزمین تابلو عرضه و تقاضا صورتهای مالی نسبتهای مالی رتبه بندی بنیادی وزمین اندیکاتورها وزمین در TSETMC وزمین در کدال ن-۱۰ صورت های مالی سال مالی منتهی به ۱۴۰۴/۱۲/۲۹ (حسابرسی شده) (شرکت توسعه تجارت داتام) ۱۴۰۵/۰۷/۲۱ ۱۶:۵۴:۴۲"
     },
     {
       "url": "https://excel.codal.ir/service/Excel/GetAll/J1aPpo73eSoo2Dong5HGyg%3d%3d/0",
       "host": "excel.codal.ir",
-      "http_status": "000\t\thttps://excel.codal.ir/service/Excel/GetAll/J1aPpo73eSoo2Dong5HGyg%3d%3d/0",
+      "http_status": 0,
       "content_type": "",
       "body_bytes": 0,
       "is_xlsx": "خیر/تأییدنشده",
       "sheet_count": 0,
       "extracted_rows": 0,
-      "parse_note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7000 ms: Timeout was reached",
+      "parse_note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7001 ms: Timeout was reached",
       "source": "تلگرام بورس‌تریدر",
       "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #ستران 🏛️ سیمان تهران 📌 #صورت_های_مالی_میان_دوره_ای 📋 اطلاعات و صورت های مالی میاندوره ای دوره ۶ ماهه منتهی به ۱۴۰۵/۰۴/۳۱ (حسابرسی شده) (شرکت صنایع سیمان گیلان سبز) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۳۴:۵۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 9 views 13:06 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت"
     },
     {
       "url": "https://excel.codal.ir/service/Excel/GetAll/r2RrHefXhTNZFw8HmjCTZQ%3d%3d/0",
       "host": "excel.codal.ir",
-      "http_status": "000\t\thttps://excel.codal.ir/service/Excel/GetAll/r2RrHefXhTNZFw8HmjCTZQ%3d%3d/0",
+      "http_status": 0,
       "content_type": "",
       "body_bytes": 0,
       "is_xlsx": "خیر/تأییدنشده",
       "sheet_count": 0,
       "extracted_rows": 0,
-      "parse_note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7000 ms: Timeout was reached",
+      "parse_note": "curl: (28) Failed to connect to excel.codal.ir port 443 after 7002 ms: Timeout was reached",
       "source": "تلگرام بورس‌تریدر",
       "source_context": "اطلاعیه کدال | بورس تریدر 🏷️ #افران 🏛️ افرا نماد پایدار 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی سال مالی منتهی به ۱۴۰۵/۰۵/۳۱ (حسابرسی شده) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۶:۴۱:۲۱ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 6 views 13:12 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت"
     },
