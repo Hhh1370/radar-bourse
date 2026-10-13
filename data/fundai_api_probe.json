@@ -1,0 +1,103 @@
+{
+  "generated_at_utc": "2026-10-13T15:54:04+00:00",
+  "purpose": "Unauthenticated GET probes of routes referenced in Fundai public JS; no bypass or paid API.",
+  "results": [
+    {
+      "name": "fundamental_filters_access",
+      "url": "https://fundai.ir/api/v1/fundamental/filters-access/",
+      "effective_url": "https://fundai.ir/api/v1/fundamental/filters-access/",
+      "http_status": 200,
+      "content_type": "application/json",
+      "body_bytes": 368,
+      "elapsed_seconds": 0.71,
+      "curl_exit_code": 0,
+      "error": "",
+      "json_parsed": true,
+      "json_success": null,
+      "response_keys": [
+        "tier",
+        "max_conditions",
+        "allowed_params",
+        "preview",
+        "trial_days"
+      ],
+      "response_message": "",
+      "data_type": "",
+      "data_keys": [],
+      "data_count": null,
+      "body_excerpt": ""
+    },
+    {
+      "name": "fundamental_ratio_filters_no_parameters",
+      "url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/",
+      "effective_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/",
+      "http_status": 200,
+      "content_type": "application/json",
+      "body_bytes": 30046,
+      "elapsed_seconds": 0.77,
+      "curl_exit_code": 0,
+      "error": "",
+      "json_parsed": true,
+      "json_success": null,
+      "response_keys": [
+        "count",
+        "next",
+        "previous",
+        "results",
+        "columns"
+      ],
+      "response_message": "",
+      "data_type": "",
+      "data_keys": [],
+      "data_count": null,
+      "body_excerpt": ""
+    },
+    {
+      "name": "fundamental_ratio_history_no_parameters",
+      "url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/",
+      "effective_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/",
+      "http_status": 400,
+      "content_type": "application/json",
+      "body_bytes": 30,
+      "elapsed_seconds": 0.55,
+      "curl_exit_code": 0,
+      "error": "",
+      "json_parsed": true,
+      "json_success": null,
+      "response_keys": [
+        "detail"
+      ],
+      "response_message": "company-not-found",
+      "data_type": "",
+      "data_keys": [],
+      "data_count": null,
+      "body_excerpt": ""
+    },
+    {
+      "name": "financial_packages",
+      "url": "https://fundai.ir/api/v1/financial/packages/",
+      "effective_url": "https://fundai.ir/api/v1/financial/packages/",
+      "http_status": 200,
+      "content_type": "application/json",
+      "body_bytes": 3950,
+      "elapsed_seconds": 0.53,
+      "curl_exit_code": 0,
+      "error": "",
+      "json_parsed": true,
+      "json_success": null,
+      "response_keys": [],
+      "response_message": "",
+      "data_type": "",
+      "data_keys": [],
+      "data_count": null,
+      "body_excerpt": ""
+    }
+  ],
+  "conclusion": {
+    "tested": 4,
+    "http_200_json_success_count": 0,
+    "public_data_route_candidates": [],
+    "fundai_public_data_usable_for_fundamental_integration": true,
+    "note": "Even HTTP 200 is only a route-shape clue. A data source can be adopted only after obtaining representative rows and validating issuer IDs, values, units, dates and rate limits."
+  }
+}
