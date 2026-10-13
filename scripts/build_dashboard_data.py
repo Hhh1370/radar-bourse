@@ -191,7 +191,6 @@ def simplify_ledger_evidence(row: dict[str, Any]) -> dict[str, Any]:
 
 
 RATING_WEIGHTS = {
-RATING_WEIGHTS = {
     "fundamental": 30,
     "earnings_quality": 15,
     "technical": 25,
