@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-13T22:11:48+00:00",
+  "generated_at_utc": "2026-10-13T22:12:23+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -16,8 +16,8 @@
     "fundamental_scored_count": 531,
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
-    "fundai_ratio_snapshot_generated_at_utc": "2026-10-13T20:34:12+00:00",
-    "fundai_ratio_snapshot_age_hours": 1.6,
+    "fundai_ratio_snapshot_generated_at_utc": "2026-10-13T22:11:53+00:00",
+    "fundai_ratio_snapshot_age_hours": 0.0,
     "fundai_ratio_matched_count": 534,
     "fundai_ratio_scored_count": 531,
     "final_credit_grade_count": 0,
@@ -49,10 +49,10 @@
       "note": "Research screener only, not investment advice. TSETMC CDN may geo-block GitHub runners. Do not interpret an unscored/missing layer as neutral. Coverage of every active TSE/IFB ordinary share is not independently verified."
     },
     "fundai_ratios": {
-      "generated_at_utc": "2026-10-13T20:34:12+00:00",
+      "generated_at_utc": "2026-10-13T22:11:53+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 534 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 1.6 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 534 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 0.0 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "codal_channels": {
