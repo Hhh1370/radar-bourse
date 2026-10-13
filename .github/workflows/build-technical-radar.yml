@@ -46,11 +46,20 @@ jobs:
           assert rows, "No eligible technical candidates were produced"
           assert all("relative_momentum_score" in row for row in rows), "Tie-breaker score missing"
           assert all(isinstance(row["risk_adjusted_score"], (int, float)) for row in rows), "Risk-adjusted score missing"
-          keys = [
-              (-row["risk_adjusted_score"], -(row["relative_momentum_score"] or 0),
-               row["symbol"])
-              for row in rows
-          ]
+          def sort_key(row):
+              momentum = row.get("momentum_pct", {})
+              monthly = momentum.get("monthly_6_period")
+              weekly = momentum.get("weekly_13_period")
+              daily60 = momentum.get("daily_60_period")
+              return (
+                  -float(row.get("risk_adjusted_score") or 0),
+                  -float(row.get("relative_momentum_score") or 0),
+                  -(float(monthly) if monthly is not None else -1e12),
+                  -(float(weekly) if weekly is not None else -1e12),
+                  -(float(daily60) if daily60 is not None else -1e12),
+                  str(row.get("symbol") or ""),
+              )
+          keys = [sort_key(row) for row in rows]
           assert keys == sorted(keys), "Technical candidates are not sorted by the declared ranking fields"
           print(f"TECHNICAL_OUTPUT_VALID: {len(rows)} candidates; eligible={p.get('eligible_for_long_term_ranking')}; errors={p.get('analysis_errors')}")
           print("TOP_10_TECHNICAL_TIEBREAK:")
