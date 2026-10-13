@@ -1,0 +1,80 @@
+name: Fetch Public Fundai Financial Ratios
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/fetch_fundai_ratios.py"
+      - ".github/workflows/fetch-fundai-ratios.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fundai-ratio-snapshot
+  cancel-in-progress: false
+
+jobs:
+  fetch-ratios:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate collector syntax
+        run: python -m py_compile scripts/fetch_fundai_ratios.py
+
+      - name: Fetch public Fundai financial-ratio pages
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python -u scripts/fetch_fundai_ratios.py
+
+      - name: Verify snapshot quality
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path("data/fundai_financial_ratios.json").read_text(encoding="utf-8"))
+          assert p["downloaded_row_count"] >= 500
+          assert p["unique_normalized_ticker_count"] >= 500
+          assert len(p["rows"]) == p["downloaded_row_count"]
+          assert p["page_count"] >= 1
+          assert p["numeric_metric_coverage"].get("roe_ttm", 0) > 0
+          assert p["numeric_metric_coverage"].get("pe_ttm", 0) > 0
+          print(f"FUNDAI_SNAPSHOT_VALID: {p['downloaded_row_count']} rows; {p['unique_normalized_ticker_count']} unique tickers; {p['page_count']} pages")
+          print(f"FIELD_COVERAGE: {json.dumps(p['field_coverage'], ensure_ascii=False)}")
+          PY
+
+      - name: Commit validated ratio snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s data/fundai_financial_ratios.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fundai_financial_ratios.json
+          if git diff --cached --quiet; then
+            echo "Fundai ratio snapshot unchanged."
+          else
+            git commit -m "Update public Fundai financial ratios"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Upload ratio data as a workflow artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fundai-financial-ratios
+          path: data/fundai_financial_ratios.json
+          if-no-files-found: warn
+          retention-days: 14
