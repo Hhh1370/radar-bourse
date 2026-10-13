@@ -794,6 +794,7 @@ def main() -> None:
             "chart_id": str(item.get("chart_id") or ""),
             "price": number((item.get("price") or {}).get("daily_close"), 4),
             "price_date": str(item.get("latest_daily_date") or ""),
+            "technical_targets": item.get("technical_targets") if isinstance(item.get("technical_targets"), dict) else {"status": "unavailable", "reason": "تارگت تکنیکال هنوز محاسبه نشده"},
             "data_age_days": item.get("data_age_days"),
             "technical_score": technical_score,
             "risk_adjusted_score": adjusted_score,
