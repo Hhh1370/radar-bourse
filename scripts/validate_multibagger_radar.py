@@ -300,7 +300,8 @@ def main() -> None:
             "costs_liquidity_dividends": "Not included.",
             "probability_calibration": "No probability is displayed unless the predeclared precision gate passes; passing precision is still not a calibrated individual-stock probability.",
         },
-        "results": results,\n        "candidate_models": ["current_model", "momentum_blend", "acceleration_breakout", "breakout_quality", "persistent_trend"],
+        "results": results,
+        "candidate_models": ["current_model", "momentum_blend", "acceleration_breakout", "breakout_quality", "persistent_trend"],
         "folds": fold_summaries,
     }
     OUTPUT_FILE.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
