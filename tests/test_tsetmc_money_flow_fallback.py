@@ -37,6 +37,20 @@ class TsetmcFallbackTests(unittest.TestCase):
         self.assertEqual(result, {"source": "primary"})
         primary.assert_called_once()
 
+    def test_paid_provider_failure_switches_to_free_mode_without_leaking_key(self):
+        with patch.object(radar, "BRS_API_KEY", "test-secret"), \
+             patch.object(radar, "probe_sources", side_effect=RuntimeError("HTTP 402 test-secret")):
+            self.assertFalse(radar.provider_preflight_or_public_fallback())
+            self.assertEqual(radar.BRS_API_KEY, "")
+            self.assertFalse(radar.BRS_API_UNAVAILABLE)
+            self.assertIsNone(radar.BRS_API_UNAVAILABLE_REASON)
+
+    def test_successful_paid_provider_preflight_keeps_provider_enabled(self):
+        with patch.object(radar, "BRS_API_KEY", "test-secret"), \
+             patch.object(radar, "probe_sources", return_value=None):
+            self.assertTrue(radar.provider_preflight_or_public_fallback())
+            self.assertEqual(radar.BRS_API_KEY, "test-secret")
+
     def test_date_parser_supports_gregorian_and_jalali_client_dates(self):
         self.assertEqual(radar.parse_tsetmc_date("20261013"), date(2026, 10, 13))
         self.assertEqual(radar.parse_tsetmc_date("1405/07/21"), date(2026, 10, 13))
