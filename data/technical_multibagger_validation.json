@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T14:02:52.058306+00:00",
+  "generated_at_utc": "2026-10-14T14:06:02.622385+00:00",
   "status": "80pct_precision_not_validated",
   "purpose": "Walk-forward precision/recall test of technical ranking for future 2x and 3x price peaks; not a probability forecast.",
   "dataset": {
