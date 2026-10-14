@@ -103,8 +103,12 @@ class QuarterlyFundamentalScoringTests(unittest.TestCase):
             cumulative_statement("1404/06/31", "2025-09-02", 190, 27, 15, unit="هزار ریال", period_type="6"),
         ]
         quarters = derive_standalone_quarters(rows)
-        previous_q2 = next(row for row in quarters if row.get("fiscal_year_end") == "1404-06-31")
-        self.assertNotIn("net_profit", previous_q2["financial_metrics"])
+        # Each year can have a valid internally-derived Q2, but the two years must
+        # not be compared across different units.
+        result = score_fundamentals(rows)
+        growth = result.get("quarterly_growth_candidates_pct") or {}
+        self.assertNotIn("revenue_yoy_pct", growth)
+        self.assertNotIn("net_profit_yoy_pct", growth)
         mismatch = [
             cumulative_statement("1405/03/31", "2026-06-02", 100, 20, 10, mode="standalone", period_type="3"),
             cumulative_statement("1405/06/31", "2026-09-01", 230, 35, 18, mode="consolidated", period_type="6"),
