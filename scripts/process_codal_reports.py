@@ -12,6 +12,11 @@ import hashlib
 import json
 import re
 import sys
+import os
+import subprocess
+import tempfile
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlsplit
@@ -196,6 +201,49 @@ def extract_growth(text: str) -> tuple[float | None, str | None]:
     return None, None
 
 
+def ocr_telegram_images(images: object, limit: int = 3) -> dict:
+    """Best-effort local Tesseract OCR; image text remains unverified candidate evidence."""
+    result = {"texts": [], "status": "no_images", "images_seen": 0, "images_ocr_ok": 0}
+    if not isinstance(images, list) or not images:
+        return result
+    result["images_seen"] = len(images)
+    executable = os.environ.get("TESSERACT_CMD", "tesseract")
+    try:
+        probe = subprocess.run([executable, "--list-langs"], capture_output=True, text=True, timeout=5)
+        languages = set((probe.stdout or "").splitlines()[1:])
+    except (OSError, subprocess.SubprocessError):
+        result["status"] = "tesseract_unavailable"
+        return result
+    lang = "+".join(x for x in ("fas", "eng") if x in languages)
+    if not lang:
+        result["status"] = "tesseract_language_unavailable"
+        return result
+    headers = {"User-Agent": "Mozilla/5.0 (compatible; RadarBourse/1.0)", "Accept": "image/avif,image/webp,image/png,image/jpeg,*/*"}
+    for item in images[:limit]:
+        if not isinstance(item, dict) or not str(item.get("url") or "").startswith("https://"):
+            continue
+        req = urllib.request.Request(str(item["url"]), headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=10) as response:
+                content_type = response.headers.get("Content-Type", "").lower()
+                data = response.read(4 * 1024 * 1024 + 1)
+            if len(data) > 4 * 1024 * 1024 or not content_type.startswith("image/"):
+                continue
+            with tempfile.NamedTemporaryFile(suffix=".img") as image_file:
+                image_file.write(data)
+                image_file.flush()
+                run = subprocess.run([executable, image_file.name, "stdout", "-l", lang, "--psm", "11"],
+                                     capture_output=True, text=True, timeout=18)
+            text = re.sub(r"[ \\t]+", " ", (run.stdout or "")).strip()
+            if run.returncode == 0 and len(text) >= 12:
+                result["texts"].append(text[:5000])
+                result["images_ocr_ok"] += 1
+        except (OSError, urllib.error.URLError, subprocess.SubprocessError, TimeoutError):
+            continue
+    result["status"] = "ocr_candidate_text" if result["texts"] else "ocr_failed_or_empty"
+    return result
+
+
 def extract_metric_observations(row: dict, fallback_months: int | None) -> dict:
     """Parse numbers only where the surrounding text identifies the metric.
 
@@ -326,6 +374,8 @@ def extract_metric_observations(row: dict, fallback_months: int | None) -> dict:
 
 def build_record(row: dict, evidence: dict | None, seen_at: str) -> dict | None:
     evidence = evidence or {}
+    image_ocr = ocr_telegram_images(evidence.get("image_attachments"))
+    ocr_text = "\\n".join(image_ocr.get("texts", []))
     merged_text = " ".join(
         str(value or "")
         for value in (
@@ -334,6 +384,7 @@ def build_record(row: dict, evidence: dict | None, seen_at: str) -> dict | None:
             row.get("source_context"),
             row.get("link_title"),
             row.get("title"),
+            ocr_text,
         )
     )
     link = str(
@@ -384,7 +435,21 @@ def build_record(row: dict, evidence: dict | None, seen_at: str) -> dict | None:
         .strip()
     )
     text_source = str(evidence.get("source_text") or evidence.get("source_context") or row.get("source_context") or merged_text).strip()[:MAX_TEXT]
-    metric_data = extract_metric_observations(evidence, months)
+    metric_input = dict(evidence)
+    if ocr_text:
+        metric_input["source_text"] = (str(metric_input.get("source_text") or "") + "\\n" + ocr_text)[:MAX_TEXT * 2]
+        # Keep OCR-derived numbers distinguishable from plain Telegram text.
+        metric_input["sales_evidence"] = str(metric_input.get("sales_evidence") or "") + " || " + ocr_text
+        metric_input["profit_evidence"] = str(metric_input.get("profit_evidence") or "") + " || " + ocr_text
+        metric_input["eps_evidence"] = str(metric_input.get("eps_evidence") or "") + " || " + ocr_text
+        metric_input["growth_evidence"] = str(metric_input.get("growth_evidence") or "") + " || " + ocr_text
+    metric_data = extract_metric_observations(metric_input, months)
+    if ocr_text:
+        metric_data["source_confidence"] = "low_ocr_candidate"
+    else:
+        metric_data["source_confidence"] = "secondary_text_candidate" if metric_data["numeric_field_count"] else "metadata_only"
+    metric_data["image_ocr"] = {k: v for k, v in image_ocr.items() if k != "texts"}
+    metric_data["image_ocr_text"] = ocr_text[:5000]
     rid = stable_id(
         {**row, **evidence, "title": title, "date": published},
         normalized_symbol(symbol),
@@ -412,6 +477,7 @@ def build_record(row: dict, evidence: dict | None, seen_at: str) -> dict | None:
         "telegram_url": str(evidence.get("telegram_url") or evidence.get("telegram_urls") or row.get("telegram_url") or "").strip()[:400],
         "source_name": summary_source[:180],
         "source_text": text_source,
+        "image_attachments": (evidence.get("image_attachments") or [])[:12] if isinstance(evidence.get("image_attachments"), list) else [],
         "financial_metrics": metric_data,
         "source_validation_status": (
             str(evidence.get("validation_status") or "")
