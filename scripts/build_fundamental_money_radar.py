@@ -50,7 +50,7 @@ CODAL_DELAY = 0.08
 MAX_GENERAL_SEARCH_PAGES = 2
 MAX_FINANCIAL_SEARCH_PAGES = 2
 MAX_PROJECT_DETAILS_PER_STOCK = 1
-MAX_FINANCIAL_DETAILS_PER_STOCK = 5
+MAX_FINANCIAL_DETAILS_PER_STOCK = 6
 FLOW_WINDOWS = (5, 20, 60, 120, 252)
 COMMON_EQUITY_ISIN_PREFIXES = ("IRO1", "IRO3")
 
@@ -969,12 +969,12 @@ def choose_financial_reports(reports):
     interim = [r for r in reports if report_period_key(r) in ("3", "6", "9")]
     selected, seen = [], set()
 
-    # Prioritize at least one 3-month report whenever available, regardless of
-    # the latest 6/9-month release date, then retain the latest 6- and 9-month
-    # reports and up to two annual comparators for earnings/cash-flow context.
-    candidates = []
-    for period in ("3", "6", "9"):
-        candidates.extend([r for r in interim if report_period_key(r) == period][:1])
+    # Prioritize the latest two 3-month reports so year-over-year comparisons
+    # remain possible, plus the latest 6- and 9-month statements and two annual
+    # comparators. All six records are cached after a successful parse.
+    candidates = [r for r in interim if report_period_key(r) == "3"][:2]
+    candidates.extend([r for r in interim if report_period_key(r) == "6"][:1])
+    candidates.extend([r for r in interim if report_period_key(r) == "9"][:1])
     candidates.extend(unique_annuals[:2])
 
     for report in candidates:
