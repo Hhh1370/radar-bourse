@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T08:59:21+00:00",
+  "generated_at_utc": "2026-10-14T09:04:50+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -17,12 +17,12 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-14T07:27:53+00:00",
-    "fundai_ratio_snapshot_age_hours": 1.5,
+    "fundai_ratio_snapshot_age_hours": 1.6,
     "fundai_ratio_matched_count": 535,
     "fundai_ratio_scored_count": 532,
     "final_credit_grade_count": 0,
-    "high_confidence_count": 5,
-    "money_flow_12m_scored_count": 8,
+    "high_confidence_count": 0,
+    "money_flow_12m_scored_count": 0,
     "codal_disclosure_links": 865,
     "channel_evidence_rows": 152,
     "project_evidence_rows": 5,
@@ -43,16 +43,16 @@
       "note": "Technical screening only, not a buy/sell recommendation. The composite technical rank is provisional and has not been validated by walk-forward or out-of-sample backtesting. Fundamental health, earnings quality, project ROI and cash-flow quality are not included. Full TSE/IFB coverage has not been independently verified."
     },
     "fundamental": {
-      "generated_at_utc": "2026-10-13T09:49:16.087241+00:00",
+      "generated_at_utc": "2026-10-14T09:03:48.602938+00:00",
       "label": "BrsApi / صورت‌های مالی ساختاریافته",
       "status": "ناقص",
-      "note": "Research screener only, not investment advice. TSETMC CDN may geo-block GitHub runners. Do not interpret an unscored/missing layer as neutral. Coverage of every active TSE/IFB ordinary share is not independently verified."
+      "note": "This free mode does not call BRS API. Filing coverage is partial unless the public sources expose an issuer's LetterSerial. Official tables are only scored after parsing; otherwise the result remains unavailable."
     },
     "fundai_ratios": {
       "generated_at_utc": "2026-10-14T07:27:53+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 1.5 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 1.6 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "codal_channels": {
@@ -65,7 +65,7 @@
   "warnings": [
     "دفتر کدال 483 گزارش/اطلاعیهٔ یکتا نگه می‌دارد؛ اعداد قابل استخراج فعلاً از خلاصهٔ عمومی‌اند و تا تطبیق با جدول رسمی، امتیاز بنیادی/کیفیت سود را تغییر نمی‌دهند.",
     "برای صورت‌های مالی ساختاریافته امتیاز بنیادی مستقلی وجود ندارد؛ 532 امتیاز فعلی از نسبت‌های TTM و رتبه‌بندی نسبی Fundai است، نه تحلیل کامل صورت‌های مالی.",
-    "پوشش معتبر پول حقیقی فقط برای 8 نماد از 698 نامزد تکنیکال موجود است؛ برای رتبهٔ نهایی کافی نیست.",
+    "هیچ امتیاز پول حقیقی با پوشش ۱۲ماهه در خروجی بنیادی قابل تأیید نیست.",
     "هنوز امتیاز کمیِ طرح توسعه با هزینه، زمان بهره‌برداری و شواهد گزارش‌سطحیِ اعتبارسنجی‌شده وجود ندارد؛ بنابراین رتبهٔ نهایی صادر نمی‌شود."
   ],
   "methodology": {
@@ -209,7 +209,7 @@
       "fundamental_ratio_peer_count": null,
       "fundai_ratios": {},
       "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "common_equity",
       "credit_assessment": {
         "provisional_score": null,
@@ -283,7 +283,7 @@
       "money_flow_history_rows": null,
       "money_flow_full_year_coverage": false,
       "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
       "financial_reports": [],
       "important_disclosures": [],
       "channel_evidence": [],
@@ -436,22 +436,20 @@
       "fundamental_ratio_metric_count": null,
       "fundamental_ratio_peer_count": null,
       "fundai_ratios": {},
-      "money_flow_score": 0.0,
-      "money_flow_status": "شواهد کافی برای ورود پول حقیقی دیده نمی‌شود",
+      "money_flow_score": null,
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "common_equity",
       "credit_assessment": {
-        "provisional_score": 65.4,
-        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 65.4,
-        "provisional_score_available_weight_pct": 65,
-        "nontechnical_components_available": [
-          "money_flow"
-        ],
+        "provisional_score": null,
+        "provisional_score_label": "امتیاز تلفیقی صادر نشده؛ فقط امتیاز تکنیکال قابل نمایش است",
+        "observed_component_mean": 77.3,
+        "provisional_score_available_weight_pct": 55,
+        "nontechnical_components_available": [],
         "component_scores": {
           "fundamental": null,
           "earnings_quality": null,
           "technical": 77.28,
-          "money_flow": 0.0,
+          "money_flow": null,
           "projects": null
         },
         "component_weights_pct": {
@@ -478,25 +476,24 @@
         "project_score": null,
         "project_score_validated": false,
         "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
-        "rating_confidence_score": 65.0,
+        "rating_confidence_score": 60.0,
         "rating_confidence_label": "متوسط؛ داده‌های مهم ناقص",
         "rating_confidence_is_data_coverage_not_profit_probability": true,
         "confidence_factors_pct": {
           "fundamental": 0.0,
           "earnings_quality": 0.0,
           "technical": 100,
-          "money_flow": 100.0,
+          "money_flow": 50.0,
           "projects": 0.0
         },
         "final_rating_eligible": false,
         "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
         "final_credit_grade": null,
         "provisional_input_components": [
-          "technical",
-          "money_flow"
+          "technical"
         ]
       },
-      "credit_score": 65.4,
+      "credit_score": null,
       "radar_rank_score": 77.28,
       "radar_rank_components": {
         "technical": 77.28,
@@ -504,7 +501,7 @@
         "earnings_quality": null
       },
       "radar_rank_available_weight_pct": 75,
-      "credit_confidence_score": 65.0,
+      "credit_confidence_score": 60.0,
       "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
       "final_credit_grade": null,
       "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
@@ -514,12 +511,19 @@
       "money_flow_history_rows": 252,
       "money_flow_full_year_coverage": true,
       "money_flow_latest_date": "1405-07-20",
-      "money_flow_error": "",
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
       "financial_reports": [
         {
           "title": "اطلاعات و صورت‌های مالی میاندوره‌ای دوره ۶ ماهه منتهی به ۱۴۰۵/۰۴/۳۱ (حسابرسی شده) (شرکت ژرف اندیشان بهره ور کارا)",
           "date": "۱۴۰۵/۰۷/۲۰",
           "url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=ph9KL52myhB4p50WzN4zCg%3d%3d&rt=5&let=6&ct=0&ft=-1",
+          "detail_status": "detail_fetch_failed_or_unparsed",
+          "ratios": null
+        },
+        {
+          "title": "اطلاعیه کدال | بورس تریدر 🏷️ #آریان 🏛️ سرمایه گذاری پارس آریان 📌 #صورت_های_مالی_میان_دوره_ای 📋 اطلاعات و صورت های مالی میاندوره ای دوره ۶ ماهه منتهی به ۱۴۰۵/۰۴/۳۱ (حسابرسی شده) (شرکت ژرف اندیشان بهره ور کارا) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۳:۵۴:۰۶ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 19 views 10:27 📋 ا",
+          "date": "2026-10-12T10:27:04+00:00",
+          "url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=ph9KL52myhB4p50WzN4zCg%3D%3D&rt=5&let=6&ct=0&ft=-1",
           "detail_status": "detail_fetch_failed_or_unparsed",
           "ratios": null
         }
@@ -638,8 +642,8 @@
         "fundamental_score_is_proxy": false,
         "fundamental_ratio_snapshot_matched": false,
         "fundamental_ratio_report_age_days": null,
-        "money_flow_scored": true,
-        "money_flow_12m_verified": true,
+        "money_flow_scored": false,
+        "money_flow_12m_verified": false,
         "channel_evidence_count": 2,
         "parsed_financial_report_count": 0,
         "final_credit_grade_available": false
@@ -781,7 +785,7 @@
       "fundamental_ratio_peer_count": null,
       "fundai_ratios": {},
       "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "other_or_unconfirmed",
       "credit_assessment": {
         "provisional_score": null,
@@ -855,8 +859,16 @@
       "money_flow_history_rows": null,
       "money_flow_full_year_coverage": false,
       "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
-      "financial_reports": [],
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
+      "financial_reports": [
+        {
+          "title": "اطلاعیه کدال | بورس تریدر 🏷️ #وامیر 🏛️ گروه صنعتی و معدنی امیر 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی تلفیقی سال مالی منتهی به ۱۴۰۵/۰۳/۳۱ (حسابرسی شده) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۷:۲۳:۳۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 24 views 13:54 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
+          "date": "2026-10-12T13:54:05+00:00",
+          "url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=POtvOOObOOOxJOOObOOOMbzEQ4mzec3gng%3D%3D&rt=2&let=6&ct=0&ft=-1",
+          "detail_status": "detail_fetch_failed_or_unparsed",
+          "ratios": null
+        }
+      ],
       "important_disclosures": [],
       "channel_evidence": [
         {
@@ -1142,7 +1154,7 @@
         "debt_to_equity": 0.315
       },
       "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "common_equity",
       "credit_assessment": {
         "provisional_score": 76.4,
@@ -1219,7 +1231,7 @@
       "money_flow_history_rows": null,
       "money_flow_full_year_coverage": false,
       "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
       "financial_reports": [],
       "important_disclosures": [],
       "channel_evidence": [],
@@ -1375,7 +1387,7 @@
       "fundamental_ratio_peer_count": null,
       "fundai_ratios": {},
       "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "common_equity",
       "credit_assessment": {
         "provisional_score": null,
@@ -1449,7 +1461,7 @@
       "money_flow_history_rows": null,
       "money_flow_full_year_coverage": false,
       "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
       "financial_reports": [],
       "important_disclosures": [],
       "channel_evidence": [],
@@ -1602,7 +1614,7 @@
       "fundamental_ratio_peer_count": null,
       "fundai_ratios": {},
       "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "common_equity",
       "credit_assessment": {
         "provisional_score": null,
@@ -1676,7 +1688,7 @@
       "money_flow_history_rows": null,
       "money_flow_full_year_coverage": false,
       "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
       "financial_reports": [],
       "important_disclosures": [],
       "channel_evidence": [],
@@ -1829,7 +1841,7 @@
       "fundamental_ratio_peer_count": null,
       "fundai_ratios": {},
       "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "common_equity",
       "credit_assessment": {
         "provisional_score": null,
@@ -1903,7 +1915,7 @@
       "money_flow_history_rows": null,
       "money_flow_full_year_coverage": false,
       "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
       "financial_reports": [],
       "important_disclosures": [],
       "channel_evidence": [
@@ -2238,7 +2250,7 @@
         "debt_to_equity": 0.907
       },
       "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "common_equity",
       "credit_assessment": {
         "provisional_score": 75.0,
@@ -2315,7 +2327,7 @@
       "money_flow_history_rows": null,
       "money_flow_full_year_coverage": false,
       "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
       "financial_reports": [],
       "important_disclosures": [],
       "channel_evidence": [],
@@ -2468,7 +2480,7 @@
       "fundamental_ratio_peer_count": null,
       "fundai_ratios": {},
       "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "common_equity",
       "credit_assessment": {
         "provisional_score": null,
@@ -2542,7 +2554,7 @@
       "money_flow_history_rows": null,
       "money_flow_full_year_coverage": false,
       "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
       "financial_reports": [],
       "important_disclosures": [],
       "channel_evidence": [],
@@ -2711,7 +2723,7 @@
         "debt_to_equity": 0.284
       },
       "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "common_equity",
       "credit_assessment": {
         "provisional_score": 74.7,
@@ -2788,7 +2800,7 @@
       "money_flow_history_rows": null,
       "money_flow_full_year_coverage": false,
       "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
       "financial_reports": [],
       "important_disclosures": [],
       "channel_evidence": [
