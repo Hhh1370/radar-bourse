@@ -14,6 +14,9 @@ on:
       - "data/codal_disclosures_latest.json"
       - "data/codal_filing_ledger.json"
       - "data/fundai_financial_ratios.json"
+      - "data/fundai_financial_ratio_history.json"
+      - "scripts/fundai_ratio_history.py"
+      - "tests/test_fundai_ratio_history.py"
 
 permissions:
   contents: write
@@ -40,8 +43,9 @@ jobs:
       - name: Validate generator syntax and Codal summary regression tests
         run: |
           set -euo pipefail
-          python -m py_compile scripts/build_dashboard_data.py scripts/codal_summary_fundamentals.py tests/test_codal_summary_fundamentals.py
+          python -m py_compile scripts/build_dashboard_data.py scripts/codal_summary_fundamentals.py scripts/fundai_ratio_history.py tests/test_codal_summary_fundamentals.py tests/test_fundai_ratio_history.py
           python -m unittest discover -s tests -p "test_codal_summary_fundamentals.py" -v
+          python -m unittest discover -s tests -p "test_fundai_ratio_history.py" -v
 
       - name: Generate compact dashboard data
         run: python -u scripts/build_dashboard_data.py
