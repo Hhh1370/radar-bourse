@@ -334,6 +334,280 @@ def calculate_technical_targets(candles, data_age_days):
         "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference",
     }
 
+
+
+def valid_ohlc_rows(candles):
+    """Return finite OHLCV rows; reject malformed daily-limit/corporate-action glitches."""
+    rows = []
+    for candle in candles or []:
+        try:
+            o, h, l, close = (
+                float(candle[key]) for key in ("open", "high", "low", "close")
+            )
+            if not all(math.isfinite(v) and v > 0 for v in (o, h, l, close)):
+                continue
+            if h < max(o, close, l) or l > min(o, close, h):
+                continue
+            raw_volume = candle.get("volume")
+            volume = float(raw_volume) if raw_volume is not None else None
+            if volume is not None and (not math.isfinite(volume) or volume < 0):
+                volume = None
+            rows.append({"open": o, "high": h, "low": l, "close": close, "volume": volume})
+        except (KeyError, TypeError, ValueError, OverflowError):
+            continue
+    return rows
+
+
+def market_structure_assessment(candles, lookback=120, pivot_width=2):
+    """Score confirmed swing structure (higher highs/lows vs lower highs/lows).
+
+    Pivots require bars on both sides, so the latest two pivots are confirmed rather
+    than inferred from the current unfinished swing.
+    """
+    rows = valid_ohlc_rows(candles)[-lookback:]
+    blocked = {
+        "score": None, "label": "دادهٔ ناکافی", "last_swing_high": None,
+        "previous_swing_high": None, "last_swing_low": None,
+        "previous_swing_low": None, "high_structure": None, "low_structure": None,
+    }
+    width = max(1, int(pivot_width))
+    if len(rows) < 2 * width + 8:
+        return blocked
+
+    swing_highs, swing_lows = [], []
+    for i in range(width, len(rows) - width):
+        candle = rows[i]
+        neighbors = rows[i - width:i] + rows[i + 1:i + width + 1]
+        neighbor_highs = [x["high"] for x in neighbors]
+        neighbor_lows = [x["low"] for x in neighbors]
+        if candle["high"] >= max(neighbor_highs) and candle["high"] > min(neighbor_highs):
+            swing_highs.append((i, candle["high"]))
+        if candle["low"] <= min(neighbor_lows) and candle["low"] < max(neighbor_lows):
+            swing_lows.append((i, candle["low"]))
+
+    if len(swing_highs) < 2 or len(swing_lows) < 2:
+        return blocked
+
+    prev_high, last_high = swing_highs[-2][1], swing_highs[-1][1]
+    prev_low, last_low = swing_lows[-2][1], swing_lows[-1][1]
+    tolerance = max(rows[-1]["close"] * 0.002, 1e-9)
+    high_state = (
+        "HH" if last_high > prev_high + tolerance
+        else "LH" if last_high < prev_high - tolerance else "EQ"
+    )
+    low_state = (
+        "HL" if last_low > prev_low + tolerance
+        else "LL" if last_low < prev_low - tolerance else "EQ"
+    )
+    score = 50
+    score += 22 if high_state == "HH" else -22 if high_state == "LH" else 0
+    score += 22 if low_state == "HL" else -22 if low_state == "LL" else 0
+    score = max(0, min(100, score))
+    if high_state == "HH" and low_state == "HL":
+        label = "ساختار صعودی؛ سقف و کف بالاتر"
+    elif high_state == "LH" and low_state == "LL":
+        label = "ساختار نزولی؛ سقف و کف پایین‌تر"
+    else:
+        label = "ساختار مختلط یا در حال تغییر"
+
+    return {
+        "score": round(float(score), 1),
+        "label": label,
+        "last_swing_high": round(last_high, 4),
+        "previous_swing_high": round(prev_high, 4),
+        "last_swing_low": round(last_low, 4),
+        "previous_swing_low": round(prev_low, 4),
+        "high_structure": high_state,
+        "low_structure": low_state,
+    }
+
+
+def volume_price_assessment(candles, lookback=20):
+    """Measure accumulation/distribution pressure from candle close location and volume."""
+    rows = [
+        row for row in valid_ohlc_rows(candles)
+        if isinstance(row.get("volume"), (int, float)) and row["volume"] > 0
+    ][-lookback:]
+    blocked = {
+        "score": None, "weighted_close_location": None,
+        "up_volume": None, "down_volume": None,
+        "up_down_volume_ratio": None, "sample_bars": len(rows),
+    }
+    if len(rows) < 8:
+        return blocked
+
+    total_volume = sum(row["volume"] for row in rows)
+    if total_volume <= 0:
+        return blocked
+    weighted_clv = sum(
+        (((2 * row["close"] - row["high"] - row["low"]) /
+          (row["high"] - row["low"])) if row["high"] > row["low"] else 0.0)
+        * row["volume"] for row in rows
+    ) / total_volume
+    up_volume = sum(row["volume"] for row in rows if row["close"] > row["open"])
+    down_volume = sum(row["volume"] for row in rows if row["close"] < row["open"])
+    directional_imbalance = (
+        (up_volume - down_volume) / (up_volume + down_volume)
+        if up_volume + down_volume > 0 else 0.0
+    )
+    score = max(0.0, min(100.0, 50 + 32 * weighted_clv + 18 * directional_imbalance))
+    return {
+        "score": round(score, 1),
+        "weighted_close_location": round(weighted_clv, 3),
+        "up_volume": round(up_volume, 2),
+        "down_volume": round(down_volume, 2),
+        "up_down_volume_ratio": round(up_volume / down_volume, 3) if down_volume > 0 else None,
+        "sample_bars": len(rows),
+        "interpretation": (
+            "فشار انباشت/خرید در کندل‌ها" if score >= 62
+            else "فشار توزیع/فروش در کندل‌ها" if score <= 38
+            else "فشار حجمی خنثی یا مختلط"
+        ),
+    }
+
+
+def breakout_position_assessment(candles, volume_ratio=None):
+    """Check 20/55-bar range breaks and location in the available 52-week range."""
+    rows = valid_ohlc_rows(candles)
+    blocked = {
+        "score": None, "breakout_20": None, "breakout_55": None,
+        "breakdown_20": None, "breakdown_55": None, "range_position_52w": None,
+    }
+    if len(rows) < 25:
+        return blocked
+    latest = rows[-1]
+    prior20 = rows[-21:-1]
+    prior55 = rows[-56:-1] if len(rows) >= 56 else []
+    reference = rows[-252:]
+    range_high = max(x["high"] for x in reference)
+    range_low = min(x["low"] for x in reference)
+    range_position = (
+        (latest["close"] - range_low) / (range_high - range_low)
+        if range_high > range_low else 0.5
+    )
+    score = 30 + 40 * max(0.0, min(1.0, range_position))
+    breakout20 = latest["close"] > max(x["high"] for x in prior20)
+    breakdown20 = latest["close"] < min(x["low"] for x in prior20)
+    breakout55 = latest["close"] > max(x["high"] for x in prior55) if prior55 else None
+    breakdown55 = latest["close"] < min(x["low"] for x in prior55) if prior55 else None
+    if breakout20:
+        score += 10
+    if breakout55 is True:
+        score += 12
+    if breakdown20:
+        score -= 10
+    if breakdown55 is True:
+        score -= 12
+    volume_confirmed = isinstance(volume_ratio, (int, float)) and volume_ratio >= 1.5
+    if volume_confirmed and (breakout20 or breakout55 is True):
+        score += 8
+    elif volume_confirmed and (breakdown20 or breakdown55 is True):
+        score -= 8
+    score = max(0.0, min(100.0, score))
+    return {
+        "score": round(score, 1),
+        "breakout_20": bool(breakout20),
+        "breakout_55": breakout55,
+        "breakdown_20": bool(breakdown20),
+        "breakdown_55": breakdown55,
+        "range_position_52w": round(range_position, 3),
+        "volume_confirmed": volume_confirmed,
+        "prior_20_high": round(max(x["high"] for x in prior20), 4),
+        "prior_20_low": round(min(x["low"] for x in prior20), 4),
+        "prior_55_high": round(max(x["high"] for x in prior55), 4) if prior55 else None,
+        "prior_55_low": round(min(x["low"] for x in prior55), 4) if prior55 else None,
+    }
+
+
+def trend_efficiency_assessment(candles, period=20):
+    """Signed Kaufman-style efficiency ratio: direction and smoothness, not RSI."""
+    rows = valid_ohlc_rows(candles)
+    if len(rows) <= period:
+        return {"score": None, "efficiency_ratio": None, "direction": "دادهٔ ناکافی"}
+    closes = [row["close"] for row in rows[-period - 1:]]
+    net = closes[-1] - closes[0]
+    path = sum(abs(closes[i] - closes[i - 1]) for i in range(1, len(closes)))
+    if path <= 0:
+        ratio = 0.0
+    else:
+        ratio = min(1.0, abs(net) / path)
+    signed = ratio if net > 0 else -ratio if net < 0 else 0.0
+    score = max(0.0, min(100.0, 50 + 50 * signed))
+    direction = "صعودی" if net > 0 else "نزولی" if net < 0 else "خنثی"
+    return {
+        "score": round(score, 1),
+        "efficiency_ratio": round(ratio, 3),
+        "direction": direction,
+        "net_change_pct": round((closes[-1] / closes[0] - 1) * 100, 2),
+        "period": period,
+    }
+
+
+def volatility_quality_assessment(candles):
+    """Measure true-range volatility relative to price; missing OHLC stays unavailable."""
+    rows = valid_ohlc_rows(candles)
+    if len(rows) < 15:
+        return {"score": None, "atr14": None, "atr_pct": None}
+    ranges = []
+    for i in range(len(rows) - 14, len(rows)):
+        row = rows[i]
+        previous_close = rows[i - 1]["close"] if i else row["close"]
+        ranges.append(max(
+            row["high"] - row["low"],
+            abs(row["high"] - previous_close),
+            abs(row["low"] - previous_close),
+        ))
+    atr = sum(ranges) / len(ranges)
+    close = rows[-1]["close"]
+    atr_pct = atr / close * 100 if close > 0 else None
+    if atr_pct is None or not math.isfinite(atr_pct):
+        score = None
+    elif atr_pct <= 2:
+        score = 92
+    elif atr_pct <= 3.5:
+        score = 85
+    elif atr_pct <= 5:
+        score = 75
+    elif atr_pct <= 7.5:
+        score = 60
+    elif atr_pct <= 10:
+        score = 45
+    elif atr_pct <= 14:
+        score = 30
+    else:
+        score = 20
+    return {
+        "score": float(score) if score is not None else None,
+        "atr14": round(atr, 4),
+        "atr_pct": round(atr_pct, 3) if atr_pct is not None else None,
+    }
+
+
+def weighted_technical_score(factors):
+    """Combine independent technical dimensions while renormalizing missing evidence."""
+    weights = {
+        "multi_timeframe_trend": 25,
+        "daily_market_structure": 15,
+        "weekly_market_structure": 15,
+        "monthly_market_structure": 10,
+        "volume_price_pressure": 15,
+        "breakout_structure": 10,
+        "trend_efficiency": 5,
+        "volatility_quality": 5,
+    }
+    available = [
+        (weights[key], value) for key, value in factors.items()
+        if key in weights and isinstance(value, (int, float)) and math.isfinite(value)
+    ]
+    total_weight = sum(weight for weight, _ in available)
+    score = (
+        sum(weight * max(0.0, min(100.0, float(value))) for weight, value in available) / total_weight
+        if total_weight else 0.0
+    )
+    return round(score, 1), total_weight
+
+
+
 def analyze_stock(stock):
     history = stock.get("history", {})
     daily = read_candles((history.get(DAILY) or {}).get("file"))
@@ -387,10 +661,10 @@ def analyze_stock(stock):
     earned_weight = sum(
         WEIGHTS[key] for key, value in checks.items() if value is True
     )
-    technical_score = (
+    trend_check_score = (
         round(earned_weight * 100 / available_weight, 1)
         if available_weight
-        else 0.0
+        else None
     )
 
     recent_volumes = [
@@ -408,6 +682,27 @@ def analyze_stock(stock):
         if isinstance(latest_volume, (int, float)) and average_volume20
         else None
     )
+
+    # Strong technical ranking: price structure and traded-volume behavior sit
+    # alongside, rather than underneath, conventional trend indicators.
+    daily_structure = market_structure_assessment(daily)
+    weekly_structure = market_structure_assessment(weekly, lookback=52)
+    monthly_structure = market_structure_assessment(monthly, lookback=36)
+    volume_price = volume_price_assessment(daily)
+    breakout = breakout_position_assessment(daily, volume_ratio)
+    efficiency = trend_efficiency_assessment(daily, period=20)
+    volatility = volatility_quality_assessment(daily)
+    factor_scores = {
+        "multi_timeframe_trend": trend_check_score,
+        "daily_market_structure": daily_structure.get("score"),
+        "weekly_market_structure": weekly_structure.get("score"),
+        "monthly_market_structure": monthly_structure.get("score"),
+        "volume_price_pressure": volume_price.get("score"),
+        "breakout_structure": breakout.get("score"),
+        "trend_efficiency": efficiency.get("score"),
+        "volatility_quality": volatility.get("score"),
+    }
+    technical_score, technical_factor_available_weight = weighted_technical_score(factor_scores)
 
     latest_date = (
         datetime.fromtimestamp(daily[-1]["time"], timezone.utc).date()
@@ -453,9 +748,21 @@ def analyze_stock(stock):
         "exchange": stock.get("exchange", ""),
         "chart_id": stock.get("chart_id", ""),
         "technical_score": technical_score,
+        "technical_factor_scores": factor_scores,
+        "technical_factor_available_weight": technical_factor_available_weight,
+        "market_structure": {
+            "daily": daily_structure,
+            "weekly": weekly_structure,
+            "monthly": monthly_structure,
+        },
+        "volume_price_analysis": volume_price,
+        "breakout_analysis": breakout,
+        "trend_efficiency": efficiency,
+        "volatility_quality": volatility,
         "risk_penalty": penalty,
         "risk_adjusted_score": risk_adjusted_score,
         "available_score_weight": available_weight,
+        "trend_check_available_weight": available_weight,
         "label": label,
         "eligible_for_long_term_ranking": eligible,
         "history_mature": history_mature,
@@ -558,7 +865,7 @@ def add_relative_momentum_tiebreaker(items):
         checklist = float(item.get("risk_adjusted_score") or 0)
         relative = item.get("relative_momentum_score")
         item["technical_rank_score"] = (
-            round(0.55 * checklist + 0.45 * float(relative), 2)
+            round(0.70 * checklist + 0.30 * float(relative), 2)
             if isinstance(relative, (int, float))
             else round(checklist, 2)
         )
@@ -623,14 +930,22 @@ def main():
             "daily": "SMA50/SMA200, 20/60-period returns, RSI14",
             "weekly": "SMA13/SMA26, 13-period return",
             "monthly": "SMA6/SMA12, 6-period return",
-            "score": "Weighted checklist score based on available positive daily/weekly/monthly trend checks.",
+            "score": (
+                "Weighted multi-factor score: multi-timeframe trend alignment (25%), "
+                "confirmed daily/weekly/monthly market structure (40%), volume-price pressure "
+                "(15%), 20/55-bar breakout structure (10%), trend efficiency (5%) and "
+                "ATR/price volatility quality (5%). Missing dimensions are excluded and "
+                "remaining weights renormalized. This is a screening heuristic, not a "
+                "validated forecast."
+            ),
             "ranking_score": (
-                "Provisional technical rank = 55% risk-adjusted checklist score + "
-                "45% cross-sectional relative momentum score. The relative score "
+                "Provisional technical rank = 70% risk-adjusted multi-factor score + "
+                "30% cross-sectional relative momentum score. The relative score "
                 "uses percentiles: 30% 6-period monthly return, 25% 13-period weekly "
                 "return, 25% 60-period daily return, 10% 20-period daily return and "
                 "10% latest volume / 20-session average; missing measures are "
-                "excluded and available weights are renormalized."
+                "excluded and available weights are renormalized. The composite prioritizes "
+                "confirmed structure and volume-price behavior over indicator count."
             ),
             "sort_order": (
                 "Technical rank score descending; then risk-adjusted checklist, "
