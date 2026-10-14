@@ -2250,18 +2250,35 @@ def probe_sources():
     print(f"At least 252 sessions: {len(history) >= 252}")
     print("BrsApi preflight passed; full-universe scan may begin.")
 
+def provider_preflight_or_public_fallback():
+    """Verify the paid provider once; a paywall or broken key must not create a fake full scan."""
+    global BRS_API_KEY, BRS_API_UNAVAILABLE, BRS_API_UNAVAILABLE_REASON, BRS_API_CONSECUTIVE_FAILURES
+    if not BRS_API_KEY:
+        return False
+    try:
+        probe_sources()
+        return True
+    except Exception as exc:
+        error_text = str(exc).replace(BRS_API_KEY, "[REDACTED]")[:240]
+        print("BRSAPI_PREFLIGHT_FAILED_FALLING_BACK_TO_PUBLIC_SOURCES:" + error_text)
+        BRS_API_KEY = ""
+        BRS_API_UNAVAILABLE = False
+        BRS_API_UNAVAILABLE_REASON = None
+        BRS_API_CONSECUTIVE_FAILURES = 0
+        return False
+
+
 def main():
+    global BRS_API_KEY
     if "--probe" in sys.argv:
         probe_sources()
         return
     if "--public-codal-only" in sys.argv or not BRS_API_KEY:
         run_public_codal_only()
         return
-    if not BRS_API_KEY:
-        raise RuntimeError(
-            "BRS_API_KEY is not configured. GitHub-hosted runners are being blocked by direct Codal/TSETMC endpoints. "
-            "Request a BrsApi key, add it under Settings > Secrets and variables > Actions as BRS_API_KEY, then rerun."
-        )
+    if not provider_preflight_or_public_fallback():
+        run_public_codal_only()
+        return
     if not UNIVERSE_FILE.is_file():
         raise FileNotFoundError(f"Universe file not found: {UNIVERSE_FILE}")
     universe = read_json(UNIVERSE_FILE)
