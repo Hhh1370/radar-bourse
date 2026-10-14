@@ -18,7 +18,10 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
-from scripts.fundai_ratio_history import normalize_history_payload, normalize_symbol
+try:
+    from scripts.fundai_ratio_history import normalize_history_payload, normalize_symbol
+except ModuleNotFoundError:  # direct execution as ``python scripts/fetch_fundai_ratio_history.py``
+    from fundai_ratio_history import normalize_history_payload, normalize_symbol
 
 ROOT = Path(__file__).resolve().parents[1]
 RATIO_FILE = ROOT / "data" / "fundai_financial_ratios.json"
