@@ -79,7 +79,7 @@ jobs:
           assert p["summary"].get("fundai_ratio_rows_available", 0) >= 500, "Fundai ratio snapshot is missing or too small"
           assert p["summary"].get("fundai_ratio_matched_count", 0) >= 450, "Unexpectedly low ticker match count for the ratio snapshot"
           assert p["summary"].get("fundai_ratio_scored_count", 0) >= 400, "Unexpectedly low number of ratio-based fundamental scores"
-          expected = sorted(rows, key=lambda x: (-(float(x.get("credit_score")) if isinstance(x.get("credit_score"), (int,float)) else -1), -float(x.get("technical_rank_score") or x.get("risk_adjusted_score") or 0), -float(x.get("credit_confidence_score") or 0), str(x.get("symbol") or "")))
+          expected = sorted(rows, key=lambda x: (-(float(x.get("radar_rank_score")) if isinstance(x.get("radar_rank_score"), (int,float)) else -1), -float(x.get("technical_rank_score") or x.get("risk_adjusted_score") or 0), -(float(x.get("fundamental_score")) if isinstance(x.get("fundamental_score"), (int,float)) else -1), str(x.get("symbol") or "")))
           assert [x.get("symbol") for x in rows] == [x.get("symbol") for x in expected], "Dashboard rows not sorted by the declared provisional ranking"
           print(f"DASHBOARD_DATA_VALID: {len(rows)} visible rows from pool {p['summary']['candidate_pool_ranked']}")
           print(f"FUNDAMENTAL_SCORED: {p['summary']['fundamental_scored_count']}")
