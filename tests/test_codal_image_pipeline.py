@@ -2,6 +2,8 @@
 import importlib.util
 from pathlib import Path
 import unittest
+from unittest.mock import patch
+import os
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -60,11 +62,9 @@ class TelegramPosterTests(unittest.TestCase):
         self.assertEqual(process.text_digits("فروش ۱۲۳٬۴۵۶ میلیون ریال"), "فروش 123,456 میلیون ریال")
 
     def test_ocr_failure_is_explicit_not_zero_score(self):
-        result = process.ocr_telegram_images([{"url": "https://example.com/poster.jpg"}], limit=1)
-        self.assertIn(result["status"], {
-            "tesseract_unavailable", "tesseract_language_unavailable",
-            "ocr_candidate_text", "ocr_failed_or_empty",
-        })
+        with patch.dict(os.environ, {"TESSERACT_CMD": "__radar_test_missing_tesseract__"}):
+            result = process.ocr_telegram_images([{"url": "https://example.com/poster.jpg"}], limit=1)
+        self.assertEqual(result["status"], "tesseract_unavailable")
         # OCR output is evidence only; it never manufactures a score by itself.
         self.assertNotIn("score", result)
 
