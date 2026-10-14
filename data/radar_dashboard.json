@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T12:30:18+00:00",
+  "generated_at_utc": "2026-10-14T12:43:20+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -25,7 +25,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-14T07:27:53+00:00",
-    "fundai_ratio_snapshot_age_hours": 5.0,
+    "fundai_ratio_snapshot_age_hours": 5.3,
     "fundai_ratio_matched_count": 535,
     "fundai_ratio_scored_count": 532,
     "fundai_ratio_history_companies": 609,
@@ -62,7 +62,7 @@
       "generated_at_utc": "2026-10-14T12:29:44+00:00",
       "label": "اعتبارسنجی خارج از نمونهٔ رتبه‌بندی",
       "status": "شواهد تاریخی مثبت؛ نه تضمین بازده",
-      "note": "وضعیت: positive_out_of_sample_evidence؛ ۲۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.1193، مازاد پنجک بالا نسبت به کل=2.6859٪؛ ۶۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.0376، مازاد پنجک بالا=1.7078٪. آزمون قیمت‌محور است، بدون سود نقدی/هزینه معامله و با سوگیری بقا.",
+      "note": "وضعیت: positive_out_of_sample_evidence؛ بازده میانه پنجک بالا: ۲۰جلسه=-1.2872٪، نرخ برد میانه=40.39٪؛ ۲۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.1193، مازاد پنجک بالا نسبت به کل=2.6859٪؛ ۶۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.0376، مازاد پنجک بالا=1.7078٪. آزمون قیمت‌محور است، بدون سود نقدی/هزینه معامله و با سوگیری بقا.",
       "source_url": "https://github.com/Hhh1370/radar-bourse/blob/main/data/radar_validation.json"
     },
     "fundamental": {
@@ -75,14 +75,14 @@
       "generated_at_utc": "2026-10-14T07:27:53+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 5.0 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 5.3 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "fundai_ratio_history": {
       "generated_at_utc": "2026-10-14T12:06:31+00:00",
       "label": "Fundai · تاریخچهٔ نسبت‌های مالی",
       "status": "تاریخچهٔ عمومی موجود؛ روند تاریخی مقدماتی",
-      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 0.4 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
+      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 0.6 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/"
     },
     "codal_channels": {
