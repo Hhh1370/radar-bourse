@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T08:51:42+00:00",
+  "generated_at_utc": "2026-10-14T08:54:02+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -37,7 +37,7 @@
   },
   "sources": {
     "technical": {
-      "generated_at_utc": "2026-10-14T07:40:11.190341+00:00",
+      "generated_at_utc": "2026-10-14T08:53:29.693125+00:00",
       "label": "تاریخچهٔ قیمت نهایت‌نگر",
       "status": "موجود",
       "note": "Technical screening only, not a buy/sell recommendation. The composite technical rank is provisional and has not been validated by walk-forward or out-of-sample backtesting. Fundamental health, earnings quality, project ROI and cash-flow quality are not included. Full TSE/IFB coverage has not been independently verified."
