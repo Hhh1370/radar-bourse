@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T09:11:34+00:00",
+  "generated_at_utc": "2026-10-14T09:22:17+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -17,7 +17,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-14T07:27:53+00:00",
-    "fundai_ratio_snapshot_age_hours": 1.7,
+    "fundai_ratio_snapshot_age_hours": 1.9,
     "fundai_ratio_matched_count": 535,
     "fundai_ratio_scored_count": 532,
     "final_credit_grade_count": 0,
@@ -33,7 +33,10 @@
     "codal_ledger_new_financial_statements": 6,
     "codal_ledger_new_monthly_activity": 4,
     "codal_ledger_statement_numeric_summaries": 44,
-    "codal_ledger_monthly_numeric_summaries": 51
+    "codal_ledger_monthly_numeric_summaries": 51,
+    "codal_summary_scored_count": 36,
+    "codal_summary_comparable_growth_count": 0,
+    "codal_summary_monthly_sales_count": 27
   },
   "sources": {
     "technical": {
@@ -52,7 +55,7 @@
       "generated_at_utc": "2026-10-14T07:27:53+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 1.7 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 1.9 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "codal_channels": {
@@ -78,7 +81,8 @@
     "earnings_quality": "فقط از اقلام عددی خوانده‌شده از صورت مالی ساختاریافته محاسبه می‌شود؛ کلیدواژه‌های کانال در امتیاز کیفیت سود وارد نمی‌شوند.",
     "money_flow": "فقط وقتی در امتیاز تلفیقی وارد می‌شود که نماد سهام عادی، تاریخچه حداقل ۲۰۰ جلسه، پرچم پوشش سالانه، تاریخ آخرین داده و امتیاز معتبر داشته باشد.",
     "channel_evidence": "خلاصه‌های متنی تلگرام، شواهد خام هستند و جایگزین تطبیق با صورت مالی/اطلاعیهٔ رسمی نیستند.",
-    "codal_filing_ledger": "اطلاعیه‌های تکراری با شناسه/پیوند کدال حذف تکرار و در دفتر پایدار نگهداری می‌شوند. ارقام استخراج‌شده از خلاصهٔ ثانویه برای نمایش و پیگیری‌اند و تا تأیید پیوست رسمی وارد امتیاز بنیادی/کیفیت سود نمی‌شوند."
+    "codal_summary_fundamentals": "خلاصهٔ عددی صورت‌های مالی ۳، ۶، ۹ و ۱۲ماهه از پیام‌های عمومی برای امتیاز مقدماتی محدود استفاده می‌شود؛ ارقام بدون تطبیق پیوست رسمی با برچسب تأییدنشده باقی می‌مانند. گزارش ماهانه فقط جهت روند فروش و فعالیت نمایش داده می‌شود.",
+    "codal_filing_ledger": "اطلاعیه‌های تکراری با شناسه/پیوند کدال حذف تکرار و در دفتر پایدار نگهداری می‌شوند. خلاصه‌های متنی دارای عدد، امتیاز مقدماتی محدود می‌گیرند؛ هرگز به‌عنوان صورت مالی رسمی یا کیفیت سود حسابرسی‌شده معرفی نمی‌شوند."
   },
   "candidates": [
     {
@@ -196,6 +200,7 @@
       "fundamental_score_source": "بدون امتیاز بنیادی",
       "fundamental_status": "دادهٔ استانداردشدهٔ کافی از صورت‌های مالی استخراج نشد",
       "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
       "quarterly_growth_candidates_pct": {},
       "quarterly_growth_points": null,
       "fundamental_latest_report_date": "",
@@ -270,9 +275,10 @@
       "radar_rank_components": {
         "technical": 78.59,
         "fundamental": null,
-        "earnings_quality": null
+        "earnings_quality": null,
+        "codal_summary": null
       },
-      "radar_rank_available_weight_pct": 75,
+      "radar_rank_available_weight_pct": 70,
       "credit_confidence_score": 55.0,
       "credit_confidence_label": "پایین؛ اتکا محدود",
       "final_credit_grade": null,
@@ -297,6 +303,8 @@
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
         "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
         "parsed_financial_report_count": 0,
         "final_credit_grade_available": false
       }
@@ -424,6 +432,34 @@
       "fundamental_score_source": "بدون امتیاز بنیادی",
       "fundamental_status": "دادهٔ استانداردشدهٔ کافی از صورت‌های مالی استخراج نشد",
       "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {
+        "monthly_activity": null,
+        "score": null,
+        "status": "پیام گزارش ماهانه/متنی موجود است، اما صورت مالی میان‌دوره‌ای/سالانه دارای عدد قابل‌استخراج نیست",
+        "source_confidence_factor": 0.0,
+        "source_quality_label": "دادهٔ بنیادی عددی ناکافی",
+        "latest_report_title": "",
+        "latest_report_period": "",
+        "latest_report_period_months": null,
+        "latest_report_end_jalali": "",
+        "latest_report_published_at": "",
+        "audit_status": "",
+        "is_correction": false,
+        "company": "",
+        "net_profit_million_rial_candidate": null,
+        "eps_rial_candidate": null,
+        "revenue_million_rial_candidate": null,
+        "net_profit_yoy_pct_candidate": null,
+        "eps_yoy_pct_candidate": null,
+        "revenue_yoy_pct_candidate": null,
+        "quarterly_growth_candidates_pct": {},
+        "quarterly_comparison_status": "صورت مالی عددی قابل‌مقایسه در خلاصه‌های فعلی پیدا نشد",
+        "evidence": [],
+        "official_url": "",
+        "telegram_url": "",
+        "source_status": "metadata_or_monthly_summary_only",
+        "has_comparable_prior_year_report": false
+      },
       "quarterly_growth_candidates_pct": {},
       "quarterly_growth_points": null,
       "fundamental_latest_report_date": "",
@@ -498,9 +534,10 @@
       "radar_rank_components": {
         "technical": 77.28,
         "fundamental": null,
-        "earnings_quality": null
+        "earnings_quality": null,
+        "codal_summary": null
       },
-      "radar_rank_available_weight_pct": 75,
+      "radar_rank_available_weight_pct": 70,
       "credit_confidence_score": 60.0,
       "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
       "final_credit_grade": null,
@@ -645,346 +682,14 @@
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
         "channel_evidence_count": 2,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": 0.0,
         "parsed_financial_report_count": 0,
         "final_credit_grade_available": false
       }
     },
     {
       "rank": 3,
-      "bucket": "main",
-      "bucket_label": "۵ نامزد موقت رادار",
-      "symbol": "وامیر",
-      "company": "گروه صنعتی و معدنی امیر",
-      "exchange": "پایه فرابورس",
-      "chart_id": "IRO7AIMP00013",
-      "price": 13190.0,
-      "price_date": "2026-10-13",
-      "technical_targets": {
-        "status": "available",
-        "reason": "",
-        "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": "2026-10-12",
-        "data_age_days": 2,
-        "current_price": 12810.0,
-        "atr14": 413.5714,
-        "support_levels": [
-          11500.0
-        ],
-        "resistance_levels": [],
-        "buy": null,
-        "sell": {
-          "entry_reference": 12810.0,
-          "target_1": 11500.0,
-          "target_2": null,
-          "stop_loss": 13430.3571,
-          "invalidation": 13430.3571,
-          "risk_reward_tp1": 2.11,
-          "risk_reward_tp2": null,
-          "status": "scenario_only; confirm entry separately"
-        },
-        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
-      },
-      "data_age_days": 1,
-      "technical_score": 87.5,
-      "risk_adjusted_score": 73.5,
-      "technical_rank_score": 76.72,
-      "relative_momentum_score": 84.22,
-      "technical_factor_scores": {
-        "multi_timeframe_trend": 100.0,
-        "daily_market_structure": 94.0,
-        "weekly_market_structure": 94.0,
-        "monthly_market_structure": 94.0,
-        "volume_price_pressure": 67.1,
-        "breakout_structure": 70.0,
-        "trend_efficiency": 71.7,
-        "volatility_quality": 85.0
-      },
-      "technical_factor_available_weight": 100.0,
-      "market_structure": {
-        "daily": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 12820.0,
-          "last_swing_low": 11500.0
-        },
-        "weekly": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 11995.0,
-          "last_swing_low": 10630.0
-        },
-        "monthly": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 5077.0,
-          "last_swing_low": 3381.0
-        }
-      },
-      "volume_price_analysis": {
-        "score": 67.1,
-        "weighted_close_location": 0.507,
-        "up_down_volume_ratio": 1.099,
-        "interpretation": "فشار انباشت/خرید در کندل‌ها",
-        "sample_bars": 20
-      },
-      "breakout_analysis": {
-        "score": 70.0,
-        "breakout_20": false,
-        "breakout_55": false,
-        "breakdown_20": false,
-        "breakdown_55": false,
-        "volume_confirmed": false,
-        "range_position_52w": 0.999
-      },
-      "trend_efficiency": {
-        "score": 71.7,
-        "efficiency_ratio": 0.434,
-        "direction": "صعودی",
-        "net_change_pct": 21.4
-      },
-      "volatility_quality": {
-        "score": 85.0,
-        "atr14": 413.5714,
-        "atr_pct": 3.229
-      },
-      "momentum_pct": {
-        "daily_20": 21.45,
-        "daily_60": 135.37,
-        "weekly_13": 130.03,
-        "monthly_6": 276.43
-      },
-      "volume_vs_20_period_average": 0.68,
-      "rsi14_daily": 77.84,
-      "heat_risk": "ریسک داغ‌شدن متوسط",
-      "entry_timing": "انتظار برای اصلاح یا تثبیت",
-      "risk_flags": [
-        "rsi_high",
-        "medium_term_surge",
-        "long_term_surge"
-      ],
-      "fundamental_score": null,
-      "fundamental_score_source": "بدون امتیاز بنیادی",
-      "fundamental_status": "دادهٔ استانداردشدهٔ کافی از صورت‌های مالی استخراج نشد",
-      "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
-      "quarterly_growth_candidates_pct": {},
-      "quarterly_growth_points": null,
-      "fundamental_latest_report_date": "",
-      "fundamental_ratio_score": null,
-      "fundamental_ratio_quality": null,
-      "fundamental_ratio_industry": "",
-      "fundamental_ratio_report_date": "",
-      "fundamental_ratio_age_days": null,
-      "fundamental_ratio_components": {},
-      "fundamental_ratio_metric_count": null,
-      "fundamental_ratio_peer_count": null,
-      "fundai_ratios": {},
-      "money_flow_score": null,
-      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
-      "instrument_kind": "other_or_unconfirmed",
-      "credit_assessment": {
-        "provisional_score": null,
-        "provisional_score_label": "امتیاز تلفیقی صادر نشده؛ فقط امتیاز تکنیکال قابل نمایش است",
-        "observed_component_mean": 76.7,
-        "provisional_score_available_weight_pct": 55,
-        "nontechnical_components_available": [],
-        "component_scores": {
-          "fundamental": null,
-          "earnings_quality": null,
-          "technical": 76.72,
-          "money_flow": null,
-          "projects": null
-        },
-        "component_weights_pct": {
-          "fundamental": 20,
-          "earnings_quality": 10,
-          "technical": 55,
-          "money_flow": 10,
-          "projects": 5
-        },
-        "fundamental_score_source": "بدون امتیاز",
-        "fundamental_ratio_quality": null,
-        "fundamental_score_is_proxy": false,
-        "fundamental_quality_gate": {
-          "ready": false,
-          "audited_annual_parsed_count": 0,
-          "comparable_annual_growth_available": false,
-          "annual_reports_parsed": null,
-          "revenue_yoy_pct": null
-        },
-        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
-        "earnings_quality_evidence": [],
-        "earnings_quality_fields_observed": 0,
-        "earnings_quality_report_date": "",
-        "project_score": null,
-        "project_score_validated": false,
-        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
-        "rating_confidence_score": 55.0,
-        "rating_confidence_label": "پایین؛ اتکا محدود",
-        "rating_confidence_is_data_coverage_not_profit_probability": true,
-        "confidence_factors_pct": {
-          "fundamental": 0.0,
-          "earnings_quality": 0.0,
-          "technical": 100,
-          "money_flow": 0.0,
-          "projects": 0.0
-        },
-        "final_rating_eligible": false,
-        "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
-        "final_credit_grade": null,
-        "provisional_input_components": [
-          "technical"
-        ]
-      },
-      "credit_score": null,
-      "radar_rank_score": 76.72,
-      "radar_rank_components": {
-        "technical": 76.72,
-        "fundamental": null,
-        "earnings_quality": null
-      },
-      "radar_rank_available_weight_pct": 75,
-      "credit_confidence_score": 55.0,
-      "credit_confidence_label": "پایین؛ اتکا محدود",
-      "final_credit_grade": null,
-      "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
-      "earnings_quality_score": null,
-      "project_score": null,
-      "project_score_validated": false,
-      "money_flow_history_rows": null,
-      "money_flow_full_year_coverage": false,
-      "money_flow_latest_date": "",
-      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
-      "financial_reports": [
-        {
-          "title": "اطلاعیه کدال | بورس تریدر 🏷️ #وامیر 🏛️ گروه صنعتی و معدنی امیر 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی تلفیقی سال مالی منتهی به ۱۴۰۵/۰۳/۳۱ (حسابرسی شده) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۷:۲۳:۳۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 24 views 13:54 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
-          "date": "2026-10-12T13:54:05+00:00",
-          "url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=POtvOOObOOOxJOOObOOOMbzEQ4mzec3gng%3D%3D&rt=2&let=6&ct=0&ft=-1",
-          "detail_status": "detail_fetch_failed_or_unparsed",
-          "ratios": null
-        }
-      ],
-      "important_disclosures": [],
-      "channel_evidence": [
-        {
-          "symbol": "وامیر",
-          "company": "",
-          "report_type": "صورت مالی/حسابرسی (خلاصهٔ عمومی)",
-          "report_period": "12 ماهه منتهی به 1405/03/31",
-          "published_at": "2026-10-12T13:54:05+00:00",
-          "channel": "تلگرام بورس‌تریدر",
-          "sales": "",
-          "profit": "",
-          "eps": "",
-          "dividend": "",
-          "growth": "",
-          "project": "",
-          "project_strength": "ضعیف",
-          "amounts_raw": "",
-          "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
-          "telegram_url": "",
-          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=POtvOOObOOOxJOOObOOOMbzEQ4mzec3gng%3D%3D&rt=2&let=6&ct=0&ft=-1",
-          "source_text": "اطلاعیه کدال | بورس تریدر 🏷️ #وامیر 🏛️ گروه صنعتی و معدنی امیر 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی تلفیقی سال مالی منتهی به ۱۴۰۵/۰۳/۳۱ (حسابرسی شده) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۷:۲۳:۳۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 24 views 13:54 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
-          "record_id": "aabda151e4e44653d9178c47",
-          "detail_status": "metadata_only",
-          "numeric_field_count": 0,
-          "is_secondary_summary": true
-        },
-        {
-          "symbol": "وامیر",
-          "company": "",
-          "report_type": "افشای بااهمیت",
-          "report_period": "منتهی به 1406/03/31",
-          "published_at": "2026-10-06T12:31:01+00:00",
-          "channel": "تلگرام کدال۳۶۰",
-          "sales": "",
-          "profit": "",
-          "eps": "",
-          "dividend": "",
-          "growth": "",
-          "project": "",
-          "project_strength": "ضعیف",
-          "amounts_raw": "",
-          "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
-          "telegram_url": "",
-          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=3uOOObOOOBRjZJzsMKFKNkeqQQQaQQQyyQ%3D%3D&rt=2&let=11&ct=0&ft=-1",
-          "source_text": "کدال۳۶۰ #وامیر #افشای_اطلاعات_بااهمیت - (سایر اطلاعات بااهمیت - پذیرش تعهدات جدید- گروه ب) منتهی به سال مالی 1406/03/31 شرکت #گروه_صنعتی_و_معدنی_امیر 1405-07-14 16:00:53 (1608675) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 6.5K views edited 12:31 اطلاعیه در سایت کدال 📥 دانلود فایل PDF",
-          "record_id": "c05802b8916088f3b7151d7a",
-          "detail_status": "metadata_only",
-          "numeric_field_count": 0,
-          "is_secondary_summary": true
-        }
-      ],
-      "codal_filing_ledger_reports": [
-        {
-          "symbol": "وامیر",
-          "company": "",
-          "report_type": "صورت مالی/حسابرسی (خلاصهٔ عمومی)",
-          "report_period": "12 ماهه منتهی به 1405/03/31",
-          "published_at": "2026-10-12T13:54:05+00:00",
-          "channel": "تلگرام بورس‌تریدر",
-          "sales": "",
-          "profit": "",
-          "eps": "",
-          "dividend": "",
-          "growth": "",
-          "project": "",
-          "project_strength": "ضعیف",
-          "amounts_raw": "",
-          "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
-          "telegram_url": "",
-          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=POtvOOObOOOxJOOObOOOMbzEQ4mzec3gng%3D%3D&rt=2&let=6&ct=0&ft=-1",
-          "source_text": "اطلاعیه کدال | بورس تریدر 🏷️ #وامیر 🏛️ گروه صنعتی و معدنی امیر 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی تلفیقی سال مالی منتهی به ۱۴۰۵/۰۳/۳۱ (حسابرسی شده) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۷:۲۳:۳۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 24 views 13:54 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
-          "record_id": "aabda151e4e44653d9178c47",
-          "detail_status": "metadata_only",
-          "numeric_field_count": 0,
-          "is_secondary_summary": true
-        },
-        {
-          "symbol": "وامیر",
-          "company": "",
-          "report_type": "افشای بااهمیت",
-          "report_period": "منتهی به 1406/03/31",
-          "published_at": "2026-10-06T12:31:01+00:00",
-          "channel": "تلگرام کدال۳۶۰",
-          "sales": "",
-          "profit": "",
-          "eps": "",
-          "dividend": "",
-          "growth": "",
-          "project": "",
-          "project_strength": "ضعیف",
-          "amounts_raw": "",
-          "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
-          "telegram_url": "",
-          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=3uOOObOOOBRjZJzsMKFKNkeqQQQaQQQyyQ%3D%3D&rt=2&let=11&ct=0&ft=-1",
-          "source_text": "کدال۳۶۰ #وامیر #افشای_اطلاعات_بااهمیت - (سایر اطلاعات بااهمیت - پذیرش تعهدات جدید- گروه ب) منتهی به سال مالی 1406/03/31 شرکت #گروه_صنعتی_و_معدنی_امیر 1405-07-14 16:00:53 (1608675) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 6.5K views edited 12:31 اطلاعیه در سایت کدال 📥 دانلود فایل PDF",
-          "record_id": "c05802b8916088f3b7151d7a",
-          "detail_status": "metadata_only",
-          "numeric_field_count": 0,
-          "is_secondary_summary": true
-        }
-      ],
-      "data_quality": {
-        "technical_available": true,
-        "fundamental_scored": false,
-        "fundamental_score_is_proxy": false,
-        "fundamental_ratio_snapshot_matched": false,
-        "fundamental_ratio_report_age_days": null,
-        "money_flow_scored": false,
-        "money_flow_12m_verified": false,
-        "channel_evidence_count": 2,
-        "parsed_financial_report_count": 0,
-        "final_credit_grade_available": false
-      }
-    },
-    {
-      "rank": 4,
       "bucket": "main",
       "bucket_label": "۵ نامزد موقت رادار",
       "symbol": "حسیر",
@@ -1115,6 +820,7 @@
       "fundamental_score_source": "Fundai TTM ratios proxy",
       "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها؛ صورت‌های مالی سالانه/حسابرسی‌شده برای رتبهٔ نهایی هنوز تأیید نشده‌اند",
       "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
       "quarterly_growth_candidates_pct": {},
       "quarterly_growth_points": null,
       "fundamental_latest_report_date": "",
@@ -1214,13 +920,14 @@
         ]
       },
       "credit_score": 76.4,
-      "radar_rank_score": 76.59,
+      "radar_rank_score": 76.72,
       "radar_rank_components": {
         "technical": 77.41,
         "fundamental": 73.5,
-        "earnings_quality": null
+        "earnings_quality": null,
+        "codal_summary": null
       },
-      "radar_rank_available_weight_pct": 95,
+      "radar_rank_available_weight_pct": 85,
       "credit_confidence_score": 68.0,
       "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
       "final_credit_grade": null,
@@ -1245,6 +952,373 @@
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
         "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
+        "parsed_financial_report_count": 0,
+        "final_credit_grade_available": false
+      }
+    },
+    {
+      "rank": 4,
+      "bucket": "main",
+      "bucket_label": "۵ نامزد موقت رادار",
+      "symbol": "وامیر",
+      "company": "گروه صنعتی و معدنی امیر",
+      "exchange": "پایه فرابورس",
+      "chart_id": "IRO7AIMP00013",
+      "price": 13190.0,
+      "price_date": "2026-10-13",
+      "technical_targets": {
+        "status": "available",
+        "reason": "",
+        "source": "Nahayatnegar historical daily OHLC",
+        "latest_price_date": "2026-10-12",
+        "data_age_days": 2,
+        "current_price": 12810.0,
+        "atr14": 413.5714,
+        "support_levels": [
+          11500.0
+        ],
+        "resistance_levels": [],
+        "buy": null,
+        "sell": {
+          "entry_reference": 12810.0,
+          "target_1": 11500.0,
+          "target_2": null,
+          "stop_loss": 13430.3571,
+          "invalidation": 13430.3571,
+          "risk_reward_tp1": 2.11,
+          "risk_reward_tp2": null,
+          "status": "scenario_only; confirm entry separately"
+        },
+        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
+      },
+      "data_age_days": 1,
+      "technical_score": 87.5,
+      "risk_adjusted_score": 73.5,
+      "technical_rank_score": 76.72,
+      "relative_momentum_score": 84.22,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 94.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 67.1,
+        "breakout_structure": 70.0,
+        "trend_efficiency": 71.7,
+        "volatility_quality": 85.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 12820.0,
+          "last_swing_low": 11500.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 11995.0,
+          "last_swing_low": 10630.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 5077.0,
+          "last_swing_low": 3381.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 67.1,
+        "weighted_close_location": 0.507,
+        "up_down_volume_ratio": 1.099,
+        "interpretation": "فشار انباشت/خرید در کندل‌ها",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 70.0,
+        "breakout_20": false,
+        "breakout_55": false,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 0.999
+      },
+      "trend_efficiency": {
+        "score": 71.7,
+        "efficiency_ratio": 0.434,
+        "direction": "صعودی",
+        "net_change_pct": 21.4
+      },
+      "volatility_quality": {
+        "score": 85.0,
+        "atr14": 413.5714,
+        "atr_pct": 3.229
+      },
+      "momentum_pct": {
+        "daily_20": 21.45,
+        "daily_60": 135.37,
+        "weekly_13": 130.03,
+        "monthly_6": 276.43
+      },
+      "volume_vs_20_period_average": 0.68,
+      "rsi14_daily": 77.84,
+      "heat_risk": "ریسک داغ‌شدن متوسط",
+      "entry_timing": "انتظار برای اصلاح یا تثبیت",
+      "risk_flags": [
+        "rsi_high",
+        "medium_term_surge",
+        "long_term_surge"
+      ],
+      "fundamental_score": null,
+      "fundamental_score_source": "بدون امتیاز بنیادی",
+      "fundamental_status": "دادهٔ استانداردشدهٔ کافی از صورت‌های مالی استخراج نشد",
+      "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {
+        "monthly_activity": null,
+        "score": null,
+        "status": "پیام گزارش ماهانه/متنی موجود است، اما صورت مالی میان‌دوره‌ای/سالانه دارای عدد قابل‌استخراج نیست",
+        "source_confidence_factor": 0.0,
+        "source_quality_label": "دادهٔ بنیادی عددی ناکافی",
+        "latest_report_title": "",
+        "latest_report_period": "",
+        "latest_report_period_months": null,
+        "latest_report_end_jalali": "",
+        "latest_report_published_at": "",
+        "audit_status": "",
+        "is_correction": false,
+        "company": "",
+        "net_profit_million_rial_candidate": null,
+        "eps_rial_candidate": null,
+        "revenue_million_rial_candidate": null,
+        "net_profit_yoy_pct_candidate": null,
+        "eps_yoy_pct_candidate": null,
+        "revenue_yoy_pct_candidate": null,
+        "quarterly_growth_candidates_pct": {},
+        "quarterly_comparison_status": "صورت مالی عددی قابل‌مقایسه در خلاصه‌های فعلی پیدا نشد",
+        "evidence": [],
+        "official_url": "",
+        "telegram_url": "",
+        "source_status": "metadata_or_monthly_summary_only",
+        "has_comparable_prior_year_report": false
+      },
+      "quarterly_growth_candidates_pct": {},
+      "quarterly_growth_points": null,
+      "fundamental_latest_report_date": "",
+      "fundamental_ratio_score": null,
+      "fundamental_ratio_quality": null,
+      "fundamental_ratio_industry": "",
+      "fundamental_ratio_report_date": "",
+      "fundamental_ratio_age_days": null,
+      "fundamental_ratio_components": {},
+      "fundamental_ratio_metric_count": null,
+      "fundamental_ratio_peer_count": null,
+      "fundai_ratios": {},
+      "money_flow_score": null,
+      "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
+      "instrument_kind": "other_or_unconfirmed",
+      "credit_assessment": {
+        "provisional_score": null,
+        "provisional_score_label": "امتیاز تلفیقی صادر نشده؛ فقط امتیاز تکنیکال قابل نمایش است",
+        "observed_component_mean": 76.7,
+        "provisional_score_available_weight_pct": 55,
+        "nontechnical_components_available": [],
+        "component_scores": {
+          "fundamental": null,
+          "earnings_quality": null,
+          "technical": 76.72,
+          "money_flow": null,
+          "projects": null
+        },
+        "component_weights_pct": {
+          "fundamental": 20,
+          "earnings_quality": 10,
+          "technical": 55,
+          "money_flow": 10,
+          "projects": 5
+        },
+        "fundamental_score_source": "بدون امتیاز",
+        "fundamental_ratio_quality": null,
+        "fundamental_score_is_proxy": false,
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
+        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
+        "earnings_quality_evidence": [],
+        "earnings_quality_fields_observed": 0,
+        "earnings_quality_report_date": "",
+        "project_score": null,
+        "project_score_validated": false,
+        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
+        "rating_confidence_score": 55.0,
+        "rating_confidence_label": "پایین؛ اتکا محدود",
+        "rating_confidence_is_data_coverage_not_profit_probability": true,
+        "confidence_factors_pct": {
+          "fundamental": 0.0,
+          "earnings_quality": 0.0,
+          "technical": 100,
+          "money_flow": 0.0,
+          "projects": 0.0
+        },
+        "final_rating_eligible": false,
+        "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
+        "final_credit_grade": null,
+        "provisional_input_components": [
+          "technical"
+        ]
+      },
+      "credit_score": null,
+      "radar_rank_score": 76.72,
+      "radar_rank_components": {
+        "technical": 76.72,
+        "fundamental": null,
+        "earnings_quality": null,
+        "codal_summary": null
+      },
+      "radar_rank_available_weight_pct": 70,
+      "credit_confidence_score": 55.0,
+      "credit_confidence_label": "پایین؛ اتکا محدود",
+      "final_credit_grade": null,
+      "final_rating_status": "موقت؛ برای رتبهٔ نهایی بنیادی/پروژه‌ای کافی نیست",
+      "earnings_quality_score": null,
+      "project_score": null,
+      "project_score_validated": false,
+      "money_flow_history_rows": null,
+      "money_flow_full_year_coverage": false,
+      "money_flow_latest_date": "",
+      "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
+      "financial_reports": [
+        {
+          "title": "اطلاعیه کدال | بورس تریدر 🏷️ #وامیر 🏛️ گروه صنعتی و معدنی امیر 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی تلفیقی سال مالی منتهی به ۱۴۰۵/۰۳/۳۱ (حسابرسی شده) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۷:۲۳:۳۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 24 views 13:54 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
+          "date": "2026-10-12T13:54:05+00:00",
+          "url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=POtvOOObOOOxJOOObOOOMbzEQ4mzec3gng%3D%3D&rt=2&let=6&ct=0&ft=-1",
+          "detail_status": "detail_fetch_failed_or_unparsed",
+          "ratios": null
+        }
+      ],
+      "important_disclosures": [],
+      "channel_evidence": [
+        {
+          "symbol": "وامیر",
+          "company": "",
+          "report_type": "صورت مالی/حسابرسی (خلاصهٔ عمومی)",
+          "report_period": "12 ماهه منتهی به 1405/03/31",
+          "published_at": "2026-10-12T13:54:05+00:00",
+          "channel": "تلگرام بورس‌تریدر",
+          "sales": "",
+          "profit": "",
+          "eps": "",
+          "dividend": "",
+          "growth": "",
+          "project": "",
+          "project_strength": "ضعیف",
+          "amounts_raw": "",
+          "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
+          "telegram_url": "",
+          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=POtvOOObOOOxJOOObOOOMbzEQ4mzec3gng%3D%3D&rt=2&let=6&ct=0&ft=-1",
+          "source_text": "اطلاعیه کدال | بورس تریدر 🏷️ #وامیر 🏛️ گروه صنعتی و معدنی امیر 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی تلفیقی سال مالی منتهی به ۱۴۰۵/۰۳/۳۱ (حسابرسی شده) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۷:۲۳:۳۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 24 views 13:54 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
+          "record_id": "aabda151e4e44653d9178c47",
+          "detail_status": "metadata_only",
+          "numeric_field_count": 0,
+          "is_secondary_summary": true
+        },
+        {
+          "symbol": "وامیر",
+          "company": "",
+          "report_type": "افشای بااهمیت",
+          "report_period": "منتهی به 1406/03/31",
+          "published_at": "2026-10-06T12:31:01+00:00",
+          "channel": "تلگرام کدال۳۶۰",
+          "sales": "",
+          "profit": "",
+          "eps": "",
+          "dividend": "",
+          "growth": "",
+          "project": "",
+          "project_strength": "ضعیف",
+          "amounts_raw": "",
+          "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
+          "telegram_url": "",
+          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=3uOOObOOOBRjZJzsMKFKNkeqQQQaQQQyyQ%3D%3D&rt=2&let=11&ct=0&ft=-1",
+          "source_text": "کدال۳۶۰ #وامیر #افشای_اطلاعات_بااهمیت - (سایر اطلاعات بااهمیت - پذیرش تعهدات جدید- گروه ب) منتهی به سال مالی 1406/03/31 شرکت #گروه_صنعتی_و_معدنی_امیر 1405-07-14 16:00:53 (1608675) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 6.5K views edited 12:31 اطلاعیه در سایت کدال 📥 دانلود فایل PDF",
+          "record_id": "c05802b8916088f3b7151d7a",
+          "detail_status": "metadata_only",
+          "numeric_field_count": 0,
+          "is_secondary_summary": true
+        }
+      ],
+      "codal_filing_ledger_reports": [
+        {
+          "symbol": "وامیر",
+          "company": "",
+          "report_type": "صورت مالی/حسابرسی (خلاصهٔ عمومی)",
+          "report_period": "12 ماهه منتهی به 1405/03/31",
+          "published_at": "2026-10-12T13:54:05+00:00",
+          "channel": "تلگرام بورس‌تریدر",
+          "sales": "",
+          "profit": "",
+          "eps": "",
+          "dividend": "",
+          "growth": "",
+          "project": "",
+          "project_strength": "ضعیف",
+          "amounts_raw": "",
+          "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
+          "telegram_url": "",
+          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=POtvOOObOOOxJOOObOOOMbzEQ4mzec3gng%3D%3D&rt=2&let=6&ct=0&ft=-1",
+          "source_text": "اطلاعیه کدال | بورس تریدر 🏷️ #وامیر 🏛️ گروه صنعتی و معدنی امیر 📌 #صورت_های_مالی_میان_دوره_ای 📋 صورت های مالی تلفیقی سال مالی منتهی به ۱۴۰۵/۰۳/۳۱ (حسابرسی شده) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۷:۲۳:۳۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 24 views 13:54 📋 اطلاعیه 📕 PDF 📘 Excel 🔗 TSETMC 📊 سابقه 📈 چارت",
+          "record_id": "aabda151e4e44653d9178c47",
+          "detail_status": "metadata_only",
+          "numeric_field_count": 0,
+          "is_secondary_summary": true
+        },
+        {
+          "symbol": "وامیر",
+          "company": "",
+          "report_type": "افشای بااهمیت",
+          "report_period": "منتهی به 1406/03/31",
+          "published_at": "2026-10-06T12:31:01+00:00",
+          "channel": "تلگرام کدال۳۶۰",
+          "sales": "",
+          "profit": "",
+          "eps": "",
+          "dividend": "",
+          "growth": "",
+          "project": "",
+          "project_strength": "ضعیف",
+          "amounts_raw": "",
+          "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
+          "telegram_url": "",
+          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=3uOOObOOOBRjZJzsMKFKNkeqQQQaQQQyyQ%3D%3D&rt=2&let=11&ct=0&ft=-1",
+          "source_text": "کدال۳۶۰ #وامیر #افشای_اطلاعات_بااهمیت - (سایر اطلاعات بااهمیت - پذیرش تعهدات جدید- گروه ب) منتهی به سال مالی 1406/03/31 شرکت #گروه_صنعتی_و_معدنی_امیر 1405-07-14 16:00:53 (1608675) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 6.5K views edited 12:31 اطلاعیه در سایت کدال 📥 دانلود فایل PDF",
+          "record_id": "c05802b8916088f3b7151d7a",
+          "detail_status": "metadata_only",
+          "numeric_field_count": 0,
+          "is_secondary_summary": true
+        }
+      ],
+      "data_quality": {
+        "technical_available": true,
+        "fundamental_scored": false,
+        "fundamental_score_is_proxy": false,
+        "fundamental_ratio_snapshot_matched": false,
+        "fundamental_ratio_report_age_days": null,
+        "money_flow_scored": false,
+        "money_flow_12m_verified": false,
+        "channel_evidence_count": 2,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": 0.0,
         "parsed_financial_report_count": 0,
         "final_credit_grade_available": false
       }
@@ -1374,6 +1448,7 @@
       "fundamental_score_source": "بدون امتیاز بنیادی",
       "fundamental_status": "دادهٔ استانداردشدهٔ کافی از صورت‌های مالی استخراج نشد",
       "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
       "quarterly_growth_candidates_pct": {},
       "quarterly_growth_points": null,
       "fundamental_latest_report_date": "",
@@ -1448,9 +1523,10 @@
       "radar_rank_components": {
         "technical": 76.45,
         "fundamental": null,
-        "earnings_quality": null
+        "earnings_quality": null,
+        "codal_summary": null
       },
-      "radar_rank_available_weight_pct": 75,
+      "radar_rank_available_weight_pct": 70,
       "credit_confidence_score": 55.0,
       "credit_confidence_label": "پایین؛ اتکا محدود",
       "final_credit_grade": null,
@@ -1475,6 +1551,8 @@
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
         "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
         "parsed_financial_report_count": 0,
         "final_credit_grade_available": false
       }
@@ -1601,6 +1679,7 @@
       "fundamental_score_source": "بدون امتیاز بنیادی",
       "fundamental_status": "دادهٔ استانداردشدهٔ کافی از صورت‌های مالی استخراج نشد",
       "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
       "quarterly_growth_candidates_pct": {},
       "quarterly_growth_points": null,
       "fundamental_latest_report_date": "",
@@ -1675,9 +1754,10 @@
       "radar_rank_components": {
         "technical": 76.3,
         "fundamental": null,
-        "earnings_quality": null
+        "earnings_quality": null,
+        "codal_summary": null
       },
-      "radar_rank_available_weight_pct": 75,
+      "radar_rank_available_weight_pct": 70,
       "credit_confidence_score": 55.0,
       "credit_confidence_label": "پایین؛ اتکا محدود",
       "final_credit_grade": null,
@@ -1702,6 +1782,8 @@
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
         "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
         "parsed_financial_report_count": 0,
         "final_credit_grade_available": false
       }
@@ -1828,6 +1910,34 @@
       "fundamental_score_source": "بدون امتیاز بنیادی",
       "fundamental_status": "دادهٔ استانداردشدهٔ کافی از صورت‌های مالی استخراج نشد",
       "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {
+        "monthly_activity": null,
+        "score": null,
+        "status": "پیام گزارش ماهانه/متنی موجود است، اما صورت مالی میان‌دوره‌ای/سالانه دارای عدد قابل‌استخراج نیست",
+        "source_confidence_factor": 0.0,
+        "source_quality_label": "دادهٔ بنیادی عددی ناکافی",
+        "latest_report_title": "",
+        "latest_report_period": "",
+        "latest_report_period_months": null,
+        "latest_report_end_jalali": "",
+        "latest_report_published_at": "",
+        "audit_status": "",
+        "is_correction": false,
+        "company": "",
+        "net_profit_million_rial_candidate": null,
+        "eps_rial_candidate": null,
+        "revenue_million_rial_candidate": null,
+        "net_profit_yoy_pct_candidate": null,
+        "eps_yoy_pct_candidate": null,
+        "revenue_yoy_pct_candidate": null,
+        "quarterly_growth_candidates_pct": {},
+        "quarterly_comparison_status": "صورت مالی عددی قابل‌مقایسه در خلاصه‌های فعلی پیدا نشد",
+        "evidence": [],
+        "official_url": "",
+        "telegram_url": "",
+        "source_status": "metadata_or_monthly_summary_only",
+        "has_comparable_prior_year_report": false
+      },
       "quarterly_growth_candidates_pct": {},
       "quarterly_growth_points": null,
       "fundamental_latest_report_date": "",
@@ -1902,9 +2012,10 @@
       "radar_rank_components": {
         "technical": 76.24,
         "fundamental": null,
-        "earnings_quality": null
+        "earnings_quality": null,
+        "codal_summary": null
       },
-      "radar_rank_available_weight_pct": 75,
+      "radar_rank_available_weight_pct": 70,
       "credit_confidence_score": 55.0,
       "credit_confidence_label": "پایین؛ اتکا محدود",
       "final_credit_grade": null,
@@ -2075,6 +2186,8 @@
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
         "channel_evidence_count": 3,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": 0.0,
         "parsed_financial_report_count": 0,
         "final_credit_grade_available": false
       }
@@ -2211,6 +2324,7 @@
       "fundamental_score_source": "Fundai TTM ratios proxy",
       "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها؛ صورت‌های مالی سالانه/حسابرسی‌شده برای رتبهٔ نهایی هنوز تأیید نشده‌اند",
       "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
       "quarterly_growth_candidates_pct": {},
       "quarterly_growth_points": null,
       "fundamental_latest_report_date": "",
@@ -2310,13 +2424,14 @@
         ]
       },
       "credit_score": 75.0,
-      "radar_rank_score": 75.25,
+      "radar_rank_score": 75.38,
       "radar_rank_components": {
         "technical": 76.04,
         "fundamental": 72.3,
-        "earnings_quality": null
+        "earnings_quality": null,
+        "codal_summary": null
       },
-      "radar_rank_available_weight_pct": 95,
+      "radar_rank_available_weight_pct": 85,
       "credit_confidence_score": 68.0,
       "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
       "final_credit_grade": null,
@@ -2341,6 +2456,8 @@
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
         "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
         "parsed_financial_report_count": 0,
         "final_credit_grade_available": false
       }
@@ -2467,6 +2584,7 @@
       "fundamental_score_source": "بدون امتیاز بنیادی",
       "fundamental_status": "دادهٔ استانداردشدهٔ کافی از صورت‌های مالی استخراج نشد",
       "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
       "quarterly_growth_candidates_pct": {},
       "quarterly_growth_points": null,
       "fundamental_latest_report_date": "",
@@ -2541,9 +2659,10 @@
       "radar_rank_components": {
         "technical": 74.92,
         "fundamental": null,
-        "earnings_quality": null
+        "earnings_quality": null,
+        "codal_summary": null
       },
-      "radar_rank_available_weight_pct": 75,
+      "radar_rank_available_weight_pct": 70,
       "credit_confidence_score": 55.0,
       "credit_confidence_label": "پایین؛ اتکا محدود",
       "final_credit_grade": null,
@@ -2568,6 +2687,8 @@
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
         "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
         "parsed_financial_report_count": 0,
         "final_credit_grade_available": false
       }
@@ -2576,40 +2697,51 @@
       "rank": 10,
       "bucket": "watch",
       "bucket_label": "۵ نماد تحت‌نظر موقت",
-      "symbol": "رافزا",
-      "company": "رایان هم افزا",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3RYHZ00013",
-      "price": 12750.0,
+      "symbol": "بشهاب",
+      "company": "لامپ پارس شهاب",
+      "exchange": "بورس",
+      "chart_id": "IRO1LAPS00013",
+      "price": 9930.0,
       "price_date": "2026-10-13",
       "technical_targets": {
-        "status": "unavailable",
-        "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
+        "status": "available",
+        "reason": "",
         "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": null,
-        "data_age_days": null,
-        "current_price": null,
-        "atr14": null,
-        "support_levels": [],
+        "latest_price_date": "2026-10-13",
+        "data_age_days": 1,
+        "current_price": 9930.0,
+        "atr14": 373.5714,
+        "support_levels": [
+          8210.0
+        ],
         "resistance_levels": [],
         "buy": null,
-        "sell": null,
-        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
+        "sell": {
+          "entry_reference": 9930.0,
+          "target_1": 8210.0,
+          "target_2": null,
+          "stop_loss": 10490.3571,
+          "invalidation": 10490.3571,
+          "risk_reward_tp1": 3.07,
+          "risk_reward_tp2": null,
+          "status": "scenario_only; confirm entry separately"
+        },
+        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
       },
       "data_age_days": 1,
-      "technical_score": 85.2,
-      "risk_adjusted_score": 71.2,
-      "technical_rank_score": 72.08,
-      "relative_momentum_score": 74.14,
+      "technical_score": 88.8,
+      "risk_adjusted_score": 77.8,
+      "technical_rank_score": 73.69,
+      "relative_momentum_score": 64.11,
       "technical_factor_scores": {
         "multi_timeframe_trend": 100.0,
         "daily_market_structure": 94.0,
         "weekly_market_structure": 94.0,
         "monthly_market_structure": 94.0,
-        "volume_price_pressure": 39.9,
+        "volume_price_pressure": 67.0,
         "breakout_structure": 92.0,
-        "trend_efficiency": 63.4,
-        "volatility_quality": 85.0
+        "trend_efficiency": 63.7,
+        "volatility_quality": 75.0
       },
       "technical_factor_available_weight": 100.0,
       "market_structure": {
@@ -2618,31 +2750,31 @@
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 12189.0,
-          "last_swing_low": 11076.0
+          "last_swing_high": 9500.0,
+          "last_swing_low": 9180.0
         },
         "weekly": {
           "score": 94.0,
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 12189.0,
-          "last_swing_low": 10054.0
+          "last_swing_high": 9500.0,
+          "last_swing_low": 7950.0
         },
         "monthly": {
           "score": 94.0,
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 5373.0,
-          "last_swing_low": 4009.0
+          "last_swing_high": 5562.0,
+          "last_swing_low": 3920.0
         }
       },
       "volume_price_analysis": {
-        "score": 39.9,
-        "weighted_close_location": -0.104,
-        "up_down_volume_ratio": 0.454,
-        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "score": 67.0,
+        "weighted_close_location": 0.441,
+        "up_down_volume_ratio": 1.381,
+        "interpretation": "فشار انباشت/خرید در کندل‌ها",
         "sample_bars": 20
       },
       "breakout_analysis": {
@@ -2655,88 +2787,89 @@
         "range_position_52w": 1.0
       },
       "trend_efficiency": {
-        "score": 63.4,
-        "efficiency_ratio": 0.267,
+        "score": 63.7,
+        "efficiency_ratio": 0.275,
         "direction": "صعودی",
-        "net_change_pct": 14.18
+        "net_change_pct": 13.62
       },
       "volatility_quality": {
-        "score": 85.0,
-        "atr14": 375.0,
-        "atr_pct": 3.029
+        "score": 75.0,
+        "atr14": 373.5714,
+        "atr_pct": 3.762
       },
       "momentum_pct": {
-        "daily_20": 14.17,
-        "daily_60": 85.02,
-        "weekly_13": 108.57,
-        "monthly_6": 204.59
+        "daily_20": 13.62,
+        "daily_60": 83.89,
+        "weekly_13": 73.91,
+        "monthly_6": 136.15
       },
-      "volume_vs_20_period_average": 0.773,
-      "rsi14_daily": 70.49,
-      "heat_risk": "ریسک داغ‌شدن متوسط",
+      "volume_vs_20_period_average": 1.131,
+      "rsi14_daily": 74.59,
+      "heat_risk": "ریسک داغ‌شدن پایین",
       "entry_timing": "فقط پس از تأیید مجدد",
       "risk_flags": [
         "rsi_high",
         "medium_term_surge",
         "long_term_surge"
       ],
-      "fundamental_score": 81.8,
+      "fundamental_score": 75.2,
       "fundamental_score_source": "Fundai TTM ratios proxy",
       "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها؛ صورت‌های مالی سالانه/حسابرسی‌شده برای رتبهٔ نهایی هنوز تأیید نشده‌اند",
       "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
       "quarterly_growth_candidates_pct": {},
       "quarterly_growth_points": null,
       "fundamental_latest_report_date": "",
-      "fundamental_ratio_score": 81.8,
+      "fundamental_ratio_score": 75.2,
       "fundamental_ratio_quality": 1.0,
-      "fundamental_ratio_industry": "رایانه و فعالیت های وابسته به آن",
+      "fundamental_ratio_industry": "ماشین آلات و دستگاه های برقی",
       "fundamental_ratio_report_date": "1405-03-31",
       "fundamental_ratio_age_days": 115,
       "fundamental_ratio_components": {
-        "profitability": 88.2,
-        "balance_sheet": 100.0,
-        "valuation": 51.0,
-        "roe_ttm": 77.8,
+        "profitability": 91.5,
+        "balance_sheet": 80.0,
+        "valuation": 38.0,
+        "roe_ttm": 90.0,
         "roa_ttm": 100.0,
-        "net_profit_margin_ttm": 83.3,
-        "debt_to_assets": 100.0,
-        "debt_to_equity": 100.0,
-        "pe_ttm": 75.0,
-        "ps_ttm": 11.1,
-        "pb": 58.8
+        "net_profit_margin_ttm": 80.0,
+        "debt_to_assets": 80.0,
+        "debt_to_equity": 80.0,
+        "pe_ttm": 50.0,
+        "ps_ttm": 30.0,
+        "pb": 30.0
       },
       "fundamental_ratio_metric_count": 8,
-      "fundamental_ratio_peer_count": 19,
+      "fundamental_ratio_peer_count": 11,
       "fundai_ratios": {
-        "eps": 1598.0,
-        "pe_ttm": 8.217,
-        "ps_ttm": 4.6,
-        "price": 13130.0,
-        "market_value": 4858.1,
-        "operation_income": 1061.0498,
-        "net_profit_ttm": 591.26,
-        "net_profit_margin_ttm": 0.557,
-        "roe_ttm": 0.576,
-        "roa_ttm": 0.449,
-        "pb": 4.736,
-        "debt_to_assets": 0.221,
-        "debt_to_equity": 0.284
+        "eps": 1212.0,
+        "pe_ttm": 8.3,
+        "ps_ttm": 2.9,
+        "price": 10060.0,
+        "market_value": 4074.3,
+        "operation_income": 1391.1912,
+        "net_profit_ttm": 490.86,
+        "net_profit_margin_ttm": 0.353,
+        "roe_ttm": 0.509,
+        "roa_ttm": 0.313,
+        "pb": 4.228,
+        "debt_to_assets": 0.386,
+        "debt_to_equity": 0.629
       },
       "money_flow_score": null,
       "money_flow_status": "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده",
       "instrument_kind": "common_equity",
       "credit_assessment": {
-        "provisional_score": 74.7,
+        "provisional_score": 74.1,
         "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 74.7,
+        "observed_component_mean": 74.1,
         "provisional_score_available_weight_pct": 75,
         "nontechnical_components_available": [
           "fundamental"
         ],
         "component_scores": {
-          "fundamental": 81.8,
+          "fundamental": 75.2,
           "earnings_quality": null,
-          "technical": 72.08,
+          "technical": 73.69,
           "money_flow": null,
           "projects": null
         },
@@ -2782,14 +2915,15 @@
           "technical"
         ]
       },
-      "credit_score": 74.7,
-      "radar_rank_score": 74.13,
+      "credit_score": 74.1,
+      "radar_rank_score": 73.96,
       "radar_rank_components": {
-        "technical": 72.08,
-        "fundamental": 81.8,
-        "earnings_quality": null
+        "technical": 73.69,
+        "fundamental": 75.2,
+        "earnings_quality": null,
+        "codal_summary": null
       },
-      "radar_rank_available_weight_pct": 95,
+      "radar_rank_available_weight_pct": 85,
       "credit_confidence_score": 68.0,
       "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
       "final_credit_grade": null,
@@ -2803,48 +2937,7 @@
       "money_flow_error": "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است",
       "financial_reports": [],
       "important_disclosures": [],
-      "channel_evidence": [
-        {
-          "symbol": "رافزا",
-          "company": "رایان هم افزا",
-          "report_type": "نیازمند دسته‌بندی دستی",
-          "report_period": "12 ماهه منتهی به 1405/12/29",
-          "published_at": "2026-10-05T13:15:50+00:00",
-          "channel": "تلگرام کدال۳۶۰",
-          "sales": "",
-          "profit": "",
-          "eps": "سود هر سهم: 1,000 ریال",
-          "dividend": "",
-          "growth": "",
-          "project": "",
-          "project_strength": "ضعیف",
-          "amounts_raw": "2,300,000 میلیون ریال؛ 1,000 ریال؛ 1,700,000 میلیون ریال",
-          "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
-          "telegram_url": "https://t.me/Codal360_ir/347572",
-          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=5OOObOOOLiQQQaQQQwDGsOOObOOOyxSMhZyVOOObOOOzHA%3D%3D&rt=5&let=2222&ct=0&ft=-1",
-          "source_text": "کدال۳۶۰ #رافزا خلاصه تصمیمات #مجمع_عمومی_فوق_العاده #دوره_12_ماهه منتهی به 1405/12/29(حضوری و الکترونیکی) شرکت #رایان_هم_افزا ▪️ زمان جلسه: 1405/07/13 راس ساعت 09:00 ▪️ سرمایه ثبت شده: 2,300,000 میلیون ریال ▪️ سود هر سهم: 1,000 ریال ▪️ سود انباشته پایان دوره: 1,700,000 میلیون ریال 1405-07-13 16:45:46 (1608136) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 5.6K views 13:15 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1"
-        },
-        {
-          "symbol": "رافزا",
-          "company": "رایان هم افزا",
-          "report_type": "افزایش سرمایه",
-          "report_period": "12 ماهه منتهی به 1405/12/29",
-          "published_at": "2026-10-05T13:15:27+00:00",
-          "channel": "تلگرام کدال۳۶۰",
-          "sales": "",
-          "profit": "",
-          "eps": "",
-          "dividend": "",
-          "growth": "",
-          "project": "",
-          "project_strength": "ضعیف",
-          "amounts_raw": "2,000,000 میلیون ریال؛ 115%؛ 2,300,000 میلیون ریال",
-          "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
-          "telegram_url": "https://t.me/Codal360_ir/347571",
-          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=nCNsNZeUadTD8vISOOObOOOyjZtA%3D%3D&rt=5&let=22&ct=0&ft=-1",
-          "source_text": "کدال۳۶۰ #رافزا تصمیمات #مجمع_عمومی_فوق_العاده #دوره_12_ماهه منتهی به 1405/12/29(حضوری و الکترونیکی) شرکت #رایان_هم_افزا ▪️ زمان جلسه: 1405/07/13 ساعت 09:00 ▪️ سرمایه فعلی: 2,000,000 میلیون ریال ▪️ افزایش سرمایه: 115% ▪️ مبلغ افزایش سرمایه: 2,300,000 میلیون ریال 1405-07-13 16:45:23 (1608175) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 👏 2 5.56K views 13:15 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1"
-        }
-      ],
+      "channel_evidence": [],
       "codal_filing_ledger_reports": [],
       "data_quality": {
         "technical_available": true,
@@ -2854,7 +2947,9 @@
         "fundamental_ratio_report_age_days": 115,
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
-        "channel_evidence_count": 2,
+        "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
         "parsed_financial_report_count": 0,
         "final_credit_grade_available": false
       }
