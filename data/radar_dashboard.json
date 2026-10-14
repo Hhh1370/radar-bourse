@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T12:27:45+00:00",
+  "generated_at_utc": "2026-10-14T12:28:58+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -9,6 +9,14 @@
     "technical_analyzed": 741,
     "technical_eligible": 698,
     "technical_errors": 0,
+    "technical_validation_status": "not_run",
+    "technical_validation_generated_at_utc": "",
+    "technical_validation_20d_fold_count": 0,
+    "technical_validation_20d_median_rank_ic": null,
+    "technical_validation_20d_median_top_quintile_excess_pct": null,
+    "technical_validation_60d_fold_count": 0,
+    "technical_validation_60d_median_rank_ic": null,
+    "technical_validation_60d_median_top_quintile_excess_pct": null,
     "technical_candidates_shown": 10,
     "technical_main_count": 5,
     "technical_watch_count": 5,
@@ -50,6 +58,13 @@
       "status": "موجود",
       "note": "Technical screening only, not a buy/sell recommendation. The composite technical rank is provisional and has not been validated by walk-forward or out-of-sample backtesting. Fundamental health, earnings quality, project ROI and cash-flow quality are not included. Full TSE/IFB coverage has not been independently verified."
     },
+    "technical_validation": {
+      "generated_at_utc": "",
+      "label": "اعتبارسنجی خارج از نمونهٔ رتبه‌بندی",
+      "status": "هنوز اجرا نشده",
+      "note": "وضعیت: not_run؛ ۲۰ جلسه‌ای: تعداد دوره=0، میانه IC=None، مازاد پنجک بالا نسبت به کل=None٪؛ ۶۰ جلسه‌ای: تعداد دوره=0، میانه IC=None، مازاد پنجک بالا=None٪. آزمون قیمت‌محور است، بدون سود نقدی/هزینه معامله و با سوگیری بقا.",
+      "source_url": "https://github.com/Hhh1370/radar-bourse/blob/main/data/radar_validation.json"
+    },
     "fundamental": {
       "generated_at_utc": "2026-10-14T09:03:48.602938+00:00",
       "label": "BrsApi / صورت‌های مالی ساختاریافته",
@@ -78,6 +93,7 @@
     }
   },
   "warnings": [
+    "آزمون خارج از نمونهٔ رتبه‌بندی هنوز اجرا نشده است؛ امتیاز تکنیکال را پیش‌بینی بازده تلقی نکن.",
     "دفتر کدال 510 گزارش/اطلاعیهٔ یکتا نگه می‌دارد؛ اعداد قابل استخراج فعلاً از خلاصهٔ عمومی‌اند؛ در امتیاز مقدماتی تکنیکال‌محور اثر محدود دارند، اما جایگزین صورت مالی رسمی و کیفیت سود ساختاریافته نیستند.",
     "برای صورت‌های مالی ساختاریافته امتیاز بنیادی مستقلی وجود ندارد؛ 532 امتیاز فعلی از نسبت‌های TTM و رتبه‌بندی نسبی Fundai است، نه تحلیل کامل صورت‌های مالی.",
     "هیچ امتیاز پول حقیقی با پوشش ۱۲ماهه در خروجی بنیادی قابل تأیید نیست.",
