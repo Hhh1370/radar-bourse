@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T07:32:42+00:00",
+  "generated_at_utc": "2026-10-14T07:40:44+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -17,7 +17,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-14T07:27:53+00:00",
-    "fundai_ratio_snapshot_age_hours": 0.1,
+    "fundai_ratio_snapshot_age_hours": 0.2,
     "fundai_ratio_matched_count": 535,
     "fundai_ratio_scored_count": 532,
     "final_credit_grade_count": 0,
@@ -37,7 +37,7 @@
   },
   "sources": {
     "technical": {
-      "generated_at_utc": "2026-10-14T07:32:10.639453+00:00",
+      "generated_at_utc": "2026-10-14T07:40:11.190341+00:00",
       "label": "تاریخچهٔ قیمت نهایت‌نگر",
       "status": "موجود",
       "note": "Technical screening only, not a buy/sell recommendation. The composite technical rank is provisional and has not been validated by walk-forward or out-of-sample backtesting. Fundamental health, earnings quality, project ROI and cash-flow quality are not included. Full TSE/IFB coverage has not been independently verified."
@@ -52,7 +52,7 @@
       "generated_at_utc": "2026-10-14T07:27:53+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 0.1 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 0.2 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "codal_channels": {
