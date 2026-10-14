@@ -201,22 +201,28 @@ def extract_growth(text: str) -> tuple[float | None, str | None]:
     return None, None
 
 
+_OCR_CACHE: dict[tuple[str, ...], dict] = {}
+
 def ocr_telegram_images(images: object, limit: int = 3) -> dict:
     """Best-effort local Tesseract OCR; image text remains unverified candidate evidence."""
-    result = {"texts": [], "status": "no_images", "images_seen": 0, "images_ocr_ok": 0}
     if not isinstance(images, list) or not images:
-        return result
-    result["images_seen"] = len(images)
+        return {"texts": [], "status": "no_images", "images_seen": 0, "images_ocr_ok": 0}
+    cache_key = tuple(str(item.get("url") or "") for item in images[:limit] if isinstance(item, dict))
+    if cache_key in _OCR_CACHE:
+        return dict(_OCR_CACHE[cache_key])
+    result = {"texts": [], "status": "no_images", "images_seen": len(images), "images_ocr_ok": 0}
     executable = os.environ.get("TESSERACT_CMD", "tesseract")
     try:
         probe = subprocess.run([executable, "--list-langs"], capture_output=True, text=True, timeout=5)
         languages = set((probe.stdout or "").splitlines()[1:])
     except (OSError, subprocess.SubprocessError):
         result["status"] = "tesseract_unavailable"
+        _OCR_CACHE[cache_key] = dict(result)
         return result
     lang = "+".join(x for x in ("fas", "eng") if x in languages)
     if not lang:
         result["status"] = "tesseract_language_unavailable"
+        _OCR_CACHE[cache_key] = dict(result)
         return result
     headers = {"User-Agent": "Mozilla/5.0 (compatible; RadarBourse/1.0)", "Accept": "image/avif,image/webp,image/png,image/jpeg,*/*"}
     for item in images[:limit]:
@@ -241,6 +247,7 @@ def ocr_telegram_images(images: object, limit: int = 3) -> dict:
         except (OSError, urllib.error.URLError, subprocess.SubprocessError, TimeoutError):
             continue
     result["status"] = "ocr_candidate_text" if result["texts"] else "ocr_failed_or_empty"
+    _OCR_CACHE[cache_key] = dict(result)
     return result
 
 
