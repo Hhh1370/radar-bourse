@@ -531,6 +531,15 @@ def merge_records(records: list[dict]) -> list[dict]:
             prior["official_url"] = record["official_url"]
         if len(record.get("source_text") or "") > len(prior.get("source_text") or "") and record.get("financial_metrics", {}).get("numeric_field_count", 0) >= prior.get("financial_metrics", {}).get("numeric_field_count", 0):
             prior["source_text"] = record["source_text"]
+        prior_images = prior.get("image_attachments") if isinstance(prior.get("image_attachments"), list) else []
+        incoming_images = record.get("image_attachments") if isinstance(record.get("image_attachments"), list) else []
+        image_keys = {str(item.get("url") or "") for item in prior_images if isinstance(item, dict)}
+        for item in incoming_images:
+            if isinstance(item, dict) and item.get("url") and str(item["url"]) not in image_keys:
+                prior_images.append(item)
+                image_keys.add(str(item["url"]))
+        if prior_images:
+            prior["image_attachments"] = prior_images[:12]
         for src in record.get("sources") or []:
             if src and src not in prior.setdefault("sources", []):
                 prior["sources"].append(src)
