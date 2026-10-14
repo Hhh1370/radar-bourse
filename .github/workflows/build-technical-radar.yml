@@ -192,6 +192,14 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # The 741-symbol scan is lengthy. Never overwrite fresher main data with a stale snapshot.
+          base_sha="$(git rev-parse HEAD)"
+          git fetch origin main
+          remote_sha="$(git rev-parse origin/main)"
+          if [ "$remote_sha" != "$base_sha" ]; then
+            echo "STALE_TECHNICAL_BUILD_SKIPPED: main advanced from $base_sha to $remote_sha"
+            exit 0
+          fi
           # Validate the dashboard locally, then explicitly dispatch its dedicated workflow.
           # GITHUB_TOKEN pushes do not start downstream push-triggered workflows.
           git add data/technical_radar.json data/radar_validation.json
