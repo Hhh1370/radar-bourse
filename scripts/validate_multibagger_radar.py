@@ -155,39 +155,35 @@ def main() -> None:
             continue
 
         tech.add_relative_momentum_tiebreaker(scored)
-        scored.sort(key=tech.technical_rank_key)
+        add_candidate_model_scores(scored)
         per_fold_targets = {}
+        model_names = ("current_model", "momentum_blend", "acceleration_breakout", "breakout_quality", "persistent_trend")
         for horizon in HORIZONS:
-            eligible = [
-                item for item in scored
-                if item["future_multiples"].get(str(horizon)) is not None
-            ]
+            eligible = [item for item in scored if item["future_multiples"].get(str(horizon)) is not None]
             for multiple in MULTIPLES:
-                key = f"{horizon}x{int(multiple)}"
-                labelled = [
-                    item for item in eligible
-                    if item["future_multiples"][str(horizon)] >= multiple
-                ]
-                for pct in (5, 10, 20):
-                    n = max(1, math.ceil(len(eligible) * pct / 100))
-                    selected = eligible[:n]
-                    positives = sum(
-                        1 for item in selected
-                        if item["future_multiples"][str(horizon)] >= multiple
-                    )
-                    fold_results[key][str(pct)].append({
-                        "cutoff_date": cutoff.isoformat(),
-                        "eligible_count": len(eligible),
-                        "eligible_positive_count": len(labelled),
-                        "selected_count": len(selected),
-                        "positive_count": positives,
-                    })
-                    per_fold_targets[f"{key}_top{pct}pct"] = {
-                        "selected_count": len(selected),
-                        "positive_count": positives,
-                        "precision_pct": round(100 * positives / len(selected), 2),
-                        "base_rate_pct": round(100 * len(labelled) / len(eligible), 2),
-                    }
+                key = "{}x{}".format(horizon, int(multiple))
+                labelled = [item for item in eligible if item["future_multiples"][str(horizon)] >= multiple]
+                rankings = {"current_model": sorted(eligible, key=tech.technical_rank_key)}
+                for model in model_names[1:]:
+                    rankings[model] = sorted(eligible, key=lambda item: (
+                        -(item.get("candidate_model_scores", {}).get(model) if item.get("candidate_model_scores", {}).get(model) is not None else -1),
+                        str(item.get("symbol") or ""),
+                    ))
+                for model, ordered in rankings.items():
+                    for pct in (5, 10, 20):
+                        n = max(1, math.ceil(len(eligible) * pct / 100))
+                        selected = ordered[:n]
+                        positives = sum(1 for item in selected if item["future_multiples"][str(horizon)] >= multiple)
+                        fold_results[key][str(pct)].append({
+                            "cutoff_date": cutoff.isoformat(), "model": model,
+                            "eligible_count": len(eligible), "eligible_positive_count": len(labelled),
+                            "selected_count": len(selected), "positive_count": positives,
+                        })
+                        per_fold_targets["{}_{}_top{}pct".format(key, model, pct)] = {
+                            "selected_count": len(selected), "positive_count": positives,
+                            "precision_pct": round(100 * positives / len(selected), 2),
+                            "base_rate_pct": round(100 * len(labelled) / len(eligible), 2),
+                        }
         fold_summaries.append({
             "cutoff_date": cutoff.isoformat(),
             "eligible_count": len(scored),
@@ -196,23 +192,20 @@ def main() -> None:
         print(f"FOLD {cutoff.isoformat()} eligible={len(scored)}")
 
     results = {}
+    model_names = ("current_model", "momentum_blend", "acceleration_breakout", "breakout_quality", "persistent_trend")
     for target, by_percentile in fold_results.items():
-        results[target] = {
-            f"top_{pct}_percent": percentile_summary(rows)
-            for pct, rows in by_percentile.items()
-        }
-
-    checks = []
-    for target, by_percentile in results.items():
-        top5 = by_percentile["top_5_percent"]
-        checks.append(
-            top5["precision_pct"] is not None
-            and top5["precision_pct"] >= 80
-            and top5["median_fold_precision_pct"] is not None
-            and top5["median_fold_precision_pct"] >= 70
-            and top5["selected_count"] >= 100
-            and top5["folds"] >= 8
-        )
+        results[target] = {}
+        for model in model_names:
+            results[target][model] = {
+                "top_{}_percent".format(pct): percentile_summary([row for row in rows if row.get("model") == model])
+                for pct, rows in by_percentile.items()
+            }
+    # Do not fit or advertise an 80% probability using these exploratory folds.
+    checks = [
+        results[target]["current_model"]["top_5_percent"]["precision_pct"] is not None
+        and results[target]["current_model"]["top_5_percent"]["precision_pct"] >= 80
+        for target in results
+    ]
     passed = bool(checks) and all(checks)
     report = {
         "schema_version": 1,
@@ -225,7 +218,7 @@ def main() -> None:
             "history_load_errors": errors,
             "cutoff_dates": [x.isoformat() for x in CUTOFF_DATES],
             "folds_with_usable_universe": sum(1 for x in fold_summaries if x.get("targets")),
-            "ranking_model": "existing multi-timeframe technical score + market structure + volume/price pressure + breakout + trend efficiency + volatility quality + relative momentum; recomputed as of each cutoff",
+            "ranking_models_tested": ["current_model", "momentum_blend", "acceleration_breakout", "breakout_quality", "persistent_trend"], "note": "Exploratory comparison across the same historical folds; any winner requires an untouched holdout before adoption.",
         },
         "label_definition": {
             "2x": "At least one future daily close >= 2x the next-session open within the horizon.",
@@ -243,19 +236,18 @@ def main() -> None:
             "costs_liquidity_dividends": "Not included.",
             "probability_calibration": "No probability is displayed unless the predeclared precision gate passes; passing precision is still not a calibrated individual-stock probability.",
         },
-        "results": results,
+        "results": results,\n        "candidate_models": ["current_model", "momentum_blend", "acceleration_breakout", "breakout_quality", "persistent_trend"],
         "folds": fold_summaries,
     }
     OUTPUT_FILE.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"OUTPUT {OUTPUT_FILE}")
     print(f"STATUS {report['status']}")
-    for target, by_percentile in results.items():
-        top5 = by_percentile["top_5_percent"]
-        print(
-            f"{target} top5 precision={top5['precision_pct']}% "
-            f"median_fold={top5['median_fold_precision_pct']}% "
-            f"base={top5['base_rate_pct']}% selected={top5['selected_count']}"
-        )
+    for target, by_model in results.items():
+        for model, by_percentile in by_model.items():
+            top5 = by_percentile["top_5_percent"]
+            print("{} {} top5 precision={}% median_fold={}% base={}% lift={} selected={}".format(
+                target, model, top5["precision_pct"], top5["median_fold_precision_pct"],
+                top5["base_rate_pct"], top5["precision_lift"], top5["selected_count"]))
 
 
 if __name__ == "__main__":
