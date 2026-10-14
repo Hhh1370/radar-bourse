@@ -308,6 +308,37 @@ def summarize_folds(folds: list[dict[str, Any]]) -> dict[str, Any]:
     return summaries
 
 
+def classify_validation_status(
+    enough_history: bool, valid_20: dict[str, Any], valid_60: dict[str, Any]
+) -> str:
+    """Use absolute profitability and win-rate checks, not relative excess alone."""
+    if not enough_history:
+        return "insufficient_history_for_validation"
+
+    positive_relative_edge = all((
+        isinstance(valid_20.get("median_spearman_rank_ic"), (int, float))
+        and valid_20["median_spearman_rank_ic"] > 0,
+        isinstance(valid_60.get("median_spearman_rank_ic"), (int, float))
+        and valid_60["median_spearman_rank_ic"] > 0,
+        isinstance(valid_20.get("median_top_quintile_excess_vs_universe_pct"), (int, float))
+        and valid_20["median_top_quintile_excess_vs_universe_pct"] > 0,
+        isinstance(valid_60.get("median_top_quintile_excess_vs_universe_pct"), (int, float))
+        and valid_60["median_top_quintile_excess_vs_universe_pct"] > 0,
+    ))
+    positive_absolute_outcome = all(
+        isinstance(horizon.get("median_top_quintile_mean_return_pct"), (int, float))
+        and horizon["median_top_quintile_mean_return_pct"] > 0
+        and isinstance(horizon.get("median_top_quintile_win_rate_pct"), (int, float))
+        and horizon["median_top_quintile_win_rate_pct"] >= 50
+        for horizon in (valid_20, valid_60)
+    )
+    if positive_relative_edge and positive_absolute_outcome:
+        return "positive_out_of_sample_evidence"
+    if positive_relative_edge:
+        return "relative_edge_but_mixed_absolute_returns"
+    return "mixed_or_negative_out_of_sample_evidence"
+
+
 def build_validation(stocks: list[dict[str, Any]], tech: Any | None = None) -> dict[str, Any]:
     tech = tech or _technical_module()
     records: dict[str, list[dict[str, Any]]] = {d.isoformat(): [] for d in CUTOFF_DATES}
@@ -353,32 +384,7 @@ def build_validation(stocks: list[dict[str, Any]], tech: Any | None = None) -> d
         and int(valid_60.get("fold_count", 0)) >= 8
         and overall_observations >= 1500
     )
-    positive_relative_edge = (
-        enough_history
-        and isinstance(valid_20.get("median_spearman_rank_ic"), (int, float))
-        and valid_20["median_spearman_rank_ic"] > 0
-        and isinstance(valid_60.get("median_spearman_rank_ic"), (int, float))
-        and valid_60["median_spearman_rank_ic"] > 0
-        and isinstance(valid_20.get("median_top_quintile_excess_vs_universe_pct"), (int, float))
-        and valid_20["median_top_quintile_excess_vs_universe_pct"] > 0
-        and isinstance(valid_60.get("median_top_quintile_excess_vs_universe_pct"), (int, float))
-        and valid_60["median_top_quintile_excess_vs_universe_pct"] > 0
-    )
-    positive_absolute_outcome = all(
-        isinstance(horizon.get("median_top_quintile_mean_return_pct"), (int, float))
-        and horizon["median_top_quintile_mean_return_pct"] > 0
-        and isinstance(horizon.get("median_top_quintile_win_rate_pct"), (int, float))
-        and horizon["median_top_quintile_win_rate_pct"] >= 50
-        for horizon in (valid_20, valid_60)
-    )
-    if not enough_history:
-        validation_status = "insufficient_history_for_validation"
-    elif positive_relative_edge and positive_absolute_outcome:
-        validation_status = "positive_out_of_sample_evidence"
-    elif positive_relative_edge:
-        validation_status = "relative_edge_but_mixed_absolute_returns"
-    else:
-        validation_status = "mixed_or_negative_out_of_sample_evidence"
+    validation_status = classify_validation_status(enough_history, valid_20, valid_60)
     return {
         "schema_version": 1,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
