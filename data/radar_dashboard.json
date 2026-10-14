@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T10:30:44+00:00",
+  "generated_at_utc": "2026-10-14T10:32:03+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -17,7 +17,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-14T07:27:53+00:00",
-    "fundai_ratio_snapshot_age_hours": 3.0,
+    "fundai_ratio_snapshot_age_hours": 3.1,
     "fundai_ratio_matched_count": 535,
     "fundai_ratio_scored_count": 532,
     "final_credit_grade_count": 0,
@@ -29,9 +29,9 @@
     "statement_reports_detailed": 0,
     "codal_ledger_records": 510,
     "codal_ledger_records_seen_this_run": 475,
-    "codal_ledger_new_records": 27,
-    "codal_ledger_new_financial_statements": 19,
-    "codal_ledger_new_monthly_activity": 4,
+    "codal_ledger_new_records": 0,
+    "codal_ledger_new_financial_statements": 0,
+    "codal_ledger_new_monthly_activity": 0,
     "codal_ledger_statement_numeric_summaries": 49,
     "codal_ledger_monthly_numeric_summaries": 54,
     "codal_summary_scored_count": 40,
@@ -55,14 +55,14 @@
       "generated_at_utc": "2026-10-14T07:27:53+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 3.0 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 3.1 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "codal_channels": {
       "generated_at_utc": "2026-10-14T10:09:28+00:00",
       "label": "بورس‌تریدر و کدال۳۶۰",
       "status": "دفتر گزارش‌ها و خلاصهٔ متنی؛ جدول رسمی هنوز اعتبارسنجی نشده",
-      "note": "لینک‌ها و متن‌های عمومی استخراج شدند؛ دسته‌بندی و ارقام خام خودکارند و برای تصمیم سرمایه‌گذاری باید با متن اطلاعیه/صورت مالی تطبیق داده شوند. هیچ ردیف داده‌ای از پیوست XLSX قابل‌خواندن در این اجرا به دست نیامد؛ این به معنای نبود صورت مالی شرکت‌ها نیست. دست‌کم یک منبع/پیوست ناموفق بود؛ خطاهای آن در شیت «وضعیت منابع» آمده‌اند. دفتر پایدار: 510 رکورد؛ تازه در آخرین اجرا: 27؛ خلاصه‌های متنی با برچسب مقدماتی در امتیاز رتبه‌بندی تکنیکال‌محور مشارکت محدود دارند؛ رتبهٔ اعتباری نهایی و کیفیت سود حسابرسی‌شده از آن‌ها ساخته نمی‌شود."
+      "note": "لینک‌ها و متن‌های عمومی استخراج شدند؛ دسته‌بندی و ارقام خام خودکارند و برای تصمیم سرمایه‌گذاری باید با متن اطلاعیه/صورت مالی تطبیق داده شوند. هیچ ردیف داده‌ای از پیوست XLSX قابل‌خواندن در این اجرا به دست نیامد؛ این به معنای نبود صورت مالی شرکت‌ها نیست. دست‌کم یک منبع/پیوست ناموفق بود؛ خطاهای آن در شیت «وضعیت منابع» آمده‌اند. دفتر پایدار: 510 رکورد؛ تازه در آخرین اجرا: 0؛ خلاصه‌های متنی با برچسب مقدماتی در امتیاز رتبه‌بندی تکنیکال‌محور مشارکت محدود دارند؛ رتبهٔ اعتباری نهایی و کیفیت سود حسابرسی‌شده از آن‌ها ساخته نمی‌شود."
     }
   },
   "warnings": [
