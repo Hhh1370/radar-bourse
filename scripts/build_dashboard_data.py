@@ -13,6 +13,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from scripts.codal_summary_fundamentals import build_summary_map
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 TECH_FILE = DATA / "technical_radar.json"
@@ -809,6 +811,7 @@ def main() -> None:
     fund_rows = fund.get("stocks", [])
     evidence_rows = codal.get("channel_evidence", [])
     ledger_rows = ledger.get("reports", []) if isinstance(ledger.get("reports"), list) else []
+    codal_summary_map = build_summary_map(ledger_rows)
     ledger_display_rows = [
         simplify_ledger_evidence(row) for row in ledger_rows
         if isinstance(row, dict) and row.get("classification") in {
@@ -891,6 +894,7 @@ def main() -> None:
         key = norm(symbol)
         fundamental = fund_map.get(key, {})
         ratio = ratio_map.get(key, {})
+        codal_summary = codal_summary_map.get(key, {})
         scoring_fundamental = dict(fundamental)
         native_score = scoring_fundamental.get("fundamental_score")
         ratio_score = ratio.get("ratio_score")
@@ -921,8 +925,10 @@ def main() -> None:
             "technical": technical_rank_value,
             "fundamental": number(scoring_fundamental.get("fundamental_score"), 2),
             "earnings_quality": number(rating.get("component_scores", {}).get("earnings_quality"), 2),
+            "codal_summary": number(codal_summary.get("score"), 2),
         }
-        rank_weights = {"technical": 75, "fundamental": 20, "earnings_quality": 5}
+        # Message summaries are a small provisional factor; technical evidence remains dominant.
+        rank_weights = {"technical": 70, "fundamental": 15, "earnings_quality": 5, "codal_summary": 10}
         rank_weight_available = sum(
             rank_weights[name] for name, value in rank_components.items()
             if finite_number(value)
@@ -1019,6 +1025,7 @@ def main() -> None:
                 (fundamental.get("fundamental_assessment") or {}).get("quarterly_comparison_status")
                 or "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده"
             ),
+            "codal_summary_fundamentals": codal_summary,
             "quarterly_growth_candidates_pct": {
                 str(name): number(value, 2)
                 for name, value in (
@@ -1087,6 +1094,8 @@ def main() -> None:
             "money_flow_scored": base["money_flow_score"] is not None,
             "money_flow_12m_verified": valid_money_flow(fundamental),
             "channel_evidence_count": len(display_evidence_map.get(key, [])),
+            "codal_summary_scored": finite_number(codal_summary.get("score")),
+            "codal_summary_source_confidence": number(codal_summary.get("source_confidence_factor"), 3),
             "parsed_financial_report_count": sum(
                 1 for report in (fundamental.get("financial_reports") or [])
                 if isinstance(report, dict)
@@ -1221,6 +1230,9 @@ def main() -> None:
             "codal_ledger_new_monthly_activity": ledger_summary.get("new_monthly_activity_records_count", 0),
             "codal_ledger_statement_numeric_summaries": ledger_summary.get("financial_statement_records_with_numeric_summary", 0),
             "codal_ledger_monthly_numeric_summaries": ledger_summary.get("monthly_activity_records_with_numeric_summary", 0),
+            "codal_summary_scored_count": sum(1 for item in codal_summary_map.values() if finite_number(item.get("score"))),
+            "codal_summary_comparable_growth_count": sum(1 for item in codal_summary_map.values() if item.get("has_comparable_prior_year_report") and item.get("quarterly_growth_candidates_pct")),
+            "codal_summary_monthly_sales_count": sum(1 for item in codal_summary_map.values() if isinstance(item.get("monthly_activity"), dict) and item["monthly_activity"].get("sales_candidates")),
         },
         "sources": {
             "technical": {
@@ -1271,7 +1283,8 @@ def main() -> None:
             "earnings_quality": "فقط از اقلام عددی خوانده‌شده از صورت مالی ساختاریافته محاسبه می‌شود؛ کلیدواژه‌های کانال در امتیاز کیفیت سود وارد نمی‌شوند.",
             "money_flow": "فقط وقتی در امتیاز تلفیقی وارد می‌شود که نماد سهام عادی، تاریخچه حداقل ۲۰۰ جلسه، پرچم پوشش سالانه، تاریخ آخرین داده و امتیاز معتبر داشته باشد.",
             "channel_evidence": "خلاصه‌های متنی تلگرام، شواهد خام هستند و جایگزین تطبیق با صورت مالی/اطلاعیهٔ رسمی نیستند.",
-            "codal_filing_ledger": "اطلاعیه‌های تکراری با شناسه/پیوند کدال حذف تکرار و در دفتر پایدار نگهداری می‌شوند. ارقام استخراج‌شده از خلاصهٔ ثانویه برای نمایش و پیگیری‌اند و تا تأیید پیوست رسمی وارد امتیاز بنیادی/کیفیت سود نمی‌شوند.",
+            "codal_summary_fundamentals": "خلاصهٔ عددی صورت‌های مالی ۳، ۶، ۹ و ۱۲ماهه از پیام‌های عمومی برای امتیاز مقدماتی محدود استفاده می‌شود؛ ارقام بدون تطبیق پیوست رسمی با برچسب تأییدنشده باقی می‌مانند. گزارش ماهانه فقط جهت روند فروش و فعالیت نمایش داده می‌شود.",
+            "codal_filing_ledger": "اطلاعیه‌های تکراری با شناسه/پیوند کدال حذف تکرار و در دفتر پایدار نگهداری می‌شوند. خلاصه‌های متنی دارای عدد، امتیاز مقدماتی محدود می‌گیرند؛ هرگز به‌عنوان صورت مالی رسمی یا کیفیت سود حسابرسی‌شده معرفی نمی‌شوند.",
         },
         "candidates": candidates[:10],
         "all_candidate_count": len(candidates),
