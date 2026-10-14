@@ -1294,6 +1294,20 @@ def main() -> None:
         source_warnings.append("دسترسی به منابع اطلاعیه در اجرای اخیر تأیید نشده است.")
 
     latest_technical = str(tech.get("generated_at_utc") or "")
+    technical_source_note = str(tech.get("warning") or "")
+    if validation_status != "not_run":
+        technical_source_note = technical_source_note.replace(
+            "has not been validated by walk-forward or out-of-sample backtesting",
+            "is evaluated by a separate historical walk-forward report at data/radar_validation.json",
+        )
+        technical_source_note += (
+            " Walk-forward result: " + validation_status
+            + "; 20-session top-quintile median return="
+            + str(validation_20d.get("median_top_quintile_mean_return_pct"))
+            + "%, median win rate="
+            + str(validation_20d.get("median_top_quintile_win_rate_pct"))
+            + "%. Relative excess is not proof of short-term profitability."
+        )
     latest_fundamental = str(fund.get("generated_at_utc") or "")
     latest_codal = str(codal.get("generated_at_utc") or "")
     output = {
@@ -1361,7 +1375,7 @@ def main() -> None:
                 "generated_at_utc": latest_technical,
                 "label": "تاریخچهٔ قیمت نهایت‌نگر",
                 "status": "موجود",
-                "note": str(tech.get("warning") or ""),
+                "note": technical_source_note,
             },
             "technical_validation": {
                 "generated_at_utc": str(validation_snapshot.get("generated_at_utc") or ""),
