@@ -2,9 +2,9 @@ name: Build Fundamental and Money Flow Radar
 
 on:
   workflow_dispatch:
-  # Full fundamental report scan monthly; independent weekly filing discovery catches staggered publication dates.
+  # No daily fundamental refresh: process staggered public filing links once per week.
   schedule:
-    - cron: "30 9 1 * *"
+    - cron: "0 16 * * 6"
 
 permissions:
   contents: write
@@ -31,15 +31,11 @@ jobs:
       - name: Validate Python syntax
         run: python -m py_compile scripts/build_fundamental_money_radar.py
 
-      - name: Preflight BrsApi endpoints before full scan
-        env:
-          BRS_API_KEY: ${{ secrets.BRS_API_KEY }}
-        run: python scripts/build_fundamental_money_radar.py --probe
+      - name: Test quarterly statement comparison
+        run: python -m unittest discover -s tests -p 'test_quarterly_fundamental_scoring.py' -v
 
-      - name: Build fundamental, development-project and money-flow radar
-        env:
-          BRS_API_KEY: ${{ secrets.BRS_API_KEY }}
-        run: python scripts/build_fundamental_money_radar.py
+      - name: Build lightweight quarterly fundamentals from free public Codal links
+        run: python scripts/build_fundamental_money_radar.py --public-codal-only
 
       - name: Commit results
         shell: bash
