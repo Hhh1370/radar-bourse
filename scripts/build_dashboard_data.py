@@ -13,7 +13,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from scripts.codal_summary_fundamentals import build_summary_map
+try:
+    from scripts.codal_summary_fundamentals import build_summary_map
+except ModuleNotFoundError:  # direct execution as ``python scripts/build_dashboard_data.py``
+    from codal_summary_fundamentals import build_summary_map
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
