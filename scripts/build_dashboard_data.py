@@ -978,17 +978,13 @@ def main() -> None:
             "earnings_quality": number(rating.get("component_scores", {}).get("earnings_quality"), 2),
             "codal_summary": number(codal_summary.get("score"), 2),
         }
-        # Message summaries are a small provisional factor; technical evidence remains dominant.
-        rank_weights = {"technical": 70, "fundamental": 15, "earnings_quality": 5, "codal_summary": 10}
-        rank_weight_available = sum(
-            rank_weights[name] for name, value in rank_components.items()
-            if finite_number(value)
-        )
+        # Technical-only radar: unverified financial proxies must never move the candidate rank.
+        # Fundamental fields remain visible as evidence/status only, not as ranking inputs.
+        rank_weights = {"technical": 100, "fundamental": 0, "earnings_quality": 0, "codal_summary": 0}
+        rank_weight_available = 100 if finite_number(rank_components["technical"]) else 0
         radar_rank_score = (
-            round(sum(rank_weights[name] * float(value)
-                      for name, value in rank_components.items()
-                      if finite_number(value)) / rank_weight_available, 2)
-            if finite_number(rank_components["technical"]) and rank_weight_available
+            round(float(rank_components["technical"]), 2)
+            if finite_number(rank_components["technical"])
             else number(item.get("risk_adjusted_score"), 2)
         )
         base = {
@@ -1466,10 +1462,10 @@ def main() -> None:
         },
         "warnings": source_warnings,
         "methodology": {
-            "main_and_watch": "نامزدها از کل جهان واجدشرایط تکنیکال رتبه‌بندی می‌شوند؛ ۵ مورد اول و ۵ مورد بعدی بر اساس امتیاز موقتِ اجزای معتبر موجود انتخاب می‌شوند، نه رتبهٔ نهایی بنیادی.",
+            "main_and_watch": "فقط امتیاز تکنیکال چندعاملی رتبه را تعیین می‌کند؛ ۵ نماد اول فهرست اصلی و ۵ نماد بعدی فهرست تحت‌نظر هستند. داده‌های بنیادی ناقص/ثانویه فقط به‌عنوان شواهد و هشدار نمایش داده می‌شوند و رتبه را تغییر نمی‌دهند.",
             "technical_score": "امتیاز تکنیکال از ۸ عامل چندبازه‌ای استخراج می‌شود و با آزمون walk-forward در ۱۲ مقطع تاریخی برای بازده ۲۰، ۶۰ و ۱۲۰ جلسه سنجیده شده است. نتیجهٔ فعلی برتری نسبی در بعضی افق‌ها را نشان می‌دهد، اما بازده مطلق ۲۰جلسه‌ای و نرخ برد برای تأیید سودآوری کوتاه‌مدت کافی نیست؛ محدودیت‌های سوگیری بقا و نبود هزینه معامله نیز برقرار است.",
-            "credit_model": "امتیاز تلفیقی موقت در صورت نمایش: تکنیکال ۵۵٪، بنیادی ۲۰٪، کیفیت سود ۱۰٪، پول حقیقی ۱۰٪ و پروژه ۵٪؛ وزن فقط مؤلفه‌های عددی موجود محاسبه می‌شود. این امتیاز جدا از رتبهٔ رادار است و رتبهٔ بنیادی کامل/اعتباری هدف این نسخه نیست.",
-            "final_rating_gate": "رتبهٔ اعتباری کامل در این نسخه اولویت اصلی نیست و به‌دلیل نبود بعضی داده‌های معتبر ممکن است صادر نشود؛ فهرست رادار به‌صورت مستقل با رتبهٔ تکنیکال‌محور ساخته می‌شود. برای فهرست، امتیاز رتبه: تکنیکال ۷۰٪، بنیادی نسبی ۱۵٪، کیفیت سود ساختاریافته ۵٪ و خلاصهٔ عددی Codal360 حداکثر ۱۰٪؛ اجزای مفقود حذف و وزن‌های موجود نرمال می‌شوند.",
+            "credit_model": "رتبه‌بندی فعال این نسخه تکنیکال‌محور است. به‌علت نبود صورت مالی تفصیلیِ اعتبارسنجی‌شده و تاریخچهٔ معتبر پول حقیقی ۱۲ماهه، امتیاز بنیادی/اعتباری برای انتخاب نمادها استفاده نمی‌شود و رتبهٔ اعتباری نهایی صادر نمی‌شود.",
+            "final_rating_gate": "رتبهٔ اعتباری نهایی عمداً غیرفعال است تا داده‌های مالی و پول حقیقی مستقل و قابل‌اعتبارسنجی در دسترس قرار گیرند. هیچ دادهٔ ناقص یا خلاصهٔ تلگرامی در رتبهٔ تکنیکال اثر ندارد.",
             "confidence": "امتیاز اطمینان، سنجهٔ پوشش و کیفیت داده است؛ احتمال سود یا احتمال درست بودن پیش‌بینی نیست.",
             "fundai_ratio_proxy": "امتیاز ۰ تا ۱۰۰ از رتبهٔ نسبی ROE، ROA، حاشیه سود، بدهی و مضارب مثبت P/E، P/S و P/B داخل صنعت محاسبه می‌شود؛ در صنایعی با کمتر از ۸ همتا، رتبهٔ کل بازار جایگزین می‌شود. این امتیاز مقایسه‌ای از آخرین snapshot TTM است و نه کیفیت سود کامل، ارزش ذاتی یا اعتبار نهایی.",
             "fundai_ratio_history": "وقتی داده کافی و تاریخ تازه موجود باشد، حداکثر ۱۰٪ از امتیاز نسبت‌های TTM با روند سال‌به‌سال نسبت‌ها در نوع گزارش و ماه/روز یکسان تعدیل می‌شود. مقایسه‌ها از دادهٔ عمومی ثانویه‌اند؛ مضارب ارزشیابی از روند امتیاز نمی‌گیرند؛ سری ناموجود یا ناسازگار امتیاز نمی‌گیرد.",
