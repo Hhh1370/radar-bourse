@@ -860,15 +860,40 @@ def add_relative_momentum_tiebreaker(items):
             if data["weight_sum"] else None
         )
         item["relative_momentum_components"] = data["components"]
-        # Checklist scores saturate at 100 for many names; use a continuous
-        # cross-sectional component so the displayed technical score can rank them.
+
+        # A transparent trend-quality layer: reward agreement across daily,
+        # weekly and monthly structure, orderly price action and breakouts;
+        # penalize poor volatility quality. Missing factors are not treated as zero.
+        factors = item.get("technical_factor_scores") or {}
+        trend_metrics = [
+            ("multi_timeframe_trend", 0.25),
+            ("daily_market_structure", 0.15),
+            ("weekly_market_structure", 0.20),
+            ("monthly_market_structure", 0.15),
+            ("trend_efficiency", 0.10),
+            ("breakout_structure", 0.10),
+            ("volatility_quality", 0.05),
+        ]
+        available = [(float(factors[k]), w) for k, w in trend_metrics
+                     if isinstance(factors.get(k), (int, float))
+                     and math.isfinite(float(factors[k]))]
+        weight_sum = sum(w for _, w in available)
+        trend_quality = (sum(max(0.0, min(100.0, v)) * w for v, w in available) / weight_sum
+                         if weight_sum else None)
+        item["trend_quality_score"] = round(trend_quality, 2) if trend_quality is not None else None
+
+        # Ranking blend: technical health + relative momentum + multi-timeframe
+        # trend quality. This is a candidate ranking heuristic, not a probability.
         checklist = float(item.get("risk_adjusted_score") or 0)
         relative = item.get("relative_momentum_score")
-        item["technical_rank_score"] = (
-            round(0.70 * checklist + 0.30 * float(relative), 2)
-            if isinstance(relative, (int, float))
-            else round(checklist, 2)
-        )
+        if isinstance(relative, (int, float)) and isinstance(trend_quality, (int, float)):
+            item["technical_rank_score"] = round(0.55 * checklist + 0.25 * float(relative) + 0.20 * trend_quality, 2)
+        elif isinstance(relative, (int, float)):
+            item["technical_rank_score"] = round(0.70 * checklist + 0.30 * float(relative), 2)
+        elif isinstance(trend_quality, (int, float)):
+            item["technical_rank_score"] = round(0.75 * checklist + 0.25 * trend_quality, 2)
+        else:
+            item["technical_rank_score"] = round(checklist, 2)
 
 
 def technical_rank_key(item):
