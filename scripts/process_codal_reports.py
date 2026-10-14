@@ -451,8 +451,16 @@ def build_record(row: dict, evidence: dict | None, seen_at: str) -> dict | None:
         metric_input["eps_evidence"] = str(metric_input.get("eps_evidence") or "") + " || " + ocr_text
         metric_input["growth_evidence"] = str(metric_input.get("growth_evidence") or "") + " || " + ocr_text
     metric_data = extract_metric_observations(metric_input, months)
+    # Keep OCR-derived observations visible, but label them individually so downstream
+    # scoring can exclude them until they are reconciled against the official filing.
+    for observation in metric_data.get("observations", []):
+        context = str(observation.get("context") or "").strip()
+        if ocr_text and context and context in ocr_text:
+            observation["evidence_confidence"] = "low_ocr_candidate"
+        else:
+            observation["evidence_confidence"] = "secondary_text_candidate"
     if ocr_text:
-        metric_data["source_confidence"] = "low_ocr_candidate"
+        metric_data["source_confidence"] = "mixed_text_and_low_ocr_candidates"
     else:
         metric_data["source_confidence"] = "secondary_text_candidate" if metric_data["numeric_field_count"] else "metadata_only"
     metric_data["image_ocr"] = {k: v for k, v in image_ocr.items() if k != "texts"}
