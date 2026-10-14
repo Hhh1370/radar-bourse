@@ -756,7 +756,7 @@ def parse_legacy_client_type_csv(text):
         fields = [str(v or "").strip().strip('"').translate(table) for v in fields]
         if len(fields) < 13:
             continue
-        date_value = re.sub(r"\\D", "", fields[0])
+        date_value = re.sub(r"\D", "", fields[0])
         if len(date_value) != 8 or parse_tsetmc_date(date_value) is None:
             continue
         def num(index):
@@ -795,7 +795,7 @@ def fetch_legacy_client_type_history(ins_code):
     if TSETMC_LEGACY_UNAVAILABLE:
         raise RuntimeError(TSETMC_LEGACY_UNAVAILABLE_REASON or "legacy TSETMC client-type hosts unavailable")
     code = str(ins_code or "").strip()
-    if not re.fullmatch(r"\\d{10,20}", code):
+    if not re.fullmatch(r"\d{10,20}", code):
         raise ValueError("legacy TSETMC history requires a numeric instrument code")
     urls = (
         f"https://old.tsetmc.com/tsev2/data/clienttype.aspx?i={urllib.parse.quote(code, safe='')}",
