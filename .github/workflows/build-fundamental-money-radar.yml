@@ -55,6 +55,14 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Do not publish a long scan if main advanced while it was running; the newer run owns the current data snapshot.
+          base_sha="$(git rev-parse HEAD)"
+          git fetch origin main
+          remote_sha="$(git rev-parse origin/main)"
+          if [ "$remote_sha" != "$base_sha" ]; then
+            echo "STALE_FUNDAMENTAL_BUILD_SKIPPED: main advanced from $base_sha to $remote_sha"
+            exit 0
+          fi
           git add data/fundamental_money_radar.json data/tsetmc_instrument_map.json
           if git diff --cached --quiet; then
             echo "No fundamental/money-flow data changes."
