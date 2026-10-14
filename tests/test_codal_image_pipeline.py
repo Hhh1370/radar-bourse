@@ -57,7 +57,7 @@ class TelegramPosterTests(unittest.TestCase):
 
     def test_period_and_persian_digit_normalization(self):
         self.assertEqual(process.extract_period_months("گزارش ۹ ماهه منتهی به ۱۴۰۵/۰۶/۳۱"), 9)
-        self.assertEqual(process.text_digits("فروش ۱۲۳٬۴۵۶ میلیون ریال"), "فروش 123,456, میلیون ریال")
+        self.assertEqual(process.text_digits("فروش ۱۲۳٬۴۵۶ میلیون ریال"), "فروش 123,456 میلیون ریال")
 
     def test_ocr_failure_is_explicit_not_zero_score(self):
         result = process.ocr_telegram_images([{"url": "https://example.com/poster.jpg"}], limit=1)
