@@ -961,11 +961,14 @@ def main():
             ),
         },
         "warning": (
-            "Technical screening only, not a buy/sell recommendation. The composite "
-            "technical rank is provisional and has not been validated by walk-forward "
-            "or out-of-sample backtesting. Fundamental health, earnings quality, "
-            "project ROI and cash-flow quality are not included. Full TSE/IFB coverage "
-            "has not been independently verified."
+            "Technical screening only, not a buy/sell recommendation. A separate historical "
+            "walk-forward report at data/radar_validation.json recomputes the same rank at "
+            "12 past cutoffs and tests 20/60/120-session price returns. Interpret relative "
+            "outperformance together with absolute returns and win rate; it is not proof of "
+            "profitability. Dividends, transaction costs, slippage, delisting survivors and "
+            "corporate-action adjustment quality remain limitations. Fundamental health, earnings "
+            "quality and project ROI are not part of this technical-only score; full TSE/IFB "
+            "coverage has not been independently verified."
         ),
         "top_50_for_review": eligible[:50],
         "all_eligible_ranked": eligible,
