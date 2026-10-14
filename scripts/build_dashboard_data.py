@@ -1275,6 +1275,9 @@ def main() -> None:
         )
     if full_year_flow_count == 0:
         source_warnings.append("هیچ امتیاز پول حقیقی با پوشش ۱۲ماهه در خروجی بنیادی قابل تأیید نیست.")
+        tsetmc_note = str(fund.get("tsetmc_api_note") or "").strip()
+        if tsetmc_note:
+            source_warnings.append("وضعیت تلاش برای دریافت پول حقیقی: " + tsetmc_note[:260])
     elif full_year_flow_count < max(50, len(tech_rows) * 0.5):
         source_warnings.append(f"پوشش معتبر پول حقیقی فقط برای {full_year_flow_count} نماد از {len(tech_rows)} نامزد تکنیکال موجود است؛ برای رتبهٔ نهایی کافی نیست.")
     if top_scores_count and top_scores_count < len(fund_rows) * 0.5:
@@ -1334,6 +1337,10 @@ def main() -> None:
             "final_credit_grade_count": final_grade_count,
             "high_confidence_count": reliable_confidence_count,
             "money_flow_12m_scored_count": full_year_flow_count,
+            "money_flow_history_requests_attempted": counts.get("tsetmc_flow_history_requests_attempted", 0),
+            "money_flow_history_responses": counts.get("tsetmc_flow_history_responses", 0),
+            "money_flow_12m_verified_in_source": counts.get("money_flow_12m_verified_symbols", 0),
+            "money_flow_source_status": str(fund.get("tsetmc_api_status") or "not_checked"),
             "codal_disclosure_links": len(announcement_rows),
             "channel_evidence_rows": len(evidence_rows),
             "project_evidence_rows": len(project_candidates),
@@ -1387,6 +1394,19 @@ def main() -> None:
                 ),
                 "source_url": "https://github.com/Hhh1370/radar-bourse/blob/main/data/radar_validation.json",
             },
+            "money_flow": {
+                "generated_at_utc": latest_fundamental,
+                "label": "پول حقیقی/حقوقی ۱۲ماهه",
+                "status": (
+                    f"پوشش ۱۲ماهه تأییدشده برای {full_year_flow_count} نماد"
+                    if full_year_flow_count else
+                    "هیچ تاریخچهٔ پول حقیقی ۱۲ماهه در این اجرا تأیید نشده"
+                ),
+                "note": str(fund.get("tsetmc_api_note") or (
+                    "تاریخچه فقط زمانی معتبر است که ۲۵۲ جلسه، بازهٔ تقویمی کافی، تاریخ تازه و ارزش‌های خرید/فروش حقیقی داشته باشد."
+                )),
+                "source_url": "https://cdn.tsetmc.com/api/ClientType/GetClientTypeHistory/{insCode}",
+            },
             "fundamental": {
                 "generated_at_utc": latest_fundamental,
                 "label": "BrsApi / صورت‌های مالی ساختاریافته",
@@ -1433,7 +1453,7 @@ def main() -> None:
         "warnings": source_warnings,
         "methodology": {
             "main_and_watch": "نامزدها از کل جهان واجدشرایط تکنیکال رتبه‌بندی می‌شوند؛ ۵ مورد اول و ۵ مورد بعدی بر اساس امتیاز موقتِ اجزای معتبر موجود انتخاب می‌شوند، نه رتبهٔ نهایی بنیادی.",
-            "technical_score": "امتیاز تکنیکال و جریمهٔ گرمای روند از فایل رادار تکنیکال خوانده می‌شود. امتیاز نسبی برای شکستن تساوی استفاده می‌شود و هنوز بک‌تست نشده است.",
+            "technical_score": "امتیاز تکنیکال از ۸ عامل چندبازه‌ای استخراج می‌شود و با آزمون walk-forward در ۱۲ مقطع تاریخی برای بازده ۲۰، ۶۰ و ۱۲۰ جلسه سنجیده شده است. نتیجهٔ فعلی برتری نسبی در بعضی افق‌ها را نشان می‌دهد، اما بازده مطلق ۲۰جلسه‌ای و نرخ برد برای تأیید سودآوری کوتاه‌مدت کافی نیست؛ محدودیت‌های سوگیری بقا و نبود هزینه معامله نیز برقرار است.",
             "credit_model": "امتیاز تلفیقی موقت در صورت نمایش: تکنیکال ۵۵٪، بنیادی ۲۰٪، کیفیت سود ۱۰٪، پول حقیقی ۱۰٪ و پروژه ۵٪؛ وزن فقط مؤلفه‌های عددی موجود محاسبه می‌شود. این امتیاز جدا از رتبهٔ رادار است و رتبهٔ بنیادی کامل/اعتباری هدف این نسخه نیست.",
             "final_rating_gate": "رتبهٔ اعتباری کامل در این نسخه اولویت اصلی نیست و به‌دلیل نبود بعضی داده‌های معتبر ممکن است صادر نشود؛ فهرست رادار به‌صورت مستقل با رتبهٔ تکنیکال‌محور ساخته می‌شود. برای فهرست، امتیاز رتبه: تکنیکال ۷۰٪، بنیادی نسبی ۱۵٪، کیفیت سود ساختاریافته ۵٪ و خلاصهٔ عددی Codal360 حداکثر ۱۰٪؛ اجزای مفقود حذف و وزن‌های موجود نرمال می‌شوند.",
             "confidence": "امتیاز اطمینان، سنجهٔ پوشش و کیفیت داده است؛ احتمال سود یا احتمال درست بودن پیش‌بینی نیست.",
