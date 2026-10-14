@@ -194,7 +194,10 @@ def build_history_trend_scores(
     At least three metric comparisons are required. Valuation multiples are omitted:
     a lower multiple alone is not necessarily better and may reflect distress.
     """
-    histories = snapshot.get("histories", []) if isinstance(snapshot, dict) else []
+    histories = (
+        snapshot.get("history_rows", snapshot.get("histories", []))
+        if isinstance(snapshot, dict) else []
+    )
     if not isinstance(histories, list):
         return {}
     output: dict[str, dict[str, Any]] = {}
