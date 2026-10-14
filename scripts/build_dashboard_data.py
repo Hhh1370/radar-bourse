@@ -971,7 +971,7 @@ def main() -> None:
         if not finite_number(technical_rank_value):
             technical_rank_value = number(item.get("risk_adjusted_score"), 2)
         if not finite_number(technical_rank_value):
-            technical_rank_value = number(item.get("technical_score"), 2)
+            technical_rank_value = number(item.get("technical_rank_score"), 2)
         rank_components = {
             "technical": technical_rank_value,
             "fundamental": number(scoring_fundamental.get("fundamental_score"), 2),
@@ -1168,9 +1168,8 @@ def main() -> None:
 
     candidates.sort(
         key=lambda row: (
-            -(float(row.get("radar_rank_score")) if isinstance(row.get("radar_rank_score"), (int, float)) else -1.0),
-            -float(row.get("technical_rank_score") or row.get("risk_adjusted_score") or 0),
-            -(float(row.get("fundamental_score")) if isinstance(row.get("fundamental_score"), (int, float)) else -1.0),
+            -(float(row.get("technical_rank_score")) if isinstance(row.get("technical_rank_score"), (int, float)) else -1.0),
+            -float(row.get("risk_adjusted_score") or 0),
             str(row.get("symbol") or ""),
         )
     )
