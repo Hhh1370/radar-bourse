@@ -7,6 +7,8 @@ on:
     paths:
       - "scripts/build_fundamental_money_radar.py"
       - "tests/test_quarterly_fundamental_scoring.py"
+      - "tests/test_tsetmc_money_flow_fallback.py"
+      - "data/fundai_financial_ratios.json"
       - ".github/workflows/build-fundamental-money-radar.yml"
   # No daily fundamental refresh: process staggered public filing links once per week.
   schedule:
@@ -34,14 +36,18 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Validate Python syntax
-        run: python -m py_compile scripts/build_fundamental_money_radar.py
+      - name: Validate Python syntax and test TSETMC mirror fallback
+        run: |
+          python -m py_compile scripts/build_fundamental_money_radar.py tests/test_tsetmc_money_flow_fallback.py
+          python -m unittest discover -s tests -p 'test_tsetmc_money_flow_fallback.py' -v
 
       - name: Test quarterly statement comparison
         run: python -m unittest discover -s tests -p 'test_quarterly_fundamental_scoring.py' -v
 
-      - name: Build lightweight quarterly fundamentals from free public Codal links
-        run: python scripts/build_fundamental_money_radar.py --public-codal-only
+      - name: Build fundamental, project and money-flow radar
+        env:
+          BRS_API_KEY: ${{ secrets.BRS_API_KEY }}
+        run: python scripts/build_fundamental_money_radar.py
 
       - name: Commit results
         shell: bash
