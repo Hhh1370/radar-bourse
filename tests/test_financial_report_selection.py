@@ -20,6 +20,7 @@ class FinancialReportSelectionTests(unittest.TestCase):
         rows = [
             report("صورت مالی دوره ۳ ماهه منتهی به ۱۴۰۵/۰۳/۳۱", "2026-05-21", "q3"),
             report("صورت مالی دوره ۳ ماهه منتهی به ۱۴۰۴/۰۳/۳۱", "2025-05-22", "q3old"),
+            report("صورت مالی دوره ۳ ماهه منتهی به ۱۴۰۳/۰۳/۳۱", "2024-05-20", "q3older"),
             report("صورت مالی دوره ۶ ماهه منتهی به ۱۴۰۵/۰۶/۳۱", "2026-08-25", "q6"),
             report("صورت مالی دوره ۹ ماهه منتهی به ۱۴۰۴/۰۹/۳۰", "2025-11-25", "q9"),
             report("صورت مالی سال مالی منتهی به ۱۴۰۴/۱۲/۲۹", "2026-04-12", "annual1"),
@@ -29,14 +30,15 @@ class FinancialReportSelectionTests(unittest.TestCase):
         periods = {report_period_key(item) for item in selected}
         keys = {item["tracing_no"] for item in selected}
 
-        self.assertEqual(len(selected), 5)
+        self.assertEqual(len(selected), 6)
         self.assertEqual(periods, {"3", "6", "9", "annual"})
         self.assertIn("q3", keys)
+        self.assertIn("q3old", keys)
         self.assertIn("q6", keys)
         self.assertIn("q9", keys)
         self.assertIn("annual1", keys)
         self.assertIn("annual2", keys)
-        self.assertNotIn("q3old", keys)
+        self.assertNotIn("q3older", keys)
 
     def test_quarterly_report_is_not_dropped_when_two_annuals_exist(self):
         rows = [
