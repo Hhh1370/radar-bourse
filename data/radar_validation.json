@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T12:29:44+00:00",
-  "validation_status": "positive_out_of_sample_evidence",
+  "generated_at_utc": "2026-10-14T12:51:20+00:00",
+  "validation_status": "relative_edge_but_mixed_absolute_returns",
   "purpose": "Retrospective walk-forward test of the existing technical rank; not a profit guarantee or a fitted model.",
   "dataset": {
     "current_universe_count": 741,
