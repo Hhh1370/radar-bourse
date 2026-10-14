@@ -1204,6 +1204,8 @@ def main() -> None:
         source_warnings.append("آزمون خارج از نمونهٔ رتبه‌بندی هنوز اجرا نشده است؛ امتیاز تکنیکال را پیش‌بینی بازده تلقی نکن.")
     elif validation_status == "insufficient_history_for_validation":
         source_warnings.append("آزمون خارج از نمونه اجرا شده، اما پوشش/تعداد دوره‌ها برای نتیجه‌گیری آماری کافی نیست.")
+    elif validation_status == "relative_edge_but_mixed_absolute_returns":
+        source_warnings.append("رتبه‌بندی در مقایسه با کل بازار برتری نسبی داشته، اما بازده مطلق/درصد معاملات مثبت برای افق ۲۰جلسه‌ای به معیار نرسیده است؛ برای معاملات کوتاه‌مدت تأیید نشده.")
     elif validation_status == "mixed_or_negative_out_of_sample_evidence":
         source_warnings.append("آزمون تاریخی رتبه‌بندی شواهد مثبت سازگار نشان نداده است؛ رتبه را سیگنال سودآوری تلقی نکن.")
     elif validation_status == "positive_out_of_sample_evidence":
@@ -1305,10 +1307,10 @@ def main() -> None:
             "technical_validation_status": validation_status,
             "technical_validation_generated_at_utc": str(validation_snapshot.get("generated_at_utc") or ""),
             "technical_validation_20d_fold_count": validation_20d.get("fold_count", 0),
-            "technical_validation_20d_median_rank_ic": finite_number(validation_20d.get("median_spearman_rank_ic")) and validation_20d.get("median_spearman_rank_ic") or None,
+            "technical_validation_20d_median_rank_ic": validation_20d.get("median_spearman_rank_ic") if finite_number(validation_20d.get("median_spearman_rank_ic")) else None,
             "technical_validation_20d_median_top_quintile_excess_pct": validation_20d.get("median_top_quintile_excess_vs_universe_pct"),
             "technical_validation_60d_fold_count": validation_60d.get("fold_count", 0),
-            "technical_validation_60d_median_rank_ic": finite_number(validation_60d.get("median_spearman_rank_ic")) and validation_60d.get("median_spearman_rank_ic") or None,
+            "technical_validation_60d_median_rank_ic": validation_60d.get("median_spearman_rank_ic") if finite_number(validation_60d.get("median_spearman_rank_ic")) else None,
             "technical_validation_60d_median_top_quintile_excess_pct": validation_60d.get("median_top_quintile_excess_vs_universe_pct"),
             "technical_candidates_shown": min(10, len(candidates)),
             "technical_main_count": min(5, len(candidates)),
@@ -1359,12 +1361,17 @@ def main() -> None:
                 "label": "اعتبارسنجی خارج از نمونهٔ رتبه‌بندی",
                 "status": {
                     "positive_out_of_sample_evidence": "شواهد تاریخی مثبت؛ نه تضمین بازده",
+                    "relative_edge_but_mixed_absolute_returns": "برتری نسبی تاریخی؛ بازده مطلق کوتاه‌مدت مختلط",
                     "mixed_or_negative_out_of_sample_evidence": "شواهد مثبت سازگار تأیید نشد",
                     "insufficient_history_for_validation": "داده/دورهٔ کافی برای نتیجه‌گیری نیست",
                 }.get(validation_status, "هنوز اجرا نشده"),
                 "note": (
                     "وضعیت: " + validation_status
-                    + "؛ ۲۰ جلسه‌ای: تعداد دوره="
+                    + "؛ بازده میانه پنجک بالا: ۲۰جلسه="
+                    + str(validation_20d.get("median_top_quintile_mean_return_pct"))
+                    + "٪، نرخ برد میانه="
+                    + str(validation_20d.get("median_top_quintile_win_rate_pct"))
+                    + "٪؛ ۲۰ جلسه‌ای: تعداد دوره="
                     + str(validation_20d.get("fold_count", 0))
                     + "، میانه IC="
                     + str(validation_20d.get("median_spearman_rank_ic"))
