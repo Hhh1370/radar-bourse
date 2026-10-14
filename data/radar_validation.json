@@ -1,0 +1,587 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-10-14T12:29:44+00:00",
+  "validation_status": "positive_out_of_sample_evidence",
+  "purpose": "Retrospective walk-forward test of the existing technical rank; not a profit guarantee or a fitted model.",
+  "dataset": {
+    "current_universe_count": 741,
+    "symbols_with_all_three_timeframes": 741,
+    "symbols_missing_one_or_more_timeframes": 0,
+    "cutoff_dates": [
+      "2020-06-30",
+      "2020-12-31",
+      "2021-06-30",
+      "2021-12-31",
+      "2022-06-30",
+      "2022-12-31",
+      "2023-06-30",
+      "2023-12-31",
+      "2024-06-30",
+      "2024-12-31",
+      "2025-06-30",
+      "2025-12-31"
+    ],
+    "folds_with_50_or_more_ranked_symbols": 12,
+    "min_ranked_symbols_in_fold": 505,
+    "max_ranked_symbols_in_fold": 665,
+    "price_history_cutoff_rule": "daily candles <= cutoff; weekly candles at least 7 days old; monthly candles at least 32 days old"
+  },
+  "return_definition": {
+    "entry": "next trading session open after cutoff",
+    "exit": "close of the Nth future trading session (N=20,60,120)",
+    "includes_dividends": false,
+    "transaction_costs_or_slippage_included": false
+  },
+  "methodology": {
+    "ranking": "The current eight-factor technical score and heat penalty are recomputed as of each cutoff using only history then available. Relative-momentum percentiles are recalculated cross-sectionally within each fold using the same 70/30 rank blend.",
+    "metrics": "Spearman IC between rank and forward return, equal-weight top/bottom quintile spreads, top-quintile win rate, and top-quintile excess versus the eligible universe.",
+    "no_hyperparameter_fit": true
+  },
+  "horizons": {
+    "20": {
+      "fold_count": 12,
+      "pooled_forward_observations": 7027,
+      "median_spearman_rank_ic": 0.1193,
+      "mean_spearman_rank_ic": 0.0946,
+      "median_top_quintile_excess_vs_universe_pct": 2.6859,
+      "median_top_minus_bottom_quintile_spread_pct": 4.0579,
+      "median_top_quintile_win_rate_pct": 40.39,
+      "median_top_quintile_mean_return_pct": -1.2872,
+      "median_universe_mean_return_pct": -3.7852
+    },
+    "60": {
+      "fold_count": 12,
+      "pooled_forward_observations": 7023,
+      "median_spearman_rank_ic": 0.0376,
+      "mean_spearman_rank_ic": 0.0605,
+      "median_top_quintile_excess_vs_universe_pct": 1.7078,
+      "median_top_minus_bottom_quintile_spread_pct": 2.0772,
+      "median_top_quintile_win_rate_pct": 53.095,
+      "median_top_quintile_mean_return_pct": 2.3046,
+      "median_universe_mean_return_pct": -2.0995
+    },
+    "120": {
+      "fold_count": 12,
+      "pooled_forward_observations": 6846,
+      "median_spearman_rank_ic": 0.0374,
+      "mean_spearman_rank_ic": 0.062,
+      "median_top_quintile_excess_vs_universe_pct": 1.6071,
+      "median_top_minus_bottom_quintile_spread_pct": 4.7769,
+      "median_top_quintile_win_rate_pct": 56.29,
+      "median_top_quintile_mean_return_pct": 15.5139,
+      "median_universe_mean_return_pct": 7.2968
+    }
+  },
+  "folds": [
+    {
+      "cutoff_date": "2020-06-30",
+      "ranked_universe": 505,
+      "horizons": {
+        "20": {
+          "observations": 505,
+          "spearman_rank_ic": -0.193869,
+          "top_quintile_count": 101,
+          "bottom_quintile_count": 101,
+          "top_quintile_mean_return_pct": 1.3872,
+          "bottom_quintile_mean_return_pct": 18.2533,
+          "universe_mean_return_pct": 7.8758,
+          "top_quintile_excess_vs_universe_pct": -6.4886,
+          "top_minus_bottom_quintile_spread_pct": -16.8661,
+          "top_quintile_win_rate_pct": 41.58
+        },
+        "60": {
+          "observations": 505,
+          "spearman_rank_ic": -0.278297,
+          "top_quintile_count": 101,
+          "bottom_quintile_count": 101,
+          "top_quintile_mean_return_pct": -21.2004,
+          "bottom_quintile_mean_return_pct": 6.387,
+          "universe_mean_return_pct": -11.9522,
+          "top_quintile_excess_vs_universe_pct": -9.2482,
+          "top_minus_bottom_quintile_spread_pct": -27.5874,
+          "top_quintile_win_rate_pct": 16.83
+        },
+        "120": {
+          "observations": 505,
+          "spearman_rank_ic": -0.231942,
+          "top_quintile_count": 101,
+          "bottom_quintile_count": 101,
+          "top_quintile_mean_return_pct": -12.3323,
+          "bottom_quintile_mean_return_pct": 22.0361,
+          "universe_mean_return_pct": 2.4505,
+          "top_quintile_excess_vs_universe_pct": -14.7828,
+          "top_minus_bottom_quintile_spread_pct": -34.3684,
+          "top_quintile_win_rate_pct": 27.72
+        }
+      }
+    },
+    {
+      "cutoff_date": "2020-12-31",
+      "ranked_universe": 509,
+      "horizons": {
+        "20": {
+          "observations": 509,
+          "spearman_rank_ic": 0.105717,
+          "top_quintile_count": 102,
+          "bottom_quintile_count": 102,
+          "top_quintile_mean_return_pct": -0.7881,
+          "bottom_quintile_mean_return_pct": -8.7153,
+          "universe_mean_return_pct": -4.3472,
+          "top_quintile_excess_vs_universe_pct": 3.5591,
+          "top_minus_bottom_quintile_spread_pct": 7.9272,
+          "top_quintile_win_rate_pct": 42.16
+        },
+        "60": {
+          "observations": 509,
+          "spearman_rank_ic": 0.038359,
+          "top_quintile_count": 102,
+          "bottom_quintile_count": 102,
+          "top_quintile_mean_return_pct": -5.4587,
+          "bottom_quintile_mean_return_pct": -9.1767,
+          "universe_mean_return_pct": -4.1062,
+          "top_quintile_excess_vs_universe_pct": -1.3525,
+          "top_minus_bottom_quintile_spread_pct": 3.718,
+          "top_quintile_win_rate_pct": 30.39
+        },
+        "120": {
+          "observations": 509,
+          "spearman_rank_ic": 0.003381,
+          "top_quintile_count": 102,
+          "bottom_quintile_count": 102,
+          "top_quintile_mean_return_pct": -15.1993,
+          "bottom_quintile_mean_return_pct": -19.4278,
+          "universe_mean_return_pct": -14.1316,
+          "top_quintile_excess_vs_universe_pct": -1.0677,
+          "top_minus_bottom_quintile_spread_pct": 4.2285,
+          "top_quintile_win_rate_pct": 21.57
+        }
+      }
+    },
+    {
+      "cutoff_date": "2021-06-30",
+      "ranked_universe": 531,
+      "horizons": {
+        "20": {
+          "observations": 531,
+          "spearman_rank_ic": 0.030188,
+          "top_quintile_count": 107,
+          "bottom_quintile_count": 107,
+          "top_quintile_mean_return_pct": 4.1532,
+          "bottom_quintile_mean_return_pct": 2.2006,
+          "universe_mean_return_pct": 4.3124,
+          "top_quintile_excess_vs_universe_pct": -0.1592,
+          "top_minus_bottom_quintile_spread_pct": 1.9526,
+          "top_quintile_win_rate_pct": 57.01
+        },
+        "60": {
+          "observations": 531,
+          "spearman_rank_ic": 0.00148,
+          "top_quintile_count": 107,
+          "bottom_quintile_count": 107,
+          "top_quintile_mean_return_pct": 6.1063,
+          "bottom_quintile_mean_return_pct": 6.4562,
+          "universe_mean_return_pct": 3.7719,
+          "top_quintile_excess_vs_universe_pct": 2.3344,
+          "top_minus_bottom_quintile_spread_pct": -0.3499,
+          "top_quintile_win_rate_pct": 55.14
+        },
+        "120": {
+          "observations": 531,
+          "spearman_rank_ic": 0.02532,
+          "top_quintile_count": 107,
+          "bottom_quintile_count": 107,
+          "top_quintile_mean_return_pct": 16.8077,
+          "bottom_quintile_mean_return_pct": -9.3823,
+          "universe_mean_return_pct": -8.5901,
+          "top_quintile_excess_vs_universe_pct": 25.3978,
+          "top_minus_bottom_quintile_spread_pct": 26.19,
+          "top_quintile_win_rate_pct": 40.19
+        }
+      }
+    },
+    {
+      "cutoff_date": "2021-12-31",
+      "ranked_universe": 552,
+      "horizons": {
+        "20": {
+          "observations": 552,
+          "spearman_rank_ic": 0.117625,
+          "top_quintile_count": 111,
+          "bottom_quintile_count": 111,
+          "top_quintile_mean_return_pct": -6.2557,
+          "bottom_quintile_mean_return_pct": -12.2141,
+          "universe_mean_return_pct": -10.7552,
+          "top_quintile_excess_vs_universe_pct": 4.4995,
+          "top_minus_bottom_quintile_spread_pct": 5.9584,
+          "top_quintile_win_rate_pct": 16.22
+        },
+        "60": {
+          "observations": 552,
+          "spearman_rank_ic": -0.000887,
+          "top_quintile_count": 111,
+          "bottom_quintile_count": 111,
+          "top_quintile_mean_return_pct": 5.9212,
+          "bottom_quintile_mean_return_pct": 6.3812,
+          "universe_mean_return_pct": 4.2298,
+          "top_quintile_excess_vs_universe_pct": 1.6914,
+          "top_minus_bottom_quintile_spread_pct": -0.46,
+          "top_quintile_win_rate_pct": 51.35
+        },
+        "120": {
+          "observations": 552,
+          "spearman_rank_ic": -0.073135,
+          "top_quintile_count": 111,
+          "bottom_quintile_count": 111,
+          "top_quintile_mean_return_pct": 14.2201,
+          "bottom_quintile_mean_return_pct": 19.1883,
+          "universe_mean_return_pct": 12.1431,
+          "top_quintile_excess_vs_universe_pct": 2.077,
+          "top_minus_bottom_quintile_spread_pct": -4.9682,
+          "top_quintile_win_rate_pct": 59.46
+        }
+      }
+    },
+    {
+      "cutoff_date": "2022-06-30",
+      "ranked_universe": 571,
+      "horizons": {
+        "20": {
+          "observations": 571,
+          "spearman_rank_ic": 0.128962,
+          "top_quintile_count": 115,
+          "bottom_quintile_count": 115,
+          "top_quintile_mean_return_pct": -5.2262,
+          "bottom_quintile_mean_return_pct": -9.3361,
+          "universe_mean_return_pct": -7.985,
+          "top_quintile_excess_vs_universe_pct": 2.7588,
+          "top_minus_bottom_quintile_spread_pct": 4.1099,
+          "top_quintile_win_rate_pct": 30.43
+        },
+        "60": {
+          "observations": 571,
+          "spearman_rank_ic": 0.038438,
+          "top_quintile_count": 115,
+          "bottom_quintile_count": 115,
+          "top_quintile_mean_return_pct": -9.2695,
+          "bottom_quintile_mean_return_pct": -8.6441,
+          "universe_mean_return_pct": -9.3941,
+          "top_quintile_excess_vs_universe_pct": 0.1246,
+          "top_minus_bottom_quintile_spread_pct": -0.6254,
+          "top_quintile_win_rate_pct": 24.35
+        },
+        "120": {
+          "observations": 571,
+          "spearman_rank_ic": 0.056219,
+          "top_quintile_count": 115,
+          "bottom_quintile_count": 115,
+          "top_quintile_mean_return_pct": 17.0805,
+          "bottom_quintile_mean_return_pct": 12.2377,
+          "universe_mean_return_pct": 15.9432,
+          "top_quintile_excess_vs_universe_pct": 1.1373,
+          "top_minus_bottom_quintile_spread_pct": 4.8428,
+          "top_quintile_win_rate_pct": 68.7
+        }
+      }
+    },
+    {
+      "cutoff_date": "2022-12-31",
+      "ranked_universe": 583,
+      "horizons": {
+        "20": {
+          "observations": 583,
+          "spearman_rank_ic": -0.000195,
+          "top_quintile_count": 117,
+          "bottom_quintile_count": 117,
+          "top_quintile_mean_return_pct": 4.6162,
+          "bottom_quintile_mean_return_pct": 4.559,
+          "universe_mean_return_pct": 5.5522,
+          "top_quintile_excess_vs_universe_pct": -0.936,
+          "top_minus_bottom_quintile_spread_pct": 0.0572,
+          "top_quintile_win_rate_pct": 65.81
+        },
+        "60": {
+          "observations": 583,
+          "spearman_rank_ic": 0.036928,
+          "top_quintile_count": 117,
+          "bottom_quintile_count": 117,
+          "top_quintile_mean_return_pct": 50.2107,
+          "bottom_quintile_mean_return_pct": 46.6614,
+          "universe_mean_return_pct": 48.4865,
+          "top_quintile_excess_vs_universe_pct": 1.7242,
+          "top_minus_bottom_quintile_spread_pct": 3.5493,
+          "top_quintile_win_rate_pct": 94.87
+        },
+        "120": {
+          "observations": 583,
+          "spearman_rank_ic": 0.023485,
+          "top_quintile_count": 117,
+          "bottom_quintile_count": 117,
+          "top_quintile_mean_return_pct": 53.3568,
+          "bottom_quintile_mean_return_pct": 53.6035,
+          "universe_mean_return_pct": 54.7308,
+          "top_quintile_excess_vs_universe_pct": -1.374,
+          "top_minus_bottom_quintile_spread_pct": -0.2467,
+          "top_quintile_win_rate_pct": 87.18
+        }
+      }
+    },
+    {
+      "cutoff_date": "2023-06-30",
+      "ranked_universe": 609,
+      "horizons": {
+        "20": {
+          "observations": 609,
+          "spearman_rank_ic": 0.000992,
+          "top_quintile_count": 122,
+          "bottom_quintile_count": 122,
+          "top_quintile_mean_return_pct": -5.3039,
+          "bottom_quintile_mean_return_pct": -4.4462,
+          "universe_mean_return_pct": -4.5864,
+          "top_quintile_excess_vs_universe_pct": -0.7175,
+          "top_minus_bottom_quintile_spread_pct": -0.8577,
+          "top_quintile_win_rate_pct": 27.05
+        },
+        "60": {
+          "observations": 609,
+          "spearman_rank_ic": -0.068379,
+          "top_quintile_count": 122,
+          "bottom_quintile_count": 122,
+          "top_quintile_mean_return_pct": -8.7094,
+          "bottom_quintile_mean_return_pct": -6.0714,
+          "universe_mean_return_pct": -6.1115,
+          "top_quintile_excess_vs_universe_pct": -2.5979,
+          "top_minus_bottom_quintile_spread_pct": -2.638,
+          "top_quintile_win_rate_pct": 25.41
+        },
+        "120": {
+          "observations": 609,
+          "spearman_rank_ic": -0.005839,
+          "top_quintile_count": 122,
+          "bottom_quintile_count": 122,
+          "top_quintile_mean_return_pct": -2.7739,
+          "bottom_quintile_mean_return_pct": -3.1778,
+          "universe_mean_return_pct": -1.403,
+          "top_quintile_excess_vs_universe_pct": -1.3709,
+          "top_minus_bottom_quintile_spread_pct": 0.4039,
+          "top_quintile_win_rate_pct": 40.16
+        }
+      }
+    },
+    {
+      "cutoff_date": "2023-12-31",
+      "ranked_universe": 619,
+      "horizons": {
+        "20": {
+          "observations": 619,
+          "spearman_rank_ic": 0.120956,
+          "top_quintile_count": 124,
+          "bottom_quintile_count": 124,
+          "top_quintile_mean_return_pct": 0.1268,
+          "bottom_quintile_mean_return_pct": -3.8792,
+          "universe_mean_return_pct": -2.4862,
+          "top_quintile_excess_vs_universe_pct": 2.613,
+          "top_minus_bottom_quintile_spread_pct": 4.006,
+          "top_quintile_win_rate_pct": 38.71
+        },
+        "60": {
+          "observations": 619,
+          "spearman_rank_ic": 0.100377,
+          "top_quintile_count": 124,
+          "bottom_quintile_count": 124,
+          "top_quintile_mean_return_pct": 1.2352,
+          "bottom_quintile_mean_return_pct": -2.1862,
+          "universe_mean_return_pct": -1.9766,
+          "top_quintile_excess_vs_universe_pct": 3.2118,
+          "top_minus_bottom_quintile_spread_pct": 3.4214,
+          "top_quintile_win_rate_pct": 54.84
+        },
+        "120": {
+          "observations": 619,
+          "spearman_rank_ic": 0.1707,
+          "top_quintile_count": 124,
+          "bottom_quintile_count": 124,
+          "top_quintile_mean_return_pct": -2.3237,
+          "bottom_quintile_mean_return_pct": -13.1359,
+          "universe_mean_return_pct": -10.6305,
+          "top_quintile_excess_vs_universe_pct": 8.3068,
+          "top_minus_bottom_quintile_spread_pct": 10.8122,
+          "top_quintile_win_rate_pct": 43.55
+        }
+      }
+    },
+    {
+      "cutoff_date": "2024-06-30",
+      "ranked_universe": 631,
+      "horizons": {
+        "20": {
+          "observations": 631,
+          "spearman_rank_ic": 0.150194,
+          "top_quintile_count": 127,
+          "bottom_quintile_count": 127,
+          "top_quintile_mean_return_pct": -1.7862,
+          "bottom_quintile_mean_return_pct": -5.584,
+          "universe_mean_return_pct": -3.2232,
+          "top_quintile_excess_vs_universe_pct": 1.437,
+          "top_minus_bottom_quintile_spread_pct": 3.7978,
+          "top_quintile_win_rate_pct": 40.94
+        },
+        "60": {
+          "observations": 631,
+          "spearman_rank_ic": 0.014181,
+          "top_quintile_count": 127,
+          "bottom_quintile_count": 127,
+          "top_quintile_mean_return_pct": 1.2645,
+          "bottom_quintile_mean_return_pct": 0.5316,
+          "universe_mean_return_pct": 3.0408,
+          "top_quintile_excess_vs_universe_pct": -1.7763,
+          "top_minus_bottom_quintile_spread_pct": 0.7329,
+          "top_quintile_win_rate_pct": 50.39
+        },
+        "120": {
+          "observations": 630,
+          "spearman_rank_ic": 0.049478,
+          "top_quintile_count": 127,
+          "bottom_quintile_count": 126,
+          "top_quintile_mean_return_pct": 26.3272,
+          "bottom_quintile_mean_return_pct": 21.6162,
+          "universe_mean_return_pct": 27.2407,
+          "top_quintile_excess_vs_universe_pct": -0.9135,
+          "top_minus_bottom_quintile_spread_pct": 4.711,
+          "top_quintile_win_rate_pct": 73.23
+        }
+      }
+    },
+    {
+      "cutoff_date": "2024-12-31",
+      "ranked_universe": 640,
+      "horizons": {
+        "20": {
+          "observations": 640,
+          "spearman_rank_ic": 0.232911,
+          "top_quintile_count": 128,
+          "bottom_quintile_count": 128,
+          "top_quintile_mean_return_pct": 6.3414,
+          "bottom_quintile_mean_return_pct": -1.0641,
+          "universe_mean_return_pct": 1.3928,
+          "top_quintile_excess_vs_universe_pct": 4.9486,
+          "top_minus_bottom_quintile_spread_pct": 7.4055,
+          "top_quintile_win_rate_pct": 65.62
+        },
+        "60": {
+          "observations": 640,
+          "spearman_rank_ic": 0.339619,
+          "top_quintile_count": 128,
+          "bottom_quintile_count": 128,
+          "top_quintile_mean_return_pct": 7.8962,
+          "bottom_quintile_mean_return_pct": -9.5039,
+          "universe_mean_return_pct": -2.4778,
+          "top_quintile_excess_vs_universe_pct": 10.374,
+          "top_minus_bottom_quintile_spread_pct": 17.4001,
+          "top_quintile_win_rate_pct": 56.25
+        },
+        "120": {
+          "observations": 640,
+          "spearman_rank_ic": 0.317036,
+          "top_quintile_count": 128,
+          "bottom_quintile_count": 128,
+          "top_quintile_mean_return_pct": 7.692,
+          "bottom_quintile_mean_return_pct": -16.2411,
+          "universe_mean_return_pct": -7.6721,
+          "top_quintile_excess_vs_universe_pct": 15.3641,
+          "top_minus_bottom_quintile_spread_pct": 23.9331,
+          "top_quintile_win_rate_pct": 53.12
+        }
+      }
+    },
+    {
+      "cutoff_date": "2025-06-30",
+      "ranked_universe": 612,
+      "horizons": {
+        "20": {
+          "observations": 612,
+          "spearman_rank_ic": 0.249215,
+          "top_quintile_count": 123,
+          "bottom_quintile_count": 123,
+          "top_quintile_mean_return_pct": -3.282,
+          "bottom_quintile_mean_return_pct": -10.1153,
+          "universe_mean_return_pct": -7.0536,
+          "top_quintile_excess_vs_universe_pct": 3.7716,
+          "top_minus_bottom_quintile_spread_pct": 6.8333,
+          "top_quintile_win_rate_pct": 39.84
+        },
+        "60": {
+          "observations": 612,
+          "spearman_rank_ic": 0.241151,
+          "top_quintile_count": 123,
+          "bottom_quintile_count": 123,
+          "top_quintile_mean_return_pct": 3.3447,
+          "bottom_quintile_mean_return_pct": -8.2565,
+          "universe_mean_return_pct": -2.2223,
+          "top_quintile_excess_vs_universe_pct": 5.567,
+          "top_minus_bottom_quintile_spread_pct": 11.6012,
+          "top_quintile_win_rate_pct": 57.72
+        },
+        "120": {
+          "observations": 612,
+          "spearman_rank_ic": 0.16602,
+          "top_quintile_count": 123,
+          "bottom_quintile_count": 123,
+          "top_quintile_mean_return_pct": 32.384,
+          "bottom_quintile_mean_return_pct": 20.6998,
+          "universe_mean_return_pct": 29.7461,
+          "top_quintile_excess_vs_universe_pct": 2.6379,
+          "top_minus_bottom_quintile_spread_pct": 11.6842,
+          "top_quintile_win_rate_pct": 83.74
+        }
+      }
+    },
+    {
+      "cutoff_date": "2025-12-31",
+      "ranked_universe": 665,
+      "horizons": {
+        "20": {
+          "observations": 665,
+          "spearman_rank_ic": 0.192475,
+          "top_quintile_count": 133,
+          "bottom_quintile_count": 133,
+          "top_quintile_mean_return_pct": -7.2,
+          "bottom_quintile_mean_return_pct": -13.2214,
+          "universe_mean_return_pct": -10.0383,
+          "top_quintile_excess_vs_universe_pct": 2.8383,
+          "top_minus_bottom_quintile_spread_pct": 6.0214,
+          "top_quintile_win_rate_pct": 19.55
+        },
+        "60": {
+          "observations": 661,
+          "spearman_rank_ic": 0.262756,
+          "top_quintile_count": 133,
+          "bottom_quintile_count": 132,
+          "top_quintile_mean_return_pct": 34.0687,
+          "bottom_quintile_mean_return_pct": 3.7302,
+          "universe_mean_return_pct": 21.2857,
+          "top_quintile_excess_vs_universe_pct": 12.783,
+          "top_minus_bottom_quintile_spread_pct": 30.3385,
+          "top_quintile_win_rate_pct": 78.2
+        },
+        "120": {
+          "observations": 485,
+          "spearman_rank_ic": 0.242761,
+          "top_quintile_count": 104,
+          "bottom_quintile_count": 66,
+          "top_quintile_mean_return_pct": 120.4619,
+          "bottom_quintile_mean_return_pct": 56.1491,
+          "universe_mean_return_pct": 98.514,
+          "top_quintile_excess_vs_universe_pct": 21.9479,
+          "top_minus_bottom_quintile_spread_pct": 64.3128,
+          "top_quintile_win_rate_pct": 99.04
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Survivorship bias: only symbols in the current stock universe are available; delisted securities are not reconstructed.",
+    "Returns are price-only and exclude dividends, taxes, transaction costs, slippage, and limit-up/down execution constraints.",
+    "Historical corporate-action adjustment quality of the source series has not been independently audited.",
+    "A positive rank IC or spread is historical evidence, not proof of future profitability."
+  ]
+}
