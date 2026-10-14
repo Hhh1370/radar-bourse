@@ -8,6 +8,7 @@ from scripts.validate_radar_scores import (
     forward_return_pct,
     score_as_of,
     spearman_correlation,
+    classify_validation_status,
 )
 from scripts import build_technical_radar as tech
 
@@ -67,6 +68,40 @@ class RadarValidationTests(unittest.TestCase):
         self.assertAlmostEqual(spearman_correlation([1, 2, 3, 4], [10, 20, 30, 40]), 1.0)
         self.assertAlmostEqual(spearman_correlation([1, 1, 3, 4], [20, 10, 40, 30]), 0.7379, places=4)
         self.assertIsNone(spearman_correlation([1, 2], [1, 2]))
+
+    def test_validation_status_rejects_relative_edge_without_absolute_short_horizon_profitability(self):
+        h20 = {
+            "median_spearman_rank_ic": 0.10,
+            "median_top_quintile_excess_vs_universe_pct": 2.0,
+            "median_top_quintile_mean_return_pct": -1.2,
+            "median_top_quintile_win_rate_pct": 41.0,
+        }
+        h60 = {
+            "median_spearman_rank_ic": 0.04,
+            "median_top_quintile_excess_vs_universe_pct": 1.5,
+            "median_top_quintile_mean_return_pct": 2.3,
+            "median_top_quintile_win_rate_pct": 53.0,
+        }
+        self.assertEqual(
+            classify_validation_status(True, h20, h60),
+            "relative_edge_but_mixed_absolute_returns",
+        )
+
+    def test_validation_status_requires_absolute_returns_and_win_rate_for_positive_label(self):
+        h20 = {
+            "median_spearman_rank_ic": 0.10,
+            "median_top_quintile_excess_vs_universe_pct": 2.0,
+            "median_top_quintile_mean_return_pct": 1.2,
+            "median_top_quintile_win_rate_pct": 52.0,
+        }
+        h60 = {
+            "median_spearman_rank_ic": 0.04,
+            "median_top_quintile_excess_vs_universe_pct": 1.5,
+            "median_top_quintile_mean_return_pct": 2.3,
+            "median_top_quintile_win_rate_pct": 53.0,
+        }
+        self.assertEqual(classify_validation_status(True, h20, h60), "positive_out_of_sample_evidence")
+        self.assertEqual(classify_validation_status(False, h20, h60), "insufficient_history_for_validation")
 
     def test_as_of_score_does_not_change_when_future_prices_change(self):
         cutoff = date(2025, 6, 30)
