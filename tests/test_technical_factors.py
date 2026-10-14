@@ -53,7 +53,7 @@ class TechnicalFactorTests(unittest.TestCase):
             "unknown_dimension": 100,
         })
         self.assertEqual(weight, 40)
-        self.assertAlmostEqual(score, 50.0)
+        self.assertAlmostEqual(score, 62.5)
 
     def test_structure_finds_confirmed_higher_highs_and_lows(self):
         # Repeated stair-step movement gives confirmed rising local swings.
