@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T12:58:39+00:00",
+  "generated_at_utc": "2026-10-14T13:00:09+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -10,7 +10,7 @@
     "technical_eligible": 698,
     "technical_errors": 0,
     "technical_validation_status": "relative_edge_but_mixed_absolute_returns",
-    "technical_validation_generated_at_utc": "2026-10-14T12:51:20+00:00",
+    "technical_validation_generated_at_utc": "2026-10-14T12:59:36+00:00",
     "technical_validation_20d_fold_count": 12,
     "technical_validation_20d_median_rank_ic": 0.1193,
     "technical_validation_20d_median_top_quintile_excess_pct": 2.6859,
@@ -57,13 +57,13 @@
   },
   "sources": {
     "technical": {
-      "generated_at_utc": "2026-10-14T12:48:01.876677+00:00",
+      "generated_at_utc": "2026-10-14T12:56:35.646325+00:00",
       "label": "تاریخچهٔ قیمت نهایت‌نگر",
       "status": "موجود",
-      "note": "Technical screening only, not a buy/sell recommendation. The composite technical rank is provisional and has not been validated by walk-forward or out-of-sample backtesting. Fundamental health, earnings quality, project ROI and cash-flow quality are not included. Full TSE/IFB coverage has not been independently verified."
+      "note": "Technical screening only, not a buy/sell recommendation. A separate historical walk-forward report at data/radar_validation.json recomputes the same rank at 12 past cutoffs and tests 20/60/120-session price returns. Interpret relative outperformance together with absolute returns and win rate; it is not proof of profitability. Dividends, transaction costs, slippage, delisting survivors and corporate-action adjustment quality remain limitations. Fundamental health, earnings quality and project ROI are not part of this technical-only score; full TSE/IFB coverage has not been independently verified."
     },
     "technical_validation": {
-      "generated_at_utc": "2026-10-14T12:51:20+00:00",
+      "generated_at_utc": "2026-10-14T12:59:36+00:00",
       "label": "اعتبارسنجی خارج از نمونهٔ رتبه‌بندی",
       "status": "برتری نسبی تاریخی؛ بازده مطلق کوتاه‌مدت مختلط",
       "note": "وضعیت: relative_edge_but_mixed_absolute_returns؛ بازده میانه پنجک بالا: ۲۰جلسه=-1.2872٪، نرخ برد میانه=40.39٪؛ ۲۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.1193، مازاد پنجک بالا نسبت به کل=2.6859٪؛ ۶۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.0376، مازاد پنجک بالا=1.7078٪. آزمون قیمت‌محور است، بدون سود نقدی/هزینه معامله و با سوگیری بقا.",
