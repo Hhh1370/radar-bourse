@@ -48,7 +48,7 @@ class CodalSummaryFundamentalsTests(unittest.TestCase):
 
     def test_loss_is_not_misread_as_positive_profit(self):
         loss = report("زیان‌دار", 3, "1405/03/31", "2026-06-01", -30, -15, 200)
-        result = build_summary_map([loss])["زیان‌دار"]
+        result = build_summary_map([loss])["زیاندار"]
         self.assertEqual(result["net_profit_million_rial_candidate"], -30.0)
         self.assertEqual(result["eps_rial_candidate"], -15.0)
         self.assertLess(result["score"], 50.0)
