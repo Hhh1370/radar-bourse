@@ -44,7 +44,23 @@ def period_end(row: dict[str, Any]) -> str:
 def _observations(row: dict[str, Any]) -> list[dict[str, Any]]:
     metrics = row.get("financial_metrics")
     values = metrics.get("observations") if isinstance(metrics, dict) else None
-    return [x for x in values if isinstance(x, dict)] if isinstance(values, list) else []
+    if not isinstance(values, list):
+        return []
+    # OCR is useful for discovery, but OCR-only figures must not affect a score until
+    # reconciled with the official filing. This also protects older ledger rows that
+    # predate the per-observation confidence field.
+    ocr_text = str(metrics.get("image_ocr_text") or "") if isinstance(metrics, dict) else ""
+    usable = []
+    for item in values:
+        if not isinstance(item, dict):
+            continue
+        if item.get("evidence_confidence") == "low_ocr_candidate":
+            continue
+        context = str(item.get("context") or "").strip()
+        if ocr_text and context and context in ocr_text:
+            continue
+        usable.append(item)
+    return usable
 
 
 def _metric_value(row: dict[str, Any], metric: str) -> float | None:
