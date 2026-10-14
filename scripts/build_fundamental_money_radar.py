@@ -378,7 +378,7 @@ def jalali_to_gregorian_date(jy: int, jm: int, jd: int):
 
 
 def parse_tsetmc_date(value):
-    digits = re.sub(r"\\D", "", str(value or "").translate(
+    digits = re.sub(r"\D", "", str(value or "").translate(
         str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
     ))
     if len(digits) != 8:
@@ -1896,6 +1896,28 @@ def run_public_codal_only():
     else:
         prior_payload = {}
 
+    # Fundai's public snapshot includes numeric tsetmc_id candidates. Use these only
+    # as lookup candidates; a money-flow score is retained only after the TSETMC endpoint
+    # returns usable history for that exact numeric instrument code.
+    ratio_ids_by_symbol = {}
+    ratio_rows_available = 0
+    ratio_snapshot_age = ""
+    try:
+        ratio_snapshot = read_json(FUNDAI_RATIO_FILE)
+        ratio_rows = ratio_snapshot.get("rows", [])
+        if isinstance(ratio_rows, list):
+            ratio_rows_available = len(ratio_rows)
+            ratio_snapshot_age = str(ratio_snapshot.get("generated_at_utc") or "")
+            for ratio_row in ratio_rows:
+                if not isinstance(ratio_row, dict):
+                    continue
+                ticker = normalize_text(ratio_row.get("company"))
+                code = str(ratio_row.get("tsetmc_id") or "").strip()
+                if ticker and re.fullmatch(r"\d{10,20}", code):
+                    ratio_ids_by_symbol[ticker] = code
+    except (OSError, ValueError, json.JSONDecodeError):
+        ratio_ids_by_symbol = {}
+
     public_reports, disclosure, ledger = load_public_statement_reports(stocks)
     ledger_summary = ledger.get("last_run", {}) if isinstance(ledger.get("last_run"), dict) else {}
     print(
@@ -1910,6 +1932,11 @@ def run_public_codal_only():
     parsed_new_count = 0
     cache_reused_count = 0
     failures = 0
+    flow_requests_attempted = 0
+    flow_histories_returned = 0
+    flow_12m_verified = 0
+    flow_first_error = ""
+    verified_flow_mappings = {}
     now = utc_now()
 
     for index, stock in enumerate(stocks, start=1):
@@ -1971,6 +1998,59 @@ def run_public_codal_only():
         )[:20]
         fundamentals = score_fundamentals(all_details)
 
+        # Direct public TSETMC money flow is attempted only when a valid-looking
+        # source ID exists and the endpoint host has not been marked unavailable.
+        flow_info = None
+        flow_history = []
+        flow_coverage = {
+            "full_year_coverage": False, "latest_date_iso": None,
+            "latest_age_days": None, "calendar_span_days": None,
+        }
+        flow_error = "شناسه یا تاریخچهٔ معتبر پول حقیقی در منبع عمومی در دسترس نیست"
+        ratio_ins_code = ratio_ids_by_symbol.get(key)
+        chart_id = str(stock.get("chart_id") or old.get("chart_id") or "").strip()
+        is_common_equity = chart_id.startswith(COMMON_EQUITY_ISIN_PREFIXES)
+        if is_common_equity and ratio_ins_code and not (TSETMC_UNAVAILABLE and TSETMC_MIRROR_UNAVAILABLE):
+            flow_requests_attempted += 1
+            try:
+                flow_history = fetch_flow(ins_code=ratio_ins_code)
+                flow_coverage = money_flow_history_coverage(flow_history)
+                flow_info = score_money_flow(flow_history)
+                if flow_history:
+                    flow_histories_returned += 1
+                has_valid_year = (
+                    flow_coverage.get("full_year_coverage") is True
+                    and isinstance(flow_info.get("score"), (int, float))
+                    and isinstance(flow_info.get("windows"), dict)
+                    and (flow_info.get("windows", {}).get("252") or {}).get("real_value_coverage_ratio", 0) >= 0.80
+                )
+                flow_coverage["full_year_coverage"] = bool(has_valid_year)
+                if has_valid_year:
+                    flow_12m_verified += 1
+                    flow_error = ""
+                    verified_flow_mappings[symbol] = {
+                        "ins_code": ratio_ins_code,
+                        "isin": chart_id,
+                        "ticker_tsetmc": symbol,
+                        "company_tsetmc": company,
+                        "instrument_kind": "common_equity",
+                        "mapping_source": "Fundai tsetmc_id; confirmed by successful TSETMC client-type history",
+                        "mapped_at_utc": now,
+                    }
+                elif flow_history:
+                    flow_error = (
+                        "تاریخچه دریافت شده، اما برای تأیید پول حقیقی ۱۲ماهه باید حداقل ۲۵۲ جلسه، "
+                        "پوشش زمانی کافی، دادهٔ تازه و مقادیر حقیقی معتبر داشته باشد"
+                    )
+                else:
+                    flow_error = "پاسخ عمومی TSETMC تاریخچهٔ قابل‌استفاده‌ای برای این شناسه نداشت"
+            except Exception as exc:
+                flow_error = f"دریافت تاریخچهٔ پول حقیقی ناموفق: {str(exc)[:180]}"
+                if not flow_first_error:
+                    flow_first_error = flow_error
+                if TSETMC_UNAVAILABLE and TSETMC_MIRROR_UNAVAILABLE:
+                    print("TSETMC_FLOW_SOURCE_UNAVAILABLE:" + flow_error[:220])
+
         row = old
         row.update({
             "symbol": symbol,
@@ -2008,10 +2088,27 @@ def run_public_codal_only():
                 ) else "public_statement_links_only_or_source_unavailable"
             ),
         })
-        # Old money-flow history is not refreshed by this public-only job. Keep its
-        # data for reference, but block it from being mistaken for a current validated score.
-        row["money_flow_error"] = "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است"
-        row["money_flow_status"] = "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده"
+        # Never leave an old money-flow score looking current when this run could
+        # not verify it. Incomplete histories may be shown as candidates, but fail the
+        # annual-coverage gate in the dashboard.
+        row["money_flow_score"] = flow_info.get("score") if isinstance(flow_info, dict) else None
+        row["money_flow_status"] = (
+            str(flow_info.get("status") or "دادهٔ پول حقیقی ناکافی")
+            if isinstance(flow_info, dict) else "تاریخچهٔ پول حقیقی تازه‌سازی/اعتبارسنجی نشده"
+        )
+        row["money_flow_evidence"] = flow_info.get("evidence", []) if isinstance(flow_info, dict) else []
+        row["money_flow_windows"] = flow_info.get("windows", {}) if isinstance(flow_info, dict) else {}
+        row["money_flow_history_rows"] = len(flow_history)
+        row["money_flow_full_year_coverage"] = bool(flow_coverage.get("full_year_coverage"))
+        row["money_flow_latest_date"] = (
+            flow_coverage.get("latest_date_iso")
+            or (flow_history[-1].get("date_raw") if flow_history else None)
+        )
+        row["money_flow_source"] = (
+            "TSETMC public client-type history via Fundai tsetmc_id"
+            if flow_history else "TSETMC public history unavailable"
+        )
+        row["money_flow_error"] = flow_error
         output_rows.append(row)
         for report in all_details:
             financial_watchlist.append({
@@ -2034,10 +2131,21 @@ def run_public_codal_only():
         and r.get("instrument_kind") == "common_equity"
     ]
     fundamental_candidates.sort(key=lambda r: (r.get("fundamental_score", -1), r.get("fundamental_assessment", {}).get("latest_report_date") or ""), reverse=True)
+    if verified_flow_mappings:
+        try:
+            cached_map_payload = read_json(MAP_FILE) if MAP_FILE.is_file() else {}
+        except (OSError, ValueError, json.JSONDecodeError):
+            cached_map_payload = {}
+        cached_symbols = cached_map_payload.get("symbols", {}) if isinstance(cached_map_payload, dict) else {}
+        if not isinstance(cached_symbols, dict):
+            cached_symbols = {}
+        cached_symbols.update(verified_flow_mappings)
+        write_json(MAP_FILE, {"updated_at_utc": now, "symbols": cached_symbols})
+
     output = {
         "generated_at_utc": now,
-        "source": "Free public filing-link ledger + Codal Excel/HTML endpoint; no paid API requested",
-        "source_access_mode": "free_public_codal_links_and_excel_html",
+        "source": "Public Codal/Telegram filing-link ledger + Fundai ratios + direct public TSETMC history when reachable",
+        "source_access_mode": "free_public_codal_and_tsetmc_flow_if_reachable",
         "brsapi_configured": False,
         "input_universe_count": len(stocks),
         "coverage_verified_for_all_active_market_symbols": False,
@@ -2048,7 +2156,18 @@ def run_public_codal_only():
             "Discovery uses accessible public Telegram/Codal-linked snapshots; this is not guaranteed to enumerate every active issuer. "
             "A report is scored only when its official attachment is parsed into structured rows."
         ),
-        "tsetmc_api_status": "not_refreshed_in_public_codal_only_mode",
+        "tsetmc_api_status": (
+            "verified_12m_history_available" if flow_12m_verified
+            else "direct_history_attempted_but_no_12m_coverage"
+            if flow_requests_attempted
+            else "no_numeric_tsetmc_id_or_tsetmc_hosts_unavailable"
+        ),
+        "tsetmc_api_note": (
+            f"Fundai snapshot tickers with numeric IDs: {len(ratio_ids_by_symbol)}; "
+            f"flow requests attempted: {flow_requests_attempted}; history responses: {flow_histories_returned}; "
+            f"12-month histories verified: {flow_12m_verified}. "
+            + (flow_first_error[:240] if flow_first_error else "")
+        ),
         "counts": {
             "universe_records_processed": len(output_rows),
             "symbols_with_public_statement_links": len(public_reports),
@@ -2056,6 +2175,13 @@ def run_public_codal_only():
             "statement_reports_detailed": parsed_new_count,
             "financial_detail_cache_hits": cache_reused_count,
             "public_statement_parse_failures": failures,
+            "fundai_ratio_rows_available_for_flow_map": ratio_rows_available,
+            "fundai_ratio_symbols_with_numeric_ids": len(ratio_ids_by_symbol),
+            "tsetmc_flow_history_requests_attempted": flow_requests_attempted,
+            "tsetmc_flow_history_responses": flow_histories_returned,
+            "money_flow_12m_verified_symbols": flow_12m_verified,
+            "tsetmc_mirror_unavailable": TSETMC_MIRROR_UNAVAILABLE,
+            "tsetmc_primary_unavailable": TSETMC_UNAVAILABLE,
             "fundamental_candidates_scored": len(fundamental_candidates),
             "money_flow_candidates_scored": len(money_candidates),
             "financial_report_watchlist_items": len(financial_watchlist),
@@ -2077,8 +2203,10 @@ def run_public_codal_only():
             ),
         },
         "warning": (
-            "This free mode does not call BRS API. Filing coverage is partial unless the public sources expose an issuer's LetterSerial. "
-            "Official tables are only scored after parsing; otherwise the result remains unavailable."
+            "This mode uses public Codal/Telegram links and attempts direct TSETMC client-type history through the CDN mirror and primary host. "
+            "A 12-month money-flow score is admitted only when at least 252 sessions, adequate calendar span, fresh dates, and valid real-person values are present. "
+            "Official financial tables are scored only after they are parsed; otherwise their scores remain unavailable. "
+            "If direct hosts are blocked from the runner, configure BRS_API_KEY under repository Actions secrets to enable the provider-based full scan."
         ),
         "top_50_fundamental_for_review": fundamental_candidates[:50],
         "top_50_money_flow_for_review": money_candidates[:50],
