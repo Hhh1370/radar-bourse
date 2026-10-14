@@ -12,16 +12,55 @@ class TsetmcFallbackTests(unittest.TestCase):
         self.old_primary_reason = radar.TSETMC_UNAVAILABLE_REASON
         self.old_mirror_unavailable = radar.TSETMC_MIRROR_UNAVAILABLE
         self.old_mirror_reason = radar.TSETMC_MIRROR_UNAVAILABLE_REASON
+        self.old_legacy_unavailable = radar.TSETMC_LEGACY_UNAVAILABLE
+        self.old_legacy_reason = radar.TSETMC_LEGACY_UNAVAILABLE_REASON
         radar.TSETMC_UNAVAILABLE = False
         radar.TSETMC_UNAVAILABLE_REASON = None
         radar.TSETMC_MIRROR_UNAVAILABLE = False
         radar.TSETMC_MIRROR_UNAVAILABLE_REASON = None
+        radar.TSETMC_LEGACY_UNAVAILABLE = False
+        radar.TSETMC_LEGACY_UNAVAILABLE_REASON = None
 
     def tearDown(self):
         radar.TSETMC_UNAVAILABLE = self.old_primary_unavailable
         radar.TSETMC_UNAVAILABLE_REASON = self.old_primary_reason
         radar.TSETMC_MIRROR_UNAVAILABLE = self.old_mirror_unavailable
         radar.TSETMC_MIRROR_UNAVAILABLE_REASON = self.old_mirror_reason
+        radar.TSETMC_LEGACY_UNAVAILABLE = self.old_legacy_unavailable
+        radar.TSETMC_LEGACY_UNAVAILABLE_REASON = self.old_legacy_reason
+
+    def test_parse_legacy_csv_maps_real_and_legal_fields_without_inventing_missing_values(self):
+        row = "14050721,10,2,5,1,100,20,50,10,1000,200,500,100;"
+        result = radar.parse_legacy_client_type_csv(row)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["date_raw"], "14050721")
+        self.assertEqual(result[0]["buy_real_count"], 10.0)
+        self.assertEqual(result[0]["sell_real_count"], 5.0)
+        self.assertEqual(result[0]["buy_real_value"], 1000.0)
+        self.assertEqual(result[0]["sell_real_value"], 500.0)
+        self.assertEqual(result[0]["buy_legal_value"], 200.0)
+        self.assertEqual(result[0]["sell_legal_value"], 100.0)
+
+    def test_fetch_flow_uses_legacy_csv_when_both_json_hosts_fail(self):
+        history = [
+            {
+                "date_raw": f"202610{day:02d}", "date_sort": f"202610{day:02d}",
+                "buy_real_value": 1000.0, "sell_real_value": 700.0,
+                "buy_legal_value": 500.0, "sell_legal_value": 600.0,
+                "buy_real_volume": 10.0, "sell_real_volume": 8.0,
+                "buy_legal_volume": 5.0, "sell_legal_volume": 6.0,
+                "buy_real_count": 10.0, "sell_real_count": 8.0,
+                "buy_legal_count": 2.0, "sell_legal_count": 3.0,
+            }
+            for day in range(1, 31)
+        ]
+        with patch.object(radar, "BRS_API_KEY", ""), \
+             patch.object(radar, "tsetmc_get", side_effect=RuntimeError("DNS/timeout")), \
+             patch.object(radar, "fetch_legacy_client_type_history", return_value=history) as legacy:
+            result = radar.fetch_flow(ins_code="7503669593172728")
+        self.assertEqual(len(result), 30)
+        self.assertEqual(result[-1]["buy_real_value"], 1000.0)
+        legacy.assert_called_once_with("7503669593172728")
 
     def test_mirror_is_used_before_primary_host(self):
         with patch.object(radar, "tsetmc_mirror_get", return_value={"source": "mirror"}) as mirror, \
