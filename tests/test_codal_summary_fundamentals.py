@@ -60,6 +60,19 @@ class CodalSummaryFundamentalsTests(unittest.TestCase):
         self.assertIsNotNone(result["monthly_activity"])
         self.assertIn("گزارش فعالیت ماهانه", result["monthly_activity"]["status"])
 
+    def test_monthly_sales_growth_adjusts_the_provisional_score(self):
+        old = report("نماد", 3, "1404/03/31", "2025-06-01", 100, 50, 500)
+        current = report("نماد", 3, "1405/03/31", "2026-06-01", 150, 60, 700)
+        monthly = report("نماد", 1, "1405/04/31", "2026-08-01", None, None, 120, kind="monthly_activity")
+        monthly["financial_metrics"]["observations"][0]["growth_pct_candidate"] = 30.0
+
+        without_monthly = build_summary_map([old, current])["نماد"]
+        with_monthly = build_summary_map([old, current, monthly])["نماد"]
+
+        self.assertEqual(with_monthly["monthly_sales_growth_pct_candidate"], 30.0)
+        self.assertGreater(with_monthly["score"], without_monthly["score"])
+        self.assertTrue(any("رشد فروش گزارش فعالیت ماهانه" in item for item in with_monthly["evidence"]))
+
     def test_report_summary_without_numeric_values_has_no_score(self):
         row = report("نامشخص", 3, "1405/03/31", "2026-06-01", None, None, None)
         row["financial_metrics"]["observations"] = []
