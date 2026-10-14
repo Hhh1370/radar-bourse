@@ -183,7 +183,13 @@ def _score(report: dict[str, Any], prior: dict[str, Any] | None, monthly: dict[s
     revenue_growth_points = growth_points(revenue_growth, 4, 8, -5, -10)
     eps_growth_points = growth_points(eps_growth, 2, 4, -3, -5)
     score += profit_growth_points + revenue_growth_points + eps_growth_points
-    monthly_sales_growth = _reported_growth(monthly, "revenue_or_sales") if monthly else None
+    monthly_sales_growth = None
+    if isinstance(monthly, dict):
+        candidate = monthly.get("sales_growth_pct_candidate")
+        if isinstance(candidate, (int, float)) and math.isfinite(float(candidate)):
+            monthly_sales_growth = float(candidate)
+        else:
+            monthly_sales_growth = _reported_growth(monthly, "revenue_or_sales")
     monthly_adjustment = 0
     if monthly_sales_growth is not None:
         if monthly_sales_growth >= 25:
