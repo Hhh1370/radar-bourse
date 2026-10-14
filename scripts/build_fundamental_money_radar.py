@@ -1610,20 +1610,36 @@ def public_statement_report(row, symbol="", company=""):
     """Normalize a public discovery row into the common financial-report schema."""
     if not isinstance(row, dict):
         return None
-    title = str(
+    original_title = str(
         row.get("title") or row.get("report_title") or row.get("link_title")
         or row.get("subject") or ""
     ).strip()
+    classification_raw = " ".join(str(row.get(k) or "") for k in (
+        "classification", "report_type", "primary_category", "financial_keywords"
+    ))
+    classification = normalize_text(classification_raw)
+    if any(term in classification for term in ("فعالیتماهانه", "تولیدوفروش", "عملکردماهانه")):
+        return None
+
+    period_hint = str(row.get("report_period") or row.get("period") or "").strip()
+    context = str(row.get("source_text") or row.get("source_context") or "").strip()
+    candidates = [original_title, context]
+    title = next((value for value in candidates if value and "صورت" in normalize_text(value)), "")
+    # Secondary snapshots frequently label the link "مشاهده گزارش" while the period
+    # and statement class are stored in neighbouring metadata fields.
+    if not title and any(term in classification for term in ("صورتهایمالی", "financialstatement", "صورتهایمالیحسابرسی")):
+        if period_hint:
+            title = "صورت‌های مالی دوره " + period_hint
+        elif "صورت" in normalize_text(context):
+            title = context[:500]
     if not title or "صورت" not in normalize_text(title):
         return None
+    if period_hint and report_period_key({"title": title}) not in {"3", "6", "9", "annual"}:
+        title = title + " · دوره " + period_hint
     period_type = report_period_key({"title": title})
     if period_type not in {"3", "6", "9", "annual"}:
         return None
-    classification = normalize_text(
-        row.get("classification") or row.get("report_type") or row.get("primary_category") or ""
-    )
-    if any(term in classification for term in ("فعالیتماهانه", "تولیدوفروش", "عملکردماهانه")):
-        return None
+
     url = str(
         row.get("official_url") or row.get("codal_url") or row.get("url")
         or row.get("letter_url") or ""
@@ -1641,6 +1657,7 @@ def public_statement_report(row, symbol="", company=""):
         row.get("date") or row.get("published_at") or row.get("publication_date")
         or row.get("publish_date") or ""
     ).strip()
+    combined_title = title + (" " + period_hint if period_hint else "")
     normalized = {
         "symbol": symbol or str(row.get("symbol") or row.get("ticker") or "").strip(),
         "company": company or str(row.get("company") or row.get("company_name") or "").strip(),
@@ -1652,7 +1669,8 @@ def public_statement_report(row, symbol="", company=""):
         "has_excel": bool(excel_url),
         "is_financial_report_candidate": True,
         "period_type": period_type,
-        "fiscal_year_end": report_year_end({"title": title}),
+        "fiscal_year_end": report_year_end({"title": combined_title}),
+        "report_period_hint": period_hint,
         "discovery_source": str(row.get("source_name") or row.get("source") or "public Codal-linked snapshot"),
     }
     return normalized
