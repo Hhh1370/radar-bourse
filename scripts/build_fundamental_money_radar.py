@@ -6,7 +6,9 @@ never converted into a neutral or positive score. Codal report parsing is heuris
 all extracted figures keep source links/snippets and should be reviewed for context.
 """
 
+import csv
 import html
+import io
 import json
 import math
 import os
@@ -31,6 +33,8 @@ TSETMC_BASE = "https://cdn.tsetmc.com/api"
 TSETMC_MIRROR_BASE = "https://cdn10.tsetmc.com/api"
 TSETMC_MIRROR_UNAVAILABLE = False
 TSETMC_MIRROR_UNAVAILABLE_REASON = None
+TSETMC_LEGACY_UNAVAILABLE = False
+TSETMC_LEGACY_UNAVAILABLE_REASON = None
 CODAL_SEARCH_BASE = "https://search.codal.ir/api/search/v2/q"
 BRS_API_BASE = "https://api.brsapi.ir"
 BRS_API_KEY = os.environ.get("BRS_API_KEY", "").strip()
@@ -729,16 +733,136 @@ def get_tsetmc_snapshot(ins_code):
     }
 
 
+def parse_legacy_client_type_csv(text):
+    """Parse the old public TSETMC clienttype.aspx export (13 comma fields, semicolon rows)."""
+    output = []
+    raw_text = str(text or "").replace("\\ufeff", "").strip()
+    if not raw_text:
+        return []
+    # Historical endpoint usually emits comma-separated columns, with semicolon row
+    # terminators. Support newline-separated rows too; never infer missing amounts as zero.
+    chunks = []
+    if ";" in raw_text:
+        chunks = [part.strip() for part in raw_text.split(";") if part.strip()]
+    else:
+        chunks = [part.strip() for part in raw_text.splitlines() if part.strip()]
+    table = str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
+    for chunk in chunks:
+        try:
+            fields = next(csv.reader([chunk], delimiter=",", skipinitialspace=True))
+        except (csv.Error, StopIteration):
+            continue
+        fields = [str(v or "").strip().strip('"').translate(table) for v in fields]
+        if len(fields) < 13:
+            continue
+        date_value = re.sub(r"\\D", "", fields[0])
+        if len(date_value) != 8 or parse_tsetmc_date(date_value) is None:
+            continue
+        def num(index):
+            value = fields[index].replace(",", "").strip()
+            if not value or value in {"-", "—", "null", "None"}:
+                return None
+            try:
+                parsed = float(value)
+                return parsed if math.isfinite(parsed) else None
+            except ValueError:
+                return None
+        output.append({
+            "recDate": date_value,
+            "buy_I_Count": num(1),
+            "buy_N_Count": num(2),
+            "sell_I_Count": num(3),
+            "sell_N_Count": num(4),
+            "buy_I_Volume": num(5),
+            "buy_N_Volume": num(6),
+            "sell_I_Volume": num(7),
+            "sell_N_Volume": num(8),
+            "buy_I_Value": num(9),
+            "buy_N_Value": num(10),
+            "sell_I_Value": num(11),
+            "sell_N_Value": num(12),
+        })
+    if not output:
+        return []
+    normalized = normalize_history({"clientType": output})
+    return normalized
+
+
+def fetch_legacy_client_type_history(ins_code):
+    """Try the public legacy CSV hosts once, then cache complete legacy-source failure."""
+    global TSETMC_LEGACY_UNAVAILABLE, TSETMC_LEGACY_UNAVAILABLE_REASON
+    if TSETMC_LEGACY_UNAVAILABLE:
+        raise RuntimeError(TSETMC_LEGACY_UNAVAILABLE_REASON or "legacy TSETMC client-type hosts unavailable")
+    code = str(ins_code or "").strip()
+    if not re.fullmatch(r"\\d{10,20}", code):
+        raise ValueError("legacy TSETMC history requires a numeric instrument code")
+    urls = (
+        f"https://old.tsetmc.com/tsev2/data/clienttype.aspx?i={urllib.parse.quote(code, safe='')}",
+        f"http://old.tsetmc.com/tsev2/data/clienttype.aspx?i={urllib.parse.quote(code, safe='')}",
+        f"http://www.tsetmc.com/tsev2/data/clienttype.aspx?i={urllib.parse.quote(code, safe='')}",
+    )
+    errors = []
+    headers = {
+        "User-Agent": USER_AGENT,
+        "Accept": "text/plain,text/csv,application/json,*/*",
+        "Referer": "https://www.tsetmc.com/",
+        "Connection": "close",
+    }
+    for url in urls:
+        request = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(request, timeout=5) as response:
+                body = response.read(8 * 1024 * 1024 + 1)
+            if not body:
+                raise ValueError("empty legacy TSETMC history response")
+            if len(body) > 8 * 1024 * 1024:
+                raise ValueError("legacy TSETMC history response exceeded 8 MiB")
+            text_body = body.decode("utf-8-sig", errors="replace")
+            history = parse_legacy_client_type_csv(text_body)
+            if len(history) < 20:
+                raise ValueError(f"legacy TSETMC returned only {len(history)} parseable history rows")
+            if TSETMC_DELAY:
+                time.sleep(TSETMC_DELAY)
+            return history
+        except urllib.error.HTTPError as exc:
+            errors.append(f"{urllib.parse.urlparse(url).hostname}: HTTP {exc.code}")
+        except (urllib.error.URLError, TimeoutError, OSError, ValueError, csv.Error) as exc:
+            errors.append(f"{urllib.parse.urlparse(url).hostname}: {type(exc).__name__}: {str(exc)[:120]}")
+    TSETMC_LEGACY_UNAVAILABLE = True
+    TSETMC_LEGACY_UNAVAILABLE_REASON = "; ".join(errors)[:360] or "legacy TSETMC history unavailable"
+    raise RuntimeError(TSETMC_LEGACY_UNAVAILABLE_REASON)
+
+
 def fetch_flow(ins_code=None, symbol=None):
     if BRS_API_KEY:
         if not symbol:
             raise ValueError("symbol is required for BrsApi client-type history")
-        payload = brsapi_get_json("Tsetmc/History.php", {"type": "1", "l18": symbol})
-        return normalize_history(payload)
+        try:
+            payload = brsapi_get_json("Tsetmc/History.php", {"type": "1", "l18": symbol})
+            history = normalize_history(payload)
+            if history:
+                return history
+            raise ValueError("BrsApi returned no usable client-type history")
+        except Exception:
+            # If the caller has a confirmed numeric insCode, continue through public paths.
+            if not ins_code:
+                raise
     if not ins_code:
         raise ValueError("ins_code is required for direct TSETMC history")
-    payload = tsetmc_get(f"ClientType/GetClientTypeHistory/{urllib.parse.quote(ins_code, safe='')}")
-    return normalize_history(payload)
+    errors = []
+    try:
+        payload = tsetmc_get(f"ClientType/GetClientTypeHistory/{urllib.parse.quote(str(ins_code), safe='')}")
+        history = normalize_history(payload)
+        if len(history) >= 20:
+            return history
+        errors.append(f"JSON history yielded only {len(history)} usable rows")
+    except Exception as exc:
+        errors.append(str(exc)[:240])
+    try:
+        return fetch_legacy_client_type_history(ins_code)
+    except Exception as exc:
+        errors.append(str(exc)[:260])
+    raise RuntimeError("all public TSETMC client-type paths failed: " + "; ".join(errors)[:620])
 
 
 class ScriptCollector(HTMLParser):
@@ -2010,7 +2134,7 @@ def run_public_codal_only():
         ratio_ins_code = ratio_ids_by_symbol.get(key)
         chart_id = str(stock.get("chart_id") or old.get("chart_id") or "").strip()
         is_common_equity = chart_id.startswith(COMMON_EQUITY_ISIN_PREFIXES)
-        if is_common_equity and ratio_ins_code and not (TSETMC_UNAVAILABLE and TSETMC_MIRROR_UNAVAILABLE):
+        if is_common_equity and ratio_ins_code and not TSETMC_LEGACY_UNAVAILABLE and not (TSETMC_UNAVAILABLE and TSETMC_MIRROR_UNAVAILABLE):
             flow_requests_attempted += 1
             try:
                 flow_history = fetch_flow(ins_code=ratio_ins_code)
@@ -2181,6 +2305,7 @@ def run_public_codal_only():
             "tsetmc_flow_history_responses": flow_histories_returned,
             "money_flow_12m_verified_symbols": flow_12m_verified,
             "tsetmc_mirror_unavailable": TSETMC_MIRROR_UNAVAILABLE,
+            "tsetmc_legacy_unavailable": TSETMC_LEGACY_UNAVAILABLE,
             "tsetmc_primary_unavailable": TSETMC_UNAVAILABLE,
             "fundamental_candidates_scored": len(fundamental_candidates),
             "money_flow_candidates_scored": len(money_candidates),
