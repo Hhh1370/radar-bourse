@@ -221,7 +221,7 @@ class TelegramParser(HTMLParser):
         classes = attrs.get("class", "")
         if self.current is None and tag.lower() == "div" and "tgme_widget_message_wrap" in classes:
             self.current = {
-                "post_id": "", "date": "", "text_parts": [], "links": [],
+                "post_id": "", "date": "", "text_parts": [], "links": [], "images": [],
             }
             self.div_depth = 1
             return
@@ -236,6 +236,15 @@ class TelegramParser(HTMLParser):
             self.current["date"] = attrs.get("datetime", "") or attrs.get("title", "")
         if tag.lower() == "a" and attrs.get("href"):
             self.anchor_stack.append({"href": html.unescape(attrs["href"]), "parts": []})
+        if tag.lower() == "img":
+            image_url = attrs.get("src") or attrs.get("data-src") or attrs.get("srcset", "").split(" ")[0]
+            if image_url:
+                self.current["images"].append({
+                    "url": html.unescape(image_url),
+                    "alt": clean_text(attrs.get("alt", "")),
+                    "width": attrs.get("width", ""),
+                    "height": attrs.get("height", ""),
+                })
 
     def handle_data(self, data):
         if self.current is None:
@@ -262,6 +271,7 @@ class TelegramParser(HTMLParser):
                     "date": clean_text(self.current["date"]),
                     "text": clean_text(" ".join(self.current["text_parts"])),
                     "links": self.current["links"],
+                    "images": self.current["images"],
                 }
                 if post["text"] or post["links"]:
                     self.posts.append(post)
@@ -808,6 +818,11 @@ def fetch_telegram_pages(page_limit: int, source_status: list[dict]) -> list[dic
                 post["channel"] = channel_handle
                 post["source_name"] = source_name
                 post["permalink"] = telegram_link_for(post_id, channel_handle)
+                post["images"] = [
+                    {**image, "url": urllib.parse.urljoin(page_url, image.get("url", ""))}
+                    for image in post.get("images", [])
+                    if image.get("url")
+                ]
                 posts_by_id[key] = post
 
             if not numeric_ids:
