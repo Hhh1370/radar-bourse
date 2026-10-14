@@ -988,6 +988,25 @@ def main() -> None:
                 "صورت مالی ساختاریافته" if finite_number(fundamental.get("fundamental_score")) else "بدون امتیاز بنیادی"
             )),
             "fundamental_status": str(scoring_fundamental.get("fundamental_status") or "داده‌ای برای این نماد در منبع بنیادی موجود نیست"),
+            "quarterly_comparison_status": str(
+                (fundamental.get("fundamental_assessment") or {}).get("quarterly_comparison_status")
+                or "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده"
+            ),
+            "quarterly_growth_candidates_pct": {
+                str(name): number(value, 2)
+                for name, value in (
+                    (fundamental.get("fundamental_assessment") or {}).get("quarterly_growth_candidates_pct")
+                    if isinstance((fundamental.get("fundamental_assessment") or {}).get("quarterly_growth_candidates_pct"), dict)
+                    else {}
+                ).items()
+                if finite_number(value)
+            },
+            "quarterly_growth_points": number(
+                (fundamental.get("fundamental_assessment") or {}).get("quarterly_growth_points"), 1
+            ),
+            "fundamental_latest_report_date": str(
+                (fundamental.get("fundamental_assessment") or {}).get("latest_report_date") or ""
+            ),
             "fundamental_ratio_score": number(ratio.get("ratio_score"), 2),
             "fundamental_ratio_quality": number(ratio.get("ratio_score_quality"), 3),
             "fundamental_ratio_industry": str(ratio.get("industry") or ""),
