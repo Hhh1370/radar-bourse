@@ -17,16 +17,20 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 UNIVERSE_FILE = ROOT / "data" / "stock_universe.json"
 MAP_FILE = ROOT / "data" / "tsetmc_instrument_map.json"
+FUNDAI_RATIO_FILE = ROOT / "data" / "fundai_financial_ratios.json"
 OUTPUT_FILE = ROOT / "data" / "fundamental_money_radar.json"
 
 TSETMC_BASE = "https://cdn.tsetmc.com/api"
+TSETMC_MIRROR_BASE = "https://cdn10.tsetmc.com/api"
+TSETMC_MIRROR_UNAVAILABLE = False
+TSETMC_MIRROR_UNAVAILABLE_REASON = None
 CODAL_SEARCH_BASE = "https://search.codal.ir/api/search/v2/q"
 BRS_API_BASE = "https://api.brsapi.ir"
 BRS_API_KEY = os.environ.get("BRS_API_KEY", "").strip()
@@ -280,11 +284,139 @@ def request_json(url, delay=0.0):
         return {"Letters": letters, "Total": len(letters), "Page": 1}
 
 
+def tsetmc_mirror_get(path):
+    """Try the documented public CDN mirror once; cache connection-level failures."""
+    global TSETMC_MIRROR_UNAVAILABLE, TSETMC_MIRROR_UNAVAILABLE_REASON
+    if TSETMC_MIRROR_UNAVAILABLE:
+        raise RuntimeError(TSETMC_MIRROR_UNAVAILABLE_REASON or "TSETMC mirror unavailable")
+    url = f"{TSETMC_MIRROR_BASE}/{path.lstrip('/')}"
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": USER_AGENT,
+            "Accept": "application/json,text/plain,*/*",
+            "Referer": "https://www.tsetmc.com/",
+            "Origin": "https://www.tsetmc.com",
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=8) as response:
+            body = response.read(8 * 1024 * 1024 + 1)
+        if not body:
+            raise ValueError("empty response body from TSETMC mirror")
+        if len(body) > 8 * 1024 * 1024:
+            raise ValueError("TSETMC mirror response exceeded the 8 MiB safety limit")
+        payload = json.loads(body.decode("utf-8-sig", errors="replace"))
+        if not isinstance(payload, (dict, list)):
+            raise ValueError("TSETMC mirror returned an unexpected JSON type")
+        if TSETMC_DELAY:
+            time.sleep(TSETMC_DELAY)
+        return payload
+    except urllib.error.HTTPError as exc:
+        # 400/404 can be instrument/path-specific; do not conclude the whole host is down.
+        if exc.code in (403, 429, 451, 500, 502, 503, 504):
+            TSETMC_MIRROR_UNAVAILABLE = True
+            TSETMC_MIRROR_UNAVAILABLE_REASON = f"HTTP {exc.code} from TSETMC mirror"
+        raise RuntimeError(f"TSETMC mirror request failed: HTTP {exc.code}") from exc
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError, json.JSONDecodeError) as exc:
+        # Avoid retrying a blocked/timeout host once for each of 741 symbols.
+        TSETMC_MIRROR_UNAVAILABLE = True
+        TSETMC_MIRROR_UNAVAILABLE_REASON = f"{type(exc).__name__}: {str(exc)[:180]}"
+        raise RuntimeError(f"TSETMC mirror request failed: {TSETMC_MIRROR_UNAVAILABLE_REASON}") from exc
+
+
 def tsetmc_get(path):
-    global TSETMC_UNAVAILABLE
-    if TSETMC_UNAVAILABLE:
-        raise RuntimeError(TSETMC_UNAVAILABLE_REASON or "TSETMC API unavailable")
-    return request_json(f"{TSETMC_BASE}/{path.lstrip('/')}", delay=TSETMC_DELAY)
+    """Use the free CDN mirror first, then the main public endpoint if it remains usable."""
+    errors = []
+    if not TSETMC_MIRROR_UNAVAILABLE:
+        try:
+            return tsetmc_mirror_get(path)
+        except Exception as exc:
+            errors.append(str(exc))
+    if not TSETMC_UNAVAILABLE:
+        try:
+            return request_json(f"{TSETMC_BASE}/{path.lstrip('/')}", delay=TSETMC_DELAY)
+        except Exception as exc:
+            errors.append(str(exc))
+    reason = "; ".join(errors) or TSETMC_UNAVAILABLE_REASON or TSETMC_MIRROR_UNAVAILABLE_REASON or "no TSETMC host available"
+    raise RuntimeError(f"all usable TSETMC hosts failed: {reason[:300]}")
+
+
+def jalali_to_gregorian_date(jy: int, jm: int, jd: int):
+    """Convert a Jalali date to Gregorian for a freshness check on client-type history."""
+    if not (1 <= jm <= 12 and 1 <= jd <= 31):
+        return None
+    jy += 1595
+    days = -355668 + (365 * jy) + (jy // 33) * 8 + ((jy % 33 + 3) // 4) + jd
+    if jm < 7:
+        days += (jm - 1) * 31
+    else:
+        days += ((jm - 7) * 30) + 186
+    gy = 400 * (days // 146097)
+    days %= 146097
+    if days > 36524:
+        gy += 100 * ((days - 1) // 36524)
+        days = (days - 1) % 36524
+        if days >= 365:
+            days += 1
+    gy += 4 * (days // 1461)
+    days %= 1461
+    if days > 365:
+        gy += (days - 1) // 365
+        days = (days - 1) % 365
+    gd = days + 1
+    leap = (gy % 4 == 0 and gy % 100 != 0) or gy % 400 == 0
+    lengths = [31, 29 if leap else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    gm = 1
+    while gm <= 12 and gd > lengths[gm - 1]:
+        gd -= lengths[gm - 1]
+        gm += 1
+    try:
+        return date(gy, gm, gd)
+    except ValueError:
+        return None
+
+
+def parse_tsetmc_date(value):
+    digits = re.sub(r"\\D", "", str(value or "").translate(
+        str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
+    ))
+    if len(digits) != 8:
+        return None
+    year, month, day = int(digits[:4]), int(digits[4:6]), int(digits[6:8])
+    try:
+        if 2000 <= year <= 2200:
+            return date(year, month, day)
+        if 1300 <= year <= 1499:
+            return jalali_to_gregorian_date(year, month, day)
+    except ValueError:
+        return None
+    return None
+
+
+def money_flow_history_coverage(history, now_date=None):
+    """A 12-month claim requires 252 sessions, a long calendar span and fresh data."""
+    if not history:
+        return {
+            "full_year_coverage": False, "latest_date_iso": None,
+            "latest_age_days": None, "calendar_span_days": None,
+        }
+    latest = parse_tsetmc_date(history[-1].get("date_raw"))
+    oldest = parse_tsetmc_date(history[0].get("date_raw"))
+    if latest is None or oldest is None:
+        return {
+            "full_year_coverage": False, "latest_date_iso": None,
+            "latest_age_days": None, "calendar_span_days": None,
+        }
+    today = now_date or datetime.now(timezone.utc).date()
+    age = (today - latest).days
+    span = (latest - oldest).days
+    return {
+        "full_year_coverage": len(history) >= 252 and span >= 300 and 0 <= age <= 10,
+        "latest_date_iso": latest.isoformat(),
+        "latest_age_days": age,
+        "calendar_span_days": span,
+    }
 
 
 def brsapi_get_json(path, params):
@@ -553,10 +685,8 @@ def score_money_flow(history):
 
 
 def find_instrument(symbol):
-    if TSETMC_UNAVAILABLE:
-        return None
-    url = f"{TSETMC_BASE}/Instrument/GetInstrumentSearch/{urllib.parse.quote(symbol, safe='')}"
-    payload = request_json(url, delay=TSETMC_DELAY)
+    url_path = f"Instrument/GetInstrumentSearch/{urllib.parse.quote(symbol, safe='')}"
+    payload = tsetmc_get(url_path)
     items = find_array(payload, ("instrumentSearch",))
     target = normalize_text(symbol)
     exact = []
@@ -2108,16 +2238,15 @@ def main():
         else:
             mapping = symbol_map.get(symbol)
             if not isinstance(mapping, dict) or not mapping.get("ins_code"):
-                if not TSETMC_UNAVAILABLE:
-                    try:
-                        mapping = find_instrument(symbol)
-                        if mapping:
-                            symbol_map[symbol] = mapping
-                    except Exception as exc:
-                        counts["tsetmc_errors"] += 1
-                        if not TSETMC_UNAVAILABLE:
-                            print(f"TSETMC mapping error [{symbol}]: {str(exc)[:180]}")
-                        mapping = None
+                try:
+                    mapping = find_instrument(symbol)
+                    if mapping:
+                        symbol_map[symbol] = mapping
+                except Exception as exc:
+                    counts["tsetmc_errors"] += 1
+                    if not (TSETMC_UNAVAILABLE and TSETMC_MIRROR_UNAVAILABLE):
+                        print(f"TSETMC mapping error [{symbol}]: {str(exc)[:180]}")
+                    mapping = None
         if mapping and mapping.get("ins_code"):
             counts["tsetmc_mapping_success"] += 1
             if mapping.get("instrument_kind") == "common_equity":
@@ -2143,7 +2272,7 @@ def main():
                 safe_error = str(exc).replace(BRS_API_KEY, "[REDACTED]")
                 counts["tsetmc_errors"] += 1
                 flow = {"score": None, "status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق", "evidence": [], "windows": {}, "error": safe_error[:220]}
-        elif mapping and mapping.get("ins_code") and not TSETMC_UNAVAILABLE:
+        elif mapping and mapping.get("ins_code") and not (TSETMC_UNAVAILABLE and TSETMC_MIRROR_UNAVAILABLE):
             try:
                 snapshot = get_tsetmc_snapshot(mapping["ins_code"])
                 counts["snapshot_success"] += 1
