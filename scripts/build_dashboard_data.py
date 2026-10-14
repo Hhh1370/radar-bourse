@@ -923,6 +923,55 @@ def main() -> None:
             "risk_adjusted_score": adjusted_score,
             "technical_rank_score": number(item.get("technical_rank_score"), 2),
             "relative_momentum_score": number(item.get("relative_momentum_score"), 2),
+            "technical_factor_scores": {
+                str(name): number(value, 1)
+                for name, value in (
+                    item.get("technical_factor_scores")
+                    if isinstance(item.get("technical_factor_scores"), dict) else {}
+                ).items()
+            },
+            "technical_factor_available_weight": number(item.get("technical_factor_available_weight"), 1),
+            "market_structure": {
+                str(frame): {
+                    "score": number((data or {}).get("score"), 1),
+                    "label": str((data or {}).get("label") or "دادهٔ ناکافی"),
+                    "high_structure": (data or {}).get("high_structure"),
+                    "low_structure": (data or {}).get("low_structure"),
+                    "last_swing_high": number((data or {}).get("last_swing_high"), 4),
+                    "last_swing_low": number((data or {}).get("last_swing_low"), 4),
+                }
+                for frame, data in (
+                    item.get("market_structure")
+                    if isinstance(item.get("market_structure"), dict) else {}
+                ).items()
+            },
+            "volume_price_analysis": {
+                "score": number((item.get("volume_price_analysis") or {}).get("score"), 1),
+                "weighted_close_location": number((item.get("volume_price_analysis") or {}).get("weighted_close_location"), 3),
+                "up_down_volume_ratio": number((item.get("volume_price_analysis") or {}).get("up_down_volume_ratio"), 3),
+                "interpretation": str((item.get("volume_price_analysis") or {}).get("interpretation") or "دادهٔ ناکافی"),
+                "sample_bars": (item.get("volume_price_analysis") or {}).get("sample_bars"),
+            },
+            "breakout_analysis": {
+                "score": number((item.get("breakout_analysis") or {}).get("score"), 1),
+                "breakout_20": (item.get("breakout_analysis") or {}).get("breakout_20"),
+                "breakout_55": (item.get("breakout_analysis") or {}).get("breakout_55"),
+                "breakdown_20": (item.get("breakout_analysis") or {}).get("breakdown_20"),
+                "breakdown_55": (item.get("breakout_analysis") or {}).get("breakdown_55"),
+                "volume_confirmed": (item.get("breakout_analysis") or {}).get("volume_confirmed"),
+                "range_position_52w": number((item.get("breakout_analysis") or {}).get("range_position_52w"), 3),
+            },
+            "trend_efficiency": {
+                "score": number((item.get("trend_efficiency") or {}).get("score"), 1),
+                "efficiency_ratio": number((item.get("trend_efficiency") or {}).get("efficiency_ratio"), 3),
+                "direction": str((item.get("trend_efficiency") or {}).get("direction") or "دادهٔ ناکافی"),
+                "net_change_pct": number((item.get("trend_efficiency") or {}).get("net_change_pct"), 2),
+            },
+            "volatility_quality": {
+                "score": number((item.get("volatility_quality") or {}).get("score"), 1),
+                "atr14": number((item.get("volatility_quality") or {}).get("atr14"), 4),
+                "atr_pct": number((item.get("volatility_quality") or {}).get("atr_pct"), 3),
+            },
             "momentum_pct": {
                 "daily_20": number((item.get("momentum_pct") or {}).get("daily_20_period"), 2),
                 "daily_60": number((item.get("momentum_pct") or {}).get("daily_60_period"), 2),
