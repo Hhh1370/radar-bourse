@@ -111,6 +111,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          base_sha="$(git rev-parse HEAD)"
+          git fetch origin main
+          remote_sha="$(git rev-parse origin/main)"
+          if [ "$remote_sha" != "$base_sha" ]; then
+            echo "STALE_DASHBOARD_BUILD_SKIPPED: main advanced from $base_sha to $remote_sha"
+            exit 0
+          fi
           test -s data/radar_dashboard.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
