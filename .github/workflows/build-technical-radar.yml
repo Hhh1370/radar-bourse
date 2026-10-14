@@ -39,7 +39,7 @@ jobs:
 
       - name: Validate Python syntax and regression tests
         run: |
-          # This suite also guards quarterly financial-report selection and same-period YoY scoring.
+          # This suite also guards quarterly selection, same-period YoY scoring, and the OCR confidence gate.
           python -m py_compile scripts/build_technical_radar.py scripts/build_dashboard_data.py scripts/build_fundamental_money_radar.py scripts/codal_summary_fundamentals.py tests/test_technical_targets.py tests/test_technical_factors.py tests/test_financial_report_selection.py tests/test_quarterly_fundamental_scoring.py tests/test_codal_summary_fundamentals.py
           python -m unittest discover -s tests -v
 
