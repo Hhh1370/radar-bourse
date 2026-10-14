@@ -53,6 +53,7 @@ jobs:
             echo "No fundamental/money-flow data changes."
           else
             git commit -m "Build fundamental, project and money flow radar"
+            git pull --rebase origin main
             git push
           fi
 
