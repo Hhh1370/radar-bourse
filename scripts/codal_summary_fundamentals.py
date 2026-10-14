@@ -110,7 +110,7 @@ def _matching_prior(current: dict[str, Any], statements: list[dict[str, Any]]) -
     return candidates[0] if candidates else None
 
 
-def _score(report: dict[str, Any], prior: dict[str, Any] | None) -> dict[str, Any]:
+def _score(report: dict[str, Any], prior: dict[str, Any] | None, monthly: dict[str, Any] | None = None) -> dict[str, Any]:
     profit = _metric_value(report, "net_profit")
     eps = _metric_value(report, "eps")
     revenue = _metric_value(report, "revenue_or_sales")
@@ -183,12 +183,26 @@ def _score(report: dict[str, Any], prior: dict[str, Any] | None) -> dict[str, An
     revenue_growth_points = growth_points(revenue_growth, 4, 8, -5, -10)
     eps_growth_points = growth_points(eps_growth, 2, 4, -3, -5)
     score += profit_growth_points + revenue_growth_points + eps_growth_points
+    monthly_sales_growth = _reported_growth(monthly, "revenue_or_sales") if monthly else None
+    monthly_adjustment = 0
+    if monthly_sales_growth is not None:
+        if monthly_sales_growth >= 25:
+            monthly_adjustment = 5
+        elif monthly_sales_growth > 0:
+            monthly_adjustment = 3
+        elif monthly_sales_growth <= -25:
+            monthly_adjustment = -8
+        elif monthly_sales_growth < 0:
+            monthly_adjustment = -4
+        score += monthly_adjustment
     if profit_growth is not None:
         evidence.append(f"رشد/افت سود خالص گزارش‌شده یا مقایسه‌ای: {profit_growth:.1f}٪")
     if revenue_growth is not None:
         evidence.append(f"رشد/افت فروش گزارش‌شده یا مقایسه‌ای: {revenue_growth:.1f}٪")
     if eps_growth is not None:
         evidence.append(f"رشد/افت EPS گزارش‌شده یا مقایسه‌ای: {eps_growth:.1f}٪")
+    if monthly_sales_growth is not None:
+        evidence.append(f"رشد فروش گزارش فعالیت ماهانه: {monthly_sales_growth:.1f}٪ (تعدیل محدود {monthly_adjustment:+d} امتیازی)")
 
     score = round(max(0.0, min(100.0, score)), 1)
     official_url = str(report.get("official_url") or "")
@@ -237,6 +251,7 @@ def _score(report: dict[str, Any], prior: dict[str, Any] | None) -> dict[str, An
         "net_profit_yoy_pct_candidate": profit_growth,
         "eps_yoy_pct_candidate": eps_growth,
         "revenue_yoy_pct_candidate": revenue_growth,
+        "monthly_sales_growth_pct_candidate": monthly_sales_growth,
         "quarterly_growth_candidates_pct": growth_candidates,
         "quarterly_comparison_status": comparison_status,
         "evidence": evidence,
@@ -276,6 +291,7 @@ def _latest_monthly(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
         "published_at": str(row.get("published_at") or ""),
         "company": str(row.get("company") or ""),
         "sales_candidates": sales[:4],
+        "sales_growth_pct_candidate": _reported_growth(row, "revenue_or_sales"),
         "official_url": str(row.get("official_url") or ""),
         "telegram_url": str(row.get("telegram_url") or ""),
         "status": "گزارش فعالیت ماهانه؛ فروش برای روند عملیاتی، نه جایگزین صورت مالی",
@@ -309,7 +325,7 @@ def build_summary_map(ledger_rows: list[dict[str, Any]]) -> dict[str, dict[str, 
         item: dict[str, Any] = {"monthly_activity": monthly}
         if latest is not None:
             prior = _matching_prior(latest, statements)
-            item.update(_score(latest, prior))
+            item.update(_score(latest, prior, monthly))
             item["prior_report_title"] = str(prior.get("title") or "") if prior else ""
             item["prior_report_period_end_jalali"] = period_end(prior) if prior else ""
             item["prior_net_profit_million_rial_candidate"] = _metric_value(prior, "net_profit") if prior else None
