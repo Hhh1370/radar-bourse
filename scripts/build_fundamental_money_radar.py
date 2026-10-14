@@ -1215,11 +1215,13 @@ def detail_financial_report(report):
         report["excel_url"] = excel_url
         report["has_excel"] = True
         candidates.append(("excel_html", excel_url))
-    # Only fetch the main Codal page when no Excel/HTML table endpoint exists.
-    # The main domain can be geo-blocked while excel.codal.ir remains reachable.
-    elif report_url:
+    # Try the report page as a fallback if the separate Excel host is unavailable
+    # or its returned tables cannot be mapped. Per-host breakers stop repeated calls
+    # if Codal's main domain is geo-blocked from this runner.
+    if report_url:
         report["url"] = report_url
-        candidates.append(("html", report_url))
+        if all(source_url != report_url for _, source_url in candidates):
+            candidates.append(("html", report_url))
     if not candidates:
         result["detail_status"] = "report URL unavailable"
         return result
@@ -1812,6 +1814,13 @@ def run_public_codal_only():
                     parsed_new_count += 1
                 else:
                     failures += 1
+                    if failures <= 10:
+                        print(
+                            "PUBLIC_CODAL_PARSE_FAILURE:"
+                            + symbol + "|" + str(report.get("title") or "")[:90]
+                            + "|" + str(detail.get("detail_status") or "")
+                            + "|" + str(detail.get("detail_error") or "no detail error captured")[:220]
+                        )
             current_details.append(detail)
 
         # Preserve prior statements not in the current source window, so year-over-year
