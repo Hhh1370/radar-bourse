@@ -37,8 +37,11 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Validate generator syntax
-        run: python -m py_compile scripts/build_dashboard_data.py scripts/codal_summary_fundamentals.py tests/test_codal_summary_fundamentals.py
+      - name: Validate generator syntax and Codal summary regression tests
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/build_dashboard_data.py scripts/codal_summary_fundamentals.py tests/test_codal_summary_fundamentals.py
+          python -m unittest discover -s tests -p "test_codal_summary_fundamentals.py" -v
 
       - name: Generate compact dashboard data
         run: python -u scripts/build_dashboard_data.py
