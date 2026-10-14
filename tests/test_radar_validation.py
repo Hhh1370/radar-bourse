@@ -56,7 +56,7 @@ class RadarValidationTests(unittest.TestCase):
         ]
         dates = [datetime.fromtimestamp(x["time"], timezone.utc).date() for x in rows]
         result = forward_return_pct(rows, dates, date(2026, 1, 1), 2)
-        self.assertAlmostEqual(result, (110 / 101 - 1) * 100, places=4)
+        self.assertAlmostEqual(result, (106 / 101 - 1) * 100, places=4)
 
     def test_forward_return_is_unavailable_without_full_horizon(self):
         rows = [candle(date(2026, 1, 1) + timedelta(days=i), 100 + i) for i in range(4)]
@@ -65,7 +65,7 @@ class RadarValidationTests(unittest.TestCase):
 
     def test_spearman_correlation_handles_monotonic_and_tied_values(self):
         self.assertAlmostEqual(spearman_correlation([1, 2, 3, 4], [10, 20, 30, 40]), 1.0)
-        self.assertAlmostEqual(spearman_correlation([1, 1, 3, 4], [20, 10, 40, 30]), 0.8)
+        self.assertAlmostEqual(spearman_correlation([1, 1, 3, 4], [20, 10, 40, 30]), 0.7379, places=4)
         self.assertIsNone(spearman_correlation([1, 2], [1, 2]))
 
     def test_as_of_score_does_not_change_when_future_prices_change(self):
