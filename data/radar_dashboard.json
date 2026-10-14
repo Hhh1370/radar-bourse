@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T07:28:27+00:00",
+  "generated_at_utc": "2026-10-14T07:29:56+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -23,9 +23,9 @@
     "final_credit_grade_count": 0,
     "high_confidence_count": 0,
     "money_flow_12m_scored_count": 8,
-    "codal_disclosure_links": 866,
-    "channel_evidence_rows": 156,
-    "project_evidence_rows": 3,
+    "codal_disclosure_links": 865,
+    "channel_evidence_rows": 152,
+    "project_evidence_rows": 5,
     "statement_reports_detailed": 0,
     "codal_ledger_records": 460,
     "codal_ledger_records_seen_this_run": 456,
@@ -56,7 +56,7 @@
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "codal_channels": {
-      "generated_at_utc": "2026-10-13T22:13:03+00:00",
+      "generated_at_utc": "2026-10-14T07:29:15+00:00",
       "label": "بورس‌تریدر و کدال۳۶۰",
       "status": "دفتر گزارش‌ها و خلاصهٔ متنی؛ جدول رسمی هنوز اعتبارسنجی نشده",
       "note": "لینک‌ها و متن‌های عمومی استخراج شدند؛ دسته‌بندی و ارقام خام خودکارند و برای تصمیم سرمایه‌گذاری باید با متن اطلاعیه/صورت مالی تطبیق داده شوند. هیچ ردیف داده‌ای از پیوست XLSX قابل‌خواندن در این اجرا به دست نیامد؛ این به معنای نبود صورت مالی شرکت‌ها نیست. دست‌کم یک منبع/پیوست ناموفق بود؛ خطاهای آن در شیت «وضعیت منابع» آمده‌اند. دفتر پایدار: 460 رکورد؛ تازه در آخرین اجرا: 8؛ مبالغ استخراج‌شده از خلاصه‌ها تا تطبیق با پیوست رسمی در امتیاز بنیادی استفاده نمی‌شوند."
@@ -127,6 +127,70 @@
       "risk_adjusted_score": 75.5,
       "technical_rank_score": 68.41,
       "relative_momentum_score": 51.85,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 72.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 43.9,
+        "breakout_structure": 65.8,
+        "trend_efficiency": 45.2,
+        "volatility_quality": 75.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 72.0,
+          "label": "ساختار مختلط یا در حال تغییر",
+          "high_structure": "EQ",
+          "low_structure": "HL",
+          "last_swing_high": 4890.0,
+          "last_swing_low": 4600.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 5200.0,
+          "last_swing_low": 2539.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 3040.0,
+          "last_swing_low": 2305.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 43.9,
+        "weighted_close_location": -0.02,
+        "up_down_volume_ratio": 0.532,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 65.8,
+        "breakout_20": false,
+        "breakout_55": false,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 0.896
+      },
+      "trend_efficiency": {
+        "score": 45.2,
+        "efficiency_ratio": 0.096,
+        "direction": "نزولی",
+        "net_change_pct": -3.19
+      },
+      "volatility_quality": {
+        "score": 75.0,
+        "atr14": 177.1429,
+        "atr_pct": 3.645
+      },
       "momentum_pct": {
         "daily_20": -3.19,
         "daily_60": 79.01,
@@ -296,6 +360,70 @@
       "risk_adjusted_score": 71.2,
       "technical_rank_score": 72.08,
       "relative_momentum_score": 74.14,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 94.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 39.9,
+        "breakout_structure": 92.0,
+        "trend_efficiency": 63.4,
+        "volatility_quality": 85.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 12189.0,
+          "last_swing_low": 11076.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 12189.0,
+          "last_swing_low": 10054.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 5373.0,
+          "last_swing_low": 4009.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 39.9,
+        "weighted_close_location": -0.104,
+        "up_down_volume_ratio": 0.454,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 92.0,
+        "breakout_20": true,
+        "breakout_55": true,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 1.0
+      },
+      "trend_efficiency": {
+        "score": 63.4,
+        "efficiency_ratio": 0.267,
+        "direction": "صعودی",
+        "net_change_pct": 14.18
+      },
+      "volatility_quality": {
+        "score": 85.0,
+        "atr14": 375.0,
+        "atr_pct": 3.029
+      },
       "momentum_pct": {
         "daily_20": 14.17,
         "daily_60": 85.02,
@@ -523,6 +651,70 @@
       "risk_adjusted_score": 58.8,
       "technical_rank_score": 65.14,
       "relative_momentum_score": 79.94,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 50.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 6.0,
+        "volume_price_pressure": 72.4,
+        "breakout_structure": 63.7,
+        "trend_efficiency": 52.4,
+        "volatility_quality": 75.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 50.0,
+          "label": "ساختار مختلط یا در حال تغییر",
+          "high_structure": "LH",
+          "low_structure": "HL",
+          "last_swing_high": 4110.0,
+          "last_swing_low": 3850.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 4380.0,
+          "last_swing_low": 1292.0
+        },
+        "monthly": {
+          "score": 6.0,
+          "label": "ساختار نزولی؛ سقف و کف پایین‌تر",
+          "high_structure": "LH",
+          "low_structure": "LL",
+          "last_swing_high": 1717.0,
+          "last_swing_low": 971.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 72.4,
+        "weighted_close_location": 0.489,
+        "up_down_volume_ratio": 2.207,
+        "interpretation": "فشار انباشت/خرید در کندل‌ها",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 63.7,
+        "breakout_20": false,
+        "breakout_55": false,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 0.842
+      },
+      "trend_efficiency": {
+        "score": 52.4,
+        "efficiency_ratio": 0.047,
+        "direction": "صعودی",
+        "net_change_pct": 2.13
+      },
+      "volatility_quality": {
+        "score": 75.0,
+        "atr14": 140.0,
+        "atr_pct": 3.646
+      },
       "momentum_pct": {
         "daily_20": 2.13,
         "daily_60": 167.04,
@@ -747,6 +939,70 @@
       "risk_adjusted_score": 77.5,
       "technical_rank_score": 72.2,
       "relative_momentum_score": 59.84,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 72.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 52.2,
+        "breakout_structure": 65.7,
+        "trend_efficiency": 61.3,
+        "volatility_quality": 75.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 72.0,
+          "label": "ساختار مختلط یا در حال تغییر",
+          "high_structure": "HH",
+          "low_structure": "EQ",
+          "last_swing_high": 6480.0,
+          "last_swing_low": 5460.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 5354.0,
+          "last_swing_low": 4752.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 3081.0,
+          "last_swing_low": 2184.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 52.2,
+        "weighted_close_location": 0.14,
+        "up_down_volume_ratio": 0.778,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 65.7,
+        "breakout_20": false,
+        "breakout_55": false,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 0.892
+      },
+      "trend_efficiency": {
+        "score": 61.3,
+        "efficiency_ratio": 0.225,
+        "direction": "صعودی",
+        "net_change_pct": 8.33
+      },
+      "volatility_quality": {
+        "score": 75.0,
+        "atr14": 237.1429,
+        "atr_pct": 3.966
+      },
       "momentum_pct": {
         "daily_20": 8.33,
         "daily_60": 59.13,
@@ -928,6 +1184,70 @@
       "risk_adjusted_score": 78.9,
       "technical_rank_score": 64.68,
       "relative_momentum_score": 31.51,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 50.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 61.1,
+        "breakout_structure": 92.0,
+        "trend_efficiency": 66.3,
+        "volatility_quality": 85.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 50.0,
+          "label": "ساختار مختلط یا در حال تغییر",
+          "high_structure": "EQ",
+          "low_structure": "EQ",
+          "last_swing_high": 19900.0,
+          "last_swing_low": 17980.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 19940.0,
+          "last_swing_low": 17980.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 11296.0,
+          "last_swing_low": 8540.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 61.1,
+        "weighted_close_location": 0.358,
+        "up_down_volume_ratio": 0.962,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 92.0,
+        "breakout_20": true,
+        "breakout_55": true,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 1.0
+      },
+      "trend_efficiency": {
+        "score": 66.3,
+        "efficiency_ratio": 0.326,
+        "direction": "صعودی",
+        "net_change_pct": 15.59
+      },
+      "volatility_quality": {
+        "score": 85.0,
+        "atr14": 702.1429,
+        "atr_pct": 3.418
+      },
       "momentum_pct": {
         "daily_20": 15.4,
         "daily_60": 26.83,
@@ -1111,6 +1431,70 @@
       "risk_adjusted_score": 81.5,
       "technical_rank_score": 71.94,
       "relative_momentum_score": 49.64,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 94.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 51.6,
+        "breakout_structure": 66.2,
+        "trend_efficiency": 65.5,
+        "volatility_quality": 85.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 928.0,
+          "last_swing_low": 847.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 808.0,
+          "last_swing_low": 701.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 544.0,
+          "last_swing_low": 399.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 51.6,
+        "weighted_close_location": 0.213,
+        "up_down_volume_ratio": 0.549,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 66.2,
+        "breakout_20": false,
+        "breakout_55": false,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 0.904
+      },
+      "trend_efficiency": {
+        "score": 65.5,
+        "efficiency_ratio": 0.31,
+        "direction": "صعودی",
+        "net_change_pct": 14.01
+      },
+      "volatility_quality": {
+        "score": 85.0,
+        "atr14": 29.6429,
+        "atr_pct": 3.403
+      },
       "momentum_pct": {
         "daily_20": 14.01,
         "daily_60": 58.36,
@@ -1437,6 +1821,70 @@
       "risk_adjusted_score": 69.4,
       "technical_rank_score": 73.27,
       "relative_momentum_score": 82.29,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 50.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 69.2,
+        "breakout_structure": 68.4,
+        "trend_efficiency": 59.3,
+        "volatility_quality": 85.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 50.0,
+          "label": "ساختار مختلط یا در حال تغییر",
+          "high_structure": "LH",
+          "low_structure": "HL",
+          "last_swing_high": 20280.0,
+          "last_swing_low": 20290.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 10250.0,
+          "last_swing_low": 17360.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 9322.0,
+          "last_swing_low": 7048.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 69.2,
+        "weighted_close_location": 0.385,
+        "up_down_volume_ratio": 2.231,
+        "interpretation": "فشار انباشت/خرید در کندل‌ها",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 68.4,
+        "breakout_20": false,
+        "breakout_55": false,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 0.96
+      },
+      "trend_efficiency": {
+        "score": 59.3,
+        "efficiency_ratio": 0.185,
+        "direction": "صعودی",
+        "net_change_pct": 8.37
+      },
+      "volatility_quality": {
+        "score": 85.0,
+        "atr14": 728.5714,
+        "atr_pct": 3.39
+      },
       "momentum_pct": {
         "daily_20": 8.37,
         "daily_60": 143.93,
@@ -1630,6 +2078,70 @@
       "risk_adjusted_score": 80.4,
       "technical_rank_score": 77.41,
       "relative_momentum_score": 70.44,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 94.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 47.2,
+        "breakout_structure": 66.0,
+        "trend_efficiency": 67.5,
+        "volatility_quality": 75.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 9560.0,
+          "last_swing_low": 7880.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 5932.0,
+          "last_swing_low": 4454.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 4698.0,
+          "last_swing_low": 3005.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 47.2,
+        "weighted_close_location": 0.165,
+        "up_down_volume_ratio": 0.379,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 66.0,
+        "breakout_20": false,
+        "breakout_55": false,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 0.9
+      },
+      "trend_efficiency": {
+        "score": 67.5,
+        "efficiency_ratio": 0.35,
+        "direction": "صعودی",
+        "net_change_pct": 17.02
+      },
+      "volatility_quality": {
+        "score": 75.0,
+        "atr14": 335.0,
+        "atr_pct": 3.777
+      },
       "momentum_pct": {
         "daily_20": 17.02,
         "daily_60": 72.13,
@@ -1813,6 +2325,70 @@
       "risk_adjusted_score": 72.1,
       "technical_rank_score": 70.66,
       "relative_momentum_score": 67.3,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 50.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 54.8,
+        "breakout_structure": 68.9,
+        "trend_efficiency": 55.2,
+        "volatility_quality": 85.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 50.0,
+          "label": "ساختار مختلط یا در حال تغییر",
+          "high_structure": "HH",
+          "low_structure": "LL",
+          "last_swing_high": 20280.0,
+          "last_swing_low": 18910.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 20280.0,
+          "last_swing_low": 9682.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 8643.0,
+          "last_swing_low": 6825.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 54.8,
+        "weighted_close_location": 0.276,
+        "up_down_volume_ratio": 0.633,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 68.9,
+        "breakout_20": false,
+        "breakout_55": false,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 0.972
+      },
+      "trend_efficiency": {
+        "score": 55.2,
+        "efficiency_ratio": 0.105,
+        "direction": "صعودی",
+        "net_change_pct": 4.31
+      },
+      "volatility_quality": {
+        "score": 85.0,
+        "atr14": 687.8571,
+        "atr_pct": 3.465
+      },
       "momentum_pct": {
         "daily_20": 4.31,
         "daily_60": 90.13,
@@ -1983,6 +2559,70 @@
       "risk_adjusted_score": 55.3,
       "technical_rank_score": 63.43,
       "relative_momentum_score": 82.4,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 72.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 50.0,
+        "volume_price_pressure": 49.6,
+        "breakout_structure": 70.0,
+        "trend_efficiency": 63.9,
+        "volatility_quality": 75.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 72.0,
+          "label": "ساختار مختلط یا در حال تغییر",
+          "high_structure": "EQ",
+          "low_structure": "HL",
+          "last_swing_high": 13280.0,
+          "last_swing_low": 10660.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 2917.0,
+          "last_swing_low": 10660.0
+        },
+        "monthly": {
+          "score": 50.0,
+          "label": "ساختار مختلط یا در حال تغییر",
+          "high_structure": "LH",
+          "low_structure": "HL",
+          "last_swing_high": 2890.0,
+          "last_swing_low": 2402.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 49.6,
+        "weighted_close_location": -0.015,
+        "up_down_volume_ratio": 1.007,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 70.0,
+        "breakout_20": false,
+        "breakout_55": false,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 0.999
+      },
+      "trend_efficiency": {
+        "score": 63.9,
+        "efficiency_ratio": 0.279,
+        "direction": "صعودی",
+        "net_change_pct": 15.69
+      },
+      "volatility_quality": {
+        "score": 75.0,
+        "atr14": 473.5714,
+        "atr_pct": 3.569
+      },
       "momentum_pct": {
         "daily_20": 13.38,
         "daily_60": 139.06,
@@ -2129,6 +2769,66 @@
   "all_candidate_count": 698,
   "recent_evidence": [
     {
+      "symbol": "نبروج",
+      "company": "کارخانجات نساجی بروجرد",
+      "report_type": "گزارش فعالیت ماهانه/تولید و فروش",
+      "report_period": "1 ماهه منتهی به 1405/06/31",
+      "published_at": "2026-10-14T07:16:08+00:00",
+      "channel": "تلگرام کدال۳۶۰",
+      "sales": "شرکت کارخانجات نساجی بروجرد طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 2,154,205 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 234 درصد رشد داشته است. || نبروج با سرمایه ثبت شده 592,848 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 6,988,763 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 125 درصد رشد داشته است. 1405-07-22 10:46:02 (1609350) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 852 views 07:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
+      "profit": "",
+      "eps": "",
+      "dividend": "",
+      "growth": "شرکت کارخانجات نساجی بروجرد طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 2,154,205 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 234 درصد رشد داشته است. || نبروج با سرمایه ثبت شده 592,848 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 6,988,763 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 125 درصد رشد داشته است. 1405-07-22 10:46:02 (1609350) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 852 views 07:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
+      "project": "",
+      "project_strength": "ضعیف",
+      "amounts_raw": "2,154,205 میلیون ریال؛ 234 درصد؛ 592,848 میلیون ریال؛ 6,988,763 میلیون ریال؛ 125 درصد",
+      "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
+      "telegram_url": "https://t.me/Codal360_ir/348165",
+      "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=3g1WAuFaS2YzH0vvYHogvg%3D%3D&rt=0&let=58&ct=0&ft=-1",
+      "source_text": "کدال۳۶۰ #نبروج #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/06/31 شرکت #کارخانجات_نساجی_بروجرد ▪️ شرکت کارخانجات نساجی بروجرد طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 2,154,205 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 234 درصد رشد داشته است. ▪️ نبروج با سرمایه ثبت شده 592,848 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 6,988,763 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 125 درصد رشد داشته است. 1405-07-22 10:46:02 (1609350) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 852 views 07:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
+    },
+    {
+      "symbol": "غپینو",
+      "company": "صنعتی پارس مینو",
+      "report_type": "نیازمند دسته‌بندی دستی",
+      "report_period": "12 ماهه منتهی به 1405/12/29",
+      "published_at": "2026-10-14T07:00:21+00:00",
+      "channel": "تلگرام کدال۳۶۰",
+      "sales": "",
+      "profit": "",
+      "eps": "سود هر سهم: 1,000 ریال",
+      "dividend": "",
+      "growth": "",
+      "project": "",
+      "project_strength": "ضعیف",
+      "amounts_raw": "9,859,995 میلیون ریال؛ 1,000 ریال",
+      "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
+      "telegram_url": "https://t.me/Codal360_ir/348164",
+      "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=j6EA2sP4sMQWvEiZZOgTxA%3D%3D&rt=0&let=2222&ct=0&ft=-1",
+      "source_text": "کدال۳۶۰ #غپینو خلاصه تصمیمات #مجمع_عمومی_فوق_العاده #دوره_12_ماهه منتهی به 1405/12/29 شرکت #صنعتی_پارس_مینو ▪️ زمان جلسه: 1405/07/22 راس ساعت 08:30 ▪️ سرمایه ثبت شده: 9,859,995 میلیون ریال ▪️ سود هر سهم: 1,000 ریال ▪️ سود انباشته پایان دوره: 9,859,995 میلیون ریال 1405-07-22 10:30:11 (1611276) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 1.55K views 07:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF"
+    },
+    {
+      "symbol": "رمپنا",
+      "company": "گروه مپنا",
+      "report_type": "افزایش سرمایه",
+      "report_period": "",
+      "published_at": "2026-10-14T05:45:27+00:00",
+      "channel": "تلگرام کدال۳۶۰",
+      "sales": "",
+      "profit": "",
+      "eps": "",
+      "dividend": "",
+      "growth": "",
+      "project": "",
+      "project_strength": "ضعیف",
+      "amounts_raw": "60,000,000 میلیون ریال؛ 180,000,000 میلیون ریال",
+      "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
+      "telegram_url": "https://t.me/Codal360_ir/348160",
+      "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=iXigVbfiAK05OOObOOOzZiV0PeWw%3D%3D&rt=5&let=25&ct=0&ft=-1",
+      "source_text": "کدال۳۶۰ #رمپنا مهلت استفاده از حق تقدم خرید سهام شرکت #گروه_مپنا با عنایت به مجوز افزایش سرمایه به شماره مجوز DPM-IOP-05A-090 مورخ 1405/06/26 و بر اساس تصمیمات مجمع عمومی فوق العاده مورخ 1405/06/29 با توجه به افزایش سرمایهُ شرکت از مبلغ 60,000,000 میلیون ریال به مبلغ 180,000,000 میلیون ریال ( از محل مطالبات و آورده نقدی مبلغ 60,000,000 میلیون ریال، از محل سود انباشته مبلغ 60,000,000 میلیون ریال، ) ، مهلت استفاده از حق تقدم خرید سهام از تاریخ 1405/07/22 لغایت تاریخ 1405/08/21 و شماره حسابهای زیر جهت واریز وجوه تعیین شده ست. 1405-07-22 09:15:12 (1611235) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 3 3.28K views 05:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1"
+    },
+    {
       "symbol": "کفرآور",
       "company": "فرآورده های سیمان شرق",
       "report_type": "صورت مالی/حسابرسی (خلاصهٔ عمومی)",
@@ -2160,7 +2860,7 @@
       "published_at": "2026-10-13T16:47:03+00:00",
       "channel": "تلگرام کدال۳۶۰",
       "sales": "",
-      "profit": "شرکت فرآورده های سیمان شرق در دوره 12 ماهه منتهی به 1405/05/31 به ازای هر سهم 3,487 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 49 درصد افزایش داشته است. || «کفرآور» با سرمایه ثبت شده 180,000 میلیون ریال طی عملکرد 12 ماهه منتهی به 1405/05/31 مبلغ 627,632 میلیون ریال سود شناسایی کرده است. 1405-07-21 19:15:32 (1611004) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 6 👎 2 7.4K views 16:47 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1",
+      "profit": "شرکت فرآورده های سیمان شرق در دوره 12 ماهه منتهی به 1405/05/31 به ازای هر سهم 3,487 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 49 درصد افزایش داشته است. || «کفرآور» با سرمایه ثبت شده 180,000 میلیون ریال طی عملکرد 12 ماهه منتهی به 1405/05/31 مبلغ 627,632 میلیون ریال سود شناسایی کرده است. 1405-07-21 19:15:32 (1611004) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 7 👎 2 8.49K views 16:47 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1",
       "eps": "شرکت فرآورده های سیمان شرق در دوره 12 ماهه منتهی به 1405/05/31 به ازای هر سهم 3,487 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 49 درصد افزایش داشته است.",
       "dividend": "",
       "growth": "شرکت فرآورده های سیمان شرق در دوره 12 ماهه منتهی به 1405/05/31 به ازای هر سهم 3,487 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 49 درصد افزایش داشته است.",
@@ -2170,7 +2870,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348151",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=6UBRpz8MNqH5LD1wNl5Dgg%3D%3D&rt=0&let=6&ct=0&ft=-1&sheetId=1",
-      "source_text": "کدال۳۶۰ Forwarded from کدال۳۶۰ #کفرآور #صورت های_مالی سال مالی منتهی به 1405/05/31 (حسابرسی شده) شرکت #فرآورده_های_سیمان_شرق ▪️ شرکت فرآورده های سیمان شرق در دوره 12 ماهه منتهی به 1405/05/31 به ازای هر سهم 3,487 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 49 درصد افزایش داشته است. ▪️ «کفرآور» با سرمایه ثبت شده 180,000 میلیون ریال طی عملکرد 12 ماهه منتهی به 1405/05/31 مبلغ 627,632 میلیون ریال سود شناسایی کرده است. 1405-07-21 19:15:32 (1611004) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 6 👎 2 7.4K views 16:47 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1"
+      "source_text": "کدال۳۶۰ Forwarded from کدال۳۶۰ #کفرآور #صورت های_مالی سال مالی منتهی به 1405/05/31 (حسابرسی شده) شرکت #فرآورده_های_سیمان_شرق ▪️ شرکت فرآورده های سیمان شرق در دوره 12 ماهه منتهی به 1405/05/31 به ازای هر سهم 3,487 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 49 درصد افزایش داشته است. ▪️ «کفرآور» با سرمایه ثبت شده 180,000 میلیون ریال طی عملکرد 12 ماهه منتهی به 1405/05/31 مبلغ 627,632 میلیون ریال سود شناسایی کرده است. 1405-07-21 19:15:32 (1611004) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 7 👎 2 8.49K views 16:47 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1"
     },
     {
       "symbol": "شپترو",
@@ -2396,7 +3096,7 @@
       "published_at": "2026-10-13T14:45:27+00:00",
       "channel": "تلگرام کدال۳۶۰",
       "sales": "",
-      "profit": "شرکت گروه توسعه مالی مهر آیندگان در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم 6,850 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 2,287 درصد افزایش داشته است. || «ومهان» با سرمایه ثبت شده 90,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 616,463,634 میلیون ریال سود شناسایی کرده است. 1405-07-21 18:15:12 (1604805) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🤯 35 👍 15 ❤ 12 👎 9 👏 5 9.2K views 14:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1 📥 دانلود پیوست 2",
+      "profit": "شرکت گروه توسعه مالی مهر آیندگان در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم 6,850 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 2,287 درصد افزایش داشته است. || «ومهان» با سرمایه ثبت شده 90,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 616,463,634 میلیون ریال سود شناسایی کرده است. 1405-07-21 18:15:12 (1604805) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🤯 35 👍 16 ❤ 12 👎 9 👏 5 10.1K views 14:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1 📥 دانلود پیوست 2",
       "eps": "شرکت گروه توسعه مالی مهر آیندگان در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم 6,850 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 2,287 درصد افزایش داشته است.",
       "dividend": "",
       "growth": "شرکت گروه توسعه مالی مهر آیندگان در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم 6,850 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 2,287 درصد افزایش داشته است.",
@@ -2406,7 +3106,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348140",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=cqis0C6G0UbOOObOOOsIpQ1uFeYw%3D%3D&rt=2&let=6&ct=0&ft=-1&sheetId=1",
-      "source_text": "کدال۳۶۰ #ومهان اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/06/31 (حسابرسی نشده) شرکت #گروه_توسعه_مالی_مهر_آیندگان ▪️ شرکت گروه توسعه مالی مهر آیندگان در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم 6,850 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 2,287 درصد افزایش داشته است. ▪️ «ومهان» با سرمایه ثبت شده 90,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 616,463,634 میلیون ریال سود شناسایی کرده است. 1405-07-21 18:15:12 (1604805) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🤯 35 👍 15 ❤ 12 👎 9 👏 5 9.2K views 14:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
+      "source_text": "کدال۳۶۰ #ومهان اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/06/31 (حسابرسی نشده) شرکت #گروه_توسعه_مالی_مهر_آیندگان ▪️ شرکت گروه توسعه مالی مهر آیندگان در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم 6,850 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 2,287 درصد افزایش داشته است. ▪️ «ومهان» با سرمایه ثبت شده 90,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 616,463,634 میلیون ریال سود شناسایی کرده است. 1405-07-21 18:15:12 (1604805) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🤯 35 👍 16 ❤ 12 👎 9 👏 5 10.1K views 14:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
     },
     {
       "symbol": "ونوین",
@@ -2522,7 +3222,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348134",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=APOOObOOOaP0wGXOOObOOO8ODNYOOObOOOVJTYsg%3D%3D&rt=0&let=21&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #کاوه تصمیمات #مجمع_عمومی_عادی به طور فوق العاده #دوره_12_ماهه منتهی به 1404/12/29 شرکت #فولاد_کاوه_جنوب_کیش ▪️ زمان برگزاری: 1405/07/07 راس ساعت 14:00 ▪️ سرمایه ثبت شده: 61,000,000 میلیون ریال ▪️ سود هر سهم: 353 ریال ▪️ سود نقدی هر سهم: 36 ریال ▪️ سود انباشته پایان دوره: 33,608,667 میلیون ریال 1405-07-21 17:30:19 (1611120) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 👎 2 5.71K views 14:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
+      "source_text": "کدال۳۶۰ #کاوه تصمیمات #مجمع_عمومی_عادی به طور فوق العاده #دوره_12_ماهه منتهی به 1404/12/29 شرکت #فولاد_کاوه_جنوب_کیش ▪️ زمان برگزاری: 1405/07/07 راس ساعت 14:00 ▪️ سرمایه ثبت شده: 61,000,000 میلیون ریال ▪️ سود هر سهم: 353 ریال ▪️ سود نقدی هر سهم: 36 ریال ▪️ سود انباشته پایان دوره: 33,608,667 میلیون ریال 1405-07-21 17:30:19 (1611120) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 👎 2 6.13K views 14:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
     },
     {
       "symbol": "فروسیل",
@@ -2638,7 +3338,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348131",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=zF1t3sSR4YTFPXa1dEXegg%3D%3D&rt=0&let=55&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #فنوال ❇️ پیشنهاد هییت مدیره به #مجمع_عمومی_فوق_العاده در خصوص #افزایش_سرمایه (اصلاحیه) شرکت #گروه_کارخانه_های_تولیدی_نورد_الومینیوم ▪️ سرمایه فعلی: 11,447,107 میلیون ریال ▪️ درصد افزایش سرمایه: 50 درصد ▪️ مبلغ افزایش سرمایه: 5,723,553 میلیون ریال ▪️ محل تامین افزایش سرمایه: سود انباشته ▪️ موضوع افزایش سرمایه: اصلاح بهبود ساختار مالی ▪️ تاریخ تصویب هیئت مدیره: 1405/04/08 دلایل اصلاح:با توجه به اینکه در صورتجلسه قبلی هییت مدیره ، گزارش توجیهی افزایش سرمایه پیوست مدارک نبوده لذا گزارش توجیهی افزایش سرمایه تنظیم و ارسال می گردد. توضیحات: بدیهی است انجام افزایش سرمایه یادشده منوط به موافقت سازمان بورس و اوراق بهادار و تصویب مجمع عمومی فوق العاده می باشد. 1405-07-21 16:45:33 (1611085) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 👎 2 5.88K views 13:15 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2 📥 دانلود پیوست 3"
+      "source_text": "کدال۳۶۰ #فنوال ❇️ پیشنهاد هییت مدیره به #مجمع_عمومی_فوق_العاده در خصوص #افزایش_سرمایه (اصلاحیه) شرکت #گروه_کارخانه_های_تولیدی_نورد_الومینیوم ▪️ سرمایه فعلی: 11,447,107 میلیون ریال ▪️ درصد افزایش سرمایه: 50 درصد ▪️ مبلغ افزایش سرمایه: 5,723,553 میلیون ریال ▪️ محل تامین افزایش سرمایه: سود انباشته ▪️ موضوع افزایش سرمایه: اصلاح بهبود ساختار مالی ▪️ تاریخ تصویب هیئت مدیره: 1405/04/08 دلایل اصلاح:با توجه به اینکه در صورتجلسه قبلی هییت مدیره ، گزارش توجیهی افزایش سرمایه پیوست مدارک نبوده لذا گزارش توجیهی افزایش سرمایه تنظیم و ارسال می گردد. توضیحات: بدیهی است انجام افزایش سرمایه یادشده منوط به موافقت سازمان بورس و اوراق بهادار و تصویب مجمع عمومی فوق العاده می باشد. 1405-07-21 16:45:33 (1611085) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 👎 2 6.29K views 13:15 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2 📥 دانلود پیوست 3"
     },
     {
       "symbol": "افران",
@@ -2730,7 +3430,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348128",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=6gcOJPWETQDFOgRL2C9nXg%3D%3D&rt=0&let=55&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #خکار ❇️ پیشنهاد هییت مدیره به #مجمع_عمومی_فوق_العاده در خصوص #افزایش_سرمایه شرکت #ایرکا_پارت_صنعت ▪️ سرمایه فعلی: 11,200,000 میلیون ریال ▪️ درصد افزایش سرمایه: 168 درصد ▪️ مبلغ افزایش سرمایه: 18,800,000 میلیون ریال ▪️ محل تامین افزایش سرمایه: سود انباشته ،مازاد تجدید ارزیابی دارایی ها ▪️ موضوع افزایش سرمایه: اصلاح و تقویت ساختار مالی و استفاده از معافیت مالیاتی می باشد ▪️ تاریخ تصویب هیئت مدیره: 1405/07/21 توضیحات: بدیهی است انجام افزایش سرمایه یادشده منوط به موافقت سازمان بورس و اوراق بهادار و تصویب مجمع عمومی فوق العاده می باشد. 1405-07-21 16:15:39 (1610821) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 10 🔥 3 👏 2 5.63K views 12:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
+      "source_text": "کدال۳۶۰ #خکار ❇️ پیشنهاد هییت مدیره به #مجمع_عمومی_فوق_العاده در خصوص #افزایش_سرمایه شرکت #ایرکا_پارت_صنعت ▪️ سرمایه فعلی: 11,200,000 میلیون ریال ▪️ درصد افزایش سرمایه: 168 درصد ▪️ مبلغ افزایش سرمایه: 18,800,000 میلیون ریال ▪️ محل تامین افزایش سرمایه: سود انباشته ،مازاد تجدید ارزیابی دارایی ها ▪️ موضوع افزایش سرمایه: اصلاح و تقویت ساختار مالی و استفاده از معافیت مالیاتی می باشد ▪️ تاریخ تصویب هیئت مدیره: 1405/07/21 توضیحات: بدیهی است انجام افزایش سرمایه یادشده منوط به موافقت سازمان بورس و اوراق بهادار و تصویب مجمع عمومی فوق العاده می باشد. 1405-07-21 16:15:39 (1610821) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 10 🔥 3 👏 2 6.14K views 12:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
     },
     {
       "symbol": "غدشت",
@@ -2750,7 +3450,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348127",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=5MR5Q0tugykfutUJ38wrOQ%3D%3D&rt=0&let=2020&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #غدشت خلاصه تصمیمات #مجمع_عمومی_عادی سالیانه #دوره_12_ماهه منتهی به 1405/03/31 شرکت #فرآورده_های_غذایی_دشت_مرغاب ▪️ زمان جلسه: 1405/07/21 راس ساعت 10:00 ▪️ سرمایه ثبت شده: 4,820,000 میلیون ریال ▪️ سود هر سهم: 589 ریال ▪️ سود نقدی هر سهم: 250 ریال ▪️ سود انباشته پایان دوره: 2,434,937 میلیون ریال 1405-07-21 16:15:31 (1611027) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 5.06K views 12:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF"
+      "source_text": "کدال۳۶۰ #غدشت خلاصه تصمیمات #مجمع_عمومی_عادی سالیانه #دوره_12_ماهه منتهی به 1405/03/31 شرکت #فرآورده_های_غذایی_دشت_مرغاب ▪️ زمان جلسه: 1405/07/21 راس ساعت 10:00 ▪️ سرمایه ثبت شده: 4,820,000 میلیون ریال ▪️ سود هر سهم: 589 ریال ▪️ سود نقدی هر سهم: 250 ریال ▪️ سود انباشته پایان دوره: 2,434,937 میلیون ریال 1405-07-21 16:15:31 (1611027) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 5.43K views 12:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF"
     },
     {
       "symbol": "بکابل",
@@ -2770,7 +3470,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348125",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=kDdJ3mcSFt74I48o4aSyUQ%3D%3D&rt=0&let=55&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #بکابل ❇️ پیشنهاد هییت مدیره به #مجمع_عمومی_فوق_العاده در خصوص #افزایش_سرمایه شرکت #سیم_و_کابل_ابهر ▪️ سرمایه فعلی: 6,142,500 میلیون ریال ▪️ درصد افزایش سرمایه: 33 درصد ▪️ مبلغ افزایش سرمایه: 2,047,500 میلیون ریال ▪️ محل تامین افزایش سرمایه: سود انباشته ▪️ موضوع افزایش سرمایه: اصلاح ساختار حقوق مالکانه شرکت و افزایش سودآوری و استفاده از مشوق مالیاتی موضوع قانون تامین مالی تولید و زیرساختها ▪️ تاریخ تصویب هیئت مدیره: 1405/07/21 توضیحات: بدیهی است انجام افزایش سرمایه یادشده منوط به موافقت سازمان بورس و اوراق بهادار و تصویب مجمع عمومی فوق العاده می باشد. 1405-07-21 16:01:04 (1611049) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🥰 2 5.3K views 12:31 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
+      "source_text": "کدال۳۶۰ #بکابل ❇️ پیشنهاد هییت مدیره به #مجمع_عمومی_فوق_العاده در خصوص #افزایش_سرمایه شرکت #سیم_و_کابل_ابهر ▪️ سرمایه فعلی: 6,142,500 میلیون ریال ▪️ درصد افزایش سرمایه: 33 درصد ▪️ مبلغ افزایش سرمایه: 2,047,500 میلیون ریال ▪️ محل تامین افزایش سرمایه: سود انباشته ▪️ موضوع افزایش سرمایه: اصلاح ساختار حقوق مالکانه شرکت و افزایش سودآوری و استفاده از مشوق مالیاتی موضوع قانون تامین مالی تولید و زیرساختها ▪️ تاریخ تصویب هیئت مدیره: 1405/07/21 توضیحات: بدیهی است انجام افزایش سرمایه یادشده منوط به موافقت سازمان بورس و اوراق بهادار و تصویب مجمع عمومی فوق العاده می باشد. 1405-07-21 16:01:04 (1611049) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🥰 2 5.71K views 12:31 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
     },
     {
       "symbol": "غپاک",
@@ -2900,7 +3600,7 @@
       "published_at": "2026-10-13T12:00:34+00:00",
       "channel": "تلگرام کدال۳۶۰",
       "sales": "",
-      "profit": "«واعتماد» با سرمایه ثبت شده 100,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 1,864,107 میلیون ریال سود شناسایی کرده است. 1405-07-21 15:30:34 (1611023) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 5.72K views 12:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
+      "profit": "«واعتماد» با سرمایه ثبت شده 100,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 1,864,107 میلیون ریال سود شناسایی کرده است. 1405-07-21 15:30:34 (1611023) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 6.06K views 12:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
       "eps": "شرکت سرمایه گذاری توسعه اعتماد در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است.",
       "dividend": "",
       "growth": "شرکت سرمایه گذاری توسعه اعتماد در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است.",
@@ -2910,7 +3610,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348122",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=AhmPLM0rSuvgMOOObOOOkQQQaQQQKkQJrQ%3D%3D&rt=2&let=6&ct=2&ft=-1&sheetId=1",
-      "source_text": "کدال۳۶۰ #واعتماد اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/06/31 (حسابرسی نشده)(اصلاحیه) شرکت #سرمایه_گذاری_توسعه_اعتماد ▪️ شرکت سرمایه گذاری توسعه اعتماد در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است. ▪️ «واعتماد» با سرمایه ثبت شده 100,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 1,864,107 میلیون ریال سود شناسایی کرده است. 1405-07-21 15:30:34 (1611023) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 5.72K views 12:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
+      "source_text": "کدال۳۶۰ #واعتماد اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/06/31 (حسابرسی نشده)(اصلاحیه) شرکت #سرمایه_گذاری_توسعه_اعتماد ▪️ شرکت سرمایه گذاری توسعه اعتماد در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است. ▪️ «واعتماد» با سرمایه ثبت شده 100,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 1,864,107 میلیون ریال سود شناسایی کرده است. 1405-07-21 15:30:34 (1611023) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 6.06K views 12:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
     },
     {
       "symbol": "کی ام سی",
@@ -2943,7 +3643,7 @@
       "report_period": "1 ماهه منتهی به 1404/07/30",
       "published_at": "2026-10-13T11:30:19+00:00",
       "channel": "تلگرام کدال۳۶۰",
-      "sales": "شرکت کرمان موتور طی عملکرد 1 ماهه منتهی به 1404/07/30 معادل 78,787,391 میلیون ریال ، از محصولات خود را به فروش رسانده است. || کی ام سی با سرمایه ثبت شده 125,000,000 میلیون ریال طی عملکرد 7 ماهه سال مالی منتهی به 1404/12/29 مبلغ 444,117,671 میلیون ریال درآمد فروش داشته است. 1405-07-21 15:00:17 (1610446) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 5.75K views 11:30 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
+      "sales": "شرکت کرمان موتور طی عملکرد 1 ماهه منتهی به 1404/07/30 معادل 78,787,391 میلیون ریال ، از محصولات خود را به فروش رسانده است. || کی ام سی با سرمایه ثبت شده 125,000,000 میلیون ریال طی عملکرد 7 ماهه سال مالی منتهی به 1404/12/29 مبلغ 444,117,671 میلیون ریال درآمد فروش داشته است. 1405-07-21 15:00:17 (1610446) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 6.03K views 11:30 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
       "profit": "",
       "eps": "",
       "dividend": "",
@@ -2954,7 +3654,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348118",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=aoCafEWSkkL36C63gVbsWQ%3D%3D&rt=0&let=58&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #کی_ام_سی #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1404/07/30 شرکت #کرمان_موتور ▪️ شرکت کرمان موتور طی عملکرد 1 ماهه منتهی به 1404/07/30 معادل 78,787,391 میلیون ریال ، از محصولات خود را به فروش رسانده است. ▪️ کی ام سی با سرمایه ثبت شده 125,000,000 میلیون ریال طی عملکرد 7 ماهه سال مالی منتهی به 1404/12/29 مبلغ 444,117,671 میلیون ریال درآمد فروش داشته است. 1405-07-21 15:00:17 (1610446) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 5.75K views 11:30 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
+      "source_text": "کدال۳۶۰ #کی_ام_سی #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1404/07/30 شرکت #کرمان_موتور ▪️ شرکت کرمان موتور طی عملکرد 1 ماهه منتهی به 1404/07/30 معادل 78,787,391 میلیون ریال ، از محصولات خود را به فروش رسانده است. ▪️ کی ام سی با سرمایه ثبت شده 125,000,000 میلیون ریال طی عملکرد 7 ماهه سال مالی منتهی به 1404/12/29 مبلغ 444,117,671 میلیون ریال درآمد فروش داشته است. 1405-07-21 15:00:17 (1610446) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 6.03K views 11:30 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
     },
     {
       "symbol": "ولیز",
@@ -3199,18 +3899,18 @@
       "report_period": "1 ماهه منتهی به 1405/06/31",
       "published_at": "2026-10-13T10:46:20+00:00",
       "channel": "تلگرام کدال۳۶۰",
-      "sales": "شرکت مولد نیروگاهی تجارت فارس طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 2,202,923 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 60 درصد رشد داشته است. || بمولد با سرمایه ثبت شده 8,471,000 میلیون ریال طی عملکرد 9 ماهه سال مالی منتهی به 1405/09/30 مبلغ 15,287,827 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 52 درصد رشد داشته است. 1405-07-21 14:16:18 (1610941) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🔥 4 ❤ 1 5.41K views 10:46 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل",
+      "sales": "شرکت مولد نیروگاهی تجارت فارس طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 2,202,923 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 60 درصد رشد داشته است. || بمولد با سرمایه ثبت شده 8,471,000 میلیون ریال طی عملکرد 9 ماهه سال مالی منتهی به 1405/09/30 مبلغ 15,287,827 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 52 درصد رشد داشته است. 1405-07-21 14:16:18 (1610941) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🔥 4 ❤ 1 5.64K views 10:46 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل",
       "profit": "",
       "eps": "",
       "dividend": "",
-      "growth": "شرکت مولد نیروگاهی تجارت فارس طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 2,202,923 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 60 درصد رشد داشته است. || بمولد با سرمایه ثبت شده 8,471,000 میلیون ریال طی عملکرد 9 ماهه سال مالی منتهی به 1405/09/30 مبلغ 15,287,827 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 52 درصد رشد داشته است. 1405-07-21 14:16:18 (1610941) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🔥 4 ❤ 1 5.41K views 10:46 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل",
+      "growth": "شرکت مولد نیروگاهی تجارت فارس طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 2,202,923 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 60 درصد رشد داشته است. || بمولد با سرمایه ثبت شده 8,471,000 میلیون ریال طی عملکرد 9 ماهه سال مالی منتهی به 1405/09/30 مبلغ 15,287,827 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 52 درصد رشد داشته است. 1405-07-21 14:16:18 (1610941) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🔥 4 ❤ 1 5.64K views 10:46 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل",
       "project": "",
       "project_strength": "ضعیف",
       "amounts_raw": "2,202,923 میلیون ریال؛ 60 درصد؛ 8,471,000 میلیون ریال؛ 15,287,827 میلیون ریال؛ 52 درصد",
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348115",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=Xl0KnYaKngPe74XyHCp6QA%3D%3D&rt=0&let=58&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #بمولد #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/06/31(اصلاحیه) شرکت #مولد_نیروگاهی_تجارت_فارس ▪️ شرکت مولد نیروگاهی تجارت فارس طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 2,202,923 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 60 درصد رشد داشته است. ▪️ بمولد با سرمایه ثبت شده 8,471,000 میلیون ریال طی عملکرد 9 ماهه سال مالی منتهی به 1405/09/30 مبلغ 15,287,827 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 52 درصد رشد داشته است. 1405-07-21 14:16:18 (1610941) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🔥 4 ❤ 1 5.41K views 10:46 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
+      "source_text": "کدال۳۶۰ #بمولد #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/06/31(اصلاحیه) شرکت #مولد_نیروگاهی_تجارت_فارس ▪️ شرکت مولد نیروگاهی تجارت فارس طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 2,202,923 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 60 درصد رشد داشته است. ▪️ بمولد با سرمایه ثبت شده 8,471,000 میلیون ریال طی عملکرد 9 ماهه سال مالی منتهی به 1405/09/30 مبلغ 15,287,827 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 52 درصد رشد داشته است. 1405-07-21 14:16:18 (1610941) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 🔥 4 ❤ 1 5.64K views 10:46 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
     },
     {
       "symbol": "فافزا",
@@ -3387,7 +4087,7 @@
       "report_period": "1 ماهه منتهی به 1405/06/31",
       "published_at": "2026-10-13T10:01:16+00:00",
       "channel": "تلگرام کدال۳۶۰",
-      "sales": "شرکت پیمان غرب طی عملکرد 1 ماهه منتهی به 1405/06/31 معادل 127,241 میلیون ریال ، از محصولات خود را به فروش رسانده است. || پیمان با سرمایه ثبت شده 2,000,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 1,139,469 میلیون ریال درآمد فروش داشته است. 1405-07-21 13:31:14 (1610951) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 5.72K views 10:01 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
+      "sales": "شرکت پیمان غرب طی عملکرد 1 ماهه منتهی به 1405/06/31 معادل 127,241 میلیون ریال ، از محصولات خود را به فروش رسانده است. || پیمان با سرمایه ثبت شده 2,000,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 1,139,469 میلیون ریال درآمد فروش داشته است. 1405-07-21 13:31:14 (1610951) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 5.91K views 10:01 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
       "profit": "",
       "eps": "",
       "dividend": "",
@@ -3398,7 +4098,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348109",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=OOObOOOmOJQNA1YFIqLQMBuVjtzg%3D%3D&rt=5&let=58&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #پیمان #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/06/31(اصلاحیه) شرکت #پیمان_غرب ▪️ شرکت پیمان غرب طی عملکرد 1 ماهه منتهی به 1405/06/31 معادل 127,241 میلیون ریال ، از محصولات خود را به فروش رسانده است. ▪️ پیمان با سرمایه ثبت شده 2,000,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 1,139,469 میلیون ریال درآمد فروش داشته است. 1405-07-21 13:31:14 (1610951) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 5.72K views 10:01 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
+      "source_text": "کدال۳۶۰ #پیمان #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/06/31(اصلاحیه) شرکت #پیمان_غرب ▪️ شرکت پیمان غرب طی عملکرد 1 ماهه منتهی به 1405/06/31 معادل 127,241 میلیون ریال ، از محصولات خود را به فروش رسانده است. ▪️ پیمان با سرمایه ثبت شده 2,000,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 1,139,469 میلیون ریال درآمد فروش داشته است. 1405-07-21 13:31:14 (1610951) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 5.91K views 10:01 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
     },
     {
       "symbol": "پیمان",
@@ -3431,7 +4131,7 @@
       "report_period": "1 ماهه منتهی به 1405/05/31",
       "published_at": "2026-10-13T10:01:01+00:00",
       "channel": "تلگرام کدال۳۶۰",
-      "sales": "شرکت پیمان غرب طی عملکرد 1 ماهه منتهی به 1405/05/31 معادل 118,251 میلیون ریال ، از محصولات خود را به فروش رسانده است. || پیمان با سرمایه ثبت شده 2,000,000 میلیون ریال طی عملکرد 5 ماهه سال مالی منتهی به 1405/12/29 مبلغ 1,012,228 میلیون ریال درآمد فروش داشته است. 1405-07-21 13:31:00 (1610950) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 5.24K views 10:01 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
+      "sales": "شرکت پیمان غرب طی عملکرد 1 ماهه منتهی به 1405/05/31 معادل 118,251 میلیون ریال ، از محصولات خود را به فروش رسانده است. || پیمان با سرمایه ثبت شده 2,000,000 میلیون ریال طی عملکرد 5 ماهه سال مالی منتهی به 1405/12/29 مبلغ 1,012,228 میلیون ریال درآمد فروش داشته است. 1405-07-21 13:31:00 (1610950) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 5.43K views 10:01 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
       "profit": "",
       "eps": "",
       "dividend": "",
@@ -3442,7 +4142,27 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348108",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=0mlSbVGyRTHDS5FCa37pRQ%3D%3D&rt=5&let=58&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #پیمان #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/05/31(اصلاحیه) شرکت #پیمان_غرب ▪️ شرکت پیمان غرب طی عملکرد 1 ماهه منتهی به 1405/05/31 معادل 118,251 میلیون ریال ، از محصولات خود را به فروش رسانده است. ▪️ پیمان با سرمایه ثبت شده 2,000,000 میلیون ریال طی عملکرد 5 ماهه سال مالی منتهی به 1405/12/29 مبلغ 1,012,228 میلیون ریال درآمد فروش داشته است. 1405-07-21 13:31:00 (1610950) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 5.24K views 10:01 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
+      "source_text": "کدال۳۶۰ #پیمان #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/05/31(اصلاحیه) شرکت #پیمان_غرب ▪️ شرکت پیمان غرب طی عملکرد 1 ماهه منتهی به 1405/05/31 معادل 118,251 میلیون ریال ، از محصولات خود را به فروش رسانده است. ▪️ پیمان با سرمایه ثبت شده 2,000,000 میلیون ریال طی عملکرد 5 ماهه سال مالی منتهی به 1405/12/29 مبلغ 1,012,228 میلیون ریال درآمد فروش داشته است. 1405-07-21 13:31:00 (1610950) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 2 5.43K views 10:01 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
+    },
+    {
+      "symbol": "پیمان",
+      "company": "پیمان غرب",
+      "report_type": "گزارش فعالیت ماهانه/تولید و فروش",
+      "report_period": "1 ماهه منتهی به 1405/04/31",
+      "published_at": "2026-10-13T10:00:49+00:00",
+      "channel": "تلگرام کدال۳۶۰",
+      "sales": "شرکت پیمان غرب طی عملکرد 1 ماهه منتهی به 1405/04/31 معادل 128,837 میلیون ریال ، از محصولات خود را به فروش رسانده است. || پیمان با سرمایه ثبت شده 2,000,000 میلیون ریال طی عملکرد 4 ماهه سال مالی منتهی به 1405/12/29 مبلغ 893,977 میلیون ریال درآمد فروش داشته است. 1405-07-21 13:30:48 (1610949) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 5.19K views 10:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
+      "profit": "",
+      "eps": "",
+      "dividend": "",
+      "growth": "",
+      "project": "",
+      "project_strength": "ضعیف",
+      "amounts_raw": "128,837 میلیون ریال؛ 2,000,000 میلیون ریال؛ 893,977 میلیون ریال",
+      "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
+      "telegram_url": "https://t.me/Codal360_ir/348107",
+      "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=6QQQaQQQagOFzsInZzrvSeYgoQKw%3D%3D&rt=5&let=58&ct=0&ft=-1",
+      "source_text": "کدال۳۶۰ #پیمان #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/04/31(اصلاحیه) شرکت #پیمان_غرب ▪️ شرکت پیمان غرب طی عملکرد 1 ماهه منتهی به 1405/04/31 معادل 128,837 میلیون ریال ، از محصولات خود را به فروش رسانده است. ▪️ پیمان با سرمایه ثبت شده 2,000,000 میلیون ریال طی عملکرد 4 ماهه سال مالی منتهی به 1405/12/29 مبلغ 893,977 میلیون ریال درآمد فروش داشته است. 1405-07-21 13:30:48 (1610949) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 5.19K views 10:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
     },
     {
       "symbol": "هانیکو",
@@ -3475,18 +4195,18 @@
       "report_period": "1 ماهه منتهی به 1405/06/31",
       "published_at": "2026-10-13T10:00:35+00:00",
       "channel": "تلگرام کدال۳۶۰",
-      "sales": "شرکت هامون نایزه طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 10,876,531 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 6 درصد رشد داشته است. || هانیکو با سرمایه ثبت شده 6,550,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 25,030,172 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 6 درصد افت داشته است. 1405-07-21 13:30:34 (1610957) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 5.18K views 10:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
+      "sales": "شرکت هامون نایزه طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 10,876,531 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 6 درصد رشد داشته است. || هانیکو با سرمایه ثبت شده 6,550,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 25,030,172 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 6 درصد افت داشته است. 1405-07-21 13:30:34 (1610957) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 5.41K views 10:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
       "profit": "",
       "eps": "",
       "dividend": "",
-      "growth": "شرکت هامون نایزه طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 10,876,531 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 6 درصد رشد داشته است. || هانیکو با سرمایه ثبت شده 6,550,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 25,030,172 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 6 درصد افت داشته است. 1405-07-21 13:30:34 (1610957) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 5.18K views 10:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
+      "growth": "شرکت هامون نایزه طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 10,876,531 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 6 درصد رشد داشته است. || هانیکو با سرمایه ثبت شده 6,550,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 25,030,172 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 6 درصد افت داشته است. 1405-07-21 13:30:34 (1610957) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 5.41K views 10:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
       "project": "",
       "project_strength": "ضعیف",
       "amounts_raw": "10,876,531 میلیون ریال؛ 6 درصد؛ 6,550,000 میلیون ریال؛ 25,030,172 میلیون ریال",
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348106",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=vjOOObOOONlQQQaQQQRUVIcoPjm3kOOObOOOvE7Q%3D%3D&rt=0&let=58&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #هانیکو #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/06/31(اصلاحیه) شرکت #هامون_نایزه ▪️ شرکت هامون نایزه طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 10,876,531 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 6 درصد رشد داشته است. ▪️ هانیکو با سرمایه ثبت شده 6,550,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 25,030,172 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 6 درصد افت داشته است. 1405-07-21 13:30:34 (1610957) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 5.18K views 10:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
+      "source_text": "کدال۳۶۰ #هانیکو #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/06/31(اصلاحیه) شرکت #هامون_نایزه ▪️ شرکت هامون نایزه طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 10,876,531 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 6 درصد رشد داشته است. ▪️ هانیکو با سرمایه ثبت شده 6,550,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 25,030,172 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 6 درصد افت داشته است. 1405-07-21 13:30:34 (1610957) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 5.41K views 10:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
     },
     {
       "symbol": "پیمان",
@@ -3639,18 +4359,18 @@
       "report_period": "1 ماهه منتهی به 1405/06/31",
       "published_at": "2026-10-13T08:00:43+00:00",
       "channel": "تلگرام کدال۳۶۰",
-      "sales": "شرکت کارخانجات کاشی و سرامیک سعدی طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 1,941,942 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 84 درصد رشد داشته است. || کسعدی با سرمایه ثبت شده 1,000,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 5,599,616 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 104 درصد رشد داشته است. 1405-07-21 11:30:42 (1610869) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 3 6.27K views 08:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل",
+      "sales": "شرکت کارخانجات کاشی و سرامیک سعدی طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 1,941,942 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 84 درصد رشد داشته است. || کسعدی با سرمایه ثبت شده 1,000,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 5,599,616 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 104 درصد رشد داشته است. 1405-07-21 11:30:42 (1610869) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 3 6.44K views 08:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل",
       "profit": "",
       "eps": "",
       "dividend": "",
-      "growth": "شرکت کارخانجات کاشی و سرامیک سعدی طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 1,941,942 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 84 درصد رشد داشته است. || کسعدی با سرمایه ثبت شده 1,000,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 5,599,616 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 104 درصد رشد داشته است. 1405-07-21 11:30:42 (1610869) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 3 6.27K views 08:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل",
+      "growth": "شرکت کارخانجات کاشی و سرامیک سعدی طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 1,941,942 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 84 درصد رشد داشته است. || کسعدی با سرمایه ثبت شده 1,000,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 5,599,616 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 104 درصد رشد داشته است. 1405-07-21 11:30:42 (1610869) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 3 6.44K views 08:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل",
       "project": "",
       "project_strength": "ضعیف",
       "amounts_raw": "1,941,942 میلیون ریال؛ 84 درصد؛ 1,000,000 میلیون ریال؛ 5,599,616 میلیون ریال؛ 104 درصد",
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348099",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=163NzE0XtsLfeG4Va20D3A%3D%3D&rt=0&let=58&ct=0&ft=-1",
-      "source_text": "کدال۳۶۰ #کسعدی #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/06/31(اصلاحیه) شرکت #کارخانجات_کاشی_و_سرامیک_سعدی ▪️ شرکت کارخانجات کاشی و سرامیک سعدی طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 1,941,942 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 84 درصد رشد داشته است. ▪️ کسعدی با سرمایه ثبت شده 1,000,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 5,599,616 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 104 درصد رشد داشته است. 1405-07-21 11:30:42 (1610869) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 3 6.27K views 08:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
+      "source_text": "کدال۳۶۰ #کسعدی #گزارش_فعالیت_ماهانه #دوره_1_ماهه منتهی به 1405/06/31(اصلاحیه) شرکت #کارخانجات_کاشی_و_سرامیک_سعدی ▪️ شرکت کارخانجات کاشی و سرامیک سعدی طی عملکرد 1 ماهه منتهی به 1405/06/31 مبلغ معادل 1,941,942 میلیون ریال ، از محصولات خود را به فروش رسانده که نسبت به مدت مشابه سال قبل 84 درصد رشد داشته است. ▪️ کسعدی با سرمایه ثبت شده 1,000,000 میلیون ریال طی عملکرد 6 ماهه سال مالی منتهی به 1405/12/29 مبلغ 5,599,616 میلیون ریال درآمد فروش داشته که نسبت به مدت مشابه سال قبل 104 درصد رشد داشته است. 1405-07-21 11:30:42 (1610869) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 3 6.44K views 08:00 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
     },
     {
       "symbol": "فافزا",
@@ -3828,7 +4548,7 @@
       "published_at": "2026-10-13T06:16:09+00:00",
       "channel": "تلگرام کدال۳۶۰",
       "sales": "",
-      "profit": "«وتکادو» با سرمایه ثبت شده 560,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 317,421 میلیون ریال سود شناسایی کرده است. 1405-07-21 09:46:08 (1610299) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 5.71K views 06:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
+      "profit": "«وتکادو» با سرمایه ثبت شده 560,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 317,421 میلیون ریال سود شناسایی کرده است. 1405-07-21 09:46:08 (1610299) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 5.88K views 06:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel",
       "eps": "شرکت سرمایه گذاری آتیه تکادو در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است.",
       "dividend": "",
       "growth": "شرکت سرمایه گذاری آتیه تکادو در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است.",
@@ -3838,7 +4558,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348091",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=e54Gia0CMWMOwNsntRNPpQ%3D%3D&rt=2&let=6&ct=2&ft=-1&sheetId=1",
-      "source_text": "کدال۳۶۰ #وتکادو اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/06/31 (حسابرسی نشده) شرکت #سرمایه_گذاری_آتیه_تکادو ▪️ شرکت سرمایه گذاری آتیه تکادو در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است. ▪️ «وتکادو» با سرمایه ثبت شده 560,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 317,421 میلیون ریال سود شناسایی کرده است. 1405-07-21 09:46:08 (1610299) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 5.71K views 06:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
+      "source_text": "کدال۳۶۰ #وتکادو اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/06/31 (حسابرسی نشده) شرکت #سرمایه_گذاری_آتیه_تکادو ▪️ شرکت سرمایه گذاری آتیه تکادو در دوره 6 ماهه منتهی به 1405/06/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است. ▪️ «وتکادو» با سرمایه ثبت شده 560,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/06/31 مبلغ 317,421 میلیون ریال سود شناسایی کرده است. 1405-07-21 09:46:08 (1610299) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 5.88K views 06:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel"
     },
     {
       "symbol": "مدار",
@@ -3872,7 +4592,7 @@
       "published_at": "2026-10-13T06:16:02+00:00",
       "channel": "تلگرام کدال۳۶۰",
       "sales": "",
-      "profit": "«مدار» با سرمایه ثبت شده 4,600,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 885,321 میلیون ریال سود شناسایی کرده است. 1405-07-21 09:45:55 (1609044) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 5.81K views 06:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1",
+      "profit": "«مدار» با سرمایه ثبت شده 4,600,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 885,321 میلیون ریال سود شناسایی کرده است. 1405-07-21 09:45:55 (1609044) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 6K views 06:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1",
       "eps": "شرکت سرمایه گذاری مدیریت سرمایه مدار در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است.",
       "dividend": "",
       "growth": "شرکت سرمایه گذاری مدیریت سرمایه مدار در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است.",
@@ -3882,7 +4602,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348090",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=bQZRlbbjIRBC1ssBahk8bQ%3D%3D&rt=2&let=6&ct=2&ft=-1&sheetId=1",
-      "source_text": "کدال۳۶۰ #مدار اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/03/31 (حسابرسی شده) شرکت #سرمایه_گذاری_مدیریت_سرمایه_مدار ▪️ شرکت سرمایه گذاری مدیریت سرمایه مدار در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است. ▪️ «مدار» با سرمایه ثبت شده 4,600,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 885,321 میلیون ریال سود شناسایی کرده است. 1405-07-21 09:45:55 (1609044) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 5.81K views 06:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1"
+      "source_text": "کدال۳۶۰ #مدار اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/03/31 (حسابرسی شده) شرکت #سرمایه_گذاری_مدیریت_سرمایه_مدار ▪️ شرکت سرمایه گذاری مدیریت سرمایه مدار در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم سودی محقق نکرده است، که نسبت به مدت مشابه سال قبل تغییری نکرده است. ▪️ «مدار» با سرمایه ثبت شده 4,600,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 885,321 میلیون ریال سود شناسایی کرده است. 1405-07-21 09:45:55 (1609044) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 6K views 06:16 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1"
     },
     {
       "symbol": "سمگا",
@@ -4204,7 +4924,7 @@
       "published_at": "2026-10-12T19:43:58+00:00",
       "channel": "تلگرام کدال۳۶۰",
       "sales": "",
-      "profit": "شرکت داروسازی تولید دارو در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 555 ریال سود شناسایی کرده است، این درحالیست که شرکت در مدت مشابه سال قبل به ازای هر سهم 327 ریال زیان شناسایی کرده بود. || «دتولید» با سرمایه ثبت شده 3,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 1,664,308 میلیون ریال سود شناسایی کرده است. 1405-07-20 21:00:15 (1608952) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 👏 7 ❤ 4 👎 3 3.72K views 19:43 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1 📥 دانلود پیوست 2",
+      "profit": "شرکت داروسازی تولید دارو در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 555 ریال سود شناسایی کرده است، این درحالیست که شرکت در مدت مشابه سال قبل به ازای هر سهم 327 ریال زیان شناسایی کرده بود. || «دتولید» با سرمایه ثبت شده 3,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 1,664,308 میلیون ریال سود شناسایی کرده است. 1405-07-20 21:00:15 (1608952) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 👏 7 ❤ 4 👎 3 3.73K views 19:43 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1 📥 دانلود پیوست 2",
       "eps": "شرکت داروسازی تولید دارو در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 555 ریال سود شناسایی کرده است، این درحالیست که شرکت در مدت مشابه سال قبل به ازای هر سهم 327 ریال زیان شناسایی کرده بود.",
       "dividend": "",
       "growth": "",
@@ -4212,9 +4932,9 @@
       "project_strength": "ضعیف",
       "amounts_raw": "555 ریال؛ 327 ریال؛ 3,000,000 میلیون ریال؛ 1,664,308 میلیون ریال",
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
-      "telegram_url": "https://t.me/Codal360_ir/348072؛ https://t.me/Codal360_ir/348075",
+      "telegram_url": "https://t.me/Codal360_ir/348075؛ https://t.me/Codal360_ir/348072",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=l21PuUrWBCHsiu3B7MxwPg%3D%3D&rt=0&let=6&ct=0&ft=-1&sheetId=1",
-      "source_text": "کدال۳۶۰ Forwarded from کدال۳۶۰ #دتولید اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/03/31 (حسابرسی شده) شرکت #داروسازی_تولید_دارو ▪️ شرکت داروسازی تولید دارو در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 555 ریال سود شناسایی کرده است، این درحالیست که شرکت در مدت مشابه سال قبل به ازای هر سهم 327 ریال زیان شناسایی کرده بود. ▪️ «دتولید» با سرمایه ثبت شده 3,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 1,664,308 میلیون ریال سود شناسایی کرده است. 1405-07-20 21:00:15 (1608952) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 👏 7 ❤ 4 👎 3 3.72K views 19:43 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
+      "source_text": "کدال۳۶۰ Forwarded from کدال۳۶۰ #دتولید اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/03/31 (حسابرسی شده) شرکت #داروسازی_تولید_دارو ▪️ شرکت داروسازی تولید دارو در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 555 ریال سود شناسایی کرده است، این درحالیست که شرکت در مدت مشابه سال قبل به ازای هر سهم 327 ریال زیان شناسایی کرده بود. ▪️ «دتولید» با سرمایه ثبت شده 3,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 1,664,308 میلیون ریال سود شناسایی کرده است. 1405-07-20 21:00:15 (1608952) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 👏 7 ❤ 4 👎 3 3.73K views 19:43 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
     },
     {
       "symbol": "",
@@ -4265,26 +4985,6 @@
       "is_secondary_summary": true
     },
     {
-      "symbol": "",
-      "company": "",
-      "report_type": "طرح توسعه/پروژه",
-      "report_period": "",
-      "published_at": "2026-10-12T19:36:32+00:00",
-      "channel": "تلگرام کدال۳۶۰",
-      "sales": "کدال۳۶۰ Forwarded from FAKOOR | فکور صنعت 0:48 This media is not supported in your browser VIEW IN TELEGRAM روایت فعالان بازار سرمایه از عرضه فکور | بهنام صمدی بهنام صمدی، کارشناس بازار سرمایه، عرضه اولیه فکور صنعت به عنوان اجرا کننده بزرگ ترین پروژه های زنجیره فولاد را رویدادی مهم در بازار سرمایه دانست و با اشاره به سهم ۵۰ درصدی پیمانکاری و ۵۰ درصدی شرکت داری و سرمایه گذاری در درآمد عملیاتی فکور، بر تنوع مدل کسب وکار این شرکت تأکید کرد. او همچنین با اشاره به بررسی امیدنامه و گزارش ارزش گذاری شرکت، معتقد است مبنای ",
-      "profit": "",
-      "eps": "",
-      "dividend": "",
-      "growth": "",
-      "project": "",
-      "project_strength": "متوسط",
-      "amounts_raw": "۵۰ درصد",
-      "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
-      "telegram_url": "https://t.me/Codal360_ir/348074",
-      "codal_url": "",
-      "source_text": "کدال۳۶۰ Forwarded from FAKOOR | فکور صنعت 0:48 This media is not supported in your browser VIEW IN TELEGRAM روایت فعالان بازار سرمایه از عرضه فکور | بهنام صمدی بهنام صمدی، کارشناس بازار سرمایه، عرضه اولیه فکور صنعت به عنوان اجرا کننده بزرگ ترین پروژه های زنجیره فولاد را رویدادی مهم در بازار سرمایه دانست و با اشاره به سهم ۵۰ درصدی پیمانکاری و ۵۰ درصدی شرکت داری و سرمایه گذاری در درآمد عملیاتی فکور، بر تنوع مدل کسب وکار این شرکت تأکید کرد. او همچنین با اشاره به بررسی امیدنامه و گزارش ارزش گذاری شرکت، معتقد است مبنای ارزش گذاری بر اطلاعات سال گذشته، این سهم را ارزنده خواهد کرد. 🌐 www.fstco.com ⚙️ @fakoorsanatgroup 👎 28 👍 10 ❤ 4 6.07K views 19:36"
-    },
-    {
       "symbol": "طیور",
       "company": "طیور دانه سلامت دزفول",
       "report_type": "صورت مالی/حسابرسی (خلاصهٔ عمومی)",
@@ -4316,7 +5016,7 @@
       "published_at": "2026-10-12T16:29:21+00:00",
       "channel": "تلگرام کدال۳۶۰",
       "sales": "",
-      "profit": "شرکت طیور دانه سلامت دزفول در دوره 3 ماهه منتهی به 1405/03/31 به ازای هر سهم 504 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 95 درصد افزایش داشته است. || «طیور» با سرمایه ثبت شده 2,500,000 میلیون ریال طی عملکرد 3 ماهه منتهی به 1405/03/31 مبلغ 1,259,243 میلیون ریال سود شناسایی کرده است. 1405-07-20 20:00:38 (1606797) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 8.52K views 16:29 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1",
+      "profit": "شرکت طیور دانه سلامت دزفول در دوره 3 ماهه منتهی به 1405/03/31 به ازای هر سهم 504 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 95 درصد افزایش داشته است. || «طیور» با سرمایه ثبت شده 2,500,000 میلیون ریال طی عملکرد 3 ماهه منتهی به 1405/03/31 مبلغ 1,259,243 میلیون ریال سود شناسایی کرده است. 1405-07-20 20:00:38 (1606797) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 8.57K views 16:29 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1",
       "eps": "شرکت طیور دانه سلامت دزفول در دوره 3 ماهه منتهی به 1405/03/31 به ازای هر سهم 504 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 95 درصد افزایش داشته است.",
       "dividend": "",
       "growth": "شرکت طیور دانه سلامت دزفول در دوره 3 ماهه منتهی به 1405/03/31 به ازای هر سهم 504 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 95 درصد افزایش داشته است.",
@@ -4326,7 +5026,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348071",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=7u3CiNfKYKJo8clsvovoXg%3D%3D&rt=0&let=6&ct=0&ft=-1&sheetId=1",
-      "source_text": "کدال۳۶۰ #طیور اطلاعات و #صورت های_مالی_میاندوره ای دوره 3 ماهه منتهی به 1405/03/31 (حسابرسی نشده) شرکت #طیور_دانه_سلامت_دزفول ▪️ شرکت طیور دانه سلامت دزفول در دوره 3 ماهه منتهی به 1405/03/31 به ازای هر سهم 504 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 95 درصد افزایش داشته است. ▪️ «طیور» با سرمایه ثبت شده 2,500,000 میلیون ریال طی عملکرد 3 ماهه منتهی به 1405/03/31 مبلغ 1,259,243 میلیون ریال سود شناسایی کرده است. 1405-07-20 20:00:38 (1606797) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 8.52K views 16:29 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1"
+      "source_text": "کدال۳۶۰ #طیور اطلاعات و #صورت های_مالی_میاندوره ای دوره 3 ماهه منتهی به 1405/03/31 (حسابرسی نشده) شرکت #طیور_دانه_سلامت_دزفول ▪️ شرکت طیور دانه سلامت دزفول در دوره 3 ماهه منتهی به 1405/03/31 به ازای هر سهم 504 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 95 درصد افزایش داشته است. ▪️ «طیور» با سرمایه ثبت شده 2,500,000 میلیون ریال طی عملکرد 3 ماهه منتهی به 1405/03/31 مبلغ 1,259,243 میلیون ریال سود شناسایی کرده است. 1405-07-20 20:00:38 (1606797) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 4 8.57K views 16:29 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1"
     },
     {
       "symbol": "سبد تدبیر",
@@ -4360,7 +5060,7 @@
       "published_at": "2026-10-12T16:14:21+00:00",
       "channel": "تلگرام کدال۳۶۰",
       "sales": "",
-      "profit": "شرکت سبدگردان تدبیر در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 279 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 37 درصد افزایش داشته است. || «سبد تدبیر» با سرمایه ثبت شده 1,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 279,154 میلیون ریال سود شناسایی کرده است. 1405-07-20 19:45:39 (1610068) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 8.34K views 16:14 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1",
+      "profit": "شرکت سبدگردان تدبیر در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 279 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 37 درصد افزایش داشته است. || «سبد تدبیر» با سرمایه ثبت شده 1,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 279,154 میلیون ریال سود شناسایی کرده است. 1405-07-20 19:45:39 (1610068) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 8.39K views 16:14 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1",
       "eps": "شرکت سبدگردان تدبیر در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 279 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 37 درصد افزایش داشته است.",
       "dividend": "",
       "growth": "شرکت سبدگردان تدبیر در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 279 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 37 درصد افزایش داشته است.",
@@ -4370,79 +5070,7 @@
       "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
       "telegram_url": "https://t.me/Codal360_ir/348070",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=CemFgWQQQaQQQtAtAoiBU77x1BZg%3D%3D&rt=2&let=6&ct=6&ft=-1&sheetId=1",
-      "source_text": "کدال۳۶۰ #سبد_تدبیر اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/03/31 (حسابرسی شده) شرکت #سبدگردان_تدبیر ▪️ شرکت سبدگردان تدبیر در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 279 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 37 درصد افزایش داشته است. ▪️ «سبد تدبیر» با سرمایه ثبت شده 1,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 279,154 میلیون ریال سود شناسایی کرده است. 1405-07-20 19:45:39 (1610068) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 8.34K views 16:14 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1"
-    },
-    {
-      "symbol": "پاسا",
-      "company": "",
-      "report_type": "افشای بااهمیت",
-      "report_period": "منتهی به 1405/12/29",
-      "published_at": "2026-10-12T15:54:04+00:00",
-      "channel": "تلگرام بورس‌تریدر؛ تلگرام کدال۳۶۰",
-      "sales": "",
-      "profit": "",
-      "eps": "",
-      "dividend": "",
-      "growth": "",
-      "project": "",
-      "project_strength": "ضعیف",
-      "amounts_raw": "",
-      "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
-      "telegram_url": "",
-      "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=DhO0B7sW0MQQQaQQQp0UucsOz0Yg%3D%3D&rt=0&let=11&ct=0&ft=-1",
-      "source_text": "اطلاعیه کدال | بورس تریدر 🏷️ #پاسا 🏛️ ایران یاسا تایر و رابر 📌 #افشای_اطلاعات_با_اهمیت 📋 افشای اطلاعات بااهمیت - (سایر اطلاعات بااهمیت - افزایش درنرخ فروش برخی ازمحصولات- گروه ب) منتهی به سال مالی ۱۴۰۵/۱۲/۲۹ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۹:۲۱:۴۶ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 47 views 15:54 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
-      "record_id": "f73a690b618bf826a4e82fea",
-      "detail_status": "metadata_only",
-      "numeric_field_count": 0,
-      "is_secondary_summary": true
-    },
-    {
-      "symbol": "پرسپولیس",
-      "company": "",
-      "report_type": "افشای بااهمیت",
-      "report_period": "منتهی به 1406/03/31",
-      "published_at": "2026-10-12T15:48:04+00:00",
-      "channel": "تلگرام بورس‌تریدر؛ تلگرام کدال۳۶۰",
-      "sales": "",
-      "profit": "",
-      "eps": "",
-      "dividend": "",
-      "growth": "",
-      "project": "",
-      "project_strength": "ضعیف",
-      "amounts_raw": "",
-      "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
-      "telegram_url": "",
-      "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=AIfUFf32vAqQeilccir5rA%3D%3D&rt=5&let=11&ct=0&ft=-1",
-      "source_text": "اطلاعیه کدال | بورس تریدر 🏷️ #پرسپولیس 🏛️ فرهنگی ورزشی پرسپولیس 📌 #افشای_اطلاعات_با_اهمیت 📋 افشای اطلاعات بااهمیت - (سایر اطلاعات بااهمیت - خرید تیم نونهالان- گروه ب) منتهی به سال مالی ۱۴۰۶/۰۳/۳۱(اصلاحیه) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۹:۱۵:۴۹ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 31 views 15:48 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
-      "record_id": "b72aed1875e92157310cc654",
-      "detail_status": "metadata_only",
-      "numeric_field_count": 0,
-      "is_secondary_summary": true
-    },
-    {
-      "symbol": "زماهان",
-      "company": "",
-      "report_type": "افشای بااهمیت",
-      "report_period": "منتهی به 1405/09/30",
-      "published_at": "2026-10-12T15:42:05+00:00",
-      "channel": "تلگرام بورس‌تریدر؛ تلگرام کدال۳۶۰",
-      "sales": "",
-      "profit": "",
-      "eps": "",
-      "dividend": "",
-      "growth": "",
-      "project": "",
-      "project_strength": "ضعیف",
-      "amounts_raw": "",
-      "validation_status": "خلاصهٔ متن عمومی؛ با جدول رسمی کدال تطبیق نشده است؛ عددهای زیر از متن عمومی/خلاصه استخراج شده‌اند؛ با جدول رسمی کدال تطبیق نشده‌اند و در امتیاز بنیادی نهایی استفاده نمی‌شوند.",
-      "telegram_url": "",
-      "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=QHSOOObOOOQEwdmVDi60VGdSJQQQaQQQOA%3D%3D&rt=8&let=11&ct=0&ft=-1",
-      "source_text": "اطلاعیه کدال | بورس تریدر 🏷️ #زماهان 🏛️ مجتمع تولید گوشت مرغ ماهان 📌 #افشای_اطلاعات_با_اهمیت 📋 افشای اطلاعات بااهمیت - (افشای معاملات موضوع ماده ۱۲۹ اصلاحیه قانون تجارت، یا سایر اشخاص وابسته - گروه ب) منتهی به سال مالی ۱۴۰۵/۰۹/۳۰(اصلاحیه) 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۰ ۱۹:۱۱:۳۷ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 42 views 15:42 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت",
-      "record_id": "1e203f91a6706fd0193ec495",
-      "detail_status": "metadata_only",
-      "numeric_field_count": 0,
-      "is_secondary_summary": true
+      "source_text": "کدال۳۶۰ #سبد_تدبیر اطلاعات و #صورت های_مالی_میاندوره ای #دوره_6_ماهه منتهی به 1405/03/31 (حسابرسی شده) شرکت #سبدگردان_تدبیر ▪️ شرکت سبدگردان تدبیر در دوره 6 ماهه منتهی به 1405/03/31 به ازای هر سهم 279 ریال سود شناسایی کرده است، که نسبت به مدت مشابه سال قبل 37 درصد افزایش داشته است. ▪️ «سبد تدبیر» با سرمایه ثبت شده 1,000,000 میلیون ریال طی عملکرد 6 ماهه منتهی به 1405/03/31 مبلغ 279,154 میلیون ریال سود شناسایی کرده است. 1405-07-20 19:45:39 (1610068) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 1 8.39K views 16:14 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود فایل Excel 📥 دانلود پیوست 1"
     }
   ],
   "recent_projects": [
@@ -4467,6 +5095,26 @@
       "source_text": "اطلاعیه کدال | بورس تریدر 🏷️ #آب 🏛️ مهندسی توسعه آب آسیا 📌 #افشای_اطلاعات_با_اهمیت 📋 افشای اطلاعات بااهمیت - (سایر اطلاعات بااهمیت - آخرین وضعیت طرح های توسعه و مخارج انجام شده تاکنون- گروه ب) منتهی به سال مالی ۱۴۰۵/۱۲/۲۹ 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۱ ۱۴:۲۹:۳۹ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 24 views 11:00 📋 اطلاعیه 📕 PDF"
     },
     {
+      "symbol": "کویر",
+      "company": "تولیدی فولاد سپید فراب کویر",
+      "report_type": "طرح توسعه/پروژه",
+      "report_period": "",
+      "published_at": "2026-10-11T06:15:07+00:00",
+      "channel": "تلگرام کدال۳۶۰",
+      "sales": "",
+      "profit": "",
+      "eps": "",
+      "dividend": "",
+      "growth": "",
+      "project": "موضوع افزایش سرمایه: پوشش ریسک تامین نقدینگی و تسهیل در تامین مالی طرح های توسعه شرکت، اصلاح ساختار مالی، بهبود نسبت مالکانه، جلوگیری از خروج وجه نقد و استفاده از معافیت مالیاتی بند\"ث\" ماده 14 قانون تامین مالی و زیر ساخت های کل کشور و صرفه جویی مالیاتی",
+      "project_strength": "قوی",
+      "amounts_raw": "72,000,000 میلیون ریال؛ 18 درصد؛ 13,000,000 میلیون ریال",
+      "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
+      "telegram_url": "https://t.me/Codal360_ir/347887",
+      "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=gO6LY7WgnHhjc2X5HQAtQQ%3D%3D&rt=0&let=55&ct=0&ft=-1",
+      "source_text": "کدال۳۶۰ #کویر ❇️ پیشنهاد هییت مدیره به #مجمع_عمومی_فوق_العاده در خصوص #افزایش_سرمایه شرکت #تولیدی_فولاد_سپید_فراب_کویر ▪️ سرمایه فعلی: 72,000,000 میلیون ریال ▪️ درصد افزایش سرمایه: 18 درصد ▪️ مبلغ افزایش سرمایه: 13,000,000 میلیون ریال ▪️ محل تامین افزایش سرمایه: سود انباشته ▪️ موضوع افزایش سرمایه: پوشش ریسک تامین نقدینگی و تسهیل در تامین مالی طرح های توسعه شرکت، اصلاح ساختار مالی، بهبود نسبت مالکانه، جلوگیری از خروج وجه نقد و استفاده از معافیت مالیاتی بند\"ث\" ماده 14 قانون تامین مالی و زیر ساخت های کل کشور و صرفه جویی مالیاتی ▪️ تاریخ تصویب هیئت مدیره: 1405/07/19 توضیحات: بدیهی است انجام افزایش سرمایه یادشده منوط به موافقت سازمان بورس و اوراق بهادار و تصویب مجمع عمومی فوق العاده می باشد. 1405-07-19 09:46:23 (1609868) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 5.27K views 06:15 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
+    },
+    {
       "symbol": "انتخاب",
       "company": "گروه صنعتی انتخاب الکترونیک آرمان",
       "report_type": "طرح توسعه/پروژه",
@@ -4485,6 +5133,26 @@
       "telegram_url": "https://t.me/Codal360_ir/347706",
       "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=yDNXdW8blSJsTkeScu28iw%3D%3D&rt=0&let=11&ct=0&ft=-1",
       "source_text": "کدال۳۶۰ #انتخاب #افشای_اطلاعات_بااهمیت - (سایر اطلاعات بااهمیت - #شفاف_سازی درخصوص طرح توسعه خطوط گرماساز هوشمند- گروه ب) منتهی به سال مالی 1405/09/30 شرکت #گروه_صنعتی_انتخاب_الکترونیک_آرمان 1405-07-15 12:15:17 (1608396) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir 👍 1 5.55K views 08:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1"
+    },
+    {
+      "symbol": "ثمسکن",
+      "company": "گروه سرمایه گذاری مسکن",
+      "report_type": "طرح توسعه/پروژه",
+      "report_period": "",
+      "published_at": "2026-10-05T14:45:43+00:00",
+      "channel": "تلگرام کدال۳۶۰",
+      "sales": "",
+      "profit": "",
+      "eps": "",
+      "dividend": "",
+      "growth": "",
+      "project": "موضوع افزایش سرمایه: جبران مخارج سرمایه ای (سرمایه گذاری های انجام شده و مشارکت در افزایش سرمایه شرکت های سرمایه پذیر)",
+      "project_strength": "متوسط",
+      "amounts_raw": "15,800,000 میلیون ریال؛ 100 درصد",
+      "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
+      "telegram_url": "https://t.me/Codal360_ir/347586",
+      "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=odQnoSxQQQaQQQAmwysnP4GB66QQQaQQQg%3D%3D&rt=2&let=55&ct=0&ft=-1",
+      "source_text": "کدال۳۶۰ #ثمسکن ❇️ پیشنهاد هییت مدیره به #مجمع_عمومی_فوق_العاده در خصوص #افزایش_سرمایه شرکت #گروه_سرمایه_گذاری_مسکن ▪️ سرمایه فعلی: 15,800,000 میلیون ریال ▪️ درصد افزایش سرمایه: 100 درصد ▪️ مبلغ افزایش سرمایه: 15,800,000 میلیون ریال ▪️ محل تامین افزایش سرمایه: مطالبات حال شده سهامداران و آورده نقدی ،سود انباشته ▪️ موضوع افزایش سرمایه: جبران مخارج سرمایه ای (سرمایه گذاری های انجام شده و مشارکت در افزایش سرمایه شرکت های سرمایه پذیر) ▪️ تاریخ تصویب هیئت مدیره: 1405/07/11 توضیحات: بدیهی است انجام افزایش سرمایه یادشده منوط به موافقت سازمان بورس و اوراق بهادار و تصویب مجمع عمومی فوق العاده می باشد. 1405-07-13 18:15:38 (1608318) ➖ ➖ ➖ ➖ ⬇️ ⬇️ ⬇️ ⬇️ @codal360_ir ❤ 5 👍 2 👎 1 5.93K views 14:45 اطلاعیه در سایت کدال 📥 دانلود فایل PDF 📥 دانلود پیوست 1 📥 دانلود پیوست 2"
     },
     {
       "symbol": "فزر",
