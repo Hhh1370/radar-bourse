@@ -2,9 +2,9 @@ name: Build Fundamental and Money Flow Radar
 
 on:
   workflow_dispatch:
-  # Full-market scan weekly to avoid exhausting third-party API quotas.
+  # Weekly fundamental/proxy-score refresh after the weekend filing and ratio snapshots; not a daily recalculation.
   schedule:
-    - cron: "30 9 * * 6"
+    - cron: "30 9 * * 0"
 
 permissions:
   contents: write
