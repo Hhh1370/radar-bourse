@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T13:02:57+00:00",
+  "generated_at_utc": "2026-10-14T13:04:17+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -60,7 +60,7 @@
       "generated_at_utc": "2026-10-14T12:56:35.646325+00:00",
       "label": "تاریخچهٔ قیمت نهایت‌نگر",
       "status": "موجود",
-      "note": "Technical screening only, not a buy/sell recommendation. A separate historical walk-forward report at data/radar_validation.json recomputes the same rank at 12 past cutoffs and tests 20/60/120-session price returns. Interpret relative outperformance together with absolute returns and win rate; it is not proof of profitability. Dividends, transaction costs, slippage, delisting survivors and corporate-action adjustment quality remain limitations. Fundamental health, earnings quality and project ROI are not part of this technical-only score; full TSE/IFB coverage has not been independently verified."
+      "note": "Technical screening only, not a buy/sell recommendation. A separate historical walk-forward report at data/radar_validation.json recomputes the same rank at 12 past cutoffs and tests 20/60/120-session price returns. Interpret relative outperformance together with absolute returns and win rate; it is not proof of profitability. Dividends, transaction costs, slippage, delisting survivors and corporate-action adjustment quality remain limitations. Fundamental health, earnings quality and project ROI are not part of this technical-only score; full TSE/IFB coverage has not been independently verified. Walk-forward result: relative_edge_but_mixed_absolute_returns; 20-session top-quintile median return=-1.2872%, median win rate=40.39%. Relative excess is not proof of short-term profitability."
     },
     "technical_validation": {
       "generated_at_utc": "2026-10-14T12:59:36+00:00",
@@ -93,7 +93,7 @@
       "generated_at_utc": "2026-10-14T12:06:31+00:00",
       "label": "Fundai · تاریخچهٔ نسبت‌های مالی",
       "status": "تاریخچهٔ عمومی موجود؛ روند تاریخی مقدماتی",
-      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 0.9 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
+      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 1.0 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/"
     },
     "codal_channels": {
