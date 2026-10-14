@@ -55,9 +55,13 @@ jobs:
           print("MULTIBAGGER_REPORT_VALID")
           print("STATUS:", p["status"])
           print("FOLDS:", p["dataset"]["folds_with_usable_universe"])
-          for target, rows in p["results"].items():
-              top = rows["top_5_percent"]
-              print(f"{target}: top5 precision={top['precision_pct']} median_fold={top['median_fold_precision_pct']} base={top['base_rate_pct']} recall={top['recall_pct']} selected={top['selected_count']}")
+          for target, models in p["results"].items():
+              assert "current_model" in models
+              for model, rows in models.items():
+                  for pct in ("top_5_percent", "top_10_percent", "top_20_percent"):
+                      assert pct in rows
+                  top = rows["top_5_percent"]
+                  print(f"{target} {model}: precision={top['precision_pct']} median_fold={top['median_fold_precision_pct']} base={top['base_rate_pct']} lift={top['precision_lift']} selected={top['selected_count']}")
           PY
       - name: Commit validation report
         shell: bash
