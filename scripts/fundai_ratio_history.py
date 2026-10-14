@@ -129,7 +129,29 @@ def normalize_history_payload(
         if identity in seen:
             continue
         seen.add(identity)
-        entry = dict(raw)
+        # Keep a compact, transparent historical series: core operating,
+        # profitability, leverage and valuation ratios, plus sector/market peers.
+        keep = (
+            "company", "pe_ttm", "ps_ttm", "pb", "peg", "pegy",
+            "net_profit_margin_ttm", "gross_profit_margin_ttm", "roa_ttm", "roe_ttm",
+            "collection_period", "inventory_period", "debt_to_equity", "debt_to_assets",
+            "collection_period_duration", "inventory_period_duration", "peg_duration", "pegy_duration",
+        )
+        entry = {name: raw.get(name) for name in keep if name in raw}
+        peers = raw.get("peers")
+        if isinstance(peers, dict):
+            peer_fields = (
+                "pe_ttm", "ps_ttm", "pb", "roe_ttm", "roa_ttm",
+                "net_profit_margin_ttm", "gross_profit_margin_ttm", "collection_period",
+                "inventory_period", "debt_to_assets", "debt_to_equity",
+            )
+            entry["peers"] = {
+                group: {name: value for name, value in peer.items() if name in peer_fields}
+                for group, peer in peers.items()
+                if group in {"industry", "market"} and isinstance(peer, dict)
+            }
+        entry["company"] = str(raw.get("company") or symbol)
+        entry["duration_code"] = duration_code
         entry["report_date"] = f"{parsed[0]:04d}-{parsed[1]:02d}-{parsed[2]:02d}"
         normalized_rows.append(entry)
     normalized_rows.sort(
