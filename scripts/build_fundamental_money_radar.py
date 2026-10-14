@@ -1869,7 +1869,7 @@ def run_public_codal_only():
         if isinstance(r.get("money_flow_score"), (int, float))
         and r.get("money_flow_full_year_coverage") is True
         and r.get("instrument_kind") == "common_equity"
-        and not str(r.get("money_flow_error") or "").strip() == ""
+        and not str(r.get("money_flow_error") or "").strip()
     ]
     fundamental_candidates = [
         r for r in output_rows
