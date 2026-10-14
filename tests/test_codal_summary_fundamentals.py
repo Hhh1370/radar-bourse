@@ -73,6 +73,25 @@ class CodalSummaryFundamentalsTests(unittest.TestCase):
         self.assertGreater(with_monthly["score"], without_monthly["score"])
         self.assertTrue(any("رشد فروش گزارش فعالیت ماهانه" in item for item in with_monthly["evidence"]))
 
+    def test_monthly_sales_growth_compares_same_month_prior_year_when_units_match(self):
+        old = report("نماد", 1, "1404/04/31", "2025-08-01", None, None, 500, kind="monthly_activity")
+        current = report("نماد", 1, "1405/04/31", "2026-08-01", None, None, 650, kind="monthly_activity")
+        old["financial_metrics"]["observations"][0]["unit"] = "میلیون ریال"
+        current["financial_metrics"]["observations"][0]["unit"] = "میلیون ریال"
+        result = build_summary_map([old, current])["نماد"]["monthly_activity"]
+        self.assertEqual(result["sales_growth_pct_candidate"], 30.0)
+        self.assertEqual(result["prior_year_same_month_sales_candidate"], 500.0)
+        self.assertIn("همان ماه سال قبل", result["comparison_status"])
+
+    def test_monthly_yoy_comparison_refuses_different_units(self):
+        old = report("نماد", 1, "1404/04/31", "2025-08-01", None, None, 500, kind="monthly_activity")
+        current = report("نماد", 1, "1405/04/31", "2026-08-01", None, None, 650, kind="monthly_activity")
+        old["financial_metrics"]["observations"][0]["unit"] = "میلیون ریال"
+        current["financial_metrics"]["observations"][0]["unit"] = "هزار ریال"
+        result = build_summary_map([old, current])["نماد"]["monthly_activity"]
+        self.assertIsNone(result["sales_growth_pct_candidate"])
+        self.assertIsNone(result["prior_year_same_month_sales_candidate"])
+
     def test_ocr_only_numbers_remain_evidence_but_do_not_create_score(self):
         row = report("پوستر", 3, "1405/03/31", "2026-06-01", 900, 120, 5000)
         metrics = row["financial_metrics"]
