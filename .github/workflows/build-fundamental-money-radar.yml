@@ -2,9 +2,9 @@ name: Build Fundamental and Money Flow Radar
 
 on:
   workflow_dispatch:
-  # Weekly fundamental/proxy-score refresh after the weekend filing and ratio snapshots; not a daily recalculation.
+  # Full fundamental report scan monthly; independent weekly filing discovery catches staggered publication dates.
   schedule:
-    - cron: "30 9 * * 0"
+    - cron: "30 9 1 * *"
 
 permissions:
   contents: write
