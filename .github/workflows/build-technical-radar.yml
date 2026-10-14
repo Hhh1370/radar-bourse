@@ -114,6 +114,7 @@ jobs:
           assert p.get("schema_version") == 1
           assert p.get("validation_status") in {
               "positive_out_of_sample_evidence",
+              "relative_edge_but_mixed_absolute_returns",
               "mixed_or_negative_out_of_sample_evidence",
               "insufficient_history_for_validation",
           }
