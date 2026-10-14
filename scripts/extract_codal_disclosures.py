@@ -652,7 +652,8 @@ def build_channel_evidence(posts: list[dict]) -> list[dict]:
         project_class, project_strength = assess_project_evidence(text)
         has_financial_evidence = any(evidence.get(field) for field in financial_fields)
         has_project_evidence = bool(evidence.get("project_evidence")) and project_strength in {"قوی", "متوسط"}
-        if not has_financial_evidence and not has_project_evidence:
+        images = post.get("images", []) if isinstance(post.get("images"), list) else []
+        if not has_financial_evidence and not has_project_evidence and not images:
             continue
 
         source_page = post.get("source_page", "")
@@ -684,7 +685,9 @@ def build_channel_evidence(posts: list[dict]) -> list[dict]:
             "codal_url": official_url,
             "codal_urls": "؛ ".join(codal_urls),
             "source_text": text[:3000],
-            "validation_status": "خلاصهٔ متنی کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
+            "image_attachments": images[:12],
+            "image_ocr_status": "pending_ocr" if images else "no_images",
+            "validation_status": "خلاصهٔ متنی/تصویری کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
         }
         key = official_url or f"{channel}:{post_id}"
         if key not in rows_by_key:
