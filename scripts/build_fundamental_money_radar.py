@@ -50,7 +50,7 @@ CODAL_DELAY = 0.08
 MAX_GENERAL_SEARCH_PAGES = 2
 MAX_FINANCIAL_SEARCH_PAGES = 2
 MAX_PROJECT_DETAILS_PER_STOCK = 1
-MAX_FINANCIAL_DETAILS_PER_STOCK = 6
+MAX_FINANCIAL_DETAILS_PER_STOCK = 8
 FLOW_WINDOWS = (5, 20, 60, 120, 252)
 COMMON_EQUITY_ISIN_PREFIXES = ("IRO1", "IRO3")
 
@@ -925,7 +925,8 @@ def report_period_key(report):
     # Annual statements may include the fiscal year end, while interim titles specify 3/6/9 months.
     period_match = re.search(r"دوره(3|6|9|12)ماهه", title)
     if period_match:
-        return period_match.group(1)
+        months = period_match.group(1)
+        return "annual" if months == "12" else months
     if "سالمالیمنتهی" in title:
         return "annual"
     return "other"
@@ -940,57 +941,80 @@ def report_year_end(report):
 
 
 def choose_financial_reports(reports):
-    """Select current interim statements first, then annual comparators.
+    """Keep a comparable two-year series of cumulative statements for every quarter.
 
-    A previous ordering bug placed two annual reports before the interim report while
-    enforcing a two-report cap, which could silently exclude every 3/6/9-month statement.
-    Keep the latest available statement for each interim period plus two annual statements.
+    Companies publish at different dates, so selection is based primarily on the
+    statement period end, not a market-wide assumed publication date. We retain up
+    to two reports for each 3/6/9/12-month period, all from one consolidation mode,
+    so Q2/Q3/Q4 can be derived from cumulative filings without mixing units/series.
     """
-    reports = [
+    eligible = [
         r for r in reports
         if (r.get("url") or r.get("excel_url"))
         and (r.get("has_html") or r.get("has_excel") or "صورت" in r.get("title", ""))
         and "صورت" in r.get("title", "")
+        and report_period_key(r) in {"3", "6", "9", "annual"}
     ]
-    reports.sort(key=lambda r: str(r.get("date") or ""), reverse=True)
 
-    annuals = [r for r in reports if report_period_key(r) == "annual"]
-    # Keep one consistent parent-company/consolidated series and avoid duplicate filings for the same year.
-    standalone = [r for r in annuals if "تلفیقی" not in normalize_text(r.get("title", ""))]
-    if len({report_year_end(r) for r in standalone if report_year_end(r)}) >= 2:
-        annuals = standalone
-    unique_annuals, annual_keys = [], set()
-    for report in annuals:
-        key = report_year_end(report) or normalize_text(report.get("title", ""))[:60]
-        if key not in annual_keys:
-            annual_keys.add(key)
-            unique_annuals.append(report)
+    # De-duplicate amended/repeated filings for the same period and statement series,
+    # keeping the latest publication of each exact period end.
+    unique_by_period = {}
+    for report in eligible:
+        period = report_period_key(report)
+        end = report_year_end(report) or str(report.get("date") or "")
+        mode = "consolidated" if "تلفیقی" in normalize_text(report.get("title", "")) else "standalone"
+        key = (period, end, mode)
+        prior = unique_by_period.get(key)
+        if prior is None or str(report.get("date") or "") > str(prior.get("date") or ""):
+            unique_by_period[key] = report
+    eligible = list(unique_by_period.values())
 
-    interim = [r for r in reports if report_period_key(r) in ("3", "6", "9")]
-    selected, seen = [], set()
+    # Pick the statement series with the most period coverage. Ties favor standalone
+    # statements, unless consolidated filings provide a materially longer coherent series.
+    modes = ("standalone", "consolidated")
+    def mode_quality(mode):
+        rows = [r for r in eligible if (
+            ("consolidated" if "تلفیقی" in normalize_text(r.get("title", "")) else "standalone") == mode
+        )]
+        covered_periods = len({report_period_key(r) for r in rows})
+        two_year_periods = sum(
+            1 for kind in ("3", "6", "9", "annual")
+            if len({report_year_end(r) for r in rows if report_period_key(r) == kind and report_year_end(r)}) >= 2
+        )
+        return (two_year_periods, covered_periods, len(rows), mode == "standalone")
 
-    # Prioritize the latest two 3-month reports so year-over-year comparisons
-    # remain possible, plus the latest 6- and 9-month statements and two annual
-    # comparators. All six records are cached after a successful parse.
-    candidates = [r for r in interim if report_period_key(r) == "3"][:2]
-    candidates.extend([r for r in interim if report_period_key(r) == "6"][:1])
-    candidates.extend([r for r in interim if report_period_key(r) == "9"][:1])
-    candidates.extend(unique_annuals[:2])
+    selected_mode = max(modes, key=mode_quality)
+    selected = []
+    for kind in ("3", "6", "9", "annual"):
+        rows = [
+            r for r in eligible
+            if report_period_key(r) == kind
+            and ("consolidated" if "تلفیقی" in normalize_text(r.get("title", "")) else "standalone") == selected_mode
+        ]
+        rows.sort(
+            key=lambda r: (str(report_year_end(r) or ""), str(r.get("date") or "")),
+            reverse=True,
+        )
+        seen_period_ends = set()
+        for report in rows:
+            period_end = report_year_end(report) or str(report.get("date") or "")
+            if period_end in seen_period_ends:
+                continue
+            selected.append(report)
+            seen_period_ends.add(period_end)
+            if len(seen_period_ends) >= 2:
+                break
 
-    for report in candidates:
-        key = report.get("url") or report.get("excel_url") or report.get("tracing_no") or report.get("title")
-        if key in seen:
-            continue
-        selected.append(report)
-        seen.add(key)
-        if len(selected) >= MAX_FINANCIAL_DETAILS_PER_STOCK:
-            break
-
-    # Order selected rows by publication date for downstream latest-report scoring,
-    # while the result still contains a quarter report if one was available.
-    selected.sort(key=lambda r: str(r.get("date") or ""), reverse=True)
+    # Keep outputs reproducible, while downstream scoring independently orders by
+    # each issuer's period end for quarter-to-quarter/year-over-year comparisons.
+    selected.sort(
+        key=lambda r: (
+            str(report_year_end(r) or ""),
+            str(r.get("date") or ""),
+        ),
+        reverse=True,
+    )
     return selected
-
 
 def find_contexts(strings, keyword_groups, max_each=8):
     normalized = [(normalize_text(k), k) for k in keyword_groups]
@@ -1230,6 +1254,135 @@ def detail_financial_report(report):
     return result
 
 
+def _period_month_index(report):
+    """Return Jalali year-month index and day for matching consecutive cumulative periods."""
+    end = str(report.get("fiscal_year_end") or report_year_end(report) or "")
+    match = re.fullmatch(r"((?:13|14)\d{2})-(\d{2})-(\d{2})", end)
+    if not match:
+        return None
+    year, month, day = map(int, match.groups())
+    if not 1 <= month <= 12 or not 1 <= day <= 31:
+        return None
+    return year * 12 + month, day
+
+
+def derive_standalone_quarters(reports):
+    """Derive separate Q2/Q3/Q4 flows from 6/9/12-month cumulative statements.
+
+    Income-statement and operating-cash-flow values are cumulative, so subtract
+    the prior cumulative report only when the period end is exactly three months
+    earlier and unit/consolidation mode match. Balance-sheet stocks are not
+    differenced. Missing or incompatible data is left unavailable.
+    """
+    parsed = [
+        r for r in reports
+        if isinstance(r.get("financial_metrics"), dict)
+        and isinstance(r.get("ratios"), dict)
+    ]
+    quarters = []
+    for report in parsed:
+        if report.get("period_type") == "3":
+            direct = dict(report)
+            direct["quarter_number"] = 1
+            direct["quarterly_derived_from_cumulative"] = False
+            quarters.append(direct)
+
+    flow_metrics = (
+        "revenue", "gross_profit", "operating_profit", "net_profit",
+        "operating_cash_flow", "finance_cost",
+    )
+    months_by_period = {"3": 3, "6": 6, "9": 9, "annual": 12}
+    period_by_months = {3: "3", 6: "6", 9: "9", 12: "annual"}
+
+    for current in parsed:
+        months = months_by_period.get(str(current.get("period_type") or ""))
+        if months not in (6, 9, 12):
+            continue
+        current_end = _period_month_index(current)
+        if current_end is None:
+            continue
+        current_index, current_day = current_end
+        previous_kind = period_by_months[months - 3]
+        expected_index = current_index - 3
+        current_unit = normalize_text(current.get("report_unit_hint") or "")
+        current_mode = current.get("consolidation_mode")
+        possible_previous = []
+        for previous in parsed:
+            if previous.get("period_type") != previous_kind:
+                continue
+            previous_end = _period_month_index(previous)
+            if previous_end is None:
+                continue
+            previous_index, previous_day = previous_end
+            if previous_index != expected_index or abs(previous_day - current_day) > 3:
+                continue
+            if previous.get("consolidation_mode") != current_mode:
+                continue
+            previous_unit = normalize_text(previous.get("report_unit_hint") or "")
+            if not current_unit or not previous_unit or current_unit != previous_unit:
+                continue
+            possible_previous.append(previous)
+        if not possible_previous:
+            continue
+        previous = max(possible_previous, key=lambda r: str(r.get("date") or ""))
+
+        derived_metrics = {}
+        for metric_name in flow_metrics:
+            now_metric = (current.get("financial_metrics") or {}).get(metric_name)
+            old_metric = (previous.get("financial_metrics") or {}).get(metric_name)
+            now_value = now_metric.get("primary_value_candidate") if isinstance(now_metric, dict) else None
+            old_value = old_metric.get("primary_value_candidate") if isinstance(old_metric, dict) else None
+            if not isinstance(now_value, (int, float)) or not isinstance(old_value, (int, float)):
+                continue
+            if not math.isfinite(float(now_value)) or not math.isfinite(float(old_value)):
+                continue
+            difference = float(now_value) - float(old_value)
+            derived_metrics[metric_name] = {
+                "matched_label": f"مقدار مستقل فصل {months // 3} از تفاضل گزارش‌های تجمیعی",
+                "row_text": f"{current.get('title', '')} منهای {previous.get('title', '')}",
+                "numeric_values": [{"raw": difference, "value": difference}],
+                "primary_value_candidate": difference,
+            }
+        if not any(key in derived_metrics for key in ("revenue", "net_profit")):
+            continue
+        derived = dict(current)
+        derived["title"] = f"فصل {months // 3} استخراج‌شده از گزارش تجمیعی: {current.get('title', '')}"
+        derived["period_type"] = "3"
+        derived["quarter_number"] = months // 3
+        derived["quarterly_derived_from_cumulative"] = True
+        derived["quarterly_source_current_title"] = current.get("title", "")
+        derived["quarterly_source_previous_title"] = previous.get("title", "")
+        derived["quarterly_source_current_url"] = current.get("url") or current.get("excel_url") or ""
+        derived["quarterly_source_previous_url"] = previous.get("url") or previous.get("excel_url") or ""
+        derived["financial_metrics"] = derived_metrics
+        derived["ratios"] = metrics_and_ratios(derived_metrics)
+        quarters.append(derived)
+
+    quarters.sort(
+        key=lambda r: (
+            str(r.get("fiscal_year_end") or ""),
+            str(r.get("date") or ""),
+            int(r.get("quarter_number") or 0),
+        ),
+        reverse=True,
+    )
+    # One best row per report period/mode/unit; direct and derived observations can
+    # otherwise duplicate a quarter when a source publishes both variants.
+    deduped = []
+    seen = set()
+    for row in quarters:
+        key = (
+            str(row.get("fiscal_year_end") or ""),
+            str(row.get("consolidation_mode") or ""),
+            normalize_text(row.get("report_unit_hint") or ""),
+            int(row.get("quarter_number") or 0),
+        )
+        if key not in seen:
+            seen.add(key)
+            deduped.append(row)
+    return deduped
+
+
 def score_fundamentals(reports):
     parsed = [r for r in reports if isinstance(r.get("ratios"), dict) and r.get("financial_metrics")]
     if not parsed:
@@ -1314,7 +1467,7 @@ def score_fundamentals(reports):
     # month/day, one Jalali year apart, identical consolidation mode and verified units.
     # The reports were selected independently of their publication dates, since companies
     # publish on different days.
-    quarterly = [r for r in parsed if r.get("period_type") == "3"]
+    quarterly = derive_standalone_quarters(parsed)
     quarterly.sort(
         key=lambda r: (
             str(r.get("fiscal_year_end") or ""),
@@ -1376,7 +1529,11 @@ def score_fundamentals(reports):
             evidence.append("رشد جریان نقد عملیاتی در مقایسهٔ سال‌به‌سالِ ۳ماهه")
         elif cash_q_growth is not None and cash_q_growth < 0:
             evidence.append("هشدار: جریان نقد عملیاتی ۳ماهه نسبت به دورهٔ مشابه سال قبل کاهش یافته")
-        quarterly_comparison_status = "مقایسهٔ مقدماتی دو صورت مالی ۳ماهه با تاریخ پایان هم‌دوره و واحد یکسان"
+        quarterly_comparison_status = (
+            "مقایسهٔ سال‌به‌سال فصل مستقل استخراج‌شده از گزارش تجمیعی با واحد و سری یکسان"
+            if current_q.get("quarterly_derived_from_cumulative")
+            else "مقایسهٔ مقدماتی دو صورت مالی ۳ماهه با تاریخ پایان هم‌دوره و واحد یکسان"
+        )
     elif len(quarterly) >= 2:
         quarterly_comparison_status = "گزارش‌های ۳ماهه موجودند، اما تاریخ پایان، واحد یا نوع تلفیقی برای مقایسهٔ معتبر یکسان نیست"
 
