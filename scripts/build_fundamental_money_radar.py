@@ -50,7 +50,7 @@ CODAL_DELAY = 0.08
 MAX_GENERAL_SEARCH_PAGES = 2
 MAX_FINANCIAL_SEARCH_PAGES = 2
 MAX_PROJECT_DETAILS_PER_STOCK = 1
-MAX_FINANCIAL_DETAILS_PER_STOCK = 2
+MAX_FINANCIAL_DETAILS_PER_STOCK = 5
 FLOW_WINDOWS = (5, 20, 60, 120, 252)
 COMMON_EQUITY_ISIN_PREFIXES = ("IRO1", "IRO3")
 
@@ -940,30 +940,55 @@ def report_year_end(report):
 
 
 def choose_financial_reports(reports):
-    reports = [r for r in reports if (r.get("url") or r.get("excel_url")) and (r.get("has_html") or r.get("has_excel") or "صورت" in r.get("title", ""))]
+    """Select current interim statements first, then annual comparators.
+
+    A previous ordering bug placed two annual reports before the interim report while
+    enforcing a two-report cap, which could silently exclude every 3/6/9-month statement.
+    Keep the latest available statement for each interim period plus two annual statements.
+    """
+    reports = [
+        r for r in reports
+        if (r.get("url") or r.get("excel_url"))
+        and (r.get("has_html") or r.get("has_excel") or "صورت" in r.get("title", ""))
+        and "صورت" in r.get("title", "")
+    ]
     reports.sort(key=lambda r: str(r.get("date") or ""), reverse=True)
-    annuals = [r for r in reports if report_period_key(r) == "annual" and "صورت" in r.get("title", "")]
+
+    annuals = [r for r in reports if report_period_key(r) == "annual"]
     # Keep one consistent parent-company/consolidated series and avoid duplicate filings for the same year.
     standalone = [r for r in annuals if "تلفیقی" not in normalize_text(r.get("title", ""))]
     if len({report_year_end(r) for r in standalone if report_year_end(r)}) >= 2:
         annuals = standalone
     unique_annuals, annual_keys = [], set()
     for report in annuals:
-        key = report_year_end(report) or (normalize_text(report.get("title", ""))[:60])
+        key = report_year_end(report) or normalize_text(report.get("title", ""))[:60]
         if key not in annual_keys:
             annual_keys.add(key)
             unique_annuals.append(report)
-    interim = [r for r in reports if report_period_key(r) in ("3", "6", "9") and "صورت" in r.get("title", "")]
+
+    interim = [r for r in reports if report_period_key(r) in ("3", "6", "9")]
     selected, seen = [], set()
-    candidates = unique_annuals[:2] + interim[:1]
-    for r in candidates:
-        key = r.get("url") or r.get("excel_url") or r.get("tracing_no") or r.get("title")
+
+    # Prioritize at least one 3-month report whenever available, regardless of
+    # the latest 6/9-month release date, then retain the latest 6- and 9-month
+    # reports and up to two annual comparators for earnings/cash-flow context.
+    candidates = []
+    for period in ("3", "6", "9"):
+        candidates.extend([r for r in interim if report_period_key(r) == period][:1])
+    candidates.extend(unique_annuals[:2])
+
+    for report in candidates:
+        key = report.get("url") or report.get("excel_url") or report.get("tracing_no") or report.get("title")
         if key in seen:
             continue
-        selected.append(r)
+        selected.append(report)
         seen.add(key)
         if len(selected) >= MAX_FINANCIAL_DETAILS_PER_STOCK:
             break
+
+    # Order selected rows by publication date for downstream latest-report scoring,
+    # while the result still contains a quarter report if one was available.
+    selected.sort(key=lambda r: str(r.get("date") or ""), reverse=True)
     return selected
 
 
