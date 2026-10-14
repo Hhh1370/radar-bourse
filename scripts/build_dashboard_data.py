@@ -27,6 +27,7 @@ FUND_FILE = DATA / "fundamental_money_radar.json"
 CODAL_FILE = DATA / "codal_disclosures_latest.json"
 LEDGER_FILE = DATA / "codal_filing_ledger.json"
 OUTPUT_FILE = DATA / "radar_dashboard.json"
+VALIDATION_FILE = DATA / "radar_validation.json"
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -821,6 +822,15 @@ def main() -> None:
             "history_rows": [], "quality_note": "Historical ratio dataset is unreadable.",
         }
 
+    try:
+        validation_snapshot = read_json(VALIDATION_FILE) if VALIDATION_FILE.is_file() else {}
+    except (OSError, ValueError, json.JSONDecodeError):
+        validation_snapshot = {}
+
+    validation_horizons = validation_snapshot.get("horizons", {}) if isinstance(validation_snapshot.get("horizons"), dict) else {}
+    validation_20d = validation_horizons.get("20", {}) if isinstance(validation_horizons.get("20"), dict) else {}
+    validation_60d = validation_horizons.get("60", {}) if isinstance(validation_horizons.get("60"), dict) else {}
+
     tech_rows = tech.get("all_eligible_ranked")
     if not isinstance(tech_rows, list) or not tech_rows:
         tech_rows = tech.get("top_50_for_review", [])
@@ -1189,6 +1199,16 @@ def main() -> None:
 
     source_warnings = []
     ledger_summary = ledger.get("last_run", {}) if isinstance(ledger.get("last_run"), dict) else {}
+    validation_status = str(validation_snapshot.get("validation_status") or "not_run")
+    if validation_status == "not_run":
+        source_warnings.append("آزمون خارج از نمونهٔ رتبه‌بندی هنوز اجرا نشده است؛ امتیاز تکنیکال را پیش‌بینی بازده تلقی نکن.")
+    elif validation_status == "insufficient_history_for_validation":
+        source_warnings.append("آزمون خارج از نمونه اجرا شده، اما پوشش/تعداد دوره‌ها برای نتیجه‌گیری آماری کافی نیست.")
+    elif validation_status == "mixed_or_negative_out_of_sample_evidence":
+        source_warnings.append("آزمون تاریخی رتبه‌بندی شواهد مثبت سازگار نشان نداده است؛ رتبه را سیگنال سودآوری تلقی نکن.")
+    elif validation_status == "positive_out_of_sample_evidence":
+        source_warnings.append("رتبه‌بندی در آزمون تاریخی شواهد مثبت نشان داده، اما سوگیری بقا، هزینه معامله و تعدیلات شرکتی هنوز محدودیت‌اند.")
+
     if not ledger_rows:
         source_warnings.append("دفتر پایدار گزارش‌های کدال هنوز خالی است؛ پردازش انتشار گزارش‌های تازه باید بررسی شود.")
     elif not ledger_summary.get("official_statement_tables_verified", False):
@@ -1282,6 +1302,14 @@ def main() -> None:
             "technical_analyzed": tech.get("analyzed_count"),
             "technical_eligible": tech.get("eligible_for_long_term_ranking"),
             "technical_errors": tech.get("analysis_errors"),
+            "technical_validation_status": validation_status,
+            "technical_validation_generated_at_utc": str(validation_snapshot.get("generated_at_utc") or ""),
+            "technical_validation_20d_fold_count": validation_20d.get("fold_count", 0),
+            "technical_validation_20d_median_rank_ic": finite_number(validation_20d.get("median_spearman_rank_ic")) and validation_20d.get("median_spearman_rank_ic") or None,
+            "technical_validation_20d_median_top_quintile_excess_pct": validation_20d.get("median_top_quintile_excess_vs_universe_pct"),
+            "technical_validation_60d_fold_count": validation_60d.get("fold_count", 0),
+            "technical_validation_60d_median_rank_ic": finite_number(validation_60d.get("median_spearman_rank_ic")) and validation_60d.get("median_spearman_rank_ic") or None,
+            "technical_validation_60d_median_top_quintile_excess_pct": validation_60d.get("median_top_quintile_excess_vs_universe_pct"),
             "technical_candidates_shown": min(10, len(candidates)),
             "technical_main_count": min(5, len(candidates)),
             "technical_watch_count": max(0, min(5, len(candidates) - 5)),
@@ -1325,6 +1353,32 @@ def main() -> None:
                 "label": "تاریخچهٔ قیمت نهایت‌نگر",
                 "status": "موجود",
                 "note": str(tech.get("warning") or ""),
+            },
+            "technical_validation": {
+                "generated_at_utc": str(validation_snapshot.get("generated_at_utc") or ""),
+                "label": "اعتبارسنجی خارج از نمونهٔ رتبه‌بندی",
+                "status": {
+                    "positive_out_of_sample_evidence": "شواهد تاریخی مثبت؛ نه تضمین بازده",
+                    "mixed_or_negative_out_of_sample_evidence": "شواهد مثبت سازگار تأیید نشد",
+                    "insufficient_history_for_validation": "داده/دورهٔ کافی برای نتیجه‌گیری نیست",
+                }.get(validation_status, "هنوز اجرا نشده"),
+                "note": (
+                    "وضعیت: " + validation_status
+                    + "؛ ۲۰ جلسه‌ای: تعداد دوره="
+                    + str(validation_20d.get("fold_count", 0))
+                    + "، میانه IC="
+                    + str(validation_20d.get("median_spearman_rank_ic"))
+                    + "، مازاد پنجک بالا نسبت به کل="
+                    + str(validation_20d.get("median_top_quintile_excess_vs_universe_pct"))
+                    + "٪؛ ۶۰ جلسه‌ای: تعداد دوره="
+                    + str(validation_60d.get("fold_count", 0))
+                    + "، میانه IC="
+                    + str(validation_60d.get("median_spearman_rank_ic"))
+                    + "، مازاد پنجک بالا="
+                    + str(validation_60d.get("median_top_quintile_excess_vs_universe_pct"))
+                    + "٪. آزمون قیمت‌محور است، بدون سود نقدی/هزینه معامله و با سوگیری بقا."
+                ),
+                "source_url": "https://github.com/Hhh1370/radar-bourse/blob/main/data/radar_validation.json",
             },
             "fundamental": {
                 "generated_at_utc": latest_fundamental,
