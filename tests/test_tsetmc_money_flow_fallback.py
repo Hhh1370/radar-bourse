@@ -1,7 +1,7 @@
 """Tests for safe TSETMC host fallback and history freshness checks."""
 import unittest
 from datetime import date
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from scripts import build_fundamental_money_radar as radar
 
@@ -30,7 +30,7 @@ class TsetmcFallbackTests(unittest.TestCase):
         radar.TSETMC_LEGACY_UNAVAILABLE_REASON = self.old_legacy_reason
 
     def test_parse_legacy_csv_maps_real_and_legal_fields_without_inventing_missing_values(self):
-        row = "14050721,10,2,5,1,100,20,50,10,1000,200,500,100;"
+        row = "1405/07/21,10,2,5,1,100,20,50,10,1000,200,500,100;"
         result = radar.parse_legacy_client_type_csv(row)
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["date_raw"], "14050721")
@@ -40,6 +40,21 @@ class TsetmcFallbackTests(unittest.TestCase):
         self.assertEqual(result[0]["sell_real_value"], 500.0)
         self.assertEqual(result[0]["buy_legal_value"], 200.0)
         self.assertEqual(result[0]["sell_legal_value"], 100.0)
+
+    def test_legacy_fetch_accepts_numeric_ins_code_and_parses_real_http_payload(self):
+        rows = [
+            f"202610{day:02d},10,2,5,1,100,20,50,10,1000,200,500,100"
+            for day in range(1, 29)
+        ]
+        response_text = ";".join(rows) + ";"
+        mock_response = MagicMock()
+        mock_response.__enter__.return_value = mock_response
+        mock_response.read.return_value = response_text.encode("utf-8")
+        with patch.object(radar.urllib.request, "urlopen", return_value=mock_response) as urlopen:
+            result = radar.fetch_legacy_client_type_history("7503669593172728")
+        self.assertEqual(len(result), 28)
+        self.assertEqual(result[0]["buy_real_value"], 1000.0)
+        self.assertIn("old.tsetmc.com/tsev2/data/clienttype.aspx", urlopen.call_args.args[0].full_url)
 
     def test_fetch_flow_uses_legacy_csv_when_both_json_hosts_fail(self):
         history = [
