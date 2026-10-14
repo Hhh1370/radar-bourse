@@ -2,6 +2,12 @@ name: Build Fundamental and Money Flow Radar
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/build_fundamental_money_radar.py"
+      - "tests/test_quarterly_fundamental_scoring.py"
+      - ".github/workflows/build-fundamental-money-radar.yml"
   # No daily fundamental refresh: process staggered public filing links once per week.
   schedule:
     - cron: "0 16 * * 6"
