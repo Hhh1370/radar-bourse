@@ -1,0 +1,82 @@
+name: Validate Technical Multi-Bagger Radar
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/validate_multibagger_radar.py"
+      - "scripts/build_technical_radar.py"
+      - "scripts/validate_radar_scores.py"
+      - "data/stock_universe.json"
+      - "data/history/**"
+      - ".github/workflows/validate-multibagger-radar.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: validate-multibagger-radar
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run regression tests
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/build_technical_radar.py scripts/validate_radar_scores.py scripts/validate_multibagger_radar.py
+          python -m unittest discover -s tests -p "test_technical_factors.py" -v
+          python -m unittest discover -s tests -p "test_radar_validation.py" -v
+      - name: Run multi-bagger walk-forward test
+        run: python -u scripts/validate_multibagger_radar.py
+      - name: Validate report contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path("data/technical_multibagger_validation.json").read_text(encoding="utf-8"))
+          assert p.get("status") in {"80pct_precision_gate_passed", "80pct_precision_not_validated"}
+          assert len(p.get("folds", [])) >= 1
+          assert set(p.get("results", {})) == {"240x2", "240x3", "500x2", "500x3"}
+          for target in p["results"].values():
+              for pct in ("top_5_percent", "top_10_percent", "top_20_percent"):
+                  assert pct in target
+          print("MULTIBAGGER_REPORT_VALID")
+          print("STATUS:", p["status"])
+          print("FOLDS:", p["dataset"]["folds_with_usable_universe"])
+          for target, rows in p["results"].items():
+              top = rows["top_5_percent"]
+              print(f"{target}: top5 precision={top['precision_pct']} median_fold={top['median_fold_precision_pct']} base={top['base_rate_pct']} recall={top['recall_pct']} selected={top['selected_count']}")
+          PY
+      - name: Commit validation report
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/technical_multibagger_validation.json
+          if git diff --cached --quiet; then
+            echo "Validation report unchanged."
+          else
+            git commit -m "Update technical multi-bagger validation"
+            git push origin main
+          fi
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: technical-multibagger-validation
+          path: data/technical_multibagger_validation.json
+          if-no-files-found: warn
+          retention-days: 30
