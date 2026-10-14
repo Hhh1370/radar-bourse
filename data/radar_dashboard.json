@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T10:34:01+00:00",
+  "generated_at_utc": "2026-10-14T10:54:50+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -17,7 +17,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-14T07:27:53+00:00",
-    "fundai_ratio_snapshot_age_hours": 3.1,
+    "fundai_ratio_snapshot_age_hours": 3.4,
     "fundai_ratio_matched_count": 535,
     "fundai_ratio_scored_count": 532,
     "final_credit_grade_count": 0,
@@ -55,7 +55,7 @@
       "generated_at_utc": "2026-10-14T07:27:53+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 3.1 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 3.4 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "codal_channels": {
