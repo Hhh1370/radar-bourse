@@ -10,6 +10,7 @@ on:
       - "tests/test_codal_summary_fundamentals.py"
       - ".github/workflows/build-dashboard-data.yml"
       - "data/technical_radar.json"
+      - "data/radar_validation.json"
       - "data/fundamental_money_radar.json"
       - "data/codal_disclosures_latest.json"
       - "data/codal_filing_ledger.json"
