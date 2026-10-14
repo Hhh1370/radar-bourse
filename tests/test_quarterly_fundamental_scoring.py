@@ -1,7 +1,12 @@
 """Tests for conservative same-period year-over-year quarterly fundamental scoring."""
 import unittest
 
-from scripts.build_fundamental_money_radar import derive_standalone_quarters, score_fundamentals
+from scripts.build_fundamental_money_radar import (
+    derive_standalone_quarters,
+    excel_service_url_from_report_url,
+    public_statement_report,
+    score_fundamentals,
+)
 
 
 def statement(end_date, published, revenue, profit, operating_cash, unit="میلیون ریال", mode="standalone"):
@@ -115,6 +120,36 @@ class QuarterlyFundamentalScoringTests(unittest.TestCase):
         ]
         mismatch_quarters = derive_standalone_quarters(mismatch)
         self.assertFalse(any(row.get("quarterly_derived_from_cumulative") for row in mismatch_quarters if row.get("fiscal_year_end") == "1405-06-31"))
+
+
+    def test_public_codal_link_maps_to_excel_html_and_quarter_period(self):
+        url = "https://www.codal.ir/Reports/Decision.aspx?LetterSerial=abc%3D%3D&rt=0"
+        report = public_statement_report({
+            "link_title": "مشاهده گزارش",
+            "primary_category": "صورت‌های مالی/حسابرسی",
+            "report_period": "۳ ماهه منتهی به ۱۴۰۵/۰۳/۳۱",
+            "symbol": "فولاد",
+            "company": "فولاد مبارکه",
+            "url": url,
+            "date": "2026-07-05",
+        })
+        self.assertIsNotNone(report)
+        self.assertEqual(report["period_type"], "3")
+        self.assertEqual(report["fiscal_year_end"], "1405-03-31")
+        self.assertTrue(report["excel_url"].startswith("https://excel.codal.ir/service/Excel/GetAll/"))
+        self.assertEqual(
+            excel_service_url_from_report_url(url),
+            "https://excel.codal.ir/service/Excel/GetAll/abc%3D%3D/0",
+        )
+
+    def test_public_codal_link_without_period_is_not_scored(self):
+        report = public_statement_report({
+            "title": "گزارش صورت‌های مالی",
+            "primary_category": "صورت‌های مالی/حسابرسی",
+            "symbol": "نماد",
+            "url": "https://www.codal.ir/Reports/Decision.aspx?LetterSerial=serial1",
+        })
+        self.assertIsNone(report)
 
 
 
