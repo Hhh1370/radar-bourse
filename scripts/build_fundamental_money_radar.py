@@ -1310,9 +1310,82 @@ def score_fundamentals(reports):
             growth["status"] = "واحد گزارش سالانه با اطمینان تطبیق داده نشد؛ رشد امتیازدهی نشد"
     else:
         growth["status"] = "دو صورت مالی سالانهٔ هم‌سری قابل تحلیل موجود نیست؛ رشد سال‌به‌سال امتیازدهی نشد"
-    score = min(100, score + growth_points)
+    # Compare like-for-like three-month statements only: matching fiscal year-end
+    # month/day, one Jalali year apart, identical consolidation mode and verified units.
+    # The reports were selected independently of their publication dates, since companies
+    # publish on different days.
+    quarterly = [r for r in parsed if r.get("period_type") == "3"]
+    quarterly.sort(
+        key=lambda r: (
+            str(r.get("fiscal_year_end") or ""),
+            str(r.get("date") or ""),
+        ),
+        reverse=True,
+    )
+    quarterly_growth = {}
+    quarterly_growth_points = 0
+    quarterly_comparison_status = "دو صورت مالی ۳ماههٔ قابل‌مقایسه هنوز موجود نیست"
+    quarter_pair = None
+    if quarterly:
+        current_q = quarterly[0]
+        current_end = str(current_q.get("fiscal_year_end") or "")
+        current_match = re.fullmatch(r"(13|14)(\d{2})-(\d{2})-(\d{2})", current_end)
+        if current_match:
+            cy = int(current_match.group(1) + current_match.group(2))
+            cm, cd = int(current_match.group(3)), int(current_match.group(4))
+            for candidate in quarterly[1:]:
+                prev_end = str(candidate.get("fiscal_year_end") or "")
+                prev_match = re.fullmatch(r"(13|14)(\d{2})-(\d{2})-(\d{2})", prev_end)
+                if not prev_match:
+                    continue
+                py = int(prev_match.group(1) + prev_match.group(2))
+                pm, pd = int(prev_match.group(3)), int(prev_match.group(4))
+                same_series = candidate.get("consolidation_mode") == current_q.get("consolidation_mode")
+                units_match = (
+                    current_q.get("report_unit_hint")
+                    and candidate.get("report_unit_hint")
+                    and normalize_text(current_q.get("report_unit_hint")) == normalize_text(candidate.get("report_unit_hint"))
+                )
+                if cy - py == 1 and (cm, cd) == (pm, pd) and same_series and units_match:
+                    quarter_pair = (current_q, candidate)
+                    break
+
+    if quarter_pair:
+        current_q, previous_q = quarter_pair
+        for key in ("revenue", "net_profit", "operating_cash_flow"):
+            now_value, old_value = metric_value(current_q, key), metric_value(previous_q, key)
+            # Percentage growth is meaningful only with a positive prior-year baseline.
+            if now_value is not None and old_value is not None and old_value > 0:
+                quarterly_growth[key + "_yoy_pct"] = round((now_value / old_value - 1) * 100, 2)
+        rev_q_growth = quarterly_growth.get("revenue_yoy_pct")
+        profit_q_growth = quarterly_growth.get("net_profit_yoy_pct")
+        cash_q_growth = quarterly_growth.get("operating_cash_flow_yoy_pct")
+        if rev_q_growth is not None and rev_q_growth > 0:
+            quarterly_growth_points += 4
+            evidence.append("رشد درآمد در مقایسهٔ دو گزارش ۳ماههٔ هم‌دوره")
+        if rev_q_growth is not None and rev_q_growth >= 15:
+            quarterly_growth_points += 3
+            evidence.append("رشد درآمد ۳ماهه دست‌کم ۱۵٪ نسبت به سال قبل")
+        if profit_q_growth is not None and profit_q_growth > 0:
+            quarterly_growth_points += 5
+            evidence.append("رشد سود خالص در مقایسهٔ سال‌به‌سالِ ۳ماهه")
+        elif profit_q_growth is not None and profit_q_growth < 0:
+            evidence.append("هشدار: سود خالص ۳ماهه نسبت به دورهٔ مشابه سال قبل کاهش یافته")
+        if cash_q_growth is not None and cash_q_growth > 0:
+            quarterly_growth_points += 3
+            evidence.append("رشد جریان نقد عملیاتی در مقایسهٔ سال‌به‌سالِ ۳ماهه")
+        elif cash_q_growth is not None and cash_q_growth < 0:
+            evidence.append("هشدار: جریان نقد عملیاتی ۳ماهه نسبت به دورهٔ مشابه سال قبل کاهش یافته")
+        quarterly_comparison_status = "مقایسهٔ مقدماتی دو صورت مالی ۳ماهه با تاریخ پایان هم‌دوره و واحد یکسان"
+    elif len(quarterly) >= 2:
+        quarterly_comparison_status = "گزارش‌های ۳ماهه موجودند، اما تاریخ پایان، واحد یا نوع تلفیقی برای مقایسهٔ معتبر یکسان نیست"
+
+    score = min(100, score + growth_points + quarterly_growth_points)
     annual_count = len(annual_series)
-    coverage = "قابل‌مقایسه‌تر" if annual_count >= 2 and isinstance(growth.get("revenue_yoy_pct"), (int, float)) else "مقدماتی"
+    coverage = "قابل‌مقایسه‌تر" if (
+        (annual_count >= 2 and isinstance(growth.get("revenue_yoy_pct"), (int, float)))
+        or (quarter_pair is not None and isinstance(quarterly_growth.get("revenue_yoy_pct"), (int, float)))
+    ) else "مقدماتی"
     return {
         "score": score,
         "status": "امتیاز مقدماتی؛ الگوی جداول و واحدهای گزارش باید بازبینی شوند",
@@ -1321,8 +1394,11 @@ def score_fundamentals(reports):
         "latest_report_date": latest.get("date"),
         "annual_reports_parsed": annual_count,
         "annual_growth_candidates_pct": growth,
+        "quarterly_growth_candidates_pct": quarterly_growth,
+        "quarterly_comparison_status": quarterly_comparison_status,
+        "quarterly_growth_points": quarterly_growth_points,
         "coverage_grade": coverage,
-        "caveat": "این امتیاز غربالگری اولیه است، نه ارزش‌گذاری نهایی. مقایسه دوره‌ها/واحدها باید درست باشد؛ بانک‌ها و شرکت‌های مالی معیارهای متفاوت دارند.",
+        "caveat": "این امتیاز غربالگری اولیه است، نه ارزش‌گذاری نهایی. ارقام از استخراج اکتشافی جدول به‌دست می‌آیند؛ پیش از رتبه‌بندی نهایی باید واحد، تلفیقی/جداگانه و برچسب سطرها با گزارش رسمی بازبینی شوند. بانک‌ها و شرکت‌های مالی معیارهای متفاوت دارند.",
     }
 
 
