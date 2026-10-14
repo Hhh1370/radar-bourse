@@ -47,6 +47,7 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import math
           from pathlib import Path
           p = json.loads(Path("data/technical_radar.json").read_text(encoding="utf-8"))
           rows = p.get("top_50_for_review", [])
