@@ -49,15 +49,16 @@ def _observations(row: dict[str, Any]) -> list[dict[str, Any]]:
     # OCR is useful for discovery, but OCR-only figures must not affect a score until
     # reconciled with the official filing. This also protects older ledger rows that
     # predate the per-observation confidence field.
-    ocr_text = str(metrics.get("image_ocr_text") or "") if isinstance(metrics, dict) else ""
+    # Older ledger rows have only a row-level OCR confidence marker. Until they are
+    # reprocessed with per-observation provenance, exclude those rows from scoring.
+    row_confidence = str(metrics.get("source_confidence") or "") if isinstance(metrics, dict) else ""
     usable = []
     for item in values:
         if not isinstance(item, dict):
             continue
         if item.get("evidence_confidence") == "low_ocr_candidate":
             continue
-        context = str(item.get("context") or "").strip()
-        if ocr_text and context and context in ocr_text:
+        if row_confidence == "low_ocr_candidate" and "evidence_confidence" not in item:
             continue
         usable.append(item)
     return usable
