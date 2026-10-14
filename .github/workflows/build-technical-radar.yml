@@ -34,6 +34,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install test dependency
+        run: python -m pip install --upgrade pip openpyxl
+
       - name: Validate Python syntax and regression tests
         run: |
           # This suite also guards quarterly financial-report selection and same-period YoY scoring.
