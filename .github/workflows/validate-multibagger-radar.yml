@@ -49,9 +49,11 @@ jobs:
           assert p.get("status") in {"80pct_precision_gate_passed", "80pct_precision_not_validated"}
           assert len(p.get("folds", [])) >= 1
           assert set(p.get("results", {})) == {"240x2", "240x3", "500x2", "500x3"}
-          for target in p["results"].values():
-              for pct in ("top_5_percent", "top_10_percent", "top_20_percent"):
-                  assert pct in target
+          for models in p["results"].values():
+              assert "current_model" in models
+              for rows in models.values():
+                  for pct in ("top_5_percent", "top_10_percent", "top_20_percent"):
+                      assert pct in rows
           print("MULTIBAGGER_REPORT_VALID")
           print("STATUS:", p["status"])
           print("FOLDS:", p["dataset"]["folds_with_usable_universe"])
