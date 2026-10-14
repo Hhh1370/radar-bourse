@@ -36,7 +36,7 @@ jobs:
 
       - name: Validate Python syntax and regression tests
         run: |
-          python -m py_compile scripts/build_technical_radar.py scripts/build_dashboard_data.py tests/test_technical_targets.py
+          python -m py_compile scripts/build_technical_radar.py scripts/build_dashboard_data.py scripts/build_fundamental_money_radar.py tests/test_technical_targets.py tests/test_technical_factors.py tests/test_financial_report_selection.py
           python -m unittest discover -s tests -v
 
       - name: Build technical radar
@@ -54,6 +54,20 @@ jobs:
           assert all("relative_momentum_score" in row for row in rows), "Relative momentum score missing"
           assert all(isinstance(row["risk_adjusted_score"], (int, float)) for row in rows), "Risk-adjusted score missing"
           assert all(isinstance(row.get("technical_rank_score"), (int, float)) for row in rows), "Continuous technical rank score missing"
+          expected_factors = {
+              "multi_timeframe_trend", "daily_market_structure", "weekly_market_structure",
+              "monthly_market_structure", "volume_price_pressure", "breakout_structure",
+              "trend_efficiency", "volatility_quality",
+          }
+          for row in rows:
+              factors = row.get("technical_factor_scores")
+              assert isinstance(factors, dict) and expected_factors.issubset(factors), f"Multi-factor technical scores missing for {row.get('symbol')}"
+              assert all(value is None or (isinstance(value, (int, float)) and math.isfinite(value) and 0 <= value <= 100) for value in factors.values()), f"Invalid technical factor score for {row.get('symbol')}"
+              factor_weight = row.get("technical_factor_available_weight")
+              assert isinstance(factor_weight, (int, float)) and 0 <= factor_weight <= 100, f"Invalid factor coverage for {row.get('symbol')}"
+              assert isinstance(row.get("market_structure"), dict), f"Market structure diagnostics missing for {row.get('symbol')}"
+              assert isinstance(row.get("volume_price_analysis"), dict), f"Volume-price diagnostics missing for {row.get('symbol')}"
+              assert isinstance(row.get("breakout_analysis"), dict), f"Breakout diagnostics missing for {row.get('symbol')}"
           universe = p.get("all_eligible_ranked", [])
           assert len(universe) == p.get("eligible_for_long_term_ranking"), "Full eligible universe must be retained"
           def sort_key(row):
@@ -73,6 +87,7 @@ jobs:
           keys = [sort_key(row) for row in rows]
           assert keys == sorted(keys), "Technical candidates are not sorted by the declared ranking fields"
           print(f"TECHNICAL_OUTPUT_VALID: {len(rows)} candidates; full_eligible={len(universe)}; eligible={p.get('eligible_for_long_term_ranking')}; errors={p.get('analysis_errors')}")
+          print("MULTI_FACTOR_TECHNICAL_VALID: market structure + volume-price + breakout + trend efficiency + volatility + multi-timeframe trend")
           print("TOP_10_TECHNICAL_RANK:")
           for row in rows[:10]:
               print(f"{row['symbol']}\trank={row['technical_rank_score']}\tbase={row['risk_adjusted_score']}\trelative={row['relative_momentum_score']}")
