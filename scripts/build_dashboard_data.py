@@ -190,12 +190,13 @@ def simplify_ledger_evidence(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+# The broad provisional blend is technical-led; it is not a final credit grade.
 RATING_WEIGHTS = {
-    "fundamental": 30,
-    "earnings_quality": 15,
-    "technical": 25,
-    "money_flow": 20,
-    "projects": 10,
+    "fundamental": 20,
+    "earnings_quality": 10,
+    "technical": 55,
+    "money_flow": 10,
+    "projects": 5,
 }
 
 
@@ -684,7 +685,7 @@ def credit_assessment(
         "money_flow": flow_score,
         "projects": project_score,
     }
-    weights = {"fundamental": 30, "earnings_quality": 15, "technical": 25, "money_flow": 20, "projects": 10}
+    weights = RATING_WEIGHTS
     available_weight = sum(weights[key] for key, value in components.items() if isinstance(value, (int, float)))
     observed_component_mean = (
         round(sum(weights[key] * float(value) for key, value in components.items() if isinstance(value, (int, float))) / available_weight, 1)
@@ -907,6 +908,27 @@ def main() -> None:
         simplified_symbol_evidence = [simplify_evidence(row) for row in symbol_evidence]
         project_assessment = score_project_evidence(fundamental, simplified_symbol_evidence)
         rating = credit_assessment(item, scoring_fundamental, simplified_symbol_evidence, project_assessment)
+
+        # The shortlist ranking is intentionally technical-first. Fundamentals are
+        # a light quality overlay, not a hard gate; missing figures are omitted rather
+        # than treated as zero or positive.
+        rank_components = {
+            "technical": number(item.get("technical_rank_score"), 2),
+            "fundamental": number(scoring_fundamental.get("fundamental_score"), 2),
+            "earnings_quality": number(rating.get("component_scores", {}).get("earnings_quality"), 2),
+        }
+        rank_weights = {"technical": 75, "fundamental": 20, "earnings_quality": 5}
+        rank_weight_available = sum(
+            rank_weights[name] for name, value in rank_components.items()
+            if finite_number(value)
+        )
+        radar_rank_score = (
+            round(sum(rank_weights[name] * float(value)
+                      for name, value in rank_components.items()
+                      if finite_number(value)) / rank_weight_available, 2)
+            if finite_number(rank_components["technical"]) and rank_weight_available
+            else number(item.get("risk_adjusted_score"), 2)
+        )
         base = {
             "rank": None,
             "bucket": "watch",
@@ -1021,6 +1043,9 @@ def main() -> None:
             "instrument_kind": str(fundamental.get("instrument_kind") or "unconfirmed"),
             "credit_assessment": rating,
             "credit_score": rating.get("provisional_score"),
+            "radar_rank_score": radar_rank_score,
+            "radar_rank_components": rank_components,
+            "radar_rank_available_weight_pct": rank_weight_available,
             "credit_confidence_score": rating.get("rating_confidence_score"),
             "credit_confidence_label": rating.get("rating_confidence_label"),
             "final_credit_grade": rating.get("final_credit_grade"),
@@ -1069,9 +1094,9 @@ def main() -> None:
 
     candidates.sort(
         key=lambda row: (
-            -(float(row.get("credit_score")) if isinstance(row.get("credit_score"), (int, float)) else -1.0),
+            -(float(row.get("radar_rank_score")) if isinstance(row.get("radar_rank_score"), (int, float)) else -1.0),
             -float(row.get("technical_rank_score") or row.get("risk_adjusted_score") or 0),
-            -float(row.get("credit_confidence_score") or 0),
+            -(float(row.get("fundamental_score")) if isinstance(row.get("fundamental_score"), (int, float)) else -1.0),
             str(row.get("symbol") or ""),
         )
     )
@@ -1234,8 +1259,8 @@ def main() -> None:
         "methodology": {
             "main_and_watch": "نامزدها از کل جهان واجدشرایط تکنیکال رتبه‌بندی می‌شوند؛ ۵ مورد اول و ۵ مورد بعدی بر اساس امتیاز موقتِ اجزای معتبر موجود انتخاب می‌شوند، نه رتبهٔ نهایی بنیادی.",
             "technical_score": "امتیاز تکنیکال و جریمهٔ گرمای روند از فایل رادار تکنیکال خوانده می‌شود. امتیاز نسبی برای شکستن تساوی استفاده می‌شود و هنوز بک‌تست نشده است.",
-            "credit_model": "وزن هدف امتیاز موقت: بنیادی ۳۰٪، کیفیت سود ۱۵٪، تکنیکال ۲۵٪، پول حقیقی ۲۰٪ و طرح توسعه ۱۰٪. وقتی صورت مالی کامل امتیاز معتبر ندارد، مؤلفه بنیادی موقت از نسبت‌های TTM با مقایسهٔ نسبی در صنعت پر می‌شود؛ این جانشین تحلیل سالانه/حسابرسی‌شده نیست. فقط مؤلفه‌های عددی موجود وارد امتیاز موقت می‌شوند و وزن دادهٔ موجود جداگانه نمایش داده می‌شود.",
-            "final_rating_gate": "رتبهٔ نهایی فقط در صورت موجود بودن امتیاز بنیادی، کیفیت سود ساختاریافته، تکنیکال، پول حقیقی ۱۲ماهه و امتیاز کمی اعتبارسنجی‌شده طرح‌ها و اطمینان پوشش حداقل ۷۵ صادر می‌شود. در غیر این صورت رتبه معلق می‌ماند.",
+            "credit_model": "امتیاز تلفیقی موقت در صورت نمایش: تکنیکال ۵۵٪، بنیادی ۲۰٪، کیفیت سود ۱۰٪، پول حقیقی ۱۰٪ و پروژه ۵٪؛ وزن فقط مؤلفه‌های عددی موجود محاسبه می‌شود. این امتیاز جدا از رتبهٔ رادار است و رتبهٔ بنیادی کامل/اعتباری هدف این نسخه نیست.",
+            "final_rating_gate": "رتبهٔ اعتباری کامل در این نسخه اولویت اصلی نیست و به‌دلیل نبود بعضی داده‌های معتبر ممکن است صادر نشود؛ فهرست رادار به‌صورت مستقل با رتبهٔ تکنیکال‌محور ساخته می‌شود. برای فهرست، امتیاز رتبه: تکنیکال ۷۵٪، بنیادی معتبر ۲۰٪ و کیفیت سود ساختاریافته ۵٪؛ اجزای مفقود حذف و وزن‌های موجود نرمال می‌شوند.",
             "confidence": "امتیاز اطمینان، سنجهٔ پوشش و کیفیت داده است؛ احتمال سود یا احتمال درست بودن پیش‌بینی نیست.",
             "fundai_ratio_proxy": "امتیاز ۰ تا ۱۰۰ از رتبهٔ نسبی ROE، ROA، حاشیه سود، بدهی و مضارب مثبت P/E، P/S و P/B داخل صنعت محاسبه می‌شود؛ در صنایعی با کمتر از ۸ همتا، رتبهٔ کل بازار جایگزین می‌شود. این امتیاز مقایسه‌ای از آخرین snapshot TTM است و نه کیفیت سود کامل، ارزش ذاتی یا اعتبار نهایی.",
             "earnings_quality": "فقط از اقلام عددی خوانده‌شده از صورت مالی ساختاریافته محاسبه می‌شود؛ کلیدواژه‌های کانال در امتیاز کیفیت سود وارد نمی‌شوند.",
