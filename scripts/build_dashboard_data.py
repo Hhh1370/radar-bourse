@@ -912,8 +912,13 @@ def main() -> None:
         # The shortlist ranking is intentionally technical-first. Fundamentals are
         # a light quality overlay, not a hard gate; missing figures are omitted rather
         # than treated as zero or positive.
+        technical_rank_value = number(item.get("technical_rank_score"), 2)
+        if not finite_number(technical_rank_value):
+            technical_rank_value = number(item.get("risk_adjusted_score"), 2)
+        if not finite_number(technical_rank_value):
+            technical_rank_value = number(item.get("technical_score"), 2)
         rank_components = {
-            "technical": number(item.get("technical_rank_score"), 2),
+            "technical": technical_rank_value,
             "fundamental": number(scoring_fundamental.get("fundamental_score"), 2),
             "earnings_quality": number(rating.get("component_scores", {}).get("earnings_quality"), 2),
         }
