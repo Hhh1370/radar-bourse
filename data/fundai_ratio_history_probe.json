@@ -1,0 +1,536 @@
+{
+  "generated_at_utc": "2026-10-14T11:35:21+00:00",
+  "source": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/",
+  "method": "bounded public GET only; no authentication or access-control bypass",
+  "symbols_tested": 5,
+  "json_success_count": 5,
+  "route_schema_usable": true,
+  "results": [
+    {
+      "company_slug": "sesfa",
+      "url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/?company_slug=sesfa",
+      "http_status": 200,
+      "content_type": "application/json",
+      "body_bytes": 18969,
+      "elapsed_seconds": 3.024,
+      "error": "",
+      "json_schema": {
+        "top_type": "dict",
+        "top_keys": [
+          "company_slug",
+          "duration",
+          "durations",
+          "results"
+        ],
+        "arrays": [
+          {
+            "path": "$.durations",
+            "count": 4,
+            "first_item_type": "str",
+            "first_item_keys": [],
+            "first_item_sample": null
+          },
+          {
+            "path": "$.results",
+            "count": 20,
+            "first_item_type": "dict",
+            "first_item_keys": [
+              "company",
+              "report_date",
+              "duration_code",
+              "pe_ttm",
+              "ps_ttm",
+              "pb",
+              "peg",
+              "pegy",
+              "net_profit_margin_ttm",
+              "gross_profit_margin_ttm",
+              "roa_ttm",
+              "roe_ttm",
+              "collection_period",
+              "inventory_period",
+              "debt_to_equity",
+              "debt_to_assets",
+              "collection_period_duration",
+              "inventory_period_duration",
+              "peg_duration",
+              "pegy_duration",
+              "peers"
+            ],
+            "first_item_sample": {
+              "company": "ثاصفا",
+              "report_date": "1400-06-31",
+              "duration_code": "s-4",
+              "pe_ttm": -726.727,
+              "ps_ttm": 794.435,
+              "pb": 7.488,
+              "peg": null,
+              "pegy": null,
+              "net_profit_margin_ttm": null,
+              "gross_profit_margin_ttm": null,
+              "roa_ttm": -0.007,
+              "roe_ttm": -0.011,
+              "collection_period": 24011.79,
+              "inventory_period": null,
+              "debt_to_equity": 0.455,
+              "debt_to_assets": 0.313,
+              "collection_period_duration": null,
+              "inventory_period_duration": null,
+              "peg_duration": null,
+              "pegy_duration": null,
+              "peers": {
+                "industry": {
+                  "pe_ttm": 12.853,
+                  "ps_ttm": 4.737,
+                  "pb": 2.143,
+                  "roe_ttm": 0.148,
+                  "roa_ttm": 0.087,
+                  "net_profit_margin_ttm": 0.326,
+                  "gross_profit_margin_ttm": 0.331,
+                  "collection_period": 328.95,
+                  "inventory_period": 638.77,
+                  "debt_to_assets": 0.415,
+                  "debt_to_equity": 0.705
+                },
+                "market": {
+                  "pe_ttm": null,
+                  "ps_ttm": 2.301,
+                  "pb": null,
+                  "roe_ttm": null,
+                  "roa_ttm": -0.224,
+                  "net_profit_margin_ttm": -1.249,
+                  "gross_profit_margin_ttm": -0.434,
+                  "collection_period": 143.54,
+                  "inventory_period": 60.32,
+                  "debt_to_assets": 1.548,
+                  "debt_to_equity": null
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "company_slug": "evan",
+      "url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/?company_slug=evan",
+      "http_status": 200,
+      "content_type": "application/json",
+      "body_bytes": 18896,
+      "elapsed_seconds": 2.051,
+      "error": "",
+      "json_schema": {
+        "top_type": "dict",
+        "top_keys": [
+          "company_slug",
+          "duration",
+          "durations",
+          "results"
+        ],
+        "arrays": [
+          {
+            "path": "$.durations",
+            "count": 4,
+            "first_item_type": "str",
+            "first_item_keys": [],
+            "first_item_sample": null
+          },
+          {
+            "path": "$.results",
+            "count": 20,
+            "first_item_type": "dict",
+            "first_item_keys": [
+              "company",
+              "report_date",
+              "duration_code",
+              "pe_ttm",
+              "ps_ttm",
+              "pb",
+              "peg",
+              "pegy",
+              "net_profit_margin_ttm",
+              "gross_profit_margin_ttm",
+              "roa_ttm",
+              "roe_ttm",
+              "collection_period",
+              "inventory_period",
+              "debt_to_equity",
+              "debt_to_assets",
+              "collection_period_duration",
+              "inventory_period_duration",
+              "peg_duration",
+              "pegy_duration",
+              "peers"
+            ],
+            "first_item_sample": {
+              "company": "اوان",
+              "report_date": "1400-06-31",
+              "duration_code": "s-2",
+              "pe_ttm": 28.785,
+              "ps_ttm": 3.651,
+              "pb": 9.209,
+              "peg": null,
+              "pegy": null,
+              "net_profit_margin_ttm": 0.127,
+              "gross_profit_margin_ttm": -0.002,
+              "roa_ttm": 0.151,
+              "roe_ttm": 0.32,
+              "collection_period": 181.83,
+              "inventory_period": 2.87,
+              "debt_to_equity": 1.118,
+              "debt_to_assets": 0.528,
+              "collection_period_duration": 137.95,
+              "inventory_period_duration": 4.96,
+              "peg_duration": null,
+              "pegy_duration": 20.549,
+              "peers": {
+                "industry": {
+                  "pe_ttm": 7.718,
+                  "ps_ttm": 3.531,
+                  "pb": 3.339,
+                  "roe_ttm": 0.433,
+                  "roa_ttm": 0.236,
+                  "net_profit_margin_ttm": 0.458,
+                  "gross_profit_margin_ttm": 0.605,
+                  "collection_period": 179.27,
+                  "inventory_period": 11.52,
+                  "debt_to_assets": 0.455,
+                  "debt_to_equity": 0.834
+                },
+                "market": {
+                  "pe_ttm": 11.038,
+                  "ps_ttm": 3.293,
+                  "pb": 8.004,
+                  "roe_ttm": 0.725,
+                  "roa_ttm": 0.223,
+                  "net_profit_margin_ttm": 0.298,
+                  "gross_profit_margin_ttm": 0.34,
+                  "collection_period": 75.76,
+                  "inventory_period": 79.77,
+                  "debt_to_assets": 0.693,
+                  "debt_to_equity": 2.255
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "company_slug": "vlena",
+      "url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/?company_slug=vlena",
+      "http_status": 200,
+      "content_type": "application/json",
+      "body_bytes": 18849,
+      "elapsed_seconds": 2.105,
+      "error": "",
+      "json_schema": {
+        "top_type": "dict",
+        "top_keys": [
+          "company_slug",
+          "duration",
+          "durations",
+          "results"
+        ],
+        "arrays": [
+          {
+            "path": "$.durations",
+            "count": 4,
+            "first_item_type": "str",
+            "first_item_keys": [],
+            "first_item_sample": null
+          },
+          {
+            "path": "$.results",
+            "count": 20,
+            "first_item_type": "dict",
+            "first_item_keys": [
+              "company",
+              "report_date",
+              "duration_code",
+              "pe_ttm",
+              "ps_ttm",
+              "pb",
+              "peg",
+              "pegy",
+              "net_profit_margin_ttm",
+              "gross_profit_margin_ttm",
+              "roa_ttm",
+              "roe_ttm",
+              "collection_period",
+              "inventory_period",
+              "debt_to_equity",
+              "debt_to_assets",
+              "collection_period_duration",
+              "inventory_period_duration",
+              "peg_duration",
+              "pegy_duration",
+              "peers"
+            ],
+            "first_item_sample": {
+              "company": "ولانا",
+              "report_date": "1399-03-31",
+              "duration_code": "s-2",
+              "pe_ttm": 44.855,
+              "ps_ttm": 39.76,
+              "pb": 15.861,
+              "peg": 0.063,
+              "pegy": 0.063,
+              "net_profit_margin_ttm": 0.886,
+              "gross_profit_margin_ttm": 1.0,
+              "roa_ttm": 0.261,
+              "roe_ttm": 0.353,
+              "collection_period": 13.43,
+              "inventory_period": null,
+              "debt_to_equity": 0.352,
+              "debt_to_assets": 0.261,
+              "collection_period_duration": 13.05,
+              "inventory_period_duration": null,
+              "peg_duration": 0.113,
+              "pegy_duration": 0.113,
+              "peers": {
+                "industry": {
+                  "pe_ttm": 14.792,
+                  "ps_ttm": 25.484,
+                  "pb": 5.867,
+                  "roe_ttm": 0.397,
+                  "roa_ttm": 0.266,
+                  "net_profit_margin_ttm": 1.723,
+                  "gross_profit_margin_ttm": 0.581,
+                  "collection_period": 1.88,
+                  "inventory_period": 138.34,
+                  "debt_to_assets": 0.329,
+                  "debt_to_equity": 0.491
+                },
+                "market": {
+                  "pe_ttm": null,
+                  "ps_ttm": 17.486,
+                  "pb": null,
+                  "roe_ttm": null,
+                  "roa_ttm": -0.037,
+                  "net_profit_margin_ttm": -0.17,
+                  "gross_profit_margin_ttm": -0.127,
+                  "collection_period": 193.22,
+                  "inventory_period": 92.91,
+                  "debt_to_assets": 1.057,
+                  "debt_to_equity": null
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "company_slug": "fatolou",
+      "url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/?company_slug=fatolou",
+      "http_status": 200,
+      "content_type": "application/json",
+      "body_bytes": 1007,
+      "elapsed_seconds": 0.441,
+      "error": "",
+      "json_schema": {
+        "top_type": "dict",
+        "top_keys": [
+          "company_slug",
+          "duration",
+          "durations",
+          "results"
+        ],
+        "arrays": [
+          {
+            "path": "$.durations",
+            "count": 1,
+            "first_item_type": "str",
+            "first_item_keys": [],
+            "first_item_sample": null
+          },
+          {
+            "path": "$.results",
+            "count": 1,
+            "first_item_type": "dict",
+            "first_item_keys": [
+              "company",
+              "report_date",
+              "duration_code",
+              "pe_ttm",
+              "ps_ttm",
+              "pb",
+              "peg",
+              "pegy",
+              "net_profit_margin_ttm",
+              "gross_profit_margin_ttm",
+              "roa_ttm",
+              "roe_ttm",
+              "collection_period",
+              "inventory_period",
+              "debt_to_equity",
+              "debt_to_assets",
+              "collection_period_duration",
+              "inventory_period_duration",
+              "peg_duration",
+              "pegy_duration",
+              "peers"
+            ],
+            "first_item_sample": {
+              "company": "فطلوع",
+              "report_date": "1405-03-31",
+              "duration_code": "s-1",
+              "pe_ttm": 225.294,
+              "ps_ttm": null,
+              "pb": 7.393,
+              "peg": null,
+              "pegy": null,
+              "net_profit_margin_ttm": null,
+              "gross_profit_margin_ttm": null,
+              "roa_ttm": 0.032,
+              "roe_ttm": 0.033,
+              "collection_period": null,
+              "inventory_period": null,
+              "debt_to_equity": 0.046,
+              "debt_to_assets": 0.044,
+              "collection_period_duration": null,
+              "inventory_period_duration": null,
+              "peg_duration": null,
+              "pegy_duration": null,
+              "peers": {
+                "industry": {
+                  "pe_ttm": 16.584,
+                  "ps_ttm": 4.027,
+                  "pb": 6.234,
+                  "roe_ttm": 0.376,
+                  "roa_ttm": 0.175,
+                  "net_profit_margin_ttm": 0.244,
+                  "gross_profit_margin_ttm": 0.318,
+                  "collection_period": 98.33,
+                  "inventory_period": 125.68,
+                  "debt_to_assets": 0.532,
+                  "debt_to_equity": 1.144
+                },
+                "market": {
+                  "pe_ttm": 31.384,
+                  "ps_ttm": 1.261,
+                  "pb": null,
+                  "roe_ttm": null,
+                  "roa_ttm": 0.008,
+                  "net_profit_margin_ttm": 0.042,
+                  "gross_profit_margin_ttm": 0.116,
+                  "collection_period": 173.06,
+                  "inventory_period": 74.14,
+                  "debt_to_assets": 1.018,
+                  "debt_to_equity": null
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "company_slug": "ketram",
+      "url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/?company_slug=ketram",
+      "http_status": 200,
+      "content_type": "application/json",
+      "body_bytes": 18940,
+      "elapsed_seconds": 2.518,
+      "error": "",
+      "json_schema": {
+        "top_type": "dict",
+        "top_keys": [
+          "company_slug",
+          "duration",
+          "durations",
+          "results"
+        ],
+        "arrays": [
+          {
+            "path": "$.durations",
+            "count": 4,
+            "first_item_type": "str",
+            "first_item_keys": [],
+            "first_item_sample": null
+          },
+          {
+            "path": "$.results",
+            "count": 20,
+            "first_item_type": "dict",
+            "first_item_keys": [
+              "company",
+              "report_date",
+              "duration_code",
+              "pe_ttm",
+              "ps_ttm",
+              "pb",
+              "peg",
+              "pegy",
+              "net_profit_margin_ttm",
+              "gross_profit_margin_ttm",
+              "roa_ttm",
+              "roe_ttm",
+              "collection_period",
+              "inventory_period",
+              "debt_to_equity",
+              "debt_to_assets",
+              "collection_period_duration",
+              "inventory_period_duration",
+              "peg_duration",
+              "pegy_duration",
+              "peers"
+            ],
+            "first_item_sample": {
+              "company": "کترام",
+              "report_date": "1400-06-31",
+              "duration_code": "s-2",
+              "pe_ttm": 6.418,
+              "ps_ttm": 2.138,
+              "pb": 3.356,
+              "peg": 0.061,
+              "pegy": 0.061,
+              "net_profit_margin_ttm": 0.333,
+              "gross_profit_margin_ttm": 0.453,
+              "roa_ttm": 0.281,
+              "roe_ttm": 0.523,
+              "collection_period": 88.61,
+              "inventory_period": 111.06,
+              "debt_to_equity": 0.862,
+              "debt_to_assets": 0.463,
+              "collection_period_duration": 108.86,
+              "inventory_period_duration": 151.2,
+              "peg_duration": 0.154,
+              "pegy_duration": 0.149,
+              "peers": {
+                "industry": {
+                  "pe_ttm": 10.519,
+                  "ps_ttm": 3.136,
+                  "pb": 7.791,
+                  "roe_ttm": 0.741,
+                  "roa_ttm": 0.214,
+                  "net_profit_margin_ttm": 0.298,
+                  "gross_profit_margin_ttm": 0.345,
+                  "collection_period": 87.48,
+                  "inventory_period": 132.06,
+                  "debt_to_assets": 0.711,
+                  "debt_to_equity": 2.465
+                },
+                "market": {
+                  "pe_ttm": 7.827,
+                  "ps_ttm": 1.927,
+                  "pb": 4.639,
+                  "roe_ttm": 0.602,
+                  "roa_ttm": 0.129,
+                  "net_profit_margin_ttm": 0.246,
+                  "gross_profit_margin_ttm": 0.277,
+                  "collection_period": 53.81,
+                  "inventory_period": 65.73,
+                  "debt_to_assets": 0.785,
+                  "debt_to_equity": 3.656
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "conclusion": "Public history schema detected; integration still requires period/unit validation."
+}
