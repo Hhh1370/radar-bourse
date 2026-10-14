@@ -38,6 +38,7 @@ TSETMC_LEGACY_UNAVAILABLE_REASON = None
 CODAL_SEARCH_BASE = "https://search.codal.ir/api/search/v2/q"
 BRS_API_BASE = "https://api.brsapi.ir"
 BRS_API_KEY = os.environ.get("BRS_API_KEY", "").strip()
+BRS_API_FALLBACK_NOTE = ""
 BRS_API_DELAY = 0.22
 BRS_API_UNAVAILABLE = False
 BRS_API_UNAVAILABLE_REASON = None
@@ -2271,6 +2272,8 @@ def run_public_codal_only():
         "source": "Public Codal/Telegram filing-link ledger + Fundai ratios + direct public TSETMC history when reachable",
         "source_access_mode": "free_public_codal_and_tsetmc_flow_if_reachable",
         "brsapi_configured": False,
+        "provider_api_status": "paid_provider_preflight_failed_public_fallback" if BRS_API_FALLBACK_NOTE else "public_only_no_provider_key",
+        "provider_api_note": BRS_API_FALLBACK_NOTE or "Provider key was not used in this public-only run.",
         "input_universe_count": len(stocks),
         "coverage_verified_for_all_active_market_symbols": False,
         "codal_api_status": (
@@ -2331,7 +2334,10 @@ def run_public_codal_only():
             "This mode uses public Codal/Telegram links and attempts direct TSETMC client-type history through the CDN mirror and primary host. "
             "A 12-month money-flow score is admitted only when at least 252 sessions, adequate calendar span, fresh dates, and valid real-person values are present. "
             "Official financial tables are scored only after they are parsed; otherwise their scores remain unavailable. "
-            "If direct hosts are blocked from the runner, configure BRS_API_KEY under repository Actions secrets to enable the provider-based full scan."
+            "Provider preflight status: " + (
+                BRS_API_FALLBACK_NOTE if BRS_API_FALLBACK_NOTE
+                else "No provider key was used; direct public sources may be blocked from this runner."
+            ) + ". A key receiving HTTP 402 needs an entitled provider subscription/quota; adding the same key again will not fix access."
         ),
         "top_50_fundamental_for_review": fundamental_candidates[:50],
         "top_50_money_flow_for_review": money_candidates[:50],
@@ -2377,14 +2383,20 @@ def probe_sources():
 
 def provider_preflight_or_public_fallback():
     """Verify the paid provider once; a paywall or broken key must not create a fake full scan."""
-    global BRS_API_KEY, BRS_API_UNAVAILABLE, BRS_API_UNAVAILABLE_REASON, BRS_API_CONSECUTIVE_FAILURES
+    global BRS_API_KEY, BRS_API_UNAVAILABLE, BRS_API_UNAVAILABLE_REASON
+    global BRS_API_CONSECUTIVE_FAILURES, BRS_API_FALLBACK_NOTE
     if not BRS_API_KEY:
+        BRS_API_FALLBACK_NOTE = "No usable BRS_API_KEY configured; public-only mode selected."
         return False
     try:
         probe_sources()
+        BRS_API_FALLBACK_NOTE = ""
         return True
     except Exception as exc:
         error_text = str(exc).replace(BRS_API_KEY, "[REDACTED]")[:240]
+        BRS_API_FALLBACK_NOTE = (
+            "Paid-provider preflight failed; used public-only mode instead. " + error_text
+        )[:400]
         print("BRSAPI_PREFLIGHT_FAILED_FALLING_BACK_TO_PUBLIC_SOURCES:" + error_text)
         BRS_API_KEY = ""
         BRS_API_UNAVAILABLE = False
