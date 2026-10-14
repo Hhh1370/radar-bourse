@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "scripts/build_technical_radar.py"
+      - "scripts/validate_radar_scores.py"
       - "tests/**"
       - "data/history/**"
       - "data/stock_universe.json"
@@ -23,7 +24,7 @@ concurrency:
 jobs:
   build-technical-radar:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
 
     steps:
       - name: Checkout repository
@@ -99,6 +100,35 @@ jobs:
           PY
 
 
+      - name: Run historical walk-forward score validation
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/validate_radar_scores.py tests/test_radar_validation.py
+          python -u scripts/validate_radar_scores.py
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          p = json.loads(Path("data/radar_validation.json").read_text(encoding="utf-8"))
+          assert p.get("schema_version") == 1
+          assert p.get("validation_status") in {
+              "positive_out_of_sample_evidence",
+              "mixed_or_negative_out_of_sample_evidence",
+              "insufficient_history_for_validation",
+          }
+          assert set(p.get("horizons", {})) == {"20", "60", "120"}
+          assert isinstance(p.get("folds"), list) and p["folds"]
+          for horizon, row in p["horizons"].items():
+              for key in ("median_spearman_rank_ic", "median_top_quintile_excess_vs_universe_pct",
+                          "median_top_minus_bottom_quintile_spread_pct", "median_top_quintile_win_rate_pct"):
+                  value = row.get(key)
+                  assert value is None or (isinstance(value, (int, float)) and math.isfinite(value)), (horizon, key, value)
+          print("RADAR_VALIDATION_REPORT_VALID:", p["validation_status"])
+          print("RADAR_VALIDATION_20D:", p["horizons"]["20"])
+          print("RADAR_VALIDATION_60D:", p["horizons"]["60"])
+          PY
+
       - name: Rebuild dashboard from freshly generated technical radar
         run: python -u scripts/build_dashboard_data.py
 
@@ -163,7 +193,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Validate the dashboard locally, then explicitly dispatch its dedicated workflow.
           # GITHUB_TOKEN pushes do not start downstream push-triggered workflows.
-          git add data/technical_radar.json
+          git add data/technical_radar.json data/radar_validation.json
           git checkout -- data/radar_dashboard.json
           if git diff --cached --quiet; then
             echo "No technical radar changes."
