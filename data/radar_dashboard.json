@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T13:35:43+00:00",
+  "generated_at_utc": "2026-10-14T14:07:42+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -25,7 +25,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-14T07:27:53+00:00",
-    "fundai_ratio_snapshot_age_hours": 6.1,
+    "fundai_ratio_snapshot_age_hours": 6.7,
     "fundai_ratio_matched_count": 535,
     "fundai_ratio_scored_count": 532,
     "fundai_ratio_history_companies": 609,
@@ -86,14 +86,14 @@
       "generated_at_utc": "2026-10-14T07:27:53+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 6.1 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 6.7 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "fundai_ratio_history": {
       "generated_at_utc": "2026-10-14T12:06:31+00:00",
       "label": "Fundai · تاریخچهٔ نسبت‌های مالی",
       "status": "تاریخچهٔ عمومی موجود؛ روند تاریخی مقدماتی",
-      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 1.5 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
+      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 2.0 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/"
     },
     "codal_channels": {
