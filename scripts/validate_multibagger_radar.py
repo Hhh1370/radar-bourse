@@ -74,6 +74,69 @@ def maximum_forward_multiple(
     return peak_close / entry
 
 
+def asof_features(daily: list[dict[str, Any]], cutoff: date) -> dict[str, float | None]:
+    """Price/volume features using only bars completed by the cutoff date."""
+    rows = []
+    for row in daily:
+        try:
+            if date_for(row) > cutoff: continue
+            close, high, low = float(row['close']), float(row['high']), float(row['low'])
+            volume = float(row.get('volume') or 0)
+            if close > 0 and high > 0 and low > 0 and math.isfinite(close):
+                rows.append({'close':close,'high':high,'low':low,'volume':volume})
+        except (KeyError, TypeError, ValueError, OverflowError, OSError): continue
+    closes=[x['close'] for x in rows]
+    if len(closes)<260: return {}
+    def ret(n, offset=0):
+        end=len(closes)-offset; start=end-n-1
+        return closes[end-1]/closes[start]-1 if start>=0 and end>0 and closes[start]>0 else None
+    mean=statistics.fmean
+    vols=[x['volume'] for x in rows]
+    v20=[v for v in vols[-20:] if v>0]; vprev=[v for v in vols[-80:-20] if v>0]
+    rng20=[(x['high']-x['low'])/x['close'] for x in rows[-20:] if x['close']>0]
+    rngprev=[(x['high']-x['low'])/x['close'] for x in rows[-80:-20] if x['close']>0]
+    high252=max(x['high'] for x in rows[-252:])
+    last60=closes[-60:]; path=sum(abs(last60[i]-last60[i-1]) for i in range(1,len(last60)))
+    peak=0.0; maxdd=0.0
+    for value in closes[-120:]:
+        peak=max(peak,value)
+        if peak>0: maxdd=max(maxdd,1-value/peak)
+    daily_returns=[closes[i]/closes[i-1]-1 for i in range(1,len(closes)) if closes[i-1]>0]
+    periods=[closes[end-1]>closes[end-20] for end in range(max(20,len(closes)-20),len(closes)+1,5) if end>=20]
+    vr=mean(v20)/mean(vprev) if v20 and vprev and mean(vprev)>0 else None
+    rr=mean(rng20)/mean(rngprev) if rng20 and rngprev and mean(rngprev)>0 else None
+    r60,r120,r240=ret(60),ret(120),ret(240); p60,p120=ret(60,60),ret(120,120)
+    return {'ret60':r60,'ret120':r120,'ret240':r240,
+      'accel60':r60-p60 if r60 is not None and p60 is not None else None,
+      'accel120':r120-p120 if r120 is not None and p120 is not None else None,
+      'distance_high':closes[-1]/high252-1 if high252>0 else None,
+      'volume_ratio':vr,'range_ratio':rr,
+      'efficiency60':abs(last60[-1]-last60[0])/path if path>0 else 0.0,
+      'drawdown120':maxdd,'positive_share':sum(periods)/len(periods) if periods else None,
+      'vol20':statistics.pstdev(daily_returns[-20:]) if len(daily_returns)>=20 else None}
+
+def add_candidate_model_scores(items: list[dict[str, Any]]) -> None:
+    models={
+      'momentum_blend':[('ret60',.2,1),('ret120',.3,1),('ret240',.3,1),('distance_high',.1,1),('volume_ratio',.1,1)],
+      'acceleration_breakout':[('accel60',.25,1),('accel120',.2,1),('ret120',.15,1),('distance_high',.15,1),('volume_ratio',.15,1),('efficiency60',.1,1)],
+      'breakout_quality':[('distance_high',.25,1),('ret60',.15,1),('ret120',.2,1),('volume_ratio',.15,1),('range_ratio',.1,-1),('drawdown120',.15,-1)],
+      'persistent_trend':[('positive_share',.25,1),('efficiency60',.2,1),('ret120',.2,1),('ret240',.15,1),('drawdown120',.1,-1),('vol20',.1,-1)]}
+    for item in items: item['candidate_model_scores']={}
+    for model, metrics in models.items():
+        accum={id(x):[0.0,0.0] for x in items}
+        for feature, weight, direction in metrics:
+            vals=[(x,float(x.get('asof_features',{}).get(feature))) for x in items if isinstance(x.get('asof_features',{}).get(feature),(int,float)) and math.isfinite(float(x['asof_features'][feature]))]
+            if len(vals)<3: continue
+            vals.sort(key=lambda z:z[1]*direction); i=0
+            while i<len(vals):
+                j=i
+                while j+1<len(vals) and vals[j+1][1]==vals[i][1]: j+=1
+                rank=((i+j)/2)/max(1,len(vals)-1)*100
+                for k in range(i,j+1):
+                    item=vals[k][0]; accum[id(item)][0]+=rank*weight; accum[id(item)][1]+=weight
+                i=j+1
+        for item in items:
+            s,w=accum[id(item)]; item['candidate_model_scores'][model]=s/w if w else None
 def percentile_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     if not rows:
         return {
@@ -145,6 +208,7 @@ def main() -> None:
                 str(h): maximum_forward_multiple(series["daily"], cutoff, h)
                 for h in HORIZONS
             }
+            item["asof_features"] = asof_features(series["daily"], cutoff)
             scored.append(item)
         if len(scored) < 100:
             fold_summaries.append({
