@@ -68,10 +68,18 @@ jobs:
           git add data/technical_multibagger_validation.json
           if git diff --cached --quiet; then
             echo "Validation report unchanged."
-          else
-            git commit -m "Update technical multi-bagger validation"
-            git push origin main
+            exit 0
           fi
+          git commit -m "Update technical multi-bagger validation"
+          pushed=0
+          for attempt in 1 2 3; do
+            if git push origin main; then pushed=1; break; fi
+            if [ "$attempt" -lt 3 ]; then
+              git fetch origin main
+              git rebase origin/main
+            fi
+          done
+          test "$pushed" -eq 1
       - name: Upload validation report
         if: always()
         uses: actions/upload-artifact@v4
