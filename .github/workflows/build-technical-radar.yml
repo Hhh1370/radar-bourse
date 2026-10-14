@@ -201,8 +201,12 @@ jobs:
           else
             git commit -m "Rebuild technical and dashboard radar data"
             # Other collectors may update source JSON while this long scan runs.
-            git pull --rebase origin main
-            git push
+            pushed=0
+            for attempt in 1 2 3; do
+              if git push origin main; then pushed=1; break; fi
+              if [ "$attempt" -lt 3 ]; then git pull --rebase origin main; fi
+            done
+            test "$pushed" -eq 1
           fi
 
       - name: Dispatch dashboard rebuild after technical update
