@@ -73,6 +73,30 @@ class CodalSummaryFundamentalsTests(unittest.TestCase):
         self.assertGreater(with_monthly["score"], without_monthly["score"])
         self.assertTrue(any("رشد فروش گزارش فعالیت ماهانه" in item for item in with_monthly["evidence"]))
 
+    def test_ocr_only_numbers_remain_evidence_but_do_not_create_score(self):
+        row = report("پوستر", 3, "1405/03/31", "2026-06-01", 900, 120, 5000)
+        metrics = row["financial_metrics"]
+        metrics["image_ocr_text"] = "سود خالص 900 میلیون ریال درآمد فروش 5000 میلیون ریال"
+        for observation in metrics["observations"]:
+            observation["context"] = metrics["image_ocr_text"]
+            observation["evidence_confidence"] = "low_ocr_candidate"
+        result = build_summary_map([row])["پوستر"]
+        self.assertIsNone(result["score"])
+        self.assertEqual(len(metrics["observations"]), 3)  # preserved for review
+
+    def test_verified_text_candidate_survives_when_other_observation_is_ocr_only(self):
+        row = report("ترکیبی", 3, "1405/03/31", "2026-06-01", 150, 60, 700)
+        metrics = row["financial_metrics"]
+        metrics["image_ocr_text"] = "سود خالص 999999 میلیون ریال"
+        metrics["observations"].append({
+            "metric": "net_profit", "value": 999999, "unit": "میلیون ریال",
+            "period_months": 3, "context": metrics["image_ocr_text"],
+            "evidence_confidence": "low_ocr_candidate",
+        })
+        result = build_summary_map([row])["ترکیبی"]
+        self.assertEqual(result["net_profit_million_rial_candidate"], 150.0)
+        self.assertGreaterEqual(result["score"], 0.0)
+
     def test_report_summary_without_numeric_values_has_no_score(self):
         row = report("نامشخص", 3, "1405/03/31", "2026-06-01", None, None, None)
         row["financial_metrics"]["observations"] = []
