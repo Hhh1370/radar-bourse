@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T12:43:20+00:00",
+  "generated_at_utc": "2026-10-14T12:51:58+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -9,8 +9,8 @@
     "technical_analyzed": 741,
     "technical_eligible": 698,
     "technical_errors": 0,
-    "technical_validation_status": "positive_out_of_sample_evidence",
-    "technical_validation_generated_at_utc": "2026-10-14T12:29:44+00:00",
+    "technical_validation_status": "relative_edge_but_mixed_absolute_returns",
+    "technical_validation_generated_at_utc": "2026-10-14T12:51:20+00:00",
     "technical_validation_20d_fold_count": 12,
     "technical_validation_20d_median_rank_ic": 0.1193,
     "technical_validation_20d_median_top_quintile_excess_pct": 2.6859,
@@ -25,7 +25,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-14T07:27:53+00:00",
-    "fundai_ratio_snapshot_age_hours": 5.3,
+    "fundai_ratio_snapshot_age_hours": 5.4,
     "fundai_ratio_matched_count": 535,
     "fundai_ratio_scored_count": 532,
     "fundai_ratio_history_companies": 609,
@@ -53,20 +53,20 @@
   },
   "sources": {
     "technical": {
-      "generated_at_utc": "2026-10-14T12:28:08.618397+00:00",
+      "generated_at_utc": "2026-10-14T12:48:01.876677+00:00",
       "label": "تاریخچهٔ قیمت نهایت‌نگر",
       "status": "موجود",
       "note": "Technical screening only, not a buy/sell recommendation. The composite technical rank is provisional and has not been validated by walk-forward or out-of-sample backtesting. Fundamental health, earnings quality, project ROI and cash-flow quality are not included. Full TSE/IFB coverage has not been independently verified."
     },
     "technical_validation": {
-      "generated_at_utc": "2026-10-14T12:29:44+00:00",
+      "generated_at_utc": "2026-10-14T12:51:20+00:00",
       "label": "اعتبارسنجی خارج از نمونهٔ رتبه‌بندی",
-      "status": "شواهد تاریخی مثبت؛ نه تضمین بازده",
-      "note": "وضعیت: positive_out_of_sample_evidence؛ بازده میانه پنجک بالا: ۲۰جلسه=-1.2872٪، نرخ برد میانه=40.39٪؛ ۲۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.1193، مازاد پنجک بالا نسبت به کل=2.6859٪؛ ۶۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.0376، مازاد پنجک بالا=1.7078٪. آزمون قیمت‌محور است، بدون سود نقدی/هزینه معامله و با سوگیری بقا.",
+      "status": "برتری نسبی تاریخی؛ بازده مطلق کوتاه‌مدت مختلط",
+      "note": "وضعیت: relative_edge_but_mixed_absolute_returns؛ بازده میانه پنجک بالا: ۲۰جلسه=-1.2872٪، نرخ برد میانه=40.39٪؛ ۲۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.1193، مازاد پنجک بالا نسبت به کل=2.6859٪؛ ۶۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.0376، مازاد پنجک بالا=1.7078٪. آزمون قیمت‌محور است، بدون سود نقدی/هزینه معامله و با سوگیری بقا.",
       "source_url": "https://github.com/Hhh1370/radar-bourse/blob/main/data/radar_validation.json"
     },
     "fundamental": {
-      "generated_at_utc": "2026-10-14T09:03:48.602938+00:00",
+      "generated_at_utc": "2026-10-14T12:48:19.925405+00:00",
       "label": "BrsApi / صورت‌های مالی ساختاریافته",
       "status": "ناقص",
       "note": "This free mode does not call BRS API. Filing coverage is partial unless the public sources expose an issuer's LetterSerial. Official tables are only scored after parsing; otherwise the result remains unavailable."
@@ -75,14 +75,14 @@
       "generated_at_utc": "2026-10-14T07:27:53+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 5.3 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 5.4 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "fundai_ratio_history": {
       "generated_at_utc": "2026-10-14T12:06:31+00:00",
       "label": "Fundai · تاریخچهٔ نسبت‌های مالی",
       "status": "تاریخچهٔ عمومی موجود؛ روند تاریخی مقدماتی",
-      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 0.6 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
+      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 0.8 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/"
     },
     "codal_channels": {
@@ -93,7 +93,7 @@
     }
   },
   "warnings": [
-    "رتبه‌بندی در آزمون تاریخی شواهد مثبت نشان داده، اما سوگیری بقا، هزینه معامله و تعدیلات شرکتی هنوز محدودیت‌اند.",
+    "رتبه‌بندی در مقایسه با کل بازار برتری نسبی داشته، اما بازده مطلق/درصد معاملات مثبت برای افق ۲۰جلسه‌ای به معیار نرسیده است؛ برای معاملات کوتاه‌مدت تأیید نشده.",
     "دفتر کدال 510 گزارش/اطلاعیهٔ یکتا نگه می‌دارد؛ اعداد قابل استخراج فعلاً از خلاصهٔ عمومی‌اند؛ در امتیاز مقدماتی تکنیکال‌محور اثر محدود دارند، اما جایگزین صورت مالی رسمی و کیفیت سود ساختاریافته نیستند.",
     "برای صورت‌های مالی ساختاریافته امتیاز بنیادی مستقلی وجود ندارد؛ 532 امتیاز فعلی از نسبت‌های TTM و رتبه‌بندی نسبی Fundai است، نه تحلیل کامل صورت‌های مالی.",
     "هیچ امتیاز پول حقیقی با پوشش ۱۲ماهه در خروجی بنیادی قابل تأیید نیست.",
