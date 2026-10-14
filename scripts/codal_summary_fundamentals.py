@@ -307,14 +307,63 @@ def _latest_monthly(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
         for item in _observations(row)
         if item.get("metric") == "revenue_or_sales"
     ]
+
+    # If the public summary does not state YoY growth, calculate it only against
+    # the same calendar month from the prior year and only when units match.
+    current_end = period_end(row)
+    current_value = _metric_value(row, "revenue_or_sales")
+    current_unit = next((str(x.get("unit") or "") for x in _observations(row)
+                         if x.get("metric") == "revenue_or_sales"), "")
+    prior_month = None
+    if current_end and current_value is not None:
+        year, month, _day = map(int, current_end.split("/"))
+        prior_candidates = []
+        for candidate in candidates[1:]:
+            end = period_end(candidate)
+            if not end:
+                continue
+            py, pm, _pd = map(int, end.split("/"))
+            if py != year - 1 or pm != month:
+                continue
+            prior_items = [x for x in _observations(candidate) if x.get("metric") == "revenue_or_sales"]
+            if not prior_items or not current_unit or str(prior_items[0].get("unit") or "") != current_unit:
+                continue
+            prior_value = _metric_value(candidate, "revenue_or_sales")
+            if prior_value is None or prior_value <= 0:
+                continue
+            prior_candidates.append((str(candidate.get("published_at") or ""), candidate, prior_value))
+        if prior_candidates:
+            prior_candidates.sort(key=lambda x: x[0], reverse=True)
+            _, prior_month, prior_value = prior_candidates[0]
+        else:
+            prior_value = None
+    else:
+        prior_value = None
+
+    reported_growth = _reported_growth(row, "revenue_or_sales")
+    calculated_growth = (
+        round((current_value / prior_value - 1.0) * 100.0, 2)
+        if prior_value is not None and current_value is not None and prior_value > 0
+        else None
+    )
+    growth = reported_growth if reported_growth is not None else calculated_growth
+    comparison_status = "رشد هم‌ماه سال قبل در خلاصه گزارش موجود نیست"
+    if reported_growth is not None:
+        comparison_status = "رشد فروش طبق متن گزارش ماهانه؛ تطبیق جدول رسمی نشده"
+    elif prior_month is not None and calculated_growth is not None:
+        comparison_status = "رشد فروش محاسبه‌شده با مقایسه همان ماه سال قبل؛ خلاصه ثانویه و نیازمند تطبیق رسمی"
     return {
         "report_title": str(row.get("title") or ""),
         "report_period": str(row.get("report_period") or ""),
-        "period_end_jalali": period_end(row),
+        "period_end_jalali": current_end,
         "published_at": str(row.get("published_at") or ""),
         "company": str(row.get("company") or ""),
         "sales_candidates": sales[:4],
-        "sales_growth_pct_candidate": _reported_growth(row, "revenue_or_sales"),
+        "sales_growth_pct_candidate": growth,
+        "prior_year_same_month_sales_candidate": prior_value,
+        "prior_year_same_month_period_end_jalali": period_end(prior_month) if prior_month else "",
+        "prior_year_same_month_report_title": str(prior_month.get("title") or "") if prior_month else "",
+        "comparison_status": comparison_status,
         "official_url": str(row.get("official_url") or ""),
         "telegram_url": str(row.get("telegram_url") or ""),
         "status": "گزارش فعالیت ماهانه؛ فروش برای روند عملیاتی، نه جایگزین صورت مالی",
