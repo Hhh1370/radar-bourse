@@ -15,8 +15,10 @@ from typing import Any
 
 try:
     from scripts.codal_summary_fundamentals import build_summary_map
+    from scripts.fundai_ratio_history import build_history_trend_scores
 except ModuleNotFoundError:  # direct execution as ``python scripts/build_dashboard_data.py``
     from codal_summary_fundamentals import build_summary_map
+    from fundai_ratio_history import build_history_trend_scores
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
@@ -391,6 +393,7 @@ def fundamental_quality_gate(fundamental: dict[str, Any]) -> dict[str, Any]:
 
 
 FUNDAI_RATIO_FILE = DATA / "fundai_financial_ratios.json"
+FUNDAI_RATIO_HISTORY_FILE = DATA / "fundai_financial_ratio_history.json"
 FUNDAI_METRIC_KEYS = (
     "roe_ttm", "roa_ttm", "net_profit_margin_ttm", "debt_to_assets",
     "debt_to_equity", "pe_ttm", "ps_ttm", "pb",
@@ -807,6 +810,16 @@ def main() -> None:
         "generated_at_utc": "", "downloaded_row_count": 0, "rows": [],
         "quality_notes": ["Snapshot file is missing."],
     }
+    try:
+        ratio_history_snapshot = read_json(FUNDAI_RATIO_HISTORY_FILE) if FUNDAI_RATIO_HISTORY_FILE.is_file() else {
+            "generated_at_utc": "", "target_company_count": 0, "successful_company_count": 0,
+            "history_rows": [], "quality_note": "Historical ratio dataset is not available yet.",
+        }
+    except (OSError, ValueError, json.JSONDecodeError):
+        ratio_history_snapshot = {
+            "generated_at_utc": "", "target_company_count": 0, "successful_company_count": 0,
+            "history_rows": [], "quality_note": "Historical ratio dataset is unreadable.",
+        }
 
     tech_rows = tech.get("all_eligible_ranked")
     if not isinstance(tech_rows, list) or not tech_rows:
@@ -836,6 +849,7 @@ def main() -> None:
     ranked = tech_rows
     fund_map = index_by_symbol(fund_rows)
     ratio_map = build_fundai_ratio_scores(ratio_snapshot)
+    ratio_history_map = build_history_trend_scores(ratio_history_snapshot)
     technical_symbols = {norm(row.get("symbol")) for row in ranked if norm(row.get("symbol"))}
     ratio_matched_count = sum(1 for key in technical_symbols if key in ratio_map)
     ratio_scored_count = sum(
@@ -897,17 +911,41 @@ def main() -> None:
         key = norm(symbol)
         fundamental = fund_map.get(key, {})
         ratio = ratio_map.get(key, {})
+        ratio_history = ratio_history_map.get(key, {})
         codal_summary = codal_summary_map.get(key, {})
         scoring_fundamental = dict(fundamental)
         native_score = scoring_fundamental.get("fundamental_score")
         ratio_score = ratio.get("ratio_score")
-        if not finite_number(native_score) and finite_number(ratio_score):
-            scoring_fundamental["fundamental_score"] = float(ratio_score)
+        ratio_history_score = ratio_history.get("score")
+        ratio_history_quality = ratio_history.get("quality")
+        ratio_history_eligible = (
+            ratio_history.get("status") == "available_same_duration_same_period_yoy_candidate"
+            and finite_number(ratio_history_score)
+            and finite_number(ratio_history_quality)
+            and float(ratio_history_quality) >= 0.25
+            and finite_number(ratio_history.get("latest_comparison_age_days"))
+            and float(ratio_history["latest_comparison_age_days"]) <= 450
+        )
+        ratio_score_used = float(ratio_score) if finite_number(ratio_score) else None
+        ratio_history_weight_pct = 0
+        if ratio_score_used is not None and ratio_history_eligible:
+            # A bounded, secondary-source adjustment: latest TTM snapshot remains 90%.
+            ratio_history_weight_pct = 10
+            ratio_score_used = round(
+                0.90 * ratio_score_used + 0.10 * float(ratio_history_score), 1
+            )
+        if not finite_number(native_score) and ratio_score_used is not None:
+            scoring_fundamental["fundamental_score"] = ratio_score_used
             scoring_fundamental["fundamental_score_source"] = "Fundai TTM ratios proxy"
             scoring_fundamental["fundamental_ratio_quality"] = ratio.get("ratio_score_quality")
+            scoring_fundamental["fundamental_ratio_history_score"] = (
+                float(ratio_history_score) if ratio_history_eligible else None
+            )
+            scoring_fundamental["fundamental_ratio_history_weight_pct"] = ratio_history_weight_pct
             scoring_fundamental["fundamental_status"] = (
-                "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها؛ "
-                "صورت‌های مالی سالانه/حسابرسی‌شده برای رتبهٔ نهایی هنوز تأیید نشده‌اند"
+                "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها"
+                + (" با تعدیل محدود از روند تاریخی هم‌دوره" if ratio_history_weight_pct else "")
+                + "؛ صورت‌های مالی رسمی/حسابرسی‌شده هنوز تأیید نشده‌اند"
             )
         technical_score = number(item.get("technical_score"), 1)
         adjusted_score = number(item.get("risk_adjusted_score"), 1)
@@ -1052,6 +1090,17 @@ def main() -> None:
             "fundamental_ratio_components": ratio.get("ratio_score_components", {}),
             "fundamental_ratio_metric_count": ratio.get("ratio_score_metric_count"),
             "fundamental_ratio_peer_count": ratio.get("peer_count_median"),
+            "fundamental_ratio_history_score": (
+                number(ratio_history_score, 1) if finite_number(ratio_history_score) else None
+            ),
+            "fundamental_ratio_history_adjustment_weight_pct": ratio_history_weight_pct,
+            "fundamental_ratio_history_status": str(ratio_history.get("status") or "history_not_available"),
+            "fundamental_ratio_history_latest_comparison_date": str(ratio_history.get("latest_comparison_date") or ""),
+            "fundamental_ratio_history_age_days": ratio_history.get("latest_comparison_age_days"),
+            "fundamental_ratio_history_quality": number(ratio_history.get("quality"), 3),
+            "fundamental_ratio_history_matched_period_pairs": ratio_history.get("matched_period_pair_count", 0),
+            "fundamental_ratio_history_metric_comparisons": ratio_history.get("metric_comparison_count", 0),
+            "fundamental_ratio_history_source": str(ratio_history.get("source") or ""),
             "fundai_ratios": ratio.get("raw_ratios", {}),
             "money_flow_score": number(fundamental.get("money_flow_score"), 2) if valid_money_flow(fundamental) else None,
             "money_flow_status": str(fundamental.get("money_flow_status") or "داده‌ای برای این نماد در منبع پول حقیقی موجود نیست"),
@@ -1094,6 +1143,8 @@ def main() -> None:
             "fundamental_score_is_proxy": base["fundamental_score_source"] == "Fundai TTM ratios proxy",
             "fundamental_ratio_snapshot_matched": bool(ratio),
             "fundamental_ratio_report_age_days": ratio.get("report_age_days"),
+            "fundamental_ratio_history_available": finite_number(base["fundamental_ratio_history_score"]),
+            "fundamental_ratio_history_used_in_score": base["fundamental_ratio_history_adjustment_weight_pct"] > 0,
             "money_flow_scored": base["money_flow_score"] is not None,
             "money_flow_12m_verified": valid_money_flow(fundamental),
             "channel_evidence_count": len(display_evidence_map.get(key, [])),
@@ -1177,6 +1228,29 @@ def main() -> None:
         )
     for note in ratio_snapshot.get("quality_notes", []) if isinstance(ratio_snapshot.get("quality_notes"), list) else []:
         source_warnings.append("Fundai: " + str(note))
+    ratio_history_count = int(ratio_history_snapshot.get("successful_company_count") or 0)
+    ratio_history_total = int(ratio_history_snapshot.get("target_company_count") or 0)
+    ratio_history_generated = str(ratio_history_snapshot.get("generated_at_utc") or "")
+    ratio_history_age_hours = None
+    if ratio_history_generated:
+        try:
+            history_dt = datetime.fromisoformat(ratio_history_generated.replace("Z", "+00:00"))
+            if history_dt.tzinfo is None:
+                history_dt = history_dt.replace(tzinfo=timezone.utc)
+            ratio_history_age_hours = round(
+                max(0.0, (datetime.now(timezone.utc) - history_dt.astimezone(timezone.utc)).total_seconds() / 3600.0),
+                1,
+            )
+        except (TypeError, ValueError, OverflowError):
+            ratio_history_age_hours = None
+    if not ratio_history_count:
+        source_warnings.append("تاریخچهٔ نسبت‌های بنیادی فاندای هنوز در دسترس نیست؛ امتیاز روند تاریخی به رتبه اضافه نشده است.")
+    elif ratio_history_age_hours is None or ratio_history_age_hours > 336:
+        source_warnings.append("تاریخچهٔ نسبت‌های بنیادی فاندای قدیمی یا زمان آن نامشخص است؛ پیش از استفاده، منبع تازه شود.")
+    elif ratio_history_total and ratio_history_count / ratio_history_total < 0.85:
+        source_warnings.append(
+            f"پوشش تاریخچهٔ نسبت‌های فاندای {ratio_history_count} از {ratio_history_total} نماد است؛ سری‌های غایب وارد امتیاز نمی‌شوند."
+        )
     if full_year_flow_count == 0:
         source_warnings.append("هیچ امتیاز پول حقیقی با پوشش ۱۲ماهه در خروجی بنیادی قابل تأیید نیست.")
     elif full_year_flow_count < max(50, len(tech_rows) * 0.5):
@@ -1219,6 +1293,14 @@ def main() -> None:
             "fundai_ratio_snapshot_age_hours": ratio_snapshot_age_hours,
             "fundai_ratio_matched_count": ratio_matched_count,
             "fundai_ratio_scored_count": ratio_scores_in_ranked,
+            "fundai_ratio_history_companies": ratio_history_snapshot.get("successful_company_count", 0),
+            "fundai_ratio_history_rows": ratio_history_snapshot.get("total_history_rows", 0),
+            "fundai_ratio_history_matched_count": sum(1 for key in technical_symbols if key in ratio_history_map),
+            "fundai_ratio_history_scored_count": sum(
+                1 for key in technical_symbols
+                if key in ratio_history_map and finite_number(ratio_history_map[key].get("score"))
+            ),
+            "fundai_ratio_history_snapshot_generated_at_utc": str(ratio_history_snapshot.get("generated_at_utc") or ""),
             "final_credit_grade_count": final_grade_count,
             "high_confidence_count": reliable_confidence_count,
             "money_flow_12m_scored_count": full_year_flow_count,
@@ -1263,6 +1345,18 @@ def main() -> None:
                 ),
                 "source_url": safe_link(ratio_snapshot.get("source_url")),
             },
+            "fundai_ratio_history": {
+                "generated_at_utc": ratio_history_generated,
+                "label": "Fundai · تاریخچهٔ نسبت‌های مالی",
+                "status": "تاریخچهٔ عمومی موجود؛ روند تاریخی مقدماتی",
+                "note": (
+                    f"{ratio_history_count} از {ratio_history_total} نماد؛ "
+                    f"{ratio_history_snapshot.get('total_history_rows', 0)} ردیف تاریخی؛ "
+                    f"سن snapshot: {ratio_history_age_hours if ratio_history_age_hours is not None else 'نامشخص'} ساعت. "
+                    "فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست."
+                ),
+                "source_url": safe_link(ratio_history_snapshot.get("source_url")),
+            },
             "codal_channels": {
                 "generated_at_utc": latest_codal,
                 "label": "بورس‌تریدر و کدال۳۶۰",
@@ -1283,6 +1377,7 @@ def main() -> None:
             "final_rating_gate": "رتبهٔ اعتباری کامل در این نسخه اولویت اصلی نیست و به‌دلیل نبود بعضی داده‌های معتبر ممکن است صادر نشود؛ فهرست رادار به‌صورت مستقل با رتبهٔ تکنیکال‌محور ساخته می‌شود. برای فهرست، امتیاز رتبه: تکنیکال ۷۰٪، بنیادی نسبی ۱۵٪، کیفیت سود ساختاریافته ۵٪ و خلاصهٔ عددی Codal360 حداکثر ۱۰٪؛ اجزای مفقود حذف و وزن‌های موجود نرمال می‌شوند.",
             "confidence": "امتیاز اطمینان، سنجهٔ پوشش و کیفیت داده است؛ احتمال سود یا احتمال درست بودن پیش‌بینی نیست.",
             "fundai_ratio_proxy": "امتیاز ۰ تا ۱۰۰ از رتبهٔ نسبی ROE، ROA، حاشیه سود، بدهی و مضارب مثبت P/E، P/S و P/B داخل صنعت محاسبه می‌شود؛ در صنایعی با کمتر از ۸ همتا، رتبهٔ کل بازار جایگزین می‌شود. این امتیاز مقایسه‌ای از آخرین snapshot TTM است و نه کیفیت سود کامل، ارزش ذاتی یا اعتبار نهایی.",
+            "fundai_ratio_history": "وقتی داده کافی و تاریخ تازه موجود باشد، حداکثر ۱۰٪ از امتیاز نسبت‌های TTM با روند سال‌به‌سال نسبت‌ها در نوع گزارش و ماه/روز یکسان تعدیل می‌شود. مقایسه‌ها از دادهٔ عمومی ثانویه‌اند؛ مضارب ارزشیابی از روند امتیاز نمی‌گیرند؛ سری ناموجود یا ناسازگار امتیاز نمی‌گیرد.",
             "earnings_quality": "فقط از اقلام عددی خوانده‌شده از صورت مالی ساختاریافته محاسبه می‌شود؛ کلیدواژه‌های کانال در امتیاز کیفیت سود وارد نمی‌شوند.",
             "money_flow": "فقط وقتی در امتیاز تلفیقی وارد می‌شود که نماد سهام عادی، تاریخچه حداقل ۲۰۰ جلسه، پرچم پوشش سالانه، تاریخ آخرین داده و امتیاز معتبر داشته باشد.",
             "channel_evidence": "خلاصه‌های متنی تلگرام، شواهد خام هستند و جایگزین تطبیق با صورت مالی/اطلاعیهٔ رسمی نیستند.",
