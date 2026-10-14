@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-14T13:04:17+00:00",
+  "generated_at_utc": "2026-10-14T13:05:56+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -10,7 +10,7 @@
     "technical_eligible": 698,
     "technical_errors": 0,
     "technical_validation_status": "relative_edge_but_mixed_absolute_returns",
-    "technical_validation_generated_at_utc": "2026-10-14T12:59:36+00:00",
+    "technical_validation_generated_at_utc": "2026-10-14T13:05:20+00:00",
     "technical_validation_20d_fold_count": 12,
     "technical_validation_20d_median_rank_ic": 0.1193,
     "technical_validation_20d_median_top_quintile_excess_pct": 2.6859,
@@ -57,27 +57,27 @@
   },
   "sources": {
     "technical": {
-      "generated_at_utc": "2026-10-14T12:56:35.646325+00:00",
+      "generated_at_utc": "2026-10-14T13:02:18.853060+00:00",
       "label": "تاریخچهٔ قیمت نهایت‌نگر",
       "status": "موجود",
       "note": "Technical screening only, not a buy/sell recommendation. A separate historical walk-forward report at data/radar_validation.json recomputes the same rank at 12 past cutoffs and tests 20/60/120-session price returns. Interpret relative outperformance together with absolute returns and win rate; it is not proof of profitability. Dividends, transaction costs, slippage, delisting survivors and corporate-action adjustment quality remain limitations. Fundamental health, earnings quality and project ROI are not part of this technical-only score; full TSE/IFB coverage has not been independently verified. Walk-forward result: relative_edge_but_mixed_absolute_returns; 20-session top-quintile median return=-1.2872%, median win rate=40.39%. Relative excess is not proof of short-term profitability."
     },
     "technical_validation": {
-      "generated_at_utc": "2026-10-14T12:59:36+00:00",
+      "generated_at_utc": "2026-10-14T13:05:20+00:00",
       "label": "اعتبارسنجی خارج از نمونهٔ رتبه‌بندی",
       "status": "برتری نسبی تاریخی؛ بازده مطلق کوتاه‌مدت مختلط",
       "note": "وضعیت: relative_edge_but_mixed_absolute_returns؛ بازده میانه پنجک بالا: ۲۰جلسه=-1.2872٪، نرخ برد میانه=40.39٪؛ ۲۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.1193، مازاد پنجک بالا نسبت به کل=2.6859٪؛ ۶۰ جلسه‌ای: تعداد دوره=12، میانه IC=0.0376، مازاد پنجک بالا=1.7078٪. آزمون قیمت‌محور است، بدون سود نقدی/هزینه معامله و با سوگیری بقا.",
       "source_url": "https://github.com/Hhh1370/radar-bourse/blob/main/data/radar_validation.json"
     },
     "money_flow": {
-      "generated_at_utc": "2026-10-14T12:55:32.476950+00:00",
+      "generated_at_utc": "2026-10-14T13:01:52.769397+00:00",
       "label": "پول حقیقی/حقوقی ۱۲ماهه",
       "status": "هیچ تاریخچهٔ پول حقیقی ۱۲ماهه در این اجرا تأیید نشده",
-      "note": "Fundai snapshot tickers with numeric IDs: 609; flow requests attempted: 2; history responses: 0; 12-month histories verified: 0. دریافت تاریخچهٔ پول حقیقی ناموفق: all usable TSETMC hosts failed: TSETMC mirror request failed: URLError: <urlopen error [Errno -2] Name or service not known>; request failed: <urlopen error timed out>",
+      "note": "Fundai snapshot tickers with numeric IDs: 609; flow requests attempted: 2; history responses: 0; 12-month histories verified: 0. دریافت تاریخچهٔ پول حقیقی ناموفق: all public TSETMC client-type paths failed: all usable TSETMC hosts failed: TSETMC mirror request failed: URLError: <urlopen error [Errno -2] Name or service not known>; request fa",
       "source_url": "https://cdn.tsetmc.com/api/ClientType/GetClientTypeHistory/{insCode}"
     },
     "fundamental": {
-      "generated_at_utc": "2026-10-14T12:55:32.476950+00:00",
+      "generated_at_utc": "2026-10-14T13:01:52.769397+00:00",
       "label": "BrsApi / صورت‌های مالی ساختاریافته",
       "status": "ناقص",
       "note": "This mode uses public Codal/Telegram links and attempts direct TSETMC client-type history through the CDN mirror and primary host. A 12-month money-flow score is admitted only when at least 252 sessions, adequate calendar span, fresh dates, and valid real-person values are present. Official financial tables are scored only after they are parsed; otherwise their scores remain unavailable. If direct hosts are blocked from the runner, configure BRS_API_KEY under repository Actions secrets to enable the provider-based full scan."
@@ -108,7 +108,7 @@
     "دفتر کدال 510 گزارش/اطلاعیهٔ یکتا نگه می‌دارد؛ اعداد قابل استخراج فعلاً از خلاصهٔ عمومی‌اند؛ در امتیاز مقدماتی تکنیکال‌محور اثر محدود دارند، اما جایگزین صورت مالی رسمی و کیفیت سود ساختاریافته نیستند.",
     "برای صورت‌های مالی ساختاریافته امتیاز بنیادی مستقلی وجود ندارد؛ 532 امتیاز فعلی از نسبت‌های TTM و رتبه‌بندی نسبی Fundai است، نه تحلیل کامل صورت‌های مالی.",
     "هیچ امتیاز پول حقیقی با پوشش ۱۲ماهه در خروجی بنیادی قابل تأیید نیست.",
-    "وضعیت تلاش برای دریافت پول حقیقی: Fundai snapshot tickers with numeric IDs: 609; flow requests attempted: 2; history responses: 0; 12-month histories verified: 0. دریافت تاریخچهٔ پول حقیقی ناموفق: all usable TSETMC hosts failed: TSETMC mirror request failed: URLError: <urlopen error [Errno -2]",
+    "وضعیت تلاش برای دریافت پول حقیقی: Fundai snapshot tickers with numeric IDs: 609; flow requests attempted: 2; history responses: 0; 12-month histories verified: 0. دریافت تاریخچهٔ پول حقیقی ناموفق: all public TSETMC client-type paths failed: all usable TSETMC hosts failed: TSETMC mirror request",
     "هنوز امتیاز کمیِ طرح توسعه با هزینه، زمان بهره‌برداری و شواهد گزارش‌سطحیِ اعتبارسنجی‌شده وجود ندارد؛ بنابراین رتبهٔ نهایی صادر نمی‌شود."
   ],
   "methodology": {
