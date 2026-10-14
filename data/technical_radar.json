@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-14T12:48:01.876677+00:00",
+  "generated_at_utc": "2026-10-14T12:56:35.646325+00:00",
   "source": "Nahayatnegar historical candles",
   "input_universe_count": 741,
   "analyzed_count": 741,
@@ -16,7 +16,7 @@
     "risk_adjustment": "Experimental heat penalty subtracted from technical score; ranked by adjusted score",
     "eligibility": "At least 200 daily, 26 weekly and 12 monthly candles, with latest daily data no more than 10 days old"
   },
-  "warning": "Technical screening only, not a buy/sell recommendation. The composite technical rank is provisional and has not been validated by walk-forward or out-of-sample backtesting. Fundamental health, earnings quality, project ROI and cash-flow quality are not included. Full TSE/IFB coverage has not been independently verified.",
+  "warning": "Technical screening only, not a buy/sell recommendation. A separate historical walk-forward report at data/radar_validation.json recomputes the same rank at 12 past cutoffs and tests 20/60/120-session price returns. Interpret relative outperformance together with absolute returns and win rate; it is not proof of profitability. Dividends, transaction costs, slippage, delisting survivors and corporate-action adjustment quality remain limitations. Fundamental health, earnings quality and project ROI are not part of this technical-only score; full TSE/IFB coverage has not been independently verified.",
   "top_50_for_review": [
     {
       "symbol": "تاپیکو",
