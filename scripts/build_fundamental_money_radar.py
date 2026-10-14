@@ -1209,10 +1209,17 @@ def build_project_assessment(report, page_text, datasource):
 def detail_financial_report(report):
     result = dict(report)
     candidates = []
-    if report.get("excel_url"):
-        candidates.append(("excel", report["excel_url"]))
-    if report.get("url"):
-        candidates.append(("html", report["url"]))
+    report_url = str(report.get("url") or report.get("official_url") or report.get("codal_url") or "")
+    excel_url = str(report.get("excel_url") or "").strip() or excel_service_url_from_report_url(report_url)
+    if excel_url:
+        report["excel_url"] = excel_url
+        report["has_excel"] = True
+        candidates.append(("excel_html", excel_url))
+    # Only fetch the main Codal page when no Excel/HTML table endpoint exists.
+    # The main domain can be geo-blocked while excel.codal.ir remains reachable.
+    elif report_url:
+        report["url"] = report_url
+        candidates.append(("html", report_url))
     if not candidates:
         result["detail_status"] = "report URL unavailable"
         return result
@@ -1579,6 +1586,357 @@ def merge_cached_detail(cached, latest_report, symbol, company):
 
 
 
+
+def excel_service_url_from_report_url(url):
+    """Build Codal's public Excel/HTML endpoint from a report LetterSerial."""
+    if not url:
+        return ""
+    try:
+        parsed = urllib.parse.urlparse(str(url))
+        query = urllib.parse.parse_qs(parsed.query)
+        serial = next(
+            (values[0] for key, values in query.items()
+             if key.casefold() == "letterserial" and values and values[0]),
+            "",
+        )
+        if serial:
+            return "https://excel.codal.ir/service/Excel/GetAll/" + urllib.parse.quote(serial, safe="") + "/0"
+    except (TypeError, ValueError):
+        return ""
+    return ""
+
+
+def public_statement_report(row, symbol="", company=""):
+    """Normalize a public discovery row into the common financial-report schema."""
+    if not isinstance(row, dict):
+        return None
+    title = str(
+        row.get("title") or row.get("report_title") or row.get("link_title")
+        or row.get("subject") or ""
+    ).strip()
+    if not title or "صورت" not in normalize_text(title):
+        return None
+    period_type = report_period_key({"title": title})
+    if period_type not in {"3", "6", "9", "annual"}:
+        return None
+    classification = normalize_text(
+        row.get("classification") or row.get("report_type") or row.get("primary_category") or ""
+    )
+    if any(term in classification for term in ("فعالیتماهانه", "تولیدوفروش", "عملکردماهانه")):
+        return None
+    url = str(
+        row.get("official_url") or row.get("codal_url") or row.get("url")
+        or row.get("letter_url") or ""
+    ).strip()
+    if url and url.startswith("/"):
+        url = urllib.parse.urljoin("https://www.codal.ir/", url)
+    if not url or "LetterSerial=" not in url:
+        return None
+    excel_url = str(row.get("excel_url") or row.get("ExcelUrl") or "").strip()
+    if excel_url and excel_url.startswith("/"):
+        excel_url = urllib.parse.urljoin("https://excel.codal.ir/", excel_url)
+    if not excel_url:
+        excel_url = excel_service_url_from_report_url(url)
+    published = str(
+        row.get("date") or row.get("published_at") or row.get("publication_date")
+        or row.get("publish_date") or ""
+    ).strip()
+    normalized = {
+        "symbol": symbol or str(row.get("symbol") or row.get("ticker") or "").strip(),
+        "company": company or str(row.get("company") or row.get("company_name") or "").strip(),
+        "title": title,
+        "date": published,
+        "url": url,
+        "excel_url": excel_url or None,
+        "has_html": True,
+        "has_excel": bool(excel_url),
+        "is_financial_report_candidate": True,
+        "period_type": period_type,
+        "fiscal_year_end": report_year_end({"title": title}),
+        "discovery_source": str(row.get("source_name") or row.get("source") or "public Codal-linked snapshot"),
+    }
+    return normalized
+
+
+def load_public_statement_reports(stocks):
+    """Discover quarterly statements from cached public filing links without paid APIs."""
+    disclosure_path = ROOT / "data" / "codal_disclosures_latest.json"
+    ledger_path = ROOT / "data" / "codal_filing_ledger.json"
+    disclosure = {}
+    ledger = {}
+    for path, target in ((disclosure_path, "disclosure"), (ledger_path, "ledger")):
+        if not path.is_file():
+            continue
+        try:
+            with path.open("r", encoding="utf-8") as stream:
+                data = json.load(stream)
+            if isinstance(data, dict):
+                if target == "disclosure":
+                    disclosure = data
+                else:
+                    ledger = data
+        except (OSError, json.JSONDecodeError):
+            continue
+
+    by_symbol = {}
+    by_company = {}
+    for stock in stocks:
+        ticker = str(stock.get("symbol") or "").strip()
+        company = str(stock.get("company") or "").strip()
+        if ticker:
+            by_symbol.setdefault(normalize_text(ticker), stock)
+        if company:
+            by_company.setdefault(normalize_text(company), stock)
+
+    source_rows = []
+    for key in ("announcements", "channel_evidence"):
+        values = disclosure.get(key, [])
+        if isinstance(values, list):
+            source_rows.extend(values)
+    ledger_rows = ledger.get("reports", [])
+    if isinstance(ledger_rows, list):
+        source_rows.extend(ledger_rows)
+
+    reports_by_symbol = {}
+    unique = {}
+    for row in source_rows:
+        if not isinstance(row, dict):
+            continue
+        ticker = str(row.get("symbol") or row.get("ticker") or "").strip()
+        company = str(row.get("company") or row.get("company_name") or "").strip()
+        stock = by_symbol.get(normalize_text(ticker)) if ticker else None
+        if stock is None and company:
+            stock = by_company.get(normalize_text(company))
+        if stock is None:
+            continue
+        report = public_statement_report(row, str(stock.get("symbol") or ticker), str(stock.get("company") or company))
+        if not report:
+            continue
+        key = (normalize_text(report["symbol"]), report["url"])
+        prior = unique.get(key)
+        if prior is None or len(str(row.get("source_text") or "")) > len(str(prior.get("source_text") or "")):
+            report["source_text"] = str(row.get("source_text") or row.get("source_context") or "")[:1500]
+            unique[key] = report
+
+    for report in unique.values():
+        reports_by_symbol.setdefault(normalize_text(report["symbol"]), []).append(report)
+    for reports in reports_by_symbol.values():
+        reports.sort(key=lambda r: (str(r.get("fiscal_year_end") or ""), str(r.get("date") or "")), reverse=True)
+    return reports_by_symbol, disclosure, ledger
+
+
+def run_public_codal_only():
+    """Refresh only from free public snapshots + Codal Excel HTML; no paid BrsApi calls."""
+    if not UNIVERSE_FILE.is_file():
+        raise FileNotFoundError(f"Universe file not found: {UNIVERSE_FILE}")
+    universe = read_json(UNIVERSE_FILE)
+    stocks = universe.get("stocks", [])
+    if not isinstance(stocks, list):
+        raise ValueError("Invalid universe format: 'stocks' must be a list")
+
+    prior = {}
+    if OUTPUT_FILE.is_file():
+        try:
+            prior_payload = read_json(OUTPUT_FILE)
+            for row in prior_payload.get("stocks", []) or []:
+                if isinstance(row, dict) and row.get("symbol"):
+                    prior[normalize_text(row["symbol"])] = row
+        except (OSError, ValueError, json.JSONDecodeError):
+            prior_payload = {}
+    else:
+        prior_payload = {}
+
+    public_reports, disclosure, ledger = load_public_statement_reports(stocks)
+    ledger_summary = ledger.get("last_run", {}) if isinstance(ledger.get("last_run"), dict) else {}
+    print(
+        f"PUBLIC_CODAL_INPUTS: source_announcements={len(disclosure.get('announcements', []) or [])} "
+        f"source_evidence={len(disclosure.get('channel_evidence', []) or [])} "
+        f"ledger_reports={len(ledger.get('reports', []) or [])} "
+        f"symbols_with_statement_links={len(public_reports)}"
+    )
+
+    output_rows = []
+    financial_watchlist = []
+    parsed_new_count = 0
+    cache_reused_count = 0
+    failures = 0
+    now = utc_now()
+
+    for index, stock in enumerate(stocks, start=1):
+        symbol = str(stock.get("symbol") or "").strip()
+        if not symbol:
+            continue
+        company = str(stock.get("company") or symbol)
+        key = normalize_text(symbol)
+        old = dict(prior.get(key) or {})
+        cached_reports = [
+            r for r in (old.get("financial_reports") or [])
+            if isinstance(r, dict) and (r.get("url") or r.get("excel_url"))
+        ]
+        cached_by_key = {
+            report_cache_key(symbol, r): r for r in cached_reports
+        }
+        selected = choose_financial_reports(public_reports.get(key, []))
+        current_details = []
+        for report in selected:
+            report["symbol"] = symbol
+            report["company"] = company
+            cache_key = report_cache_key(symbol, report)
+            cached = cached_by_key.get(cache_key)
+            if cached and cached.get("detail_status") == "parsed_with_heuristic_cell_mapping":
+                detail = merge_cached_detail(cached, report, symbol, company)
+                cache_reused_count += 1
+            else:
+                detail = detail_financial_report(report)
+                detail["symbol"] = symbol
+                detail["company"] = company
+                if detail.get("detail_status") == "parsed_with_heuristic_cell_mapping":
+                    parsed_new_count += 1
+                else:
+                    failures += 1
+            current_details.append(detail)
+
+        # Preserve prior statements not in the current source window, so year-over-year
+        # comparisons survive the source feed's finite Telegram/archive window.
+        details_by_identity = {}
+        for report in cached_reports + current_details:
+            identity = report_cache_key(symbol, report)
+            previous = details_by_identity.get(identity)
+            if previous is None or (
+                report.get("detail_status") == "parsed_with_heuristic_cell_mapping"
+                and previous.get("detail_status") != "parsed_with_heuristic_cell_mapping"
+            ):
+                details_by_identity[identity] = report
+        all_details = sorted(
+            details_by_identity.values(),
+            key=lambda r: (str(r.get("fiscal_year_end") or report_year_end(r) or ""), str(r.get("date") or "")),
+            reverse=True,
+        )[:20]
+        fundamentals = score_fundamentals(all_details)
+
+        row = old
+        row.update({
+            "symbol": symbol,
+            "company": company,
+            "exchange": str(stock.get("exchange") or old.get("exchange") or ""),
+            "chart_id": str(stock.get("chart_id") or old.get("chart_id") or ""),
+            "instrument_kind": (
+                "common_equity" if str(stock.get("chart_id") or old.get("chart_id") or "").startswith(COMMON_EQUITY_ISIN_PREFIXES)
+                else str(old.get("instrument_kind") or "unconfirmed")
+            ),
+            "financial_reports": all_details,
+            "fundamental_score": fundamentals.get("score"),
+            "fundamental_status": (
+                fundamentals.get("status") or "گزارش ساختاریافته قابل امتیازدهی در دادهٔ فعلی موجود نیست"
+            ),
+            "fundamental_evidence": fundamentals.get("evidence", []),
+            "fundamental_caveat": fundamentals.get("caveat"),
+            "fundamental_assessment": fundamentals,
+            "recent_codal_reports": [
+                {
+                    "title": r.get("title"), "date": r.get("date"), "url": r.get("url"),
+                    "period_type": r.get("period_type"), "discovery_source": r.get("discovery_source"),
+                }
+                for r in public_reports.get(key, [])[:20]
+            ] or (old.get("recent_codal_reports") or []),
+            "codal_search_error": (
+                "به‌روزرسانی این اجرا از مسیر رایگانِ پیوندهای عمومی و Excel/HTML کدال انجام شد؛ "
+                "جست‌وجوی کامل نمادها و پول حقیقی از API پولی دریافت نشد."
+            ),
+            "public_fundamental_refresh_at_utc": now,
+            "public_statement_links_discovered": len(public_reports.get(key, [])),
+            "data_status": (
+                "public_report_parsed" if any(
+                    r.get("detail_status") == "parsed_with_heuristic_cell_mapping" for r in all_details
+                ) else "public_statement_links_only_or_source_unavailable"
+            ),
+        })
+        # Old money-flow history is not refreshed by this public-only job. Keep its
+        # data for reference, but block it from being mistaken for a current validated score.
+        row["money_flow_error"] = "پول حقیقی در اجرای بنیادیِ عمومی تازه‌سازی نشده است"
+        row["money_flow_status"] = "تاریخچهٔ پول حقیقی در این اجرای رایگان تازه‌سازی نشده"
+        output_rows.append(row)
+        for report in all_details:
+            financial_watchlist.append({
+                key_name: report.get(key_name)
+                for key_name in ("symbol", "company", "title", "date", "url", "detail_status", "ratios")
+            })
+        if index % 100 == 0 or index == len(stocks):
+            print(f"PUBLIC_CODAL_PROGRESS:{index}/{len(stocks)} parsed_new={parsed_new_count} cache={cache_reused_count} failures={failures}")
+
+    money_candidates = [
+        r for r in output_rows
+        if isinstance(r.get("money_flow_score"), (int, float))
+        and r.get("money_flow_full_year_coverage") is True
+        and r.get("instrument_kind") == "common_equity"
+        and not str(r.get("money_flow_error") or "").strip() == ""
+    ]
+    fundamental_candidates = [
+        r for r in output_rows
+        if isinstance(r.get("fundamental_score"), (int, float))
+        and r.get("instrument_kind") == "common_equity"
+    ]
+    fundamental_candidates.sort(key=lambda r: (r.get("fundamental_score", -1), r.get("fundamental_assessment", {}).get("latest_report_date") or ""), reverse=True)
+    output = {
+        "generated_at_utc": now,
+        "source": "Free public filing-link ledger + Codal Excel/HTML endpoint; no paid API requested",
+        "source_access_mode": "free_public_codal_links_and_excel_html",
+        "brsapi_configured": False,
+        "input_universe_count": len(stocks),
+        "coverage_verified_for_all_active_market_symbols": False,
+        "codal_api_status": (
+            "public linked statement metadata; detailed values only if official Excel/HTML download succeeds"
+        ),
+        "codal_api_note": (
+            "Discovery uses accessible public Telegram/Codal-linked snapshots; this is not guaranteed to enumerate every active issuer. "
+            "A report is scored only when its official attachment is parsed into structured rows."
+        ),
+        "tsetmc_api_status": "not_refreshed_in_public_codal_only_mode",
+        "counts": {
+            "universe_records_processed": len(output_rows),
+            "symbols_with_public_statement_links": len(public_reports),
+            "public_statement_links_discovered": sum(len(v) for v in public_reports.values()),
+            "statement_reports_detailed": parsed_new_count,
+            "financial_detail_cache_hits": cache_reused_count,
+            "public_statement_parse_failures": failures,
+            "fundamental_candidates_scored": len(fundamental_candidates),
+            "money_flow_candidates_scored": len(money_candidates),
+            "financial_report_watchlist_items": len(financial_watchlist),
+            "project_watchlist_items": len(prior_payload.get("project_disclosure_watchlist", []) or []) if isinstance(prior_payload, dict) else 0,
+            "important_disclosure_watchlist_items": len(prior_payload.get("important_disclosure_watchlist", []) or []) if isinstance(prior_payload, dict) else 0,
+            "codal_ledger_records": int(ledger_summary.get("total_records_in_ledger") or 0),
+            "codal_ledger_new_records": int(ledger_summary.get("new_records_count") or 0),
+        },
+        "method": {
+            "fundamental": (
+                "Minimal quarterly screen: verified structured report rows when available; same-period YoY comparison; "
+                "standalone Q2/Q3/Q4 derived from cumulative 6/9/12-month report differences only when period, units, and consolidation basis match."
+            ),
+            "update_schedule": "Public report discovery weekly; per-issuer update when its own filing link appears. No daily fundamental recalculation.",
+            "ranking": "Fundamental outputs are a light quality overlay; the dashboard's separate shortlist rank is technical-first.",
+            "limitations": (
+                "Public channel snapshots are incomplete discovery aids. Direct table parsing is attempted via Excel/HTML. "
+                "Unparsed or absent reports are missing data, not evidence that the issuer did not publish."
+            ),
+        },
+        "warning": (
+            "This free mode does not call BRS API. Filing coverage is partial unless the public sources expose an issuer's LetterSerial. "
+            "Official tables are only scored after parsing; otherwise the result remains unavailable."
+        ),
+        "top_50_fundamental_for_review": fundamental_candidates[:50],
+        "top_50_money_flow_for_review": money_candidates[:50],
+        "financial_report_watchlist": sorted(financial_watchlist, key=lambda r: str(r.get("date") or ""), reverse=True)[:5000],
+        "project_disclosure_watchlist": prior_payload.get("project_disclosure_watchlist", []) if isinstance(prior_payload, dict) else [],
+        "important_disclosure_watchlist": prior_payload.get("important_disclosure_watchlist", []) if isinstance(prior_payload, dict) else [],
+        "stocks": output_rows,
+    }
+    write_json(OUTPUT_FILE, output)
+    print("PUBLIC_CODAL_ONLY_SUMMARY")
+    for name, value in output["counts"].items():
+        print(f"{name.upper()}:{value}")
+    print(f"OUTPUT:{OUTPUT_FILE.relative_to(ROOT)}")
+
+
 def probe_sources():
     """Small preflight: validate both API endpoints before the 741-symbol run."""
     if not BRS_API_KEY:
@@ -1608,8 +1966,11 @@ def probe_sources():
     print("BrsApi preflight passed; full-universe scan may begin.")
 
 def main():
-    if len(sys.argv) > 1 and sys.argv[1] == "--probe":
+    if "--probe" in sys.argv:
         probe_sources()
+        return
+    if "--public-codal-only" in sys.argv or not BRS_API_KEY:
+        run_public_codal_only()
         return
     if not BRS_API_KEY:
         raise RuntimeError(
