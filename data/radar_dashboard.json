@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-20T18:49:28+00:00",
+  "generated_at_utc": "2026-10-21T18:59:17+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -25,7 +25,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 609,
     "fundai_ratio_snapshot_generated_at_utc": "2026-10-17T16:22:32+00:00",
-    "fundai_ratio_snapshot_age_hours": 74.4,
+    "fundai_ratio_snapshot_age_hours": 98.6,
     "fundai_ratio_matched_count": 535,
     "fundai_ratio_scored_count": 532,
     "fundai_ratio_history_companies": 609,
@@ -57,7 +57,7 @@
   },
   "sources": {
     "technical": {
-      "generated_at_utc": "2026-10-20T18:48:38.795520+00:00",
+      "generated_at_utc": "2026-10-21T18:58:23.073839+00:00",
       "label": "تاریخچهٔ قیمت نهایت‌نگر",
       "status": "موجود",
       "note": "Technical screening only, not a buy/sell recommendation. A separate historical walk-forward report at data/radar_validation.json recomputes the same rank at 12 past cutoffs and tests 20/60/120-session price returns. Interpret relative outperformance together with absolute returns and win rate; it is not proof of profitability. Dividends, transaction costs, slippage, delisting survivors and corporate-action adjustment quality remain limitations. Fundamental health, earnings quality and project ROI are not part of this technical-only score; full TSE/IFB coverage has not been independently verified. Walk-forward result: relative_edge_but_mixed_absolute_returns; 20-session top-quintile median return=-1.2872%, median win rate=40.39%. Relative excess is not proof of short-term profitability."
@@ -86,14 +86,14 @@
       "generated_at_utc": "2026-10-17T16:22:32+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 74.4 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "609 ردیف دریافت شد؛ 535 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 98.6 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "fundai_ratio_history": {
       "generated_at_utc": "2026-10-14T12:06:31+00:00",
       "label": "Fundai · تاریخچهٔ نسبت‌های مالی",
       "status": "تاریخچهٔ عمومی موجود؛ روند تاریخی مقدماتی",
-      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 150.7 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
+      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 174.9 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/"
     },
     "codal_channels": {
@@ -107,7 +107,7 @@
     "رتبه‌بندی در مقایسه با کل بازار برتری نسبی داشته، اما بازده مطلق/درصد معاملات مثبت برای افق ۲۰جلسه‌ای به معیار نرسیده است؛ برای معاملات کوتاه‌مدت تأیید نشده.",
     "دفتر کدال 759 گزارش/اطلاعیهٔ یکتا نگه می‌دارد؛ اعداد قابل استخراج فعلاً از خلاصهٔ عمومی‌اند؛ در امتیاز مقدماتی تکنیکال‌محور اثر محدود دارند، اما جایگزین صورت مالی رسمی و کیفیت سود ساختاریافته نیستند.",
     "برای صورت‌های مالی ساختاریافته امتیاز بنیادی مستقلی وجود ندارد؛ 532 امتیاز فعلی از نسبت‌های TTM و رتبه‌بندی نسبی Fundai است، نه تحلیل کامل صورت‌های مالی.",
-    "snapshot نسبت‌های Fundai حدود 74.4 ساعت عمر دارد؛ برای رتبه‌بندی جدید باید داده تازه شود.",
+    "snapshot نسبت‌های Fundai حدود 98.6 ساعت عمر دارد؛ برای رتبه‌بندی جدید باید داده تازه شود.",
     "پوشش معتبر پول حقیقی فقط برای 8 نماد از 698 نامزد تکنیکال موجود است؛ برای رتبهٔ نهایی کافی نیست.",
     "هنوز امتیاز کمیِ طرح توسعه با هزینه، زمان بهره‌برداری و شواهد گزارش‌سطحیِ اعتبارسنجی‌شده وجود ندارد؛ بنابراین رتبهٔ نهایی صادر نمی‌شود."
   ],
@@ -130,50 +130,50 @@
       "rank": 1,
       "bucket": "main",
       "bucket_label": "۵ نامزد موقت رادار",
-      "symbol": "زبینا",
-      "company": "کشاورزی و دامپروری بینالود",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3BAHZ00013",
-      "price": 18210.0,
-      "price_date": "2026-10-20",
+      "symbol": "زمگسا",
+      "company": "کشاورزی و دامپروری مگسال",
+      "exchange": "بورس",
+      "chart_id": "IRO1MAGS00013",
+      "price": 130800.0,
+      "price_date": "2026-10-21",
       "technical_targets": {
         "status": "available",
         "reason": "",
         "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": "2026-10-20",
+        "latest_price_date": "2026-10-21",
         "data_age_days": 0,
-        "current_price": 18210.0,
-        "atr14": 686.4286,
+        "current_price": 130800.0,
+        "atr14": 5128.5714,
         "support_levels": [
-          14880.0
+          115900.0
         ],
         "resistance_levels": [],
         "buy": null,
         "sell": {
-          "entry_reference": 18210.0,
-          "target_1": 14880.0,
+          "entry_reference": 130800.0,
+          "target_1": 115900.0,
           "target_2": null,
-          "stop_loss": 19239.6429,
-          "invalidation": 19239.6429,
-          "risk_reward_tp1": 3.23,
+          "stop_loss": 138492.8571,
+          "invalidation": 138492.8571,
+          "risk_reward_tp1": 1.94,
           "risk_reward_tp2": null,
           "status": "scenario_only; confirm entry separately"
         },
         "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
       },
       "data_age_days": 0,
-      "technical_score": 90.9,
-      "risk_adjusted_score": 80.9,
-      "technical_rank_score": 80.29,
-      "relative_momentum_score": 68.87,
+      "technical_score": 92.2,
+      "risk_adjusted_score": 77.2,
+      "technical_rank_score": 80.98,
+      "relative_momentum_score": 78.79,
       "technical_factor_scores": {
         "multi_timeframe_trend": 100.0,
         "daily_market_structure": 94.0,
         "weekly_market_structure": 94.0,
         "monthly_market_structure": 94.0,
-        "volume_price_pressure": 75.6,
-        "breakout_structure": 92.0,
-        "trend_efficiency": 79.5,
+        "volume_price_pressure": 77.5,
+        "breakout_structure": 100.0,
+        "trend_efficiency": 83.5,
         "volatility_quality": 75.0
       },
       "technical_factor_available_weight": 100.0,
@@ -183,68 +183,70 @@
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 17950.0,
-          "last_swing_low": 16570.0
+          "last_swing_high": 122800.0,
+          "last_swing_low": 115900.0
         },
         "weekly": {
           "score": 94.0,
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 17950.0,
-          "last_swing_low": 15540.0
+          "last_swing_high": 122800.0,
+          "last_swing_low": 115900.0
         },
         "monthly": {
           "score": 94.0,
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 6969.0,
-          "last_swing_low": 3088.0
+          "last_swing_high": 61325.0,
+          "last_swing_low": 44964.0
         }
       },
       "volume_price_analysis": {
-        "score": 75.6,
-        "weighted_close_location": 0.631,
-        "up_down_volume_ratio": 1.859,
+        "score": 77.5,
+        "weighted_close_location": 0.613,
+        "up_down_volume_ratio": 2.554,
         "interpretation": "فشار انباشت/خرید در کندل‌ها",
         "sample_bars": 20
       },
       "breakout_analysis": {
-        "score": 92.0,
+        "score": 100.0,
         "breakout_20": true,
         "breakout_55": true,
         "breakdown_20": false,
         "breakdown_55": false,
-        "volume_confirmed": false,
-        "range_position_52w": 1.0
+        "volume_confirmed": true,
+        "range_position_52w": 0.999
       },
       "trend_efficiency": {
-        "score": 79.5,
-        "efficiency_ratio": 0.59,
+        "score": 83.5,
+        "efficiency_ratio": 0.67,
         "direction": "صعودی",
-        "net_change_pct": 38.16
+        "net_change_pct": 42.48
       },
       "volatility_quality": {
         "score": 75.0,
-        "atr14": 686.4286,
-        "atr_pct": 3.77
+        "atr14": 5128.5714,
+        "atr_pct": 3.921
       },
       "momentum_pct": {
-        "daily_20": 34.39,
-        "daily_60": 68.46,
-        "weekly_13": 28.97,
-        "monthly_6": 221.05
+        "daily_20": 42.48,
+        "daily_60": 90.12,
+        "weekly_13": 48.77,
+        "monthly_6": 185.14
       },
-      "volume_vs_20_period_average": 1.128,
-      "rsi14_daily": 68.92,
-      "heat_risk": "ریسک داغ‌شدن پایین",
+      "volume_vs_20_period_average": 2.06,
+      "rsi14_daily": 76.53,
+      "heat_risk": "ریسک داغ‌شدن متوسط",
       "entry_timing": "فقط پس از تأیید مجدد",
       "risk_flags": [
+        "rsi_high",
         "daily_surge",
+        "medium_term_surge",
         "long_term_surge"
       ],
-      "fundamental_score": 69.1,
+      "fundamental_score": 49.6,
       "fundamental_score_source": "Fundai TTM ratios proxy",
       "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها با تعدیل محدود از روند تاریخی هم‌دوره؛ صورت‌های مالی رسمی/حسابرسی‌شده هنوز تأیید نشده‌اند",
       "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
@@ -252,65 +254,65 @@
       "quarterly_growth_candidates_pct": {},
       "quarterly_growth_points": null,
       "fundamental_latest_report_date": "",
-      "fundamental_ratio_score": 68.9,
+      "fundamental_ratio_score": 48.2,
       "fundamental_ratio_quality": 1.0,
       "fundamental_ratio_industry": "زراعت و خدمات وابسته",
       "fundamental_ratio_report_date": "1405-03-31",
-      "fundamental_ratio_age_days": 121,
+      "fundamental_ratio_age_days": 122,
       "fundamental_ratio_components": {
-        "profitability": 73.6,
-        "balance_sheet": 89.5,
-        "valuation": 39.0,
-        "roe_ttm": 42.1,
-        "roa_ttm": 78.9,
-        "net_profit_margin_ttm": 94.7,
-        "debt_to_assets": 89.5,
-        "debt_to_equity": 89.5,
-        "pe_ttm": 50.0,
-        "ps_ttm": 5.3,
-        "pb": 57.9
+        "profitability": 74.0,
+        "balance_sheet": 21.1,
+        "valuation": 23.8,
+        "roe_ttm": 94.7,
+        "roa_ttm": 73.7,
+        "net_profit_margin_ttm": 31.6,
+        "debt_to_assets": 21.1,
+        "debt_to_equity": 21.1,
+        "pe_ttm": 27.8,
+        "ps_ttm": 42.1,
+        "pb": 0.0
       },
       "fundamental_ratio_metric_count": 8,
       "fundamental_ratio_peer_count": 20,
-      "fundamental_ratio_history_score": 70.6,
+      "fundamental_ratio_history_score": 62.3,
       "fundamental_ratio_history_adjustment_weight_pct": 10,
       "fundamental_ratio_history_status": "available_same_duration_same_period_yoy_candidate",
       "fundamental_ratio_history_latest_comparison_date": "1405-03-31",
-      "fundamental_ratio_history_age_days": 121,
+      "fundamental_ratio_history_age_days": 122,
       "fundamental_ratio_history_quality": 1.0,
       "fundamental_ratio_history_matched_period_pairs": 3,
       "fundamental_ratio_history_metric_comparisons": 18,
       "fundamental_ratio_history_source": "Fundai public historical ratios; secondary-source trend proxy",
       "fundai_ratios": {
-        "eps": 1911.0,
-        "pe_ttm": 8.938,
-        "ps_ttm": 3.1,
-        "price": 17080.0,
-        "market_value": 6217.17,
-        "operation_income": 2034.9584,
-        "net_profit_ttm": 695.61,
-        "net_profit_margin_ttm": 0.342,
-        "roe_ttm": 0.399,
-        "roa_ttm": 0.317,
-        "pb": 3.568,
-        "debt_to_assets": 0.206,
-        "debt_to_equity": 0.259
+        "eps": 12169.0,
+        "pe_ttm": 9.647,
+        "ps_ttm": 2.0,
+        "price": 117400.0,
+        "market_value": 3522.0,
+        "operation_income": 1747.0745,
+        "net_profit_ttm": 365.07,
+        "net_profit_margin_ttm": 0.209,
+        "roe_ttm": 0.751,
+        "roa_ttm": 0.314,
+        "pb": 7.241,
+        "debt_to_assets": 0.581,
+        "debt_to_equity": 1.389
       },
       "money_flow_score": null,
       "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
       "instrument_kind": "common_equity",
       "credit_assessment": {
-        "provisional_score": 77.3,
+        "provisional_score": 72.6,
         "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 77.3,
+        "observed_component_mean": 72.6,
         "provisional_score_available_weight_pct": 75,
         "nontechnical_components_available": [
           "fundamental"
         ],
         "component_scores": {
-          "fundamental": 69.1,
+          "fundamental": 49.6,
           "earnings_quality": null,
-          "technical": 80.29,
+          "technical": 80.98,
           "money_flow": null,
           "projects": null
         },
@@ -356,11 +358,11 @@
           "technical"
         ]
       },
-      "credit_score": 77.3,
-      "radar_rank_score": 80.29,
+      "credit_score": 72.6,
+      "radar_rank_score": 80.98,
       "radar_rank_components": {
-        "technical": 80.29,
-        "fundamental": 69.1,
+        "technical": 80.98,
+        "fundamental": 49.6,
         "earnings_quality": null,
         "codal_summary": null
       },
@@ -378,19 +380,40 @@
       "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
       "financial_reports": [],
       "important_disclosures": [],
-      "channel_evidence": [],
+      "channel_evidence": [
+        {
+          "symbol": "زمگسا",
+          "company": "",
+          "report_type": "نیازمند دسته‌بندی دستی",
+          "report_period": "",
+          "published_at": "2026-10-14T08:30:04+00:00",
+          "channel": "تلگرام بورس‌تریدر",
+          "sales": "",
+          "profit": "",
+          "eps": "",
+          "dividend": "",
+          "growth": "",
+          "project": "",
+          "project_strength": "ضعیف",
+          "amounts_raw": "",
+          "validation_status": "خلاصهٔ متنی/تصویری کانال؛ ارقام، واحد، دوره و حسابرسی باید با اطلاعیهٔ رسمی تطبیق داده شوند",
+          "telegram_url": "https://t.me/codalboursetrader/247858",
+          "codal_url": "https://codal.ir/Reports/Decision.aspx?LetterSerial=54PHoOlTTZ1btiU5mcoAaQ%3D%3D&rt=8&let=19&ct=0&ft=-1",
+          "source_text": "اطلاعیه کدال | بورس تریدر 🏷️ #زمگسا 🏛️ کشاورزی و دامپروری مگسال 📌 #معرفی /تغییر_در_ترکیب_اعضای_هیئت _مدیره 📋 معرفی /تغییر در ترکیب اعضای هیئت مدیره/مدیر عامل 🔗 لینک اطلاعیه 📆 ۱۴۰۵/۰۷/۲۲ ۱۱:۵۹:۴۸ ━━━━━━━━━━━━━━━ 🌐 Bourse-Trader.ir 🆔 @CodalBourseTrader 21 views 08:30 📋 اطلاعیه 📕 PDF 🔗 TSETMC 📊 سابقه 📈 چارت"
+        }
+      ],
       "codal_filing_ledger_reports": [],
       "data_quality": {
         "technical_available": true,
         "fundamental_scored": true,
         "fundamental_score_is_proxy": true,
         "fundamental_ratio_snapshot_matched": true,
-        "fundamental_ratio_report_age_days": 121,
+        "fundamental_ratio_report_age_days": 122,
         "fundamental_ratio_history_available": true,
         "fundamental_ratio_history_used_in_score": true,
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
-        "channel_evidence_count": 0,
+        "channel_evidence_count": 1,
         "codal_summary_scored": false,
         "codal_summary_source_confidence": null,
         "parsed_financial_report_count": 0,
@@ -405,8 +428,8 @@
       "company": "تکادو (سهامی عام)",
       "exchange": "پایه فرابورس",
       "chart_id": "IRO7TKDP00013",
-      "price": 5630.0,
-      "price_date": "2026-10-20",
+      "price": 5790.0,
+      "price_date": "2026-10-21",
       "technical_targets": {
         "status": "unavailable",
         "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
@@ -422,18 +445,18 @@
         "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
       },
       "data_age_days": 0,
-      "technical_score": 88.2,
-      "risk_adjusted_score": 74.2,
-      "technical_rank_score": 79.73,
-      "relative_momentum_score": 81.65,
+      "technical_score": 89.6,
+      "risk_adjusted_score": 71.6,
+      "technical_rank_score": 79.79,
+      "relative_momentum_score": 86.56,
       "technical_factor_scores": {
         "multi_timeframe_trend": 100.0,
         "daily_market_structure": 94.0,
         "weekly_market_structure": 94.0,
         "monthly_market_structure": 94.0,
-        "volume_price_pressure": 57.1,
-        "breakout_structure": 92.0,
-        "trend_efficiency": 71.0,
+        "volume_price_pressure": 60.0,
+        "breakout_structure": 100.0,
+        "trend_efficiency": 75.8,
         "volatility_quality": 85.0
       },
       "technical_factor_available_weight": 100.0,
@@ -464,44 +487,45 @@
         }
       },
       "volume_price_analysis": {
-        "score": 57.1,
-        "weighted_close_location": 0.223,
+        "score": 60.0,
+        "weighted_close_location": 0.315,
         "up_down_volume_ratio": 0.997,
         "interpretation": "فشار حجمی خنثی یا مختلط",
         "sample_bars": 20
       },
       "breakout_analysis": {
-        "score": 92.0,
+        "score": 100.0,
         "breakout_20": true,
         "breakout_55": true,
         "breakdown_20": false,
         "breakdown_55": false,
-        "volume_confirmed": false,
+        "volume_confirmed": true,
         "range_position_52w": 1.0
       },
       "trend_efficiency": {
-        "score": 71.0,
-        "efficiency_ratio": 0.42,
+        "score": 75.8,
+        "efficiency_ratio": 0.516,
         "direction": "صعودی",
-        "net_change_pct": 21.6
+        "net_change_pct": 27.81
       },
       "volatility_quality": {
         "score": 85.0,
-        "atr14": 182.8571,
-        "atr_pct": 3.248
+        "atr14": 185.7143,
+        "atr_pct": 3.208
       },
       "momentum_pct": {
-        "daily_20": 24.28,
-        "daily_60": 153.95,
-        "weekly_13": 74.57,
-        "monthly_6": 179.27
+        "daily_20": 30.11,
+        "daily_60": 153.72,
+        "weekly_13": 75.93,
+        "monthly_6": 187.2
       },
-      "volume_vs_20_period_average": 1.08,
-      "rsi14_daily": 78.95,
+      "volume_vs_20_period_average": 2.475,
+      "rsi14_daily": 79.27,
       "heat_risk": "ریسک داغ‌شدن متوسط",
       "entry_timing": "فقط پس از تأیید مجدد",
       "risk_flags": [
         "rsi_high",
+        "daily_surge",
         "medium_term_surge",
         "long_term_surge"
       ],
@@ -537,13 +561,13 @@
       "credit_assessment": {
         "provisional_score": null,
         "provisional_score_label": "امتیاز تلفیقی صادر نشده؛ فقط امتیاز تکنیکال قابل نمایش است",
-        "observed_component_mean": 79.7,
+        "observed_component_mean": 79.8,
         "provisional_score_available_weight_pct": 55,
         "nontechnical_components_available": [],
         "component_scores": {
           "fundamental": null,
           "earnings_quality": null,
-          "technical": 79.73,
+          "technical": 79.79,
           "money_flow": null,
           "projects": null
         },
@@ -589,9 +613,9 @@
         ]
       },
       "credit_score": null,
-      "radar_rank_score": 79.73,
+      "radar_rank_score": 79.79,
       "radar_rank_components": {
-        "technical": 79.73,
+        "technical": 79.79,
         "fundamental": null,
         "earnings_quality": null,
         "codal_summary": null
@@ -633,589 +657,52 @@
       "rank": 3,
       "bucket": "main",
       "bucket_label": "۵ نامزد موقت رادار",
-      "symbol": "شاراک",
-      "company": "پتروشیمی شازند",
-      "exchange": "بورس",
-      "chart_id": "IRO1PARK00013",
-      "price": 34080.0,
-      "price_date": "2026-10-20",
-      "technical_targets": {
-        "status": "available",
-        "reason": "",
-        "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": "2026-10-20",
-        "data_age_days": 0,
-        "current_price": 34080.0,
-        "atr14": 1235.7143,
-        "support_levels": [],
-        "resistance_levels": [
-          36170.0
-        ],
-        "buy": null,
-        "sell": null,
-        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
-      },
-      "data_age_days": 0,
-      "technical_score": 85.1,
-      "risk_adjusted_score": 76.1,
-      "technical_rank_score": 79.49,
-      "relative_momentum_score": 79.04,
-      "technical_factor_scores": {
-        "multi_timeframe_trend": 100.0,
-        "daily_market_structure": 94.0,
-        "weekly_market_structure": 94.0,
-        "monthly_market_structure": 94.0,
-        "volume_price_pressure": 57.4,
-        "breakout_structure": 67.3,
-        "trend_efficiency": 68.8,
-        "volatility_quality": 75.0
-      },
-      "technical_factor_available_weight": 100.0,
-      "market_structure": {
-        "daily": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 36170.0,
-          "last_swing_low": 31590.0
-        },
-        "weekly": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 36170.0,
-          "last_swing_low": 12723.0
-        },
-        "monthly": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 14097.0,
-          "last_swing_low": 9404.0
-        }
-      },
-      "volume_price_analysis": {
-        "score": 57.4,
-        "weighted_close_location": 0.317,
-        "up_down_volume_ratio": 0.735,
-        "interpretation": "فشار حجمی خنثی یا مختلط",
-        "sample_bars": 20
-      },
-      "breakout_analysis": {
-        "score": 67.3,
-        "breakout_20": false,
-        "breakout_55": false,
-        "breakdown_20": false,
-        "breakdown_55": false,
-        "volume_confirmed": false,
-        "range_position_52w": 0.932
-      },
-      "trend_efficiency": {
-        "score": 68.8,
-        "efficiency_ratio": 0.376,
-        "direction": "صعودی",
-        "net_change_pct": 20.38
-      },
-      "volatility_quality": {
-        "score": 75.0,
-        "atr14": 1235.7143,
-        "atr_pct": 3.626
-      },
-      "momentum_pct": {
-        "daily_20": 20.38,
-        "daily_60": 84.92,
-        "weekly_13": 76.67,
-        "monthly_6": 254.41
-      },
-      "volume_vs_20_period_average": 0.826,
-      "rsi14_daily": 67.03,
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "entry_timing": "انتظار برای اصلاح یا تثبیت",
-      "risk_flags": [
-        "medium_term_surge",
-        "long_term_surge"
-      ],
-      "fundamental_score": 55.2,
-      "fundamental_score_source": "Fundai TTM ratios proxy",
-      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها با تعدیل محدود از روند تاریخی هم‌دوره؛ صورت‌های مالی رسمی/حسابرسی‌شده هنوز تأیید نشده‌اند",
-      "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
-      "codal_summary_fundamentals": {},
-      "quarterly_growth_candidates_pct": {},
-      "quarterly_growth_points": null,
-      "fundamental_latest_report_date": "",
-      "fundamental_ratio_score": 52.1,
-      "fundamental_ratio_quality": 1.0,
-      "fundamental_ratio_industry": "الفین سازها",
-      "fundamental_ratio_report_date": "1405-03-31",
-      "fundamental_ratio_age_days": 121,
-      "fundamental_ratio_components": {
-        "profitability": 67.8,
-        "balance_sheet": 19.9,
-        "valuation": 53.0,
-        "roe_ttm": 85.3,
-        "roa_ttm": 57.9,
-        "net_profit_margin_ttm": 35.4,
-        "debt_to_assets": 21.1,
-        "debt_to_equity": 17.6,
-        "pe_ttm": 53.4,
-        "ps_ttm": 82.3,
-        "pb": 23.1
-      },
-      "fundamental_ratio_metric_count": 8,
-      "fundamental_ratio_peer_count": 96,
-      "fundamental_ratio_history_score": 83.1,
-      "fundamental_ratio_history_adjustment_weight_pct": 10,
-      "fundamental_ratio_history_status": "available_same_duration_same_period_yoy_candidate",
-      "fundamental_ratio_history_latest_comparison_date": "1405-03-31",
-      "fundamental_ratio_history_age_days": 121,
-      "fundamental_ratio_history_quality": 1.0,
-      "fundamental_ratio_history_matched_period_pairs": 3,
-      "fundamental_ratio_history_metric_comparisons": 18,
-      "fundamental_ratio_history_source": "Fundai public historical ratios; secondary-source trend proxy",
-      "fundai_ratios": {
-        "eps": 3871.0,
-        "pe_ttm": 8.646,
-        "ps_ttm": 0.9,
-        "price": 33470.0,
-        "market_value": 56899.0,
-        "operation_income": 61671.136,
-        "net_profit_ttm": 6580.7,
-        "net_profit_margin_ttm": 0.107,
-        "roe_ttm": 0.753,
-        "roa_ttm": 0.186,
-        "pb": 6.508,
-        "debt_to_assets": 0.752,
-        "debt_to_equity": 3.04
-      },
-      "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
-      "instrument_kind": "common_equity",
-      "credit_assessment": {
-        "provisional_score": 73.0,
-        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 73.0,
-        "provisional_score_available_weight_pct": 75,
-        "nontechnical_components_available": [
-          "fundamental"
-        ],
-        "component_scores": {
-          "fundamental": 55.2,
-          "earnings_quality": null,
-          "technical": 79.49,
-          "money_flow": null,
-          "projects": null
-        },
-        "component_weights_pct": {
-          "fundamental": 20,
-          "earnings_quality": 10,
-          "technical": 55,
-          "money_flow": 10,
-          "projects": 5
-        },
-        "fundamental_score_source": "Fundai TTM ratios proxy",
-        "fundamental_ratio_quality": 1.0,
-        "fundamental_score_is_proxy": true,
-        "fundamental_quality_gate": {
-          "ready": false,
-          "audited_annual_parsed_count": 0,
-          "comparable_annual_growth_available": false,
-          "annual_reports_parsed": null,
-          "revenue_yoy_pct": null
-        },
-        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
-        "earnings_quality_evidence": [],
-        "earnings_quality_fields_observed": 0,
-        "earnings_quality_report_date": "",
-        "project_score": null,
-        "project_score_validated": false,
-        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
-        "rating_confidence_score": 68.0,
-        "rating_confidence_label": "متوسط؛ داده‌های مهم ناقص",
-        "rating_confidence_is_data_coverage_not_profit_probability": true,
-        "confidence_factors_pct": {
-          "fundamental": 65.0,
-          "earnings_quality": 0.0,
-          "technical": 100,
-          "money_flow": 0.0,
-          "projects": 0.0
-        },
-        "final_rating_eligible": false,
-        "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
-        "final_credit_grade": null,
-        "provisional_input_components": [
-          "fundamental",
-          "technical"
-        ]
-      },
-      "credit_score": 73.0,
-      "radar_rank_score": 79.49,
-      "radar_rank_components": {
-        "technical": 79.49,
-        "fundamental": 55.2,
-        "earnings_quality": null,
-        "codal_summary": null
-      },
-      "radar_rank_available_weight_pct": 100,
-      "credit_confidence_score": 68.0,
-      "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
-      "final_credit_grade": null,
-      "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
-      "earnings_quality_score": null,
-      "project_score": null,
-      "project_score_validated": false,
-      "money_flow_history_rows": null,
-      "money_flow_full_year_coverage": false,
-      "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
-      "financial_reports": [],
-      "important_disclosures": [],
-      "channel_evidence": [],
-      "codal_filing_ledger_reports": [],
-      "data_quality": {
-        "technical_available": true,
-        "fundamental_scored": true,
-        "fundamental_score_is_proxy": true,
-        "fundamental_ratio_snapshot_matched": true,
-        "fundamental_ratio_report_age_days": 121,
-        "fundamental_ratio_history_available": true,
-        "fundamental_ratio_history_used_in_score": true,
-        "money_flow_scored": false,
-        "money_flow_12m_verified": false,
-        "channel_evidence_count": 0,
-        "codal_summary_scored": false,
-        "codal_summary_source_confidence": null,
-        "parsed_financial_report_count": 0,
-        "final_credit_grade_available": false
-      }
-    },
-    {
-      "rank": 4,
-      "bucket": "main",
-      "bucket_label": "۵ نامزد موقت رادار",
-      "symbol": "کپارس",
-      "company": "کاشی پارس",
-      "exchange": "بورس",
-      "chart_id": "IRO1KPRS00013",
-      "price": 21000.0,
-      "price_date": "2026-10-20",
-      "technical_targets": {
-        "status": "available",
-        "reason": "",
-        "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": "2026-10-20",
-        "data_age_days": 0,
-        "current_price": 21000.0,
-        "atr14": 747.1429,
-        "support_levels": [
-          19220.0,
-          17360.0
-        ],
-        "resistance_levels": [
-          22240.0
-        ],
-        "buy": null,
-        "sell": {
-          "entry_reference": 21000.0,
-          "target_1": 19220.0,
-          "target_2": 17360.0,
-          "stop_loss": 22352.0714,
-          "invalidation": 22352.0714,
-          "risk_reward_tp1": 1.32,
-          "risk_reward_tp2": 2.69,
-          "status": "scenario_only; confirm entry separately"
-        },
-        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
-      },
-      "data_age_days": 0,
-      "technical_score": 83.4,
-      "risk_adjusted_score": 77.4,
-      "technical_rank_score": 79.33,
-      "relative_momentum_score": 79.29,
-      "technical_factor_scores": {
-        "multi_timeframe_trend": 100.0,
-        "daily_market_structure": 94.0,
-        "weekly_market_structure": 72.0,
-        "monthly_market_structure": 94.0,
-        "volume_price_pressure": 68.9,
-        "breakout_structure": 67.3,
-        "trend_efficiency": 66.1,
-        "volatility_quality": 75.0
-      },
-      "technical_factor_available_weight": 100.0,
-      "market_structure": {
-        "daily": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 22240.0,
-          "last_swing_low": 20290.0
-        },
-        "weekly": {
-          "score": 72.0,
-          "label": "ساختار مختلط یا در حال تغییر",
-          "high_structure": "EQ",
-          "low_structure": "HL",
-          "last_swing_high": 22240.0,
-          "last_swing_low": 17360.0
-        },
-        "monthly": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 9322.0,
-          "last_swing_low": 7048.0
-        }
-      },
-      "volume_price_analysis": {
-        "score": 68.9,
-        "weighted_close_location": 0.423,
-        "up_down_volume_ratio": 1.844,
-        "interpretation": "فشار انباشت/خرید در کندل‌ها",
-        "sample_bars": 20
-      },
-      "breakout_analysis": {
-        "score": 67.3,
-        "breakout_20": false,
-        "breakout_55": false,
-        "breakdown_20": false,
-        "breakdown_55": false,
-        "volume_confirmed": false,
-        "range_position_52w": 0.934
-      },
-      "trend_efficiency": {
-        "score": 66.1,
-        "efficiency_ratio": 0.322,
-        "direction": "صعودی",
-        "net_change_pct": 16.86
-      },
-      "volatility_quality": {
-        "score": 75.0,
-        "atr14": 747.1429,
-        "atr_pct": 3.558
-      },
-      "momentum_pct": {
-        "daily_20": 16.86,
-        "daily_60": 122.93,
-        "weekly_13": 61.79,
-        "monthly_6": 187.2
-      },
-      "volume_vs_20_period_average": 1.295,
-      "rsi14_daily": 60.35,
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
-      "risk_flags": [
-        "medium_term_surge",
-        "long_term_surge"
-      ],
-      "fundamental_score": 76.6,
-      "fundamental_score_source": "Fundai TTM ratios proxy",
-      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها با تعدیل محدود از روند تاریخی هم‌دوره؛ صورت‌های مالی رسمی/حسابرسی‌شده هنوز تأیید نشده‌اند",
-      "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
-      "codal_summary_fundamentals": {},
-      "quarterly_growth_candidates_pct": {},
-      "quarterly_growth_points": null,
-      "fundamental_latest_report_date": "",
-      "fundamental_ratio_score": 77.2,
-      "fundamental_ratio_quality": 1.0,
-      "fundamental_ratio_industry": "کاشی و سرامیک",
-      "fundamental_ratio_report_date": "1405-04-31",
-      "fundamental_ratio_age_days": 90,
-      "fundamental_ratio_components": {
-        "profitability": 76.4,
-        "balance_sheet": 88.4,
-        "valuation": 67.7,
-        "roe_ttm": 55.6,
-        "roa_ttm": 88.9,
-        "net_profit_margin_ttm": 77.8,
-        "debt_to_assets": 88.9,
-        "debt_to_equity": 87.5,
-        "pe_ttm": 71.4,
-        "ps_ttm": 55.6,
-        "pb": 75.0
-      },
-      "fundamental_ratio_metric_count": 8,
-      "fundamental_ratio_peer_count": 10,
-      "fundamental_ratio_history_score": 71.2,
-      "fundamental_ratio_history_adjustment_weight_pct": 10,
-      "fundamental_ratio_history_status": "available_same_duration_same_period_yoy_candidate",
-      "fundamental_ratio_history_latest_comparison_date": "1405-04-31",
-      "fundamental_ratio_history_age_days": 90,
-      "fundamental_ratio_history_quality": 1.0,
-      "fundamental_ratio_history_matched_period_pairs": 4,
-      "fundamental_ratio_history_metric_comparisons": 24,
-      "fundamental_ratio_history_source": "Fundai public historical ratios; secondary-source trend proxy",
-      "fundai_ratios": {
-        "eps": 2681.0,
-        "pe_ttm": 7.628,
-        "ps_ttm": 1.9,
-        "price": 20450.0,
-        "market_value": 5132.95,
-        "operation_income": 2696.7331,
-        "net_profit_ttm": 672.93,
-        "net_profit_margin_ttm": 0.249,
-        "roe_ttm": 0.372,
-        "roa_ttm": 0.223,
-        "pb": 2.836,
-        "debt_to_assets": 0.4,
-        "debt_to_equity": 0.666
-      },
-      "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
-      "instrument_kind": "common_equity",
-      "credit_assessment": {
-        "provisional_score": 78.6,
-        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 78.6,
-        "provisional_score_available_weight_pct": 75,
-        "nontechnical_components_available": [
-          "fundamental"
-        ],
-        "component_scores": {
-          "fundamental": 76.6,
-          "earnings_quality": null,
-          "technical": 79.33,
-          "money_flow": null,
-          "projects": null
-        },
-        "component_weights_pct": {
-          "fundamental": 20,
-          "earnings_quality": 10,
-          "technical": 55,
-          "money_flow": 10,
-          "projects": 5
-        },
-        "fundamental_score_source": "Fundai TTM ratios proxy",
-        "fundamental_ratio_quality": 1.0,
-        "fundamental_score_is_proxy": true,
-        "fundamental_quality_gate": {
-          "ready": false,
-          "audited_annual_parsed_count": 0,
-          "comparable_annual_growth_available": false,
-          "annual_reports_parsed": null,
-          "revenue_yoy_pct": null
-        },
-        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
-        "earnings_quality_evidence": [],
-        "earnings_quality_fields_observed": 0,
-        "earnings_quality_report_date": "",
-        "project_score": null,
-        "project_score_validated": false,
-        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
-        "rating_confidence_score": 68.0,
-        "rating_confidence_label": "متوسط؛ داده‌های مهم ناقص",
-        "rating_confidence_is_data_coverage_not_profit_probability": true,
-        "confidence_factors_pct": {
-          "fundamental": 65.0,
-          "earnings_quality": 0.0,
-          "technical": 100,
-          "money_flow": 0.0,
-          "projects": 0.0
-        },
-        "final_rating_eligible": false,
-        "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
-        "final_credit_grade": null,
-        "provisional_input_components": [
-          "fundamental",
-          "technical"
-        ]
-      },
-      "credit_score": 78.6,
-      "radar_rank_score": 79.33,
-      "radar_rank_components": {
-        "technical": 79.33,
-        "fundamental": 76.6,
-        "earnings_quality": null,
-        "codal_summary": null
-      },
-      "radar_rank_available_weight_pct": 100,
-      "credit_confidence_score": 68.0,
-      "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
-      "final_credit_grade": null,
-      "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
-      "earnings_quality_score": null,
-      "project_score": null,
-      "project_score_validated": false,
-      "money_flow_history_rows": null,
-      "money_flow_full_year_coverage": false,
-      "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
-      "financial_reports": [],
-      "important_disclosures": [],
-      "channel_evidence": [],
-      "codal_filing_ledger_reports": [],
-      "data_quality": {
-        "technical_available": true,
-        "fundamental_scored": true,
-        "fundamental_score_is_proxy": true,
-        "fundamental_ratio_snapshot_matched": true,
-        "fundamental_ratio_report_age_days": 90,
-        "fundamental_ratio_history_available": true,
-        "fundamental_ratio_history_used_in_score": true,
-        "money_flow_scored": false,
-        "money_flow_12m_verified": false,
-        "channel_evidence_count": 0,
-        "codal_summary_scored": false,
-        "codal_summary_source_confidence": null,
-        "parsed_financial_report_count": 0,
-        "final_credit_grade_available": false
-      }
-    },
-    {
-      "rank": 5,
-      "bucket": "main",
-      "bucket_label": "۵ نامزد موقت رادار",
       "symbol": "فافق",
       "company": "صنایع مس افق کرمان",
       "exchange": "پایه فرابورس",
       "chart_id": "IRO7OKCZ00013",
-      "price": 17860.0,
-      "price_date": "2026-10-20",
+      "price": 17960.0,
+      "price_date": "2026-10-21",
       "technical_targets": {
         "status": "available",
         "reason": "",
         "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": "2026-10-20",
+        "latest_price_date": "2026-10-21",
         "data_age_days": 0,
-        "current_price": 17860.0,
-        "atr14": 792.1429,
+        "current_price": 17960.0,
+        "atr14": 797.1429,
         "support_levels": [
-          14900.0,
-          13910.0
+          14900.0
         ],
         "resistance_levels": [
           18550.0
         ],
         "buy": null,
         "sell": {
-          "entry_reference": 17860.0,
+          "entry_reference": 17960.0,
           "target_1": 14900.0,
-          "target_2": 13910.0,
-          "stop_loss": 18668.8214,
-          "invalidation": 18668.8214,
-          "risk_reward_tp1": 3.66,
-          "risk_reward_tp2": 4.88,
+          "target_2": null,
+          "stop_loss": 18669.5714,
+          "invalidation": 18669.5714,
+          "risk_reward_tp1": 4.31,
+          "risk_reward_tp2": null,
           "status": "scenario_only; confirm entry separately"
         },
         "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
       },
       "data_age_days": 0,
-      "technical_score": 85.9,
-      "risk_adjusted_score": 79.9,
-      "technical_rank_score": 79.16,
-      "relative_momentum_score": 69.42,
+      "technical_score": 86.6,
+      "risk_adjusted_score": 80.6,
+      "technical_rank_score": 79.75,
+      "relative_momentum_score": 69.97,
       "technical_factor_scores": {
         "multi_timeframe_trend": 100.0,
         "daily_market_structure": 94.0,
         "weekly_market_structure": 94.0,
         "monthly_market_structure": 94.0,
-        "volume_price_pressure": 62.6,
-        "breakout_structure": 67.9,
-        "trend_efficiency": 67.7,
+        "volume_price_pressure": 66.0,
+        "breakout_structure": 68.2,
+        "trend_efficiency": 70.9,
         "volatility_quality": 75.0
       },
       "technical_factor_available_weight": 100.0,
@@ -1234,7 +721,7 @@
           "high_structure": "HH",
           "low_structure": "HL",
           "last_swing_high": 18550.0,
-          "last_swing_low": 16610.0
+          "last_swing_low": 17120.0
         },
         "monthly": {
           "score": 94.0,
@@ -1246,40 +733,40 @@
         }
       },
       "volume_price_analysis": {
-        "score": 62.6,
-        "weighted_close_location": 0.341,
-        "up_down_volume_ratio": 1.206,
+        "score": 66.0,
+        "weighted_close_location": 0.39,
+        "up_down_volume_ratio": 1.48,
         "interpretation": "فشار انباشت/خرید در کندل‌ها",
         "sample_bars": 20
       },
       "breakout_analysis": {
-        "score": 67.9,
+        "score": 68.2,
         "breakout_20": false,
         "breakout_55": false,
         "breakdown_20": false,
         "breakdown_55": false,
         "volume_confirmed": false,
-        "range_position_52w": 0.948
+        "range_position_52w": 0.955
       },
       "trend_efficiency": {
-        "score": 67.7,
-        "efficiency_ratio": 0.355,
+        "score": 70.9,
+        "efficiency_ratio": 0.418,
         "direction": "صعودی",
-        "net_change_pct": 20.92
+        "net_change_pct": 24.55
       },
       "volatility_quality": {
         "score": 75.0,
-        "atr14": 792.1429,
-        "atr_pct": 4.435
+        "atr14": 797.1429,
+        "atr_pct": 4.438
       },
       "momentum_pct": {
-        "daily_20": 23.86,
-        "daily_60": 85.08,
-        "weekly_13": 47.48,
-        "monthly_6": 187.97
+        "daily_20": 22.76,
+        "daily_60": 80.68,
+        "weekly_13": 40.2,
+        "monthly_6": 189.58
       },
-      "volume_vs_20_period_average": 0.545,
-      "rsi14_daily": 67.67,
+      "volume_vs_20_period_average": 0.867,
+      "rsi14_daily": 68.12,
       "heat_risk": "ریسک داغ‌شدن پایین",
       "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
       "risk_flags": [
@@ -1318,13 +805,13 @@
       "credit_assessment": {
         "provisional_score": null,
         "provisional_score_label": "امتیاز تلفیقی صادر نشده؛ فقط امتیاز تکنیکال قابل نمایش است",
-        "observed_component_mean": 79.2,
+        "observed_component_mean": 79.8,
         "provisional_score_available_weight_pct": 55,
         "nontechnical_components_available": [],
         "component_scores": {
           "fundamental": null,
           "earnings_quality": null,
-          "technical": 79.16,
+          "technical": 79.75,
           "money_flow": null,
           "projects": null
         },
@@ -1370,9 +857,9 @@
         ]
       },
       "credit_score": null,
-      "radar_rank_score": 79.16,
+      "radar_rank_score": 79.75,
       "radar_rank_components": {
-        "technical": 79.16,
+        "technical": 79.75,
         "fundamental": null,
         "earnings_quality": null,
         "codal_summary": null
@@ -1432,43 +919,54 @@
       }
     },
     {
-      "rank": 6,
-      "bucket": "watch",
-      "bucket_label": "۵ نماد تحت‌نظر موقت",
-      "symbol": "صبا",
-      "company": "گروه مالی صبا تامین",
+      "rank": 4,
+      "bucket": "main",
+      "bucket_label": "۵ نامزد موقت رادار",
+      "symbol": "ومعادن",
+      "company": "سرمایه گذاری توسعه معادن و فلزات",
       "exchange": "بورس",
-      "chart_id": "IRO1STIZ00013",
-      "price": 12170.0,
-      "price_date": "2026-10-20",
+      "chart_id": "IRO1MADN00013",
+      "price": 4580.0,
+      "price_date": "2026-10-21",
       "technical_targets": {
-        "status": "unavailable",
-        "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
+        "status": "available",
+        "reason": "",
         "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": null,
-        "data_age_days": null,
-        "current_price": null,
-        "atr14": null,
-        "support_levels": [],
+        "latest_price_date": "2026-10-21",
+        "data_age_days": 0,
+        "current_price": 4580.0,
+        "atr14": 134.2857,
+        "support_levels": [
+          4070.0
+        ],
         "resistance_levels": [],
         "buy": null,
-        "sell": null,
-        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
+        "sell": {
+          "entry_reference": 4580.0,
+          "target_1": 4070.0,
+          "target_2": null,
+          "stop_loss": 4781.4286,
+          "invalidation": 4781.4286,
+          "risk_reward_tp1": 2.53,
+          "risk_reward_tp2": null,
+          "status": "scenario_only; confirm entry separately"
+        },
+        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
       },
       "data_age_days": 0,
-      "technical_score": 87.3,
-      "risk_adjusted_score": 71.3,
-      "technical_rank_score": 79.07,
-      "relative_momentum_score": 87.12,
+      "technical_score": 93.6,
+      "risk_adjusted_score": 71.6,
+      "technical_rank_score": 79.56,
+      "relative_momentum_score": 84.89,
       "technical_factor_scores": {
         "multi_timeframe_trend": 100.0,
         "daily_market_structure": 94.0,
         "weekly_market_structure": 94.0,
         "monthly_market_structure": 94.0,
-        "volume_price_pressure": 68.8,
-        "breakout_structure": 67.2,
-        "trend_efficiency": 79.2,
-        "volatility_quality": 75.0
+        "volume_price_pressure": 83.3,
+        "breakout_structure": 100.0,
+        "trend_efficiency": 85.5,
+        "volatility_quality": 85.0
       },
       "technical_factor_available_weight": 100.0,
       "market_structure": {
@@ -1477,64 +975,65 @@
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 11030.0,
-          "last_swing_low": 12140.0
+          "last_swing_high": 4330.0,
+          "last_swing_low": 4070.0
         },
         "weekly": {
           "score": 94.0,
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 5390.0,
-          "last_swing_low": 4599.0
+          "last_swing_high": 4330.0,
+          "last_swing_low": 4070.0
         },
         "monthly": {
           "score": 94.0,
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 4663.0,
-          "last_swing_low": 3130.0
+          "last_swing_high": 2310.0,
+          "last_swing_low": 1545.0
         }
       },
       "volume_price_analysis": {
-        "score": 68.8,
-        "weighted_close_location": 0.489,
-        "up_down_volume_ratio": 1.431,
+        "score": 83.3,
+        "weighted_close_location": 0.767,
+        "up_down_volume_ratio": 2.896,
         "interpretation": "فشار انباشت/خرید در کندل‌ها",
         "sample_bars": 20
       },
       "breakout_analysis": {
-        "score": 67.2,
-        "breakout_20": false,
-        "breakout_55": false,
+        "score": 100.0,
+        "breakout_20": true,
+        "breakout_55": true,
         "breakdown_20": false,
         "breakdown_55": false,
-        "volume_confirmed": false,
-        "range_position_52w": 0.931
+        "volume_confirmed": true,
+        "range_position_52w": 1.0
       },
       "trend_efficiency": {
-        "score": 79.2,
-        "efficiency_ratio": 0.584,
+        "score": 85.5,
+        "efficiency_ratio": 0.711,
         "direction": "صعودی",
-        "net_change_pct": 40.99
+        "net_change_pct": 36.72
       },
       "volatility_quality": {
-        "score": 75.0,
-        "atr14": 475.0,
-        "atr_pct": 3.903
+        "score": 85.0,
+        "atr14": 134.2857,
+        "atr_pct": 2.932
       },
       "momentum_pct": {
-        "daily_20": 40.99,
-        "daily_60": 160.88,
-        "weekly_13": 79.87,
-        "monthly_6": 263.72
+        "daily_20": 36.72,
+        "daily_60": 137.55,
+        "weekly_13": 57.93,
+        "monthly_6": 192.28
       },
-      "volume_vs_20_period_average": 0.667,
-      "rsi14_daily": 69.71,
+      "volume_vs_20_period_average": 2.092,
+      "rsi14_daily": 82.73,
       "heat_risk": "ریسک داغ‌شدن متوسط",
-      "entry_timing": "انتظار برای اصلاح یا تثبیت",
+      "entry_timing": "فقط پس از تأیید مجدد",
       "risk_flags": [
+        "rsi_high",
         "daily_surge",
         "medium_term_surge",
         "long_term_surge"
@@ -1571,13 +1070,13 @@
       "credit_assessment": {
         "provisional_score": null,
         "provisional_score_label": "امتیاز تلفیقی صادر نشده؛ فقط امتیاز تکنیکال قابل نمایش است",
-        "observed_component_mean": 79.1,
+        "observed_component_mean": 79.6,
         "provisional_score_available_weight_pct": 55,
         "nontechnical_components_available": [],
         "component_scores": {
           "fundamental": null,
           "earnings_quality": null,
-          "technical": 79.07,
+          "technical": 79.56,
           "money_flow": null,
           "projects": null
         },
@@ -1623,9 +1122,9 @@
         ]
       },
       "credit_score": null,
-      "radar_rank_score": 79.07,
+      "radar_rank_score": 79.56,
       "radar_rank_components": {
-        "technical": 79.07,
+        "technical": 79.56,
         "fundamental": null,
         "earnings_quality": null,
         "codal_summary": null
@@ -1664,7 +1163,268 @@
       }
     },
     {
-      "rank": 7,
+      "rank": 5,
+      "bucket": "main",
+      "bucket_label": "۵ نامزد موقت رادار",
+      "symbol": "زبینا",
+      "company": "کشاورزی و دامپروری بینالود",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3BAHZ00013",
+      "price": 18740.0,
+      "price_date": "2026-10-21",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
+        "source": "Nahayatnegar historical daily OHLC",
+        "latest_price_date": null,
+        "data_age_days": null,
+        "current_price": null,
+        "atr14": null,
+        "support_levels": [],
+        "resistance_levels": [],
+        "buy": null,
+        "sell": null,
+        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
+      },
+      "data_age_days": 0,
+      "technical_score": 90.9,
+      "risk_adjusted_score": 75.9,
+      "technical_rank_score": 79.33,
+      "relative_momentum_score": 75.36,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 94.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 70.3,
+        "breakout_structure": 100.0,
+        "trend_efficiency": 79.9,
+        "volatility_quality": 75.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 17950.0,
+          "last_swing_low": 16570.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 17950.0,
+          "last_swing_low": 16570.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 6969.0,
+          "last_swing_low": 3088.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 70.3,
+        "weighted_close_location": 0.53,
+        "up_down_volume_ratio": 1.463,
+        "interpretation": "فشار انباشت/خرید در کندل‌ها",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 100.0,
+        "breakout_20": true,
+        "breakout_55": true,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": true,
+        "range_position_52w": 1.0
+      },
+      "trend_efficiency": {
+        "score": 79.9,
+        "efficiency_ratio": 0.597,
+        "direction": "صعودی",
+        "net_change_pct": 38.3
+      },
+      "volatility_quality": {
+        "score": 75.0,
+        "atr14": 660.7143,
+        "atr_pct": 3.526
+      },
+      "momentum_pct": {
+        "daily_20": 34.43,
+        "daily_60": 68.37,
+        "weekly_13": 39.54,
+        "monthly_6": 230.39
+      },
+      "volume_vs_20_period_average": 1.946,
+      "rsi14_daily": 78.47,
+      "heat_risk": "ریسک داغ‌شدن متوسط",
+      "entry_timing": "فقط پس از تأیید مجدد",
+      "risk_flags": [
+        "rsi_high",
+        "daily_surge",
+        "long_term_surge"
+      ],
+      "fundamental_score": 69.1,
+      "fundamental_score_source": "Fundai TTM ratios proxy",
+      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها با تعدیل محدود از روند تاریخی هم‌دوره؛ صورت‌های مالی رسمی/حسابرسی‌شده هنوز تأیید نشده‌اند",
+      "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
+      "quarterly_growth_candidates_pct": {},
+      "quarterly_growth_points": null,
+      "fundamental_latest_report_date": "",
+      "fundamental_ratio_score": 68.9,
+      "fundamental_ratio_quality": 1.0,
+      "fundamental_ratio_industry": "زراعت و خدمات وابسته",
+      "fundamental_ratio_report_date": "1405-03-31",
+      "fundamental_ratio_age_days": 122,
+      "fundamental_ratio_components": {
+        "profitability": 73.6,
+        "balance_sheet": 89.5,
+        "valuation": 39.0,
+        "roe_ttm": 42.1,
+        "roa_ttm": 78.9,
+        "net_profit_margin_ttm": 94.7,
+        "debt_to_assets": 89.5,
+        "debt_to_equity": 89.5,
+        "pe_ttm": 50.0,
+        "ps_ttm": 5.3,
+        "pb": 57.9
+      },
+      "fundamental_ratio_metric_count": 8,
+      "fundamental_ratio_peer_count": 20,
+      "fundamental_ratio_history_score": 70.6,
+      "fundamental_ratio_history_adjustment_weight_pct": 10,
+      "fundamental_ratio_history_status": "available_same_duration_same_period_yoy_candidate",
+      "fundamental_ratio_history_latest_comparison_date": "1405-03-31",
+      "fundamental_ratio_history_age_days": 122,
+      "fundamental_ratio_history_quality": 1.0,
+      "fundamental_ratio_history_matched_period_pairs": 3,
+      "fundamental_ratio_history_metric_comparisons": 18,
+      "fundamental_ratio_history_source": "Fundai public historical ratios; secondary-source trend proxy",
+      "fundai_ratios": {
+        "eps": 1911.0,
+        "pe_ttm": 8.938,
+        "ps_ttm": 3.1,
+        "price": 17080.0,
+        "market_value": 6217.17,
+        "operation_income": 2034.9584,
+        "net_profit_ttm": 695.61,
+        "net_profit_margin_ttm": 0.342,
+        "roe_ttm": 0.399,
+        "roa_ttm": 0.317,
+        "pb": 3.568,
+        "debt_to_assets": 0.206,
+        "debt_to_equity": 0.259
+      },
+      "money_flow_score": null,
+      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "instrument_kind": "common_equity",
+      "credit_assessment": {
+        "provisional_score": 76.6,
+        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
+        "observed_component_mean": 76.6,
+        "provisional_score_available_weight_pct": 75,
+        "nontechnical_components_available": [
+          "fundamental"
+        ],
+        "component_scores": {
+          "fundamental": 69.1,
+          "earnings_quality": null,
+          "technical": 79.33,
+          "money_flow": null,
+          "projects": null
+        },
+        "component_weights_pct": {
+          "fundamental": 20,
+          "earnings_quality": 10,
+          "technical": 55,
+          "money_flow": 10,
+          "projects": 5
+        },
+        "fundamental_score_source": "Fundai TTM ratios proxy",
+        "fundamental_ratio_quality": 1.0,
+        "fundamental_score_is_proxy": true,
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
+        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
+        "earnings_quality_evidence": [],
+        "earnings_quality_fields_observed": 0,
+        "earnings_quality_report_date": "",
+        "project_score": null,
+        "project_score_validated": false,
+        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
+        "rating_confidence_score": 68.0,
+        "rating_confidence_label": "متوسط؛ داده‌های مهم ناقص",
+        "rating_confidence_is_data_coverage_not_profit_probability": true,
+        "confidence_factors_pct": {
+          "fundamental": 65.0,
+          "earnings_quality": 0.0,
+          "technical": 100,
+          "money_flow": 0.0,
+          "projects": 0.0
+        },
+        "final_rating_eligible": false,
+        "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
+        "final_credit_grade": null,
+        "provisional_input_components": [
+          "fundamental",
+          "technical"
+        ]
+      },
+      "credit_score": 76.6,
+      "radar_rank_score": 79.33,
+      "radar_rank_components": {
+        "technical": 79.33,
+        "fundamental": 69.1,
+        "earnings_quality": null,
+        "codal_summary": null
+      },
+      "radar_rank_available_weight_pct": 100,
+      "credit_confidence_score": 68.0,
+      "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
+      "final_credit_grade": null,
+      "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
+      "earnings_quality_score": null,
+      "project_score": null,
+      "project_score_validated": false,
+      "money_flow_history_rows": null,
+      "money_flow_full_year_coverage": false,
+      "money_flow_latest_date": "",
+      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "financial_reports": [],
+      "important_disclosures": [],
+      "channel_evidence": [],
+      "codal_filing_ledger_reports": [],
+      "data_quality": {
+        "technical_available": true,
+        "fundamental_scored": true,
+        "fundamental_score_is_proxy": true,
+        "fundamental_ratio_snapshot_matched": true,
+        "fundamental_ratio_report_age_days": 122,
+        "fundamental_ratio_history_available": true,
+        "fundamental_ratio_history_used_in_score": true,
+        "money_flow_scored": false,
+        "money_flow_12m_verified": false,
+        "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
+        "parsed_financial_report_count": 0,
+        "final_credit_grade_available": false
+      }
+    },
+    {
+      "rank": 6,
       "bucket": "watch",
       "bucket_label": "۵ نماد تحت‌نظر موقت",
       "symbol": "وامیر",
@@ -1687,11 +1447,11 @@
         "sell": null,
         "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
       },
-      "data_age_days": 0,
+      "data_age_days": 1,
       "technical_score": 89.4,
       "risk_adjusted_score": 68.4,
-      "technical_rank_score": 78.86,
-      "relative_momentum_score": 90.42,
+      "technical_rank_score": 79.02,
+      "relative_momentum_score": 91.03,
       "technical_factor_scores": {
         "multi_timeframe_trend": 100.0,
         "daily_market_structure": 94.0,
@@ -1830,13 +1590,13 @@
       "credit_assessment": {
         "provisional_score": null,
         "provisional_score_label": "امتیاز تلفیقی صادر نشده؛ فقط امتیاز تکنیکال قابل نمایش است",
-        "observed_component_mean": 78.9,
+        "observed_component_mean": 79.0,
         "provisional_score_available_weight_pct": 55,
         "nontechnical_components_available": [],
         "component_scores": {
           "fundamental": null,
           "earnings_quality": null,
-          "technical": 78.86,
+          "technical": 79.02,
           "money_flow": null,
           "projects": null
         },
@@ -1882,9 +1642,9 @@
         ]
       },
       "credit_score": null,
-      "radar_rank_score": 78.86,
+      "radar_rank_score": 79.02,
       "radar_rank_components": {
-        "technical": 78.86,
+        "technical": 79.02,
         "fundamental": null,
         "earnings_quality": null,
         "codal_summary": null
@@ -2081,54 +1841,575 @@
       }
     },
     {
-      "rank": 8,
+      "rank": 7,
       "bucket": "watch",
       "bucket_label": "۵ نماد تحت‌نظر موقت",
-      "symbol": "وسپه",
-      "company": "سرمایه گذاری سپه",
+      "symbol": "دفارا",
+      "company": "داروسازی فارابی",
       "exchange": "بورس",
-      "chart_id": "IRO1SPAH00013",
-      "price": 8440.0,
-      "price_date": "2026-10-20",
+      "chart_id": "IRO1DFRB00013",
+      "price": 21760.0,
+      "price_date": "2026-10-21",
       "technical_targets": {
-        "status": "available",
-        "reason": "",
+        "status": "unavailable",
+        "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
         "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": "2026-10-20",
-        "data_age_days": 0,
-        "current_price": 8440.0,
-        "atr14": 317.1429,
-        "support_levels": [
-          7260.0,
-          6860.0
-        ],
+        "latest_price_date": null,
+        "data_age_days": null,
+        "current_price": null,
+        "atr14": null,
+        "support_levels": [],
         "resistance_levels": [],
         "buy": null,
-        "sell": {
-          "entry_reference": 8440.0,
-          "target_1": 7260.0,
-          "target_2": 6860.0,
-          "stop_loss": 8915.7143,
-          "invalidation": 8915.7143,
-          "risk_reward_tp1": 2.48,
-          "risk_reward_tp2": 3.32,
-          "status": "scenario_only; confirm entry separately"
-        },
-        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
+        "sell": null,
+        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
       },
       "data_age_days": 0,
-      "technical_score": 86.1,
-      "risk_adjusted_score": 83.1,
-      "technical_rank_score": 78.59,
-      "relative_momentum_score": 59.76,
+      "technical_score": 87.8,
+      "risk_adjusted_score": 78.8,
+      "technical_rank_score": 78.8,
+      "relative_momentum_score": 67.73,
       "technical_factor_scores": {
         "multi_timeframe_trend": 100.0,
         "daily_market_structure": 94.0,
         "weekly_market_structure": 94.0,
         "monthly_market_structure": 94.0,
-        "volume_price_pressure": 62.2,
-        "breakout_structure": 69.3,
-        "trend_efficiency": 70.7,
+        "volume_price_pressure": 54.4,
+        "breakout_structure": 92.0,
+        "trend_efficiency": 72.0,
+        "volatility_quality": 85.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 21040.0,
+          "last_swing_low": 17660.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 21040.0,
+          "last_swing_low": 17660.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 7406.0,
+          "last_swing_low": 5253.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 54.4,
+        "weighted_close_location": 0.166,
+        "up_down_volume_ratio": 0.904,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 92.0,
+        "breakout_20": true,
+        "breakout_55": true,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 1.0
+      },
+      "trend_efficiency": {
+        "score": 72.0,
+        "efficiency_ratio": 0.441,
+        "direction": "صعودی",
+        "net_change_pct": 22.66
+      },
+      "volatility_quality": {
+        "score": 85.0,
+        "atr14": 590.0,
+        "atr_pct": 2.711
+      },
+      "momentum_pct": {
+        "daily_20": 22.66,
+        "daily_60": 87.26,
+        "weekly_13": 24.34,
+        "monthly_6": 278.76
+      },
+      "volume_vs_20_period_average": 0.528,
+      "rsi14_daily": 66.67,
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "entry_timing": "انتظار برای اصلاح یا تثبیت",
+      "risk_flags": [
+        "medium_term_surge",
+        "long_term_surge"
+      ],
+      "fundamental_score": 72.5,
+      "fundamental_score_source": "Fundai TTM ratios proxy",
+      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها با تعدیل محدود از روند تاریخی هم‌دوره؛ صورت‌های مالی رسمی/حسابرسی‌شده هنوز تأیید نشده‌اند",
+      "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
+      "quarterly_growth_candidates_pct": {},
+      "quarterly_growth_points": null,
+      "fundamental_latest_report_date": "",
+      "fundamental_ratio_score": 74.3,
+      "fundamental_ratio_quality": 1.0,
+      "fundamental_ratio_industry": "مواد و محصولات دارویی",
+      "fundamental_ratio_report_date": "1405-03-31",
+      "fundamental_ratio_age_days": 122,
+      "fundamental_ratio_components": {
+        "profitability": 77.3,
+        "balance_sheet": 79.1,
+        "valuation": 63.4,
+        "roe_ttm": 69.8,
+        "roa_ttm": 76.7,
+        "net_profit_margin_ttm": 74.4,
+        "debt_to_assets": 79.1,
+        "debt_to_equity": 79.1,
+        "pe_ttm": 75.6,
+        "ps_ttm": 50.0,
+        "pb": 60.5
+      },
+      "fundamental_ratio_metric_count": 8,
+      "fundamental_ratio_peer_count": 44,
+      "fundamental_ratio_history_score": 55.8,
+      "fundamental_ratio_history_adjustment_weight_pct": 10,
+      "fundamental_ratio_history_status": "available_same_duration_same_period_yoy_candidate",
+      "fundamental_ratio_history_latest_comparison_date": "1405-03-31",
+      "fundamental_ratio_history_age_days": 122,
+      "fundamental_ratio_history_quality": 1.0,
+      "fundamental_ratio_history_matched_period_pairs": 3,
+      "fundamental_ratio_history_metric_comparisons": 18,
+      "fundamental_ratio_history_source": "Fundai public historical ratios; secondary-source trend proxy",
+      "fundai_ratios": {
+        "eps": 1956.0,
+        "pe_ttm": 9.918,
+        "ps_ttm": 3.9,
+        "price": 19400.0,
+        "market_value": 17859.64,
+        "operation_income": 4637.8742,
+        "net_profit_ttm": 1800.69,
+        "net_profit_margin_ttm": 0.388,
+        "roe_ttm": 0.616,
+        "roa_ttm": 0.315,
+        "pb": 6.105,
+        "debt_to_assets": 0.488,
+        "debt_to_equity": 0.954
+      },
+      "money_flow_score": null,
+      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "instrument_kind": "common_equity",
+      "credit_assessment": {
+        "provisional_score": 77.1,
+        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
+        "observed_component_mean": 77.1,
+        "provisional_score_available_weight_pct": 75,
+        "nontechnical_components_available": [
+          "fundamental"
+        ],
+        "component_scores": {
+          "fundamental": 72.5,
+          "earnings_quality": null,
+          "technical": 78.8,
+          "money_flow": null,
+          "projects": null
+        },
+        "component_weights_pct": {
+          "fundamental": 20,
+          "earnings_quality": 10,
+          "technical": 55,
+          "money_flow": 10,
+          "projects": 5
+        },
+        "fundamental_score_source": "Fundai TTM ratios proxy",
+        "fundamental_ratio_quality": 1.0,
+        "fundamental_score_is_proxy": true,
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
+        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
+        "earnings_quality_evidence": [],
+        "earnings_quality_fields_observed": 0,
+        "earnings_quality_report_date": "",
+        "project_score": null,
+        "project_score_validated": false,
+        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
+        "rating_confidence_score": 68.0,
+        "rating_confidence_label": "متوسط؛ داده‌های مهم ناقص",
+        "rating_confidence_is_data_coverage_not_profit_probability": true,
+        "confidence_factors_pct": {
+          "fundamental": 65.0,
+          "earnings_quality": 0.0,
+          "technical": 100,
+          "money_flow": 0.0,
+          "projects": 0.0
+        },
+        "final_rating_eligible": false,
+        "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
+        "final_credit_grade": null,
+        "provisional_input_components": [
+          "fundamental",
+          "technical"
+        ]
+      },
+      "credit_score": 77.1,
+      "radar_rank_score": 78.8,
+      "radar_rank_components": {
+        "technical": 78.8,
+        "fundamental": 72.5,
+        "earnings_quality": null,
+        "codal_summary": null
+      },
+      "radar_rank_available_weight_pct": 100,
+      "credit_confidence_score": 68.0,
+      "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
+      "final_credit_grade": null,
+      "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
+      "earnings_quality_score": null,
+      "project_score": null,
+      "project_score_validated": false,
+      "money_flow_history_rows": null,
+      "money_flow_full_year_coverage": false,
+      "money_flow_latest_date": "",
+      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "financial_reports": [],
+      "important_disclosures": [],
+      "channel_evidence": [],
+      "codal_filing_ledger_reports": [],
+      "data_quality": {
+        "technical_available": true,
+        "fundamental_scored": true,
+        "fundamental_score_is_proxy": true,
+        "fundamental_ratio_snapshot_matched": true,
+        "fundamental_ratio_report_age_days": 122,
+        "fundamental_ratio_history_available": true,
+        "fundamental_ratio_history_used_in_score": true,
+        "money_flow_scored": false,
+        "money_flow_12m_verified": false,
+        "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
+        "parsed_financial_report_count": 0,
+        "final_credit_grade_available": false
+      }
+    },
+    {
+      "rank": 8,
+      "bucket": "watch",
+      "bucket_label": "۵ نماد تحت‌نظر موقت",
+      "symbol": "شاراک",
+      "company": "پتروشیمی شازند",
+      "exchange": "بورس",
+      "chart_id": "IRO1PARK00013",
+      "price": 35090.0,
+      "price_date": "2026-10-21",
+      "technical_targets": {
+        "status": "available",
+        "reason": "",
+        "source": "Nahayatnegar historical daily OHLC",
+        "latest_price_date": "2026-10-21",
+        "data_age_days": 0,
+        "current_price": 35090.0,
+        "atr14": 1180.0,
+        "support_levels": [],
+        "resistance_levels": [
+          36170.0
+        ],
+        "buy": null,
+        "sell": null,
+        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
+      },
+      "data_age_days": 0,
+      "technical_score": 85.5,
+      "risk_adjusted_score": 76.5,
+      "technical_rank_score": 78.78,
+      "relative_momentum_score": 74.78,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 94.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 55.3,
+        "breakout_structure": 68.6,
+        "trend_efficiency": 69.6,
+        "volatility_quality": 85.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 36170.0,
+          "last_swing_low": 32030.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 36170.0,
+          "last_swing_low": 32030.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 14097.0,
+          "last_swing_low": 9404.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 55.3,
+        "weighted_close_location": 0.25,
+        "up_down_volume_ratio": 0.735,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 68.6,
+        "breakout_20": false,
+        "breakout_55": false,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 0.965
+      },
+      "trend_efficiency": {
+        "score": 69.6,
+        "efficiency_ratio": 0.392,
+        "direction": "صعودی",
+        "net_change_pct": 21.38
+      },
+      "volatility_quality": {
+        "score": 85.0,
+        "atr14": 1180.0,
+        "atr_pct": 3.363
+      },
+      "momentum_pct": {
+        "daily_20": 21.38,
+        "daily_60": 85.27,
+        "weekly_13": 69.93,
+        "monthly_6": 264.91
+      },
+      "volume_vs_20_period_average": 0.234,
+      "rsi14_daily": 67.44,
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "entry_timing": "انتظار برای اصلاح یا تثبیت",
+      "risk_flags": [
+        "medium_term_surge",
+        "long_term_surge"
+      ],
+      "fundamental_score": 55.2,
+      "fundamental_score_source": "Fundai TTM ratios proxy",
+      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها با تعدیل محدود از روند تاریخی هم‌دوره؛ صورت‌های مالی رسمی/حسابرسی‌شده هنوز تأیید نشده‌اند",
+      "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
+      "quarterly_growth_candidates_pct": {},
+      "quarterly_growth_points": null,
+      "fundamental_latest_report_date": "",
+      "fundamental_ratio_score": 52.1,
+      "fundamental_ratio_quality": 1.0,
+      "fundamental_ratio_industry": "الفین سازها",
+      "fundamental_ratio_report_date": "1405-03-31",
+      "fundamental_ratio_age_days": 122,
+      "fundamental_ratio_components": {
+        "profitability": 67.8,
+        "balance_sheet": 19.9,
+        "valuation": 53.0,
+        "roe_ttm": 85.3,
+        "roa_ttm": 57.9,
+        "net_profit_margin_ttm": 35.4,
+        "debt_to_assets": 21.1,
+        "debt_to_equity": 17.6,
+        "pe_ttm": 53.4,
+        "ps_ttm": 82.3,
+        "pb": 23.1
+      },
+      "fundamental_ratio_metric_count": 8,
+      "fundamental_ratio_peer_count": 96,
+      "fundamental_ratio_history_score": 83.1,
+      "fundamental_ratio_history_adjustment_weight_pct": 10,
+      "fundamental_ratio_history_status": "available_same_duration_same_period_yoy_candidate",
+      "fundamental_ratio_history_latest_comparison_date": "1405-03-31",
+      "fundamental_ratio_history_age_days": 122,
+      "fundamental_ratio_history_quality": 1.0,
+      "fundamental_ratio_history_matched_period_pairs": 3,
+      "fundamental_ratio_history_metric_comparisons": 18,
+      "fundamental_ratio_history_source": "Fundai public historical ratios; secondary-source trend proxy",
+      "fundai_ratios": {
+        "eps": 3871.0,
+        "pe_ttm": 8.646,
+        "ps_ttm": 0.9,
+        "price": 33470.0,
+        "market_value": 56899.0,
+        "operation_income": 61671.136,
+        "net_profit_ttm": 6580.7,
+        "net_profit_margin_ttm": 0.107,
+        "roe_ttm": 0.753,
+        "roa_ttm": 0.186,
+        "pb": 6.508,
+        "debt_to_assets": 0.752,
+        "debt_to_equity": 3.04
+      },
+      "money_flow_score": null,
+      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "instrument_kind": "common_equity",
+      "credit_assessment": {
+        "provisional_score": 72.5,
+        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
+        "observed_component_mean": 72.5,
+        "provisional_score_available_weight_pct": 75,
+        "nontechnical_components_available": [
+          "fundamental"
+        ],
+        "component_scores": {
+          "fundamental": 55.2,
+          "earnings_quality": null,
+          "technical": 78.78,
+          "money_flow": null,
+          "projects": null
+        },
+        "component_weights_pct": {
+          "fundamental": 20,
+          "earnings_quality": 10,
+          "technical": 55,
+          "money_flow": 10,
+          "projects": 5
+        },
+        "fundamental_score_source": "Fundai TTM ratios proxy",
+        "fundamental_ratio_quality": 1.0,
+        "fundamental_score_is_proxy": true,
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
+        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
+        "earnings_quality_evidence": [],
+        "earnings_quality_fields_observed": 0,
+        "earnings_quality_report_date": "",
+        "project_score": null,
+        "project_score_validated": false,
+        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
+        "rating_confidence_score": 68.0,
+        "rating_confidence_label": "متوسط؛ داده‌های مهم ناقص",
+        "rating_confidence_is_data_coverage_not_profit_probability": true,
+        "confidence_factors_pct": {
+          "fundamental": 65.0,
+          "earnings_quality": 0.0,
+          "technical": 100,
+          "money_flow": 0.0,
+          "projects": 0.0
+        },
+        "final_rating_eligible": false,
+        "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
+        "final_credit_grade": null,
+        "provisional_input_components": [
+          "fundamental",
+          "technical"
+        ]
+      },
+      "credit_score": 72.5,
+      "radar_rank_score": 78.78,
+      "radar_rank_components": {
+        "technical": 78.78,
+        "fundamental": 55.2,
+        "earnings_quality": null,
+        "codal_summary": null
+      },
+      "radar_rank_available_weight_pct": 100,
+      "credit_confidence_score": 68.0,
+      "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
+      "final_credit_grade": null,
+      "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
+      "earnings_quality_score": null,
+      "project_score": null,
+      "project_score_validated": false,
+      "money_flow_history_rows": null,
+      "money_flow_full_year_coverage": false,
+      "money_flow_latest_date": "",
+      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "financial_reports": [],
+      "important_disclosures": [],
+      "channel_evidence": [],
+      "codal_filing_ledger_reports": [],
+      "data_quality": {
+        "technical_available": true,
+        "fundamental_scored": true,
+        "fundamental_score_is_proxy": true,
+        "fundamental_ratio_snapshot_matched": true,
+        "fundamental_ratio_report_age_days": 122,
+        "fundamental_ratio_history_available": true,
+        "fundamental_ratio_history_used_in_score": true,
+        "money_flow_scored": false,
+        "money_flow_12m_verified": false,
+        "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
+        "parsed_financial_report_count": 0,
+        "final_credit_grade_available": false
+      }
+    },
+    {
+      "rank": 9,
+      "bucket": "watch",
+      "bucket_label": "۵ نماد تحت‌نظر موقت",
+      "symbol": "زملارد",
+      "company": "کشاورزی و دامپروری ملارد شیر",
+      "exchange": "فرابورس",
+      "chart_id": "IRO3MAHZ00013",
+      "price": 1731.0,
+      "price_date": "2026-10-21",
+      "technical_targets": {
+        "status": "available",
+        "reason": "",
+        "source": "Nahayatnegar historical daily OHLC",
+        "latest_price_date": "2026-10-21",
+        "data_age_days": 0,
+        "current_price": 1731.0,
+        "atr14": 61.8571,
+        "support_levels": [
+          1475.0
+        ],
+        "resistance_levels": [],
+        "buy": null,
+        "sell": {
+          "entry_reference": 1731.0,
+          "target_1": 1475.0,
+          "target_2": null,
+          "stop_loss": 1823.7857,
+          "invalidation": 1823.7857,
+          "risk_reward_tp1": 2.76,
+          "risk_reward_tp2": null,
+          "status": "scenario_only; confirm entry separately"
+        },
+        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
+      },
+      "data_age_days": 0,
+      "technical_score": 87.3,
+      "risk_adjusted_score": 84.3,
+      "technical_rank_score": 78.69,
+      "relative_momentum_score": 55.11,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 94.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 52.7,
+        "breakout_structure": 92.0,
+        "trend_efficiency": 77.8,
         "volatility_quality": 75.0
       },
       "technical_factor_available_weight": 100.0,
@@ -2138,65 +2419,326 @@
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 8460.0,
-          "last_swing_low": 7850.0
+          "last_swing_high": 1665.0,
+          "last_swing_low": 1512.0
         },
         "weekly": {
           "score": 94.0,
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 8460.0,
-          "last_swing_low": 4090.0
+          "last_swing_high": 1665.0,
+          "last_swing_low": 1512.0
         },
         "monthly": {
           "score": 94.0,
           "label": "ساختار صعودی؛ سقف و کف بالاتر",
           "high_structure": "HH",
           "low_structure": "HL",
-          "last_swing_high": 3245.0,
-          "last_swing_low": 2174.0
+          "last_swing_high": 976.0,
+          "last_swing_low": 658.0
         }
       },
       "volume_price_analysis": {
-        "score": 62.2,
-        "weighted_close_location": 0.338,
-        "up_down_volume_ratio": 1.173,
+        "score": 52.7,
+        "weighted_close_location": 0.14,
+        "up_down_volume_ratio": 0.816,
+        "interpretation": "فشار حجمی خنثی یا مختلط",
+        "sample_bars": 20
+      },
+      "breakout_analysis": {
+        "score": 92.0,
+        "breakout_20": true,
+        "breakout_55": true,
+        "breakdown_20": false,
+        "breakdown_55": false,
+        "volume_confirmed": false,
+        "range_position_52w": 1.0
+      },
+      "trend_efficiency": {
+        "score": 77.8,
+        "efficiency_ratio": 0.556,
+        "direction": "صعودی",
+        "net_change_pct": 26.07
+      },
+      "volatility_quality": {
+        "score": 75.0,
+        "atr14": 61.8571,
+        "atr_pct": 3.573
+      },
+      "momentum_pct": {
+        "daily_20": 21.9,
+        "daily_60": 67.73,
+        "weekly_13": 13.21,
+        "monthly_6": 154.19
+      },
+      "volume_vs_20_period_average": 1.176,
+      "rsi14_daily": 63.56,
+      "heat_risk": "ریسک داغ‌شدن پایین",
+      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "risk_flags": [
+        "long_term_surge"
+      ],
+      "fundamental_score": 54.9,
+      "fundamental_score_source": "Fundai TTM ratios proxy",
+      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها با تعدیل محدود از روند تاریخی هم‌دوره؛ صورت‌های مالی رسمی/حسابرسی‌شده هنوز تأیید نشده‌اند",
+      "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
+      "codal_summary_fundamentals": {},
+      "quarterly_growth_candidates_pct": {},
+      "quarterly_growth_points": null,
+      "fundamental_latest_report_date": "",
+      "fundamental_ratio_score": 52.5,
+      "fundamental_ratio_quality": 1.0,
+      "fundamental_ratio_industry": "زراعت و خدمات وابسته",
+      "fundamental_ratio_report_date": "1405-03-31",
+      "fundamental_ratio_age_days": 122,
+      "fundamental_ratio_components": {
+        "profitability": 27.5,
+        "balance_sheet": 80.7,
+        "valuation": 74.3,
+        "roe_ttm": 5.3,
+        "roa_ttm": 5.3,
+        "net_profit_margin_ttm": 36.8,
+        "debt_to_assets": 81.6,
+        "debt_to_equity": 78.9,
+        "pe_ttm": 55.6,
+        "ps_ttm": 73.7,
+        "pb": 100.0
+      },
+      "fundamental_ratio_metric_count": 8,
+      "fundamental_ratio_peer_count": 20,
+      "fundamental_ratio_history_score": 76.6,
+      "fundamental_ratio_history_adjustment_weight_pct": 10,
+      "fundamental_ratio_history_status": "available_same_duration_same_period_yoy_candidate",
+      "fundamental_ratio_history_latest_comparison_date": "1405-03-31",
+      "fundamental_ratio_history_age_days": 122,
+      "fundamental_ratio_history_quality": 1.0,
+      "fundamental_ratio_history_matched_period_pairs": 3,
+      "fundamental_ratio_history_metric_comparisons": 18,
+      "fundamental_ratio_history_source": "Fundai public historical ratios; secondary-source trend proxy",
+      "fundai_ratios": {
+        "eps": 183.0,
+        "pe_ttm": 8.514,
+        "ps_ttm": 1.8,
+        "price": 1558.0,
+        "market_value": 2938.7,
+        "operation_income": 1642.9896,
+        "net_profit_ttm": 345.18,
+        "net_profit_margin_ttm": 0.21,
+        "roe_ttm": 0.147,
+        "roa_ttm": 0.11,
+        "pb": 1.253,
+        "debt_to_assets": 0.25,
+        "debt_to_equity": 0.334
+      },
+      "money_flow_score": null,
+      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
+      "instrument_kind": "common_equity",
+      "credit_assessment": {
+        "provisional_score": 72.3,
+        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
+        "observed_component_mean": 72.3,
+        "provisional_score_available_weight_pct": 75,
+        "nontechnical_components_available": [
+          "fundamental"
+        ],
+        "component_scores": {
+          "fundamental": 54.9,
+          "earnings_quality": null,
+          "technical": 78.69,
+          "money_flow": null,
+          "projects": null
+        },
+        "component_weights_pct": {
+          "fundamental": 20,
+          "earnings_quality": 10,
+          "technical": 55,
+          "money_flow": 10,
+          "projects": 5
+        },
+        "fundamental_score_source": "Fundai TTM ratios proxy",
+        "fundamental_ratio_quality": 1.0,
+        "fundamental_score_is_proxy": true,
+        "fundamental_quality_gate": {
+          "ready": false,
+          "audited_annual_parsed_count": 0,
+          "comparable_annual_growth_available": false,
+          "annual_reports_parsed": null,
+          "revenue_yoy_pct": null
+        },
+        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
+        "earnings_quality_evidence": [],
+        "earnings_quality_fields_observed": 0,
+        "earnings_quality_report_date": "",
+        "project_score": null,
+        "project_score_validated": false,
+        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
+        "rating_confidence_score": 68.0,
+        "rating_confidence_label": "متوسط؛ داده‌های مهم ناقص",
+        "rating_confidence_is_data_coverage_not_profit_probability": true,
+        "confidence_factors_pct": {
+          "fundamental": 65.0,
+          "earnings_quality": 0.0,
+          "technical": 100,
+          "money_flow": 0.0,
+          "projects": 0.0
+        },
+        "final_rating_eligible": false,
+        "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
+        "final_credit_grade": null,
+        "provisional_input_components": [
+          "fundamental",
+          "technical"
+        ]
+      },
+      "credit_score": 72.3,
+      "radar_rank_score": 78.69,
+      "radar_rank_components": {
+        "technical": 78.69,
+        "fundamental": 54.9,
+        "earnings_quality": null,
+        "codal_summary": null
+      },
+      "radar_rank_available_weight_pct": 100,
+      "credit_confidence_score": 68.0,
+      "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
+      "final_credit_grade": null,
+      "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
+      "earnings_quality_score": null,
+      "project_score": null,
+      "project_score_validated": false,
+      "money_flow_history_rows": null,
+      "money_flow_full_year_coverage": false,
+      "money_flow_latest_date": "",
+      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
+      "financial_reports": [],
+      "important_disclosures": [],
+      "channel_evidence": [],
+      "codal_filing_ledger_reports": [],
+      "data_quality": {
+        "technical_available": true,
+        "fundamental_scored": true,
+        "fundamental_score_is_proxy": true,
+        "fundamental_ratio_snapshot_matched": true,
+        "fundamental_ratio_report_age_days": 122,
+        "fundamental_ratio_history_available": true,
+        "fundamental_ratio_history_used_in_score": true,
+        "money_flow_scored": false,
+        "money_flow_12m_verified": false,
+        "channel_evidence_count": 0,
+        "codal_summary_scored": false,
+        "codal_summary_source_confidence": null,
+        "parsed_financial_report_count": 0,
+        "final_credit_grade_available": false
+      }
+    },
+    {
+      "rank": 10,
+      "bucket": "watch",
+      "bucket_label": "۵ نماد تحت‌نظر موقت",
+      "symbol": "صبا",
+      "company": "گروه مالی صبا تامین",
+      "exchange": "بورس",
+      "chart_id": "IRO1STIZ00013",
+      "price": 12020.0,
+      "price_date": "2026-10-21",
+      "technical_targets": {
+        "status": "unavailable",
+        "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
+        "source": "Nahayatnegar historical daily OHLC",
+        "latest_price_date": null,
+        "data_age_days": null,
+        "current_price": null,
+        "atr14": null,
+        "support_levels": [],
+        "resistance_levels": [],
+        "buy": null,
+        "sell": null,
+        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
+      },
+      "data_age_days": 0,
+      "technical_score": 86.7,
+      "risk_adjusted_score": 70.7,
+      "technical_rank_score": 78.5,
+      "relative_momentum_score": 86.41,
+      "technical_factor_scores": {
+        "multi_timeframe_trend": 100.0,
+        "daily_market_structure": 94.0,
+        "weekly_market_structure": 94.0,
+        "monthly_market_structure": 94.0,
+        "volume_price_pressure": 65.5,
+        "breakout_structure": 66.7,
+        "trend_efficiency": 76.3,
+        "volatility_quality": 75.0
+      },
+      "technical_factor_available_weight": 100.0,
+      "market_structure": {
+        "daily": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 11030.0,
+          "last_swing_low": 12140.0
+        },
+        "weekly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 5390.0,
+          "last_swing_low": 4599.0
+        },
+        "monthly": {
+          "score": 94.0,
+          "label": "ساختار صعودی؛ سقف و کف بالاتر",
+          "high_structure": "HH",
+          "low_structure": "HL",
+          "last_swing_high": 4663.0,
+          "last_swing_low": 3130.0
+        }
+      },
+      "volume_price_analysis": {
+        "score": 65.5,
+        "weighted_close_location": 0.384,
+        "up_down_volume_ratio": 1.431,
         "interpretation": "فشار انباشت/خرید در کندل‌ها",
         "sample_bars": 20
       },
       "breakout_analysis": {
-        "score": 69.3,
+        "score": 66.7,
         "breakout_20": false,
         "breakout_55": false,
         "breakdown_20": false,
         "breakdown_55": false,
         "volume_confirmed": false,
-        "range_position_52w": 0.983
+        "range_position_52w": 0.917
       },
       "trend_efficiency": {
-        "score": 70.7,
-        "efficiency_ratio": 0.413,
+        "score": 76.3,
+        "efficiency_ratio": 0.526,
         "direction": "صعودی",
-        "net_change_pct": 21.97
+        "net_change_pct": 35.27
       },
       "volatility_quality": {
         "score": 75.0,
-        "atr14": 317.1429,
-        "atr_pct": 3.758
+        "atr14": 456.4286,
+        "atr_pct": 3.797
       },
       "momentum_pct": {
-        "daily_20": 21.97,
-        "daily_60": 95.82,
-        "weekly_13": 47.04,
-        "monthly_6": 95.46
+        "daily_20": 35.27,
+        "daily_60": 154.07,
+        "weekly_13": 79.91,
+        "monthly_6": 259.23
       },
-      "volume_vs_20_period_average": 0.683,
-      "rsi14_daily": 59.25,
-      "heat_risk": "ریسک داغ‌شدن پایین",
-      "entry_timing": "قابل بررسی پس از تحلیل بنیادی",
+      "volume_vs_20_period_average": 0.734,
+      "rsi14_daily": 65.19,
+      "heat_risk": "ریسک داغ‌شدن متوسط",
+      "entry_timing": "انتظار برای اصلاح یا تثبیت",
       "risk_flags": [
-        "medium_term_surge"
+        "daily_surge",
+        "medium_term_surge",
+        "long_term_surge"
       ],
       "fundamental_score": null,
       "fundamental_score_source": "بدون امتیاز بنیادی",
@@ -2230,13 +2772,13 @@
       "credit_assessment": {
         "provisional_score": null,
         "provisional_score_label": "امتیاز تلفیقی صادر نشده؛ فقط امتیاز تکنیکال قابل نمایش است",
-        "observed_component_mean": 78.6,
+        "observed_component_mean": 78.5,
         "provisional_score_available_weight_pct": 55,
         "nontechnical_components_available": [],
         "component_scores": {
           "fundamental": null,
           "earnings_quality": null,
-          "technical": 78.59,
+          "technical": 78.5,
           "money_flow": null,
           "projects": null
         },
@@ -2282,9 +2824,9 @@
         ]
       },
       "credit_score": null,
-      "radar_rank_score": 78.59,
+      "radar_rank_score": 78.5,
       "radar_rank_components": {
-        "technical": 78.59,
+        "technical": 78.5,
         "fundamental": null,
         "earnings_quality": null,
         "codal_summary": null
@@ -2313,540 +2855,6 @@
         "fundamental_ratio_report_age_days": null,
         "fundamental_ratio_history_available": false,
         "fundamental_ratio_history_used_in_score": false,
-        "money_flow_scored": false,
-        "money_flow_12m_verified": false,
-        "channel_evidence_count": 0,
-        "codal_summary_scored": false,
-        "codal_summary_source_confidence": null,
-        "parsed_financial_report_count": 0,
-        "final_credit_grade_available": false
-      }
-    },
-    {
-      "rank": 9,
-      "bucket": "watch",
-      "bucket_label": "۵ نماد تحت‌نظر موقت",
-      "symbol": "شکام",
-      "company": "صنایع شیمیایی کیمیاگران امروز",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3KICZ00013",
-      "price": 14320.0,
-      "price_date": "2026-10-20",
-      "technical_targets": {
-        "status": "available",
-        "reason": "",
-        "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": "2026-10-20",
-        "data_age_days": 0,
-        "current_price": 14320.0,
-        "atr14": 510.0,
-        "support_levels": [
-          12410.0
-        ],
-        "resistance_levels": [],
-        "buy": null,
-        "sell": {
-          "entry_reference": 14320.0,
-          "target_1": 12410.0,
-          "target_2": null,
-          "stop_loss": 15085.0,
-          "invalidation": 15085.0,
-          "risk_reward_tp1": 2.5,
-          "risk_reward_tp2": null,
-          "status": "scenario_only; confirm entry separately"
-        },
-        "method": "confirmed 3-bar swing zones + ATR14; stop risk 0.75–3.0 ATR; TP1 minimum reward/risk 1.3; daily close reference"
-      },
-      "data_age_days": 0,
-      "technical_score": 88.2,
-      "risk_adjusted_score": 67.2,
-      "technical_rank_score": 78.38,
-      "relative_momentum_score": 91.12,
-      "technical_factor_scores": {
-        "multi_timeframe_trend": 100.0,
-        "daily_market_structure": 94.0,
-        "weekly_market_structure": 94.0,
-        "monthly_market_structure": 94.0,
-        "volume_price_pressure": 56.9,
-        "breakout_structure": 91.1,
-        "trend_efficiency": 83.5,
-        "volatility_quality": 75.0
-      },
-      "technical_factor_available_weight": 100.0,
-      "market_structure": {
-        "daily": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 13180.0,
-          "last_swing_low": 12410.0
-        },
-        "weekly": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 11120.0,
-          "last_swing_low": 9420.0
-        },
-        "monthly": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 3488.0,
-          "last_swing_low": 1116.0
-        }
-      },
-      "volume_price_analysis": {
-        "score": 56.9,
-        "weighted_close_location": 0.329,
-        "up_down_volume_ratio": 0.662,
-        "interpretation": "فشار حجمی خنثی یا مختلط",
-        "sample_bars": 20
-      },
-      "breakout_analysis": {
-        "score": 91.1,
-        "breakout_20": true,
-        "breakout_55": true,
-        "breakdown_20": false,
-        "breakdown_55": false,
-        "volume_confirmed": false,
-        "range_position_52w": 0.979
-      },
-      "trend_efficiency": {
-        "score": 83.5,
-        "efficiency_ratio": 0.671,
-        "direction": "صعودی",
-        "net_change_pct": 43.2
-      },
-      "volatility_quality": {
-        "score": 75.0,
-        "atr14": 510.0,
-        "atr_pct": 3.561
-      },
-      "momentum_pct": {
-        "daily_20": 43.49,
-        "daily_60": 172.76,
-        "weekly_13": 70.68,
-        "monthly_6": 385.75
-      },
-      "volume_vs_20_period_average": 1.184,
-      "rsi14_daily": 78.41,
-      "heat_risk": "ریسک داغ‌شدن متوسط",
-      "entry_timing": "انتظار برای اصلاح یا تثبیت",
-      "risk_flags": [
-        "rsi_high",
-        "daily_surge",
-        "medium_term_surge",
-        "long_term_surge"
-      ],
-      "fundamental_score": 58.2,
-      "fundamental_score_source": "Fundai TTM ratios proxy",
-      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها با تعدیل محدود از روند تاریخی هم‌دوره؛ صورت‌های مالی رسمی/حسابرسی‌شده هنوز تأیید نشده‌اند",
-      "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
-      "codal_summary_fundamentals": {},
-      "quarterly_growth_candidates_pct": {},
-      "quarterly_growth_points": null,
-      "fundamental_latest_report_date": "",
-      "fundamental_ratio_score": 55.3,
-      "fundamental_ratio_quality": 1.0,
-      "fundamental_ratio_industry": "محصولات شیمیایی",
-      "fundamental_ratio_report_date": "1405-03-31",
-      "fundamental_ratio_age_days": 121,
-      "fundamental_ratio_components": {
-        "profitability": 69.1,
-        "balance_sheet": 42.9,
-        "valuation": 40.4,
-        "roe_ttm": 66.1,
-        "roa_ttm": 67.9,
-        "net_profit_margin_ttm": 56.0,
-        "debt_to_assets": 42.9,
-        "debt_to_equity": 42.9,
-        "pe_ttm": 41.7,
-        "ps_ttm": 36.0,
-        "pb": 42.9
-      },
-      "fundamental_ratio_metric_count": 8,
-      "fundamental_ratio_peer_count": 29,
-      "fundamental_ratio_history_score": 84.3,
-      "fundamental_ratio_history_adjustment_weight_pct": 10,
-      "fundamental_ratio_history_status": "available_same_duration_same_period_yoy_candidate",
-      "fundamental_ratio_history_latest_comparison_date": "1405-03-31",
-      "fundamental_ratio_history_age_days": 121,
-      "fundamental_ratio_history_quality": 1.0,
-      "fundamental_ratio_history_matched_period_pairs": 3,
-      "fundamental_ratio_history_metric_comparisons": 18,
-      "fundamental_ratio_history_source": "Fundai public historical ratios; secondary-source trend proxy",
-      "fundai_ratios": {
-        "eps": 1258.0,
-        "pe_ttm": 10.787,
-        "ps_ttm": 2.6,
-        "price": 13570.0,
-        "market_value": 23611.8,
-        "operation_income": 9063.078,
-        "net_profit_ttm": 2188.92,
-        "net_profit_margin_ttm": 0.241,
-        "roe_ttm": 0.506,
-        "roa_ttm": 0.231,
-        "pb": 5.461,
-        "debt_to_assets": 0.544,
-        "debt_to_equity": 1.191
-      },
-      "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
-      "instrument_kind": "common_equity",
-      "credit_assessment": {
-        "provisional_score": 73.0,
-        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 73.0,
-        "provisional_score_available_weight_pct": 75,
-        "nontechnical_components_available": [
-          "fundamental"
-        ],
-        "component_scores": {
-          "fundamental": 58.2,
-          "earnings_quality": null,
-          "technical": 78.38,
-          "money_flow": null,
-          "projects": null
-        },
-        "component_weights_pct": {
-          "fundamental": 20,
-          "earnings_quality": 10,
-          "technical": 55,
-          "money_flow": 10,
-          "projects": 5
-        },
-        "fundamental_score_source": "Fundai TTM ratios proxy",
-        "fundamental_ratio_quality": 1.0,
-        "fundamental_score_is_proxy": true,
-        "fundamental_quality_gate": {
-          "ready": false,
-          "audited_annual_parsed_count": 0,
-          "comparable_annual_growth_available": false,
-          "annual_reports_parsed": null,
-          "revenue_yoy_pct": null
-        },
-        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
-        "earnings_quality_evidence": [],
-        "earnings_quality_fields_observed": 0,
-        "earnings_quality_report_date": "",
-        "project_score": null,
-        "project_score_validated": false,
-        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
-        "rating_confidence_score": 68.0,
-        "rating_confidence_label": "متوسط؛ داده‌های مهم ناقص",
-        "rating_confidence_is_data_coverage_not_profit_probability": true,
-        "confidence_factors_pct": {
-          "fundamental": 65.0,
-          "earnings_quality": 0.0,
-          "technical": 100,
-          "money_flow": 0.0,
-          "projects": 0.0
-        },
-        "final_rating_eligible": false,
-        "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
-        "final_credit_grade": null,
-        "provisional_input_components": [
-          "fundamental",
-          "technical"
-        ]
-      },
-      "credit_score": 73.0,
-      "radar_rank_score": 78.38,
-      "radar_rank_components": {
-        "technical": 78.38,
-        "fundamental": 58.2,
-        "earnings_quality": null,
-        "codal_summary": null
-      },
-      "radar_rank_available_weight_pct": 100,
-      "credit_confidence_score": 68.0,
-      "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
-      "final_credit_grade": null,
-      "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
-      "earnings_quality_score": null,
-      "project_score": null,
-      "project_score_validated": false,
-      "money_flow_history_rows": null,
-      "money_flow_full_year_coverage": false,
-      "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
-      "financial_reports": [],
-      "important_disclosures": [],
-      "channel_evidence": [],
-      "codal_filing_ledger_reports": [],
-      "data_quality": {
-        "technical_available": true,
-        "fundamental_scored": true,
-        "fundamental_score_is_proxy": true,
-        "fundamental_ratio_snapshot_matched": true,
-        "fundamental_ratio_report_age_days": 121,
-        "fundamental_ratio_history_available": true,
-        "fundamental_ratio_history_used_in_score": true,
-        "money_flow_scored": false,
-        "money_flow_12m_verified": false,
-        "channel_evidence_count": 0,
-        "codal_summary_scored": false,
-        "codal_summary_source_confidence": null,
-        "parsed_financial_report_count": 0,
-        "final_credit_grade_available": false
-      }
-    },
-    {
-      "rank": 10,
-      "bucket": "watch",
-      "bucket_label": "۵ نماد تحت‌نظر موقت",
-      "symbol": "سجام",
-      "company": "مجتمع سیمان غرب آسیا",
-      "exchange": "فرابورس",
-      "chart_id": "IRO3SASP00013",
-      "price": 12890.0,
-      "price_date": "2026-10-20",
-      "technical_targets": {
-        "status": "unavailable",
-        "reason": "نقاط نوسانی کافی برای سطوح معتبر یافت نشد",
-        "source": "Nahayatnegar historical daily OHLC",
-        "latest_price_date": null,
-        "data_age_days": null,
-        "current_price": null,
-        "atr14": null,
-        "support_levels": [],
-        "resistance_levels": [],
-        "buy": null,
-        "sell": null,
-        "method": "confirmed 3-bar swing zones + ATR14; TP1 minimum reward/risk 1.3; daily close reference"
-      },
-      "data_age_days": 0,
-      "technical_score": 87.7,
-      "risk_adjusted_score": 75.7,
-      "technical_rank_score": 78.24,
-      "relative_momentum_score": 72.09,
-      "technical_factor_scores": {
-        "multi_timeframe_trend": 100.0,
-        "daily_market_structure": 94.0,
-        "weekly_market_structure": 94.0,
-        "monthly_market_structure": 94.0,
-        "volume_price_pressure": 54.6,
-        "breakout_structure": 91.7,
-        "trend_efficiency": 79.8,
-        "volatility_quality": 75.0
-      },
-      "technical_factor_available_weight": 100.0,
-      "market_structure": {
-        "daily": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 11580.0,
-          "last_swing_low": 10350.0
-        },
-        "weekly": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 11580.0,
-          "last_swing_low": 10730.0
-        },
-        "monthly": {
-          "score": 94.0,
-          "label": "ساختار صعودی؛ سقف و کف بالاتر",
-          "high_structure": "HH",
-          "low_structure": "HL",
-          "last_swing_high": 4430.0,
-          "last_swing_low": 1410.0
-        }
-      },
-      "volume_price_analysis": {
-        "score": 54.6,
-        "weighted_close_location": 0.401,
-        "up_down_volume_ratio": 0.371,
-        "interpretation": "فشار حجمی خنثی یا مختلط",
-        "sample_bars": 20
-      },
-      "breakout_analysis": {
-        "score": 91.7,
-        "breakout_20": true,
-        "breakout_55": true,
-        "breakdown_20": false,
-        "breakdown_55": false,
-        "volume_confirmed": false,
-        "range_position_52w": 0.992
-      },
-      "trend_efficiency": {
-        "score": 79.8,
-        "efficiency_ratio": 0.596,
-        "direction": "صعودی",
-        "net_change_pct": 32.07
-      },
-      "volatility_quality": {
-        "score": 75.0,
-        "atr14": 480.0,
-        "atr_pct": 3.724
-      },
-      "momentum_pct": {
-        "daily_20": 28.9,
-        "daily_60": 60.72,
-        "weekly_13": 53.45,
-        "monthly_6": 195.17
-      },
-      "volume_vs_20_period_average": 1.41,
-      "rsi14_daily": 70.64,
-      "heat_risk": "ریسک داغ‌شدن متوسط",
-      "entry_timing": "فقط پس از تأیید مجدد",
-      "risk_flags": [
-        "rsi_high",
-        "daily_surge",
-        "long_term_surge"
-      ],
-      "fundamental_score": 77.5,
-      "fundamental_score_source": "Fundai TTM ratios proxy",
-      "fundamental_status": "امتیاز نسبی مقدماتی از نسبت‌های TTM و مقایسه با هم‌صنعتی‌ها با تعدیل محدود از روند تاریخی هم‌دوره؛ صورت‌های مالی رسمی/حسابرسی‌شده هنوز تأیید نشده‌اند",
-      "quarterly_comparison_status": "گزارش سه‌ماههٔ قابل‌مقایسه هنوز تأیید نشده",
-      "codal_summary_fundamentals": {},
-      "quarterly_growth_candidates_pct": {},
-      "quarterly_growth_points": null,
-      "fundamental_latest_report_date": "",
-      "fundamental_ratio_score": 77.4,
-      "fundamental_ratio_quality": 1.0,
-      "fundamental_ratio_industry": "سیمان، آهک و گچ",
-      "fundamental_ratio_report_date": "1405-03-31",
-      "fundamental_ratio_age_days": 121,
-      "fundamental_ratio_components": {
-        "profitability": 78.1,
-        "balance_sheet": 88.6,
-        "valuation": 65.0,
-        "roe_ttm": 47.4,
-        "roa_ttm": 86.8,
-        "net_profit_margin_ttm": 97.4,
-        "debt_to_assets": 88.2,
-        "debt_to_equity": 89.2,
-        "pe_ttm": 88.9,
-        "ps_ttm": 19.7,
-        "pb": 78.4
-      },
-      "fundamental_ratio_metric_count": 8,
-      "fundamental_ratio_peer_count": 39,
-      "fundamental_ratio_history_score": 78.2,
-      "fundamental_ratio_history_adjustment_weight_pct": 10,
-      "fundamental_ratio_history_status": "available_same_duration_same_period_yoy_candidate",
-      "fundamental_ratio_history_latest_comparison_date": "1405-03-31",
-      "fundamental_ratio_history_age_days": 121,
-      "fundamental_ratio_history_quality": 1.0,
-      "fundamental_ratio_history_matched_period_pairs": 3,
-      "fundamental_ratio_history_metric_comparisons": 18,
-      "fundamental_ratio_history_source": "Fundai public historical ratios; secondary-source trend proxy",
-      "fundai_ratios": {
-        "eps": 1760.0,
-        "pe_ttm": 6.801,
-        "ps_ttm": 5.4,
-        "price": 11970.0,
-        "market_value": 11970.0,
-        "operation_income": 2235.1995,
-        "net_profit_ttm": 1760.0,
-        "net_profit_margin_ttm": 0.787,
-        "roe_ttm": 0.783,
-        "roa_ttm": 0.504,
-        "pb": 5.324,
-        "debt_to_assets": 0.356,
-        "debt_to_equity": 0.552
-      },
-      "money_flow_score": null,
-      "money_flow_status": "دریافت تاریخچهٔ حقیقی/حقوقی ناموفق",
-      "instrument_kind": "common_equity",
-      "credit_assessment": {
-        "provisional_score": 78.0,
-        "provisional_score_label": "امتیاز تلفیقی موقت از چند مؤلفه",
-        "observed_component_mean": 78.0,
-        "provisional_score_available_weight_pct": 75,
-        "nontechnical_components_available": [
-          "fundamental"
-        ],
-        "component_scores": {
-          "fundamental": 77.5,
-          "earnings_quality": null,
-          "technical": 78.24,
-          "money_flow": null,
-          "projects": null
-        },
-        "component_weights_pct": {
-          "fundamental": 20,
-          "earnings_quality": 10,
-          "technical": 55,
-          "money_flow": 10,
-          "projects": 5
-        },
-        "fundamental_score_source": "Fundai TTM ratios proxy",
-        "fundamental_ratio_quality": 1.0,
-        "fundamental_score_is_proxy": true,
-        "fundamental_quality_gate": {
-          "ready": false,
-          "audited_annual_parsed_count": 0,
-          "comparable_annual_growth_available": false,
-          "annual_reports_parsed": null,
-          "revenue_yoy_pct": null
-        },
-        "earnings_quality_status": "دادهٔ ساختاریافتهٔ قابل‌خواندن از صورت مالی موجود نیست",
-        "earnings_quality_evidence": [],
-        "earnings_quality_fields_observed": 0,
-        "earnings_quality_report_date": "",
-        "project_score": null,
-        "project_score_validated": false,
-        "project_score_status": "شاهد متنی هست، اما هزینه/زمان بهره‌برداری/بازده طرح ساختاریافته تأیید نشده",
-        "rating_confidence_score": 68.0,
-        "rating_confidence_label": "متوسط؛ داده‌های مهم ناقص",
-        "rating_confidence_is_data_coverage_not_profit_probability": true,
-        "confidence_factors_pct": {
-          "fundamental": 65.0,
-          "earnings_quality": 0.0,
-          "technical": 100,
-          "money_flow": 0.0,
-          "projects": 0.0
-        },
-        "final_rating_eligible": false,
-        "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
-        "final_credit_grade": null,
-        "provisional_input_components": [
-          "fundamental",
-          "technical"
-        ]
-      },
-      "credit_score": 78.0,
-      "radar_rank_score": 78.24,
-      "radar_rank_components": {
-        "technical": 78.24,
-        "fundamental": 77.5,
-        "earnings_quality": null,
-        "codal_summary": null
-      },
-      "radar_rank_available_weight_pct": 100,
-      "credit_confidence_score": 68.0,
-      "credit_confidence_label": "متوسط؛ داده‌های مهم ناقص",
-      "final_credit_grade": null,
-      "final_rating_status": "موقت؛ رتبهٔ اعتباری نهایی صادر نشده",
-      "earnings_quality_score": null,
-      "project_score": null,
-      "project_score_validated": false,
-      "money_flow_history_rows": null,
-      "money_flow_full_year_coverage": false,
-      "money_flow_latest_date": "",
-      "money_flow_error": "BrsApi failed twice consecutively: request failed: HTTP Error 402: Payment Required",
-      "financial_reports": [],
-      "important_disclosures": [],
-      "channel_evidence": [],
-      "codal_filing_ledger_reports": [],
-      "data_quality": {
-        "technical_available": true,
-        "fundamental_scored": true,
-        "fundamental_score_is_proxy": true,
-        "fundamental_ratio_snapshot_matched": true,
-        "fundamental_ratio_report_age_days": 121,
-        "fundamental_ratio_history_available": true,
-        "fundamental_ratio_history_used_in_score": true,
         "money_flow_scored": false,
         "money_flow_12m_verified": false,
         "channel_evidence_count": 0,
