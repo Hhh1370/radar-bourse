@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-11-07T18:58:05+00:00",
+  "generated_at_utc": "2026-11-07T19:53:39+00:00",
   "dashboard_status": "provisional",
   "title": "رادار بورس ایران",
   "subtitle": "نامزدهای تکنیکال و پوشش شواهد بنیادی؛ نه توصیهٔ خرید",
@@ -25,7 +25,7 @@
     "fundamental_statement_scored_count": 0,
     "fundai_ratio_rows_available": 771,
     "fundai_ratio_snapshot_generated_at_utc": "2026-11-07T18:01:04+00:00",
-    "fundai_ratio_snapshot_age_hours": 1.0,
+    "fundai_ratio_snapshot_age_hours": 1.9,
     "fundai_ratio_matched_count": 654,
     "fundai_ratio_scored_count": 650,
     "fundai_ratio_history_companies": 609,
@@ -70,14 +70,14 @@
       "source_url": "https://github.com/Hhh1370/radar-bourse/blob/main/data/radar_validation.json"
     },
     "money_flow": {
-      "generated_at_utc": "2026-10-31T19:44:02.823218+00:00",
+      "generated_at_utc": "2026-11-07T19:53:10.575355+00:00",
       "label": "پول حقیقی/حقوقی ۱۲ماهه",
       "status": "پوشش ۱۲ماهه تأییدشده برای 8 نماد",
       "note": "Client-type history retrieved through BrsApi when configured; direct GitHub-runner TSETMC calls are bypassed.",
       "source_url": "https://cdn.tsetmc.com/api/ClientType/GetClientTypeHistory/{insCode}"
     },
     "fundamental": {
-      "generated_at_utc": "2026-10-31T19:44:02.823218+00:00",
+      "generated_at_utc": "2026-11-07T19:53:10.575355+00:00",
       "label": "BrsApi / صورت‌های مالی ساختاریافته",
       "status": "ناقص",
       "note": "Research screener only, not investment advice. TSETMC CDN may geo-block GitHub runners. Do not interpret an unscored/missing layer as neutral. Coverage of every active TSE/IFB ordinary share is not independently verified."
@@ -86,14 +86,14 @@
       "generated_at_utc": "2026-11-07T18:01:04+00:00",
       "label": "Fundai · نسبت‌های مالی TTM",
       "status": "نسبت‌های نسبی موجود؛ تحلیل کامل سالانه ناقص",
-      "note": "771 ردیف دریافت شد؛ 654 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 1.0 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
+      "note": "771 ردیف دریافت شد؛ 654 نماد با جهان تکنیکال تطبیق دارند؛ سن snapshot: 1.9 ساعت. امتیاز از مقایسهٔ صنعتی است و رتبهٔ اعتباری نهایی نیست. ",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-filters/"
     },
     "fundai_ratio_history": {
       "generated_at_utc": "2026-10-14T12:06:31+00:00",
       "label": "Fundai · تاریخچهٔ نسبت‌های مالی",
       "status": "تاریخچهٔ عمومی موجود؛ روند تاریخی مقدماتی",
-      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 582.9 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
+      "note": "609 از 609 نماد؛ 11020 ردیف تاریخی؛ سن snapshot: 583.8 ساعت. فقط دوره‌های دارای نوع گزارش، ماه/روز و سال قبل یکسان مقایسه می‌شوند؛ این تاریخچه جایگزین صورت مالی رسمی نیست.",
       "source_url": "https://fundai.ir/api/v1/fundamental/financial-ratio-history/"
     },
     "codal_channels": {
